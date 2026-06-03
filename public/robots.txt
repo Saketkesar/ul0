@@ -1,0 +1,11 @@
+# Robots.txt for ul0 - Free URL Shortener & Expense Splitter
+# https://ul0.site
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /r/
+Disallow: /fight/
+Disallow: /_next/
+
+Sitemap: https://ul0.site/sitemap.xml

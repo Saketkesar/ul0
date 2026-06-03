@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Main Pages -->
+  <url>
+    <loc>https://ul0.site/</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://ul0.site/ul0.png</image:loc>
+      <image:title>ul0 - Free URL Shortener</image:title>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://ul0.site/split</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/qr</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/wifi</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Multi-Language Pages with proper hreflang -->
+  <url>
+    <loc>https://ul0.site/hi</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="hi" href="https://ul0.site/hi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ul0.site/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ul0.site/"/>
+  </url>
+  <url>
+    <loc>https://ul0.site/id</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="id" href="https://ul0.site/id"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ul0.site/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ul0.site/"/>
+  </url>
+  <url>
+    <loc>https://ul0.site/pt</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://ul0.site/pt"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ul0.site/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ul0.site/"/>
+  </url>
+  <url>
+    <loc>https://ul0.site/vi</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="vi" href="https://ul0.site/vi"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ul0.site/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ul0.site/"/>
+  </url>
+  <url>
+    <loc>https://ul0.site/th</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="th" href="https://ul0.site/th"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ul0.site/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ul0.site/"/>
+  </url>
+  <url>
+    <loc>https://ul0.site/es</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://ul0.site/es"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://ul0.site/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://ul0.site/"/>
+  </url>
+  
+  <!-- Blog -->
+  <url>
+    <loc>https://ul0.site/blog</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/blog/best-url-shorteners-2025</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/blog/bitly-alternative-free</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/blog/tinyurl-alternative</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/blog/free-url-shortener-no-signup</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/blog/how-to-shorten-url-free</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  
+  <!-- Info Pages -->
+  <url>
+    <loc>https://ul0.site/about</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/faq</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/contact</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/privacy</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://ul0.site/terms</loc>
+    <lastmod>2025-12-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+</urlset>
