@@ -79,7 +79,7 @@ Below is a snapshot of the database showing over 413 organic, user-generated red
 
 This project is built for performance and high search visibility. With a streamlined lightweight architecture, it successfully ranks for target queries. Check the live optimization profile and full grade report here: [SEO Audit Report](https://www.seoptimer.com/ul0.site).
 
-If you want to increase your site's SEO, please contact me: stablersleet@duckmail.com
+If you want to increase your site's SEO, please contact me: stablersleet@duck.com
 
 ---
 
