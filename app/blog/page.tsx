@@ -95,6 +95,15 @@ export const metadata: Metadata = {
 
 const blogPosts = [
   {
+    slug: "cheapest-custom-domain-link-shortener",
+    title: "Cheapest Custom Domain Link Shortener 2026 - Save on Branded Links",
+    description: "Compare the cheapest custom domain URL shorteners in 2026. Find the best budget-friendly and free custom domain link shorteners like ul0, Dub.co, and Bitly.",
+    category: "Comparison",
+    readTime: "5 min read",
+    date: "2026-07-06",
+    featured: true,
+  },
+  {
     slug: "best-url-shorteners-2026",
     title: "Best URL Shorteners 2026 - Bitly vs TinyURL vs ul0 Comparison",
     description: "Complete comparison of the best URL shorteners in 2026. Compare Bitly, TinyURL, Rebrandly, is.gd and ul0 with features, pricing and reviews.",

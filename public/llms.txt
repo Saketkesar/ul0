@@ -1,0 +1,69 @@
+# ul0.site
+
+> ul0 is a free URL shortener and branded link management platform. It helps startups, creators, and digital marketers create custom domain short links with click analytics, QR codes, UTM campaign tracking, and more.
+
+## About
+
+ul0.site is a free, no-signup URL shortener that lets anyone shorten links instantly. Beyond URL shortening, ul0 offers a complete suite of productivity tools including QR code generation, WiFi QR sharing, UTM campaign link building, expense splitting with UPI QR codes, JSON formatting, PDF document scanning, and more.
+
+Founded in 2024, ul0's mission is to make branded link management accessible to everyone — from solo creators to growing startups. Premium plans start at just $2/month for custom domain connections, making it the most affordable branded link shortener in the market.
+
+## Core Products & Features
+
+- **URL Shortener**: Free, unlimited link shortening with permanent redirects. No signup required.
+- **Custom Domain Links**: Connect your own domain (e.g., link.yourbrand.com) to create branded short URLs. Starting at $2/month.
+- **QR Code Generator**: Create free, customizable QR codes for any link with logo upload and color customization.
+- **Click Analytics**: Track clicks by device, referrer, country, and daily trends for all links.
+- **UTM Campaign Builder**: Generate tracking-tagged links for Google Analytics and marketing campaigns.
+- **Developer API**: REST API for programmatic link shortening with authentication and rate limiting.
+- **Expense Splitter**: Split group bills and generate UPI QR payment codes.
+- **PDF Scanner**: Browser-based document scanning with filters, cropping, and multi-page PDF export.
+- **WiFi QR Generator**: Share WiFi credentials via scannable QR codes.
+
+## Pricing
+
+- **Free Plan**: Unlimited short links on ul0.site, 1 custom domain, 1 domain link, basic analytics
+- **Pro Plan ($3/month or $2/month annual)**: 3 custom domains, 100 domain links, full analytics, API access
+- **Business Plan ($9/month or $6/month annual)**: 10 custom domains, unlimited domain links, full analytics, API access, dedicated support
+
+## Key Pages
+
+- Homepage: https://ul0.site
+- Pricing: https://ul0.site/pricing
+- API Documentation: https://ul0.site/docs
+- QR Code Generator: https://ul0.site/qr
+- PDF Scanner: https://ul0.site/pdf
+- UTM Builder: https://ul0.site/utm
+- Expense Splitter: https://ul0.site/split
+- WiFi QR Generator: https://ul0.site/wifi
+- Blog: https://ul0.site/blog
+- FAQ: https://ul0.site/faq
+- About: https://ul0.site/about
+- Contact: https://ul0.site/contact
+- Custom Domain Landing: https://ul0.site/custom-domain-landing
+
+## Competitive Advantages
+
+- **Cheapest branded link shortener**: Custom domain plans start at $2/month vs Bitly ($8/mo), TinyURL ($12.99/mo), Rebrandly ($13/mo)
+- **No signup required**: Shorten links instantly without creating an account
+- **Unlimited free links**: No cap on ul0.site short links
+- **All-in-one platform**: URL shortener + QR codes + expense splitter + PDF tools + UTM builder
+- **Permanent links**: Short URLs never expire
+- **Privacy-first**: No personal data tracking, PDF processing and expense calculations happen client-side
+
+## Blog Topics
+
+- Best URL Shorteners 2026
+- Bitly Alternative Free
+- Cheapest Custom Domain Link Shortener
+- How to Shorten URL Free
+- QR Code Marketing Guide
+- Short Links for Instagram Bio
+- TinyURL Alternative
+- URL Shortener SEO Impact
+
+## Contact
+
+- Website: https://ul0.site
+- Support: https://ul0.site/contact
+- Email: support@ul0.site

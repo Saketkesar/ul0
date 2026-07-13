@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import { hreflangAlternates } from "@/lib/i18n"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
@@ -25,10 +26,7 @@ export const metadata: Metadata = {
   ],
   alternates: {
     canonical: "https://ul0.site/hi",
-    languages: {
-      "en": "https://ul0.site",
-      "hi": "https://ul0.site/hi",
-    },
+    languages: hreflangAlternates,
   },
   openGraph: {
     title: "मुफ्त URL शॉर्टनर - लिंक छोटा करें | ul0",

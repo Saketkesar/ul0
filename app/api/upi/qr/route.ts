@@ -1,8 +1,23 @@
 import { NextResponse } from 'next/server'
 import QRCode from 'qrcode'
+import { checkRateLimit, getClientIP } from "@/lib/utils/rate-limit"
 
 export async function GET(req: Request) {
   try {
+    // Rate limit: 20 requests per minute per IP
+    const clientIP = getClientIP(req)
+    const rateLimitResult = await checkRateLimit(`upi:qr:${clientIP}`, {
+      windowMs: 60000,
+      maxRequests: 20,
+    })
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again in a minute." },
+        { status: 429 }
+      )
+    }
+
     const url = new URL(req.url)
     const upi = url.searchParams.get('upi') || ''
     const name = url.searchParams.get('name') || ''

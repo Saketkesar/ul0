@@ -34,15 +34,59 @@ export default function QRCodeGeneratorPage() {
     if (!data.trim()) return
     setGenerating(true)
     try {
-      const url = await QRCode.toDataURL(data, {
-        width: 300,
-        margin: 2,
-        color: {
-          dark: "#000000",
-          light: "#ffffff",
-        },
-      })
-      setQrDataUrl(url)
+      const canvas = canvasRef.current
+      if (canvas) {
+        // High error correction 'H' is required when center is obscured by a logo
+        await QRCode.toCanvas(canvas, data, {
+          width: 400,
+          margin: 2,
+          errorCorrectionLevel: "H",
+          color: {
+            dark: "#000000",
+            light: "#ffffff",
+          },
+        })
+
+        const ctx = canvas.getContext("2d")
+        if (ctx) {
+          const logoImg = new Image()
+          logoImg.src = "/favicon.png"
+          await new Promise((resolve) => {
+            logoImg.onload = resolve
+            logoImg.onerror = resolve
+          })
+
+          if (logoImg.complete && logoImg.naturalWidth > 0) {
+            const logoSize = canvas.width * 0.20
+            const x = (canvas.width - logoSize) / 2
+            const y = (canvas.height - logoSize) / 2
+
+            // Draw white rounded card behind the logo
+            ctx.fillStyle = "#ffffff"
+            ctx.beginPath()
+            const padding = 6
+            ctx.roundRect(x - padding, y - padding, logoSize + padding * 2, logoSize + padding * 2, 6)
+            ctx.fill()
+
+            // Draw the logo image
+            ctx.drawImage(logoImg, x, y, logoSize, logoSize)
+          }
+        }
+
+        const url = canvas.toDataURL("image/png")
+        setQrDataUrl(url)
+      } else {
+        const url = await QRCode.toDataURL(data, {
+          width: 400,
+          margin: 2,
+          errorCorrectionLevel: "H",
+          color: {
+            dark: "#000000",
+            light: "#ffffff",
+          },
+        })
+        setQrDataUrl(url)
+      }
     } catch (err) {
       console.error("Error generating QR code:", err)
     }

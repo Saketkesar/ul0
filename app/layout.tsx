@@ -1,8 +1,10 @@
+import {ClerkProvider} from "@clerk/nextjs";
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Autotag } from "@/components/autotag"
+import { hreflangAlternates } from "@/lib/i18n"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -15,8 +17,22 @@ export const metadata: Metadata = {
     template: "%s | ul0 - Free Link Shortener"
   },
   description:
-    "ul0 is a free URL shortener with QR codes, click tracking, UTM tools, and expense splitting. Shorten links instantly with no signup required.",
+    "ul0 is a free URL shortener with branded custom domain links, QR code generation, click analytics, UTM campaign tools, and expense splitting. Shorten links instantly with no signup required.",
   keywords: [
+    // Branded & Custom Domain transactional keywords
+    "custom domain short link free",
+    "free custom domain link shortener",
+    "cheapest custom domain link shortener",
+    "branded url shortener free",
+    "short link with custom domain free",
+    "own domain link shortener cheapest",
+    "personal domain url shortener free",
+    "connect domain link shortener free",
+    "custom domain redirect free",
+    "cheap branded short links",
+    "dub co cheap alternative",
+    "bitly alternative custom domain",
+
     // Primary keywords - English
     "url shortener",
     "free url shortener",
@@ -99,6 +115,20 @@ export const metadata: Metadata = {
     "upi qr code",
     "payment qr code",
     "share expenses",
+    // PDF scanner & document tools
+    "pdf scanner",
+    "free pdf scanner",
+    "scan document to pdf",
+    "camera document scanner",
+    "image to pdf",
+    "jpg to pdf",
+    "merge pdf",
+    "merge pdf free",
+    "combine pdf",
+    "create pdf from images",
+    "auto crop document scanner",
+    "scan to pdf online free",
+    "rename pdf",
     // International - Spanish
     "acortador de enlaces",
     "acortador de url gratis",
@@ -154,25 +184,7 @@ export const metadata: Metadata = {
   classification: "URL Shortener, Link Management, QR Code Generator",
   alternates: {
     canonical: "https://ul0.site",
-    languages: {
-      "en": "https://ul0.site",
-      "en-US": "https://ul0.site",
-      "en-GB": "https://ul0.site",
-      "hi": "https://ul0.site/hi",
-      "hi-IN": "https://ul0.site/hi",
-      "id": "https://ul0.site/id",
-      "id-ID": "https://ul0.site/id",
-      "pt": "https://ul0.site/pt",
-      "pt-BR": "https://ul0.site/pt",
-      "vi": "https://ul0.site/vi",
-      "vi-VN": "https://ul0.site/vi",
-      "th": "https://ul0.site/th",
-      "th-TH": "https://ul0.site/th",
-      "es": "https://ul0.site/es",
-      "es-ES": "https://ul0.site/es",
-      "es-MX": "https://ul0.site/es",
-      "x-default": "https://ul0.site",
-    },
+    languages: hreflangAlternates,
   },
   openGraph: {
     title: "ul0 — Free URL Shortener, QR Codes & Expense Splitting",
@@ -328,6 +340,12 @@ export default function RootLayout({
             name: "JSON Formatter",
             description: "Format and validate JSON online",
             url: "https://ul0.site/json"
+          },
+          {
+            "@type": "WebPage",
+            name: "PDF Scanner & Tools",
+            description: "Scan documents, create and merge PDFs free",
+            url: "https://ul0.site/pdf"
           }
         ]
       }
@@ -362,19 +380,21 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <div className="relative">
+        <ClerkProvider dynamic>
+          <div className="relative">
           {children}
-        </div>
-        <Analytics />
-        <Autotag />
-        {/* Simple Analytics noscript fallback */}
-        <noscript>
+          </div>
+          <Analytics />
+          <Autotag />
+          {/* Simple Analytics noscript fallback */}
+          <noscript>
           <img 
-            src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" 
-            alt="" 
-            referrerPolicy="no-referrer-when-downgrade"
+          src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" 
+          alt="" 
+          referrerPolicy="no-referrer-when-downgrade"
           />
-        </noscript>
+          </noscript>
+        </ClerkProvider>
       </body>
     </html>
   )

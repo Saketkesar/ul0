@@ -1,0 +1,39 @@
+# ul0.site — Cheapest Custom Domain Link Shortener & Multi-Tool Platform
+
+ul0 is a fast, minimal, and budget-friendly SaaS platform combining custom domain short links, click tracking, dynamic QR codes, a PDF document scanner, and bill splitting tools.
+
+## 1. Core Services
+
+### Custom Domain Shortener & Branded Links
+- Connect custom domains (e.g. link.yourbrand.com).
+- Shorten links with custom slug aliases (e.g. link.brand.com/offer).
+- Click tracking analytics (geographic distribution, referrer sources, device browser tracking).
+- Unlimited public URL shortening via the default `ul0.site` domain (no signup required).
+
+### PDF Scanner & Document Tool (/pdf)
+- Fully client-side camera scanning with real-time browser permission checks.
+- Native OS camera application capture fallback support (`capture="environment"`).
+- Image filters (color, grayscale, black & white), rotation, and drag-and-drop page sorting.
+- Merging and creating PDFs client-side via `jspdf` and `pdf-lib`.
+
+### Split Expenses & UPI QR Codes (/split)
+- Group bill-splitting algorithm designed to minimize total transactions.
+- Auto-generation of UPI payment QR codes for instant scans.
+- Shareable temporary split session links.
+
+---
+
+## 2. Pricing & Subscriptions
+
+We offer the cheapest premium plans in the custom domain link shortening industry:
+
+| Plan | Price (Monthly) | Price (Annual) | Limits / Features |
+| :--- | :--- | :--- | :--- |
+| **Free** | $0 | $0 | 1 custom domain, 1 custom domain link, basic analytics |
+| **Pro** | $3/mo | $2/mo ($24/yr) | 3 custom domains, 100 custom domain links, full analytics, delete links |
+| **Business** | $9/mo | $6/mo ($72/yr) | 10 custom domains, unlimited links, full analytics, delete links, 24/7 support |
+
+---
+
+## 3. Developer Integration (Future API)
+An API service is planned to allow programmatic link shortening using organization API keys linked to connected domains. Check back for SDKs and API keys in our developer documentation.

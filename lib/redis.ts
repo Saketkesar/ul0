@@ -9,10 +9,13 @@ export const redis = new Redis({
 // Cache TTL in seconds (24 hours)
 const CACHE_TTL = 60 * 60 * 24
 
-// URL Cache functions
-export async function getCachedUrl(slug: string): Promise<string | null> {
+// URL Cache functions — keyed by host:slug for multi-tenant support.
+export async function getCachedUrl(
+  slug: string,
+  host: string = "ul0.site",
+): Promise<string | null> {
   try {
-    const cached = await redis.get<string>(`url:${slug}`)
+    const cached = await redis.get<string>(`url:${host}:${slug}`)
     return cached
   } catch (error) {
     console.error("Redis get error:", error)
@@ -20,9 +23,13 @@ export async function getCachedUrl(slug: string): Promise<string | null> {
   }
 }
 
-export async function setCachedUrl(slug: string, originalUrl: string): Promise<void> {
+export async function setCachedUrl(
+  slug: string,
+  originalUrl: string,
+  host: string = "ul0.site",
+): Promise<void> {
   try {
-    await redis.set(`url:${slug}`, originalUrl, { ex: CACHE_TTL })
+    await redis.set(`url:${host}:${slug}`, originalUrl, { ex: CACHE_TTL })
   } catch (error) {
     console.error("Redis set error:", error)
   }

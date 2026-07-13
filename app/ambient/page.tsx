@@ -80,44 +80,44 @@ export default function AmbientPage() {
       setActiveSounds(prev => { const newMap = new Map(prev); newMap.delete(track.id); return newMap })
     } else {
       setActiveSounds(prev => { const newMap = new Map(prev); newMap.set(track.id, { id: track.id, volume: 70, isLoading: true }); return newMap })
-      const audio = new Audio()
+
+      // Create and play the audio synchronously inside the click handler so the
+      // play() call stays within the user-activation window. Deferring play() to
+      // an async "canplaythrough" listener causes iOS Safari and some mobile
+      // browsers to block playback (autoplay policy), which left sounds stuck.
+      const audio = new Audio(track.audioUrl)
       audio.loop = true
       audio.preload = "auto"
+      audio.crossOrigin = "anonymous"
       audio.volume = 0.7 * (isMuted ? 0 : masterVolume / 100)
-      
-      const playAudio = () => {
-        audio.play().then(() => {
-          audioRefs.current.set(track.id, audio)
-          setActiveSounds(prev => { const newMap = new Map(prev); newMap.set(track.id, { id: track.id, volume: 70, isLoading: false }); return newMap })
-        }).catch(err => {
-          console.error("Play error:", err)
-          setActiveSounds(prev => { const newMap = new Map(prev); newMap.delete(track.id); return newMap })
+      audioRefs.current.set(track.id, audio)
+
+      const markPlaying = () => {
+        setActiveSounds(prev => {
+          const newMap = new Map(prev)
+          const sound = newMap.get(track.id)
+          if (sound) newMap.set(track.id, { ...sound, isLoading: false })
+          return newMap
         })
       }
-      
-      const handleCanPlay = () => {
-        playAudio()
-      }
-      
-      const handleError = (e: Event) => {
-        const target = e.target as HTMLAudioElement
-        const error = target?.error
-        console.error("Audio error:", error?.message || "Unknown error", "Code:", error?.code)
-        // Retry with a slight delay if it's a network error
-        if (error?.code === MediaError.MEDIA_ERR_NETWORK) {
-          setTimeout(() => {
-            audio.load()
-            audio.play().catch(() => {})
-          }, 1000)
-          return
-        }
+
+      const removeTrack = () => {
+        audioRefs.current.get(track.id)?.pause()
+        audioRefs.current.delete(track.id)
         setActiveSounds(prev => { const newMap = new Map(prev); newMap.delete(track.id); return newMap })
       }
-      
-      audio.addEventListener("canplaythrough", handleCanPlay, { once: true })
-      audio.addEventListener("error", handleError, { once: true })
-      audio.src = track.audioUrl
-      audio.load()
+
+      audio.addEventListener("playing", markPlaying, { once: true })
+      audio.addEventListener("error", () => {
+        const error = audio.error
+        console.error("Audio error:", error?.message || "Unknown", "Code:", error?.code)
+        removeTrack()
+      })
+
+      audio.play().then(markPlaying).catch(err => {
+        console.error("Play error:", err)
+        removeTrack()
+      })
     }
   }, [masterVolume, isMuted])
 

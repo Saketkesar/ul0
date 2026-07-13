@@ -32,7 +32,8 @@ export function Footer() {
               <Link href="/wifi" className="hover:text-foreground transition-colors">WiFi QR Generator</Link>
               <Link href="/utm" className="hover:text-foreground transition-colors">UTM Link Builder</Link>
               <Link href="/split" className="hover:text-foreground transition-colors">Split Expenses</Link>
-              <Link href="/compare" className="hover:text-foreground transition-colors font-semibold text-foreground">Compare AI</Link>
+              <Link href="/pdf" className="hover:text-foreground transition-colors font-semibold text-foreground">PDF Scanner &amp; Tools</Link>
+              <Link href="/docs" className="hover:text-foreground transition-colors font-semibold text-foreground">Developer API</Link>
             </nav>
           </div>
 
@@ -40,7 +41,6 @@ export function Footer() {
           <div>
             <h3 className="font-semibold mb-3">Study & Desk Setup</h3>
             <nav className="flex flex-col gap-2 text-sm text-muted-foreground" aria-label="Desk setup tools navigation">
-              <Link href="/examcrack" className="hover:text-foreground transition-colors font-semibold text-foreground">Examcrack OS</Link>
               <Link href="/clock" className="hover:text-foreground transition-colors">Aesthetic Clock</Link>
               <Link href="/ambient" className="hover:text-foreground transition-colors">Ambient Sounds</Link>
               <Link href="/countdown" className="hover:text-foreground transition-colors">Countdown Creator</Link>
@@ -62,15 +62,22 @@ export function Footer() {
               <Link href="/faq" className="hover:text-foreground transition-colors">FAQ</Link>
               <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
               <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
+              <Link href="/refund" className="hover:text-foreground transition-colors">Refund &amp; Cancellation</Link>
             </nav>
             <h3 className="font-semibold mb-3">Languages</h3>
             <nav className="flex flex-wrap gap-2 text-sm text-muted-foreground" aria-label="Language selection">
-              <Link href="/hi" className="hover:text-foreground transition-colors" hrefLang="hi">🇮🇳</Link>
-              <Link href="/id" className="hover:text-foreground transition-colors" hrefLang="id">🇮🇩</Link>
-              <Link href="/pt" className="hover:text-foreground transition-colors" hrefLang="pt">🇧🇷</Link>
-              <Link href="/vi" className="hover:text-foreground transition-colors" hrefLang="vi">🇻🇳</Link>
-              <Link href="/th" className="hover:text-foreground transition-colors" hrefLang="th">🇹🇭</Link>
-              <Link href="/es" className="hover:text-foreground transition-colors" hrefLang="es">🇪🇸</Link>
+              <Link href="/hi" className="hover:text-foreground transition-colors" hrefLang="hi" title="हिन्दी">🇮🇳</Link>
+              <Link href="/id" className="hover:text-foreground transition-colors" hrefLang="id" title="Bahasa Indonesia">🇮🇩</Link>
+              <Link href="/pt" className="hover:text-foreground transition-colors" hrefLang="pt" title="Português">🇧🇷</Link>
+              <Link href="/vi" className="hover:text-foreground transition-colors" hrefLang="vi" title="Tiếng Việt">🇻🇳</Link>
+              <Link href="/th" className="hover:text-foreground transition-colors" hrefLang="th" title="ไทย">🇹🇭</Link>
+              <Link href="/es" className="hover:text-foreground transition-colors" hrefLang="es" title="Español">🇪🇸</Link>
+              <Link href="/de" className="hover:text-foreground transition-colors" hrefLang="de" title="Deutsch">🇩🇪</Link>
+              <Link href="/fr" className="hover:text-foreground transition-colors" hrefLang="fr" title="Français">🇫🇷</Link>
+              <Link href="/nl" className="hover:text-foreground transition-colors" hrefLang="nl" title="Nederlands">🇳🇱</Link>
+              <Link href="/ja" className="hover:text-foreground transition-colors" hrefLang="ja" title="日本語">🇯🇵</Link>
+              <Link href="/ko" className="hover:text-foreground transition-colors" hrefLang="ko" title="한국어">🇰🇷</Link>
+              <Link href="/ar" className="hover:text-foreground transition-colors" hrefLang="ar" title="العربية">🇸🇦</Link>
             </nav>
           </div>
 
@@ -91,7 +98,10 @@ export function Footer() {
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} ul0. All rights reserved. Free URL Shortener & Expense Splitter.
           </p>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <a href="https://frogdr.com/ul0.site?utm_source=ul0.site" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+              <img src="https://frogdr.com/ul0.site/badge-dark.svg?round=1" alt="Monitor your Domain Rating with FrogDR" width="130" className="h-8 w-auto" />
+            </a>
             <a 
               href="https://dashboard.simpleanalytics.com/ul0.site?utm_source=ul0.site&utm_content=badge&affiliate=wobab" 
               referrerPolicy="origin" 

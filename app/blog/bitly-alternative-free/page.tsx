@@ -53,12 +53,12 @@ const blogSchema = {
 const alternatives = [
   {
     name: "ul0",
-    tagline: "Best Free Bitly Alternative - No Signup Required",
-    description: "ul0 is the best free Bitly alternative for users who want to shorten URLs without creating an account. Unlike Bitly's 5 links/month limit, ul0 offers unlimited free link shortening.",
-    features: ["Unlimited free links", "No signup required", "QR code generator", "WiFi QR codes", "Expense splitter", "Fast redirects"],
-    limitations: ["No click analytics", "No custom domains"],
-    price: "Free forever",
-    verdict: "Best for: Quick, free link shortening without any account",
+    tagline: "Best Free Bitly Alternative - With Free Custom Domains",
+    description: "ul0 is the best free Bitly alternative. It offers unlimited free standard links (no signup required), plus 1 free custom domain connection. High-value paid plans start at just $2/month billed annually.",
+    features: ["Unlimited free links", "No signup required", "1 free custom domain", "Click analytics", "QR code generator", "WiFi QR codes", "Expense splitter & PDF tools"],
+    limitations: ["Standard redirects have ads", "Free custom domain limited to 1 link"],
+    price: "Free / $2/mo Pro",
+    verdict: "Best for: Quick, free link shortening and cheap custom domain branding",
   },
   {
     name: "TinyURL",
