@@ -199,4 +199,15 @@ Built entirely for organic search. Over 400+ user-generated short link records i
 
 ## License & Security
 
-This project is source-available. For vulnerability disclosures, see [SECURITY.md](./SECURITY.md).
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
+
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
+This means:
+- You can freely use, study, and modify the code.
+- If you deploy a modified version as a network service, you **must** release your changes under the same license.
+- Commercial use is permitted, but proprietary forks that are served to users are not.
+
+Copyright &copy; 2025–2026 Saket Kesar — [ul0.site](https://ul0.site)
+
+For vulnerability disclosures, see [SECURITY.md](./SECURITY.md).
