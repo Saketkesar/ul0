@@ -26,7 +26,7 @@ export default function PrivacyPage() {
       <main className="flex-1 py-8 sm:py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <h1 className="text-3xl font-bold mb-6 sm:text-4xl">Privacy Policy</h1>
-          <p className="text-muted-foreground mb-8">Last updated: November 30, 2025</p>
+          <p className="text-muted-foreground mb-8">Last updated: July 5, 2026</p>
           
           <div className="prose prose-gray dark:prose-invert max-w-none space-y-6">
             <section>
@@ -44,6 +44,8 @@ export default function PrivacyPage() {
                 <li>Group names and member information for expense splitting</li>
                 <li>UPI IDs for payment processing</li>
                 <li>Expense details (amounts, descriptions, dates)</li>
+                <li>Email address and account info when signing up via Clerk</li>
+                <li>Billing details provided to our payment partners (Polar.sh / Stripe) when subscribing to a plan</li>
               </ul>
               
               <h3 className="text-xl font-medium mb-2 mt-4">2.2 Automatically Collected Information</h3>
@@ -64,6 +66,7 @@ export default function PrivacyPage() {
                 <li>To generate analytics and usage statistics</li>
                 <li>To improve our services and user experience</li>
                 <li>To detect and prevent fraud or abuse</li>
+                <li>To process subscription payments and sync plans via webhooks</li>
                 <li>To comply with legal obligations</li>
               </ul>
             </section>
@@ -71,7 +74,7 @@ export default function PrivacyPage() {
             <section>
               <h2 className="text-2xl font-semibold mb-4">4. Data Retention</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Shortened URLs are stored indefinitely unless deleted by the creator or flagged for abuse. Expense split data is retained for 24 hours after creation, after which the shareable link expires. We may retain certain data longer for legal compliance or legitimate business purposes.
+                Shortened URLs are stored indefinitely unless deleted by the creator or flagged for abuse. Expense split data is retained for 24 hours after creation, after which the shareable link expires. We retain account profile information and subscription status as long as your account is active.
               </p>
             </section>
 
@@ -81,7 +84,7 @@ export default function PrivacyPage() {
                 We do not sell your personal information. We may share data with:
               </p>
               <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                <li>Service providers who assist in operating our platform (hosting, analytics)</li>
+                <li>Service providers who assist in operating our platform (hosting, analytics, Clerk for authentication, Polar.sh/Stripe for subscription billing processing)</li>
                 <li>Law enforcement when required by law</li>
                 <li>Third parties with your consent</li>
               </ul>
@@ -150,7 +153,7 @@ export default function PrivacyPage() {
                 If you have any questions about this Privacy Policy, please contact us at:
               </p>
               <p className="text-muted-foreground mt-2">
-                Email: stablersleet@duck.com<br />
+                Email: <a href="mailto:support@ul0.site" className="text-primary hover:underline font-medium">support@ul0.site</a><br />
                 Website: https://ul0.site/contact
               </p>
             </section>

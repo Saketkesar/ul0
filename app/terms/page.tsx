@@ -26,7 +26,7 @@ export default function TermsPage() {
       <main className="flex-1 py-8 sm:py-12">
         <div className="container mx-auto px-4 max-w-4xl">
           <h1 className="text-3xl font-bold mb-6 sm:text-4xl">Terms of Service</h1>
-          <p className="text-muted-foreground mb-8">Last updated: November 30, 2025</p>
+          <p className="text-muted-foreground mb-8">Last updated: July 5, 2026</p>
           
           <div className="prose prose-gray dark:prose-invert max-w-none space-y-6">
             <section>
@@ -46,11 +46,22 @@ export default function TermsPage() {
                 <li><strong>Expense Splitting:</strong> Split bills among groups with UPI payment integration</li>
                 <li><strong>QR Code Generation:</strong> Generate QR codes for UPI payments</li>
                 <li><strong>Link Analytics:</strong> Track clicks on shortened URLs</li>
+                <li><strong>Custom Domain Connections:</strong> Connect custom domains to create branded short links</li>
               </ul>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">3. User Responsibilities</h2>
+              <h2 className="text-2xl font-semibold mb-4">3. Subscriptions &amp; Billing</h2>
+              <p className="text-muted-foreground leading-relaxed">
+                ul0 offers free plans and paid subscriptions (Pro, Business). Paid plans are processed securely via our billing merchant partner, <strong>Polar.sh</strong> and <strong>Stripe</strong>. Subscriptions are billed in advance on a recurring monthly or annual basis. 
+              </p>
+              <p className="text-muted-foreground leading-relaxed mt-2">
+                You can cancel your subscription at any time. Canceled subscriptions will remain active until the end of the paid billing period. We offer a 14-day refund window for initial subscription purchases. Refund requests should be sent to <a href="mailto:support@ul0.site" className="text-primary hover:underline">support@ul0.site</a>. For details, refer to our <Link href="/refund" className="text-primary hover:underline">Refund and Cancellation Policy</Link>.
+              </p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-semibold mb-4">4. User Responsibilities</h2>
               <p className="text-muted-foreground leading-relaxed">
                 You agree to use our Services only for lawful purposes. You shall not:
               </p>
@@ -66,7 +77,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">4. Prohibited Content</h2>
+              <h2 className="text-2xl font-semibold mb-4">5. Prohibited Content</h2>
               <p className="text-muted-foreground leading-relaxed">
                 Links to the following content are strictly prohibited:
               </p>
@@ -82,7 +93,7 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">5. Link Expiration and Removal</h2>
+              <h2 className="text-2xl font-semibold mb-4">6. Link Expiration and Removal</h2>
               <p className="text-muted-foreground leading-relaxed">
                 We reserve the right to:
               </p>
@@ -98,68 +109,68 @@ export default function TermsPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">6. Intellectual Property</h2>
+              <h2 className="text-2xl font-semibold mb-4">7. Intellectual Property</h2>
               <p className="text-muted-foreground leading-relaxed">
                 The ul0 name, logo, and all related graphics are our trademarks. You may not use these marks without our prior written permission. You retain ownership of the content you link to, but grant us a license to process and redirect that content.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">7. Disclaimer of Warranties</h2>
+              <h2 className="text-2xl font-semibold mb-4">8. Disclaimer of Warranties</h2>
               <p className="text-muted-foreground leading-relaxed">
                 OUR SERVICES ARE PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EXPRESS OR IMPLIED. WE DO NOT GUARANTEE THAT OUR SERVICES WILL BE UNINTERRUPTED, ERROR-FREE, OR SECURE.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">8. Limitation of Liability</h2>
+              <h2 className="text-2xl font-semibold mb-4">9. Limitation of Liability</h2>
               <p className="text-muted-foreground leading-relaxed">
                 TO THE MAXIMUM EXTENT PERMITTED BY LAW, UL0 SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING LOSS OF PROFITS, DATA, OR GOODWILL, ARISING FROM YOUR USE OF OUR SERVICES.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">9. Indemnification</h2>
+              <h2 className="text-2xl font-semibold mb-4">10. Indemnification</h2>
               <p className="text-muted-foreground leading-relaxed">
                 You agree to indemnify and hold harmless ul0 and its affiliates from any claims, damages, losses, or expenses arising from your use of our Services or violation of these Terms.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">10. Third-Party Services</h2>
+              <h2 className="text-2xl font-semibold mb-4">11. Third-Party Services</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Our Services may contain links to third-party websites or integrate with third-party services (such as UPI payment providers). We are not responsible for the content, privacy practices, or terms of these third parties.
+                Our Services may contain links to third-party websites or integrate with third-party services (such as Polar.sh, Clerk, or UPI payment providers). We are not responsible for the content, privacy practices, or terms of these third parties.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">11. Advertising</h2>
+              <h2 className="text-2xl font-semibold mb-4">12. Advertising</h2>
               <p className="text-muted-foreground leading-relaxed">
-                Our free Services are supported by advertising. By using our Services, you agree to view advertisements displayed on our platform. We are not responsible for the content of third-party advertisements.
+                Our free Services are supported by advertising. By using our Services, you agree to view advertisements displayed on our platform. We are not responsible for the content of third-party advertisements. Paid plans are free of advertisements on landing pages.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">12. Modifications to Terms</h2>
+              <h2 className="text-2xl font-semibold mb-4">13. Modifications to Terms</h2>
               <p className="text-muted-foreground leading-relaxed">
                 We reserve the right to modify these Terms at any time. Changes will be effective immediately upon posting. Your continued use of our Services after changes constitutes acceptance of the modified Terms.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">13. Governing Law</h2>
+              <h2 className="text-2xl font-semibold mb-4">14. Governing Law</h2>
               <p className="text-muted-foreground leading-relaxed">
                 These Terms shall be governed by and construed in accordance with the laws of India, without regard to its conflict of law provisions.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold mb-4">14. Contact Information</h2>
+              <h2 className="text-2xl font-semibold mb-4">15. Contact Information</h2>
               <p className="text-muted-foreground leading-relaxed">
                 For questions about these Terms, please contact us at:
               </p>
               <p className="text-muted-foreground mt-2">
-                Email: stablersleet@duck.com<br />
+                Email: <a href="mailto:support@ul0.site" className="text-primary hover:underline font-medium">support@ul0.site</a><br />
                 Website: https://ul0.site/contact
               </p>
             </section>

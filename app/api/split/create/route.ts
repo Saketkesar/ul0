@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
 import { generateSlug } from "@/lib/utils/slug"
 import { checkRateLimit, getClientIP, getRequestFingerprint, isSuspiciousRequest } from "@/lib/utils/rate-limit"
+import { createSplitSession, isConflictError } from "@/lib/appwrite/splits"
 
 // Rate limit configurations
 const RATE_LIMIT_CONFIG = {
@@ -328,59 +328,44 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const supabase = await createClient()
-
     // Calculate expiry (24 hours from now)
     const expiresAt = new Date()
     expiresAt.setHours(expiresAt.getHours() + 24)
 
-    // RACE CONDITION FIX: Instead of check-then-insert, we attempt insert directly
-    // and handle unique constraint violation from the database (atomic operation)
+    // RACE CONDITION FIX: Attempt insert directly and handle unique constraint
+    // violation from Appwrite's unique slug index (atomic operation).
     let slug = generateSlug()
     let attempts = 0
     const maxAttempts = 5
     
     while (attempts < maxAttempts) {
-      const { data: session, error } = await supabase
-        .from("split_sessions")
-        .insert({
+      try {
+        const session = await createSplitSession({
           slug,
           title: sanitizedTitle,
           members: sanitizedMembers,
           expenses: sanitizedExpenses,
           settlements: sanitizedSettlements,
           total_amount: sanitizedTotalAmount,
-          expires_at: expiresAt.toISOString()
+          expires_at: expiresAt.toISOString(),
         })
-        .select()
-        .single()
 
-      if (!error && session) {
-        // Success!
         return NextResponse.json({ 
           slug: session.slug,
-          expiresAt: session.expires_at 
+          expiresAt: session.expires_at,
         })
+      } catch (err) {
+        if (isConflictError(err)) {
+          // Slug collision - try a new one
+          slug = generateSlug()
+          attempts++
+          continue
+        }
+        
+        // Other database error
+        console.error("Database error:", err)
+        return NextResponse.json({ error: "Failed to create split session" }, { status: 500 })
       }
-      
-      // Check if it's a unique constraint violation (slug collision)
-      const errorCode = (error as unknown as Record<string, unknown>)?.code
-      const isUniqueError = error && (
-        errorCode === '23505' ||
-        (typeof error.message === 'string' && error.message.includes('duplicate key')) ||
-        (typeof error.message === 'string' && error.message.includes('unique constraint'))
-      )
-      
-      if (isUniqueError) {
-        // Slug collision - try a new one
-        slug = generateSlug()
-        attempts++
-        continue
-      }
-      
-      // Other database error
-      console.error("Supabase error:", error)
-      return NextResponse.json({ error: "Failed to create split session" }, { status: 500 })
     }
     
     // Exhausted all attempts (very unlikely)
@@ -392,3 +377,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
+

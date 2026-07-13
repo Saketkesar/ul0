@@ -9,6 +9,11 @@ export const metadata: Metadata = {
   description: "Find answers about ul0 free URL shortener & bill splitter. How to shorten URLs, split expenses, create QR codes. Common questions answered. No signup required!",
   keywords: [
     // Primary FAQ Keywords
+    "custom domain short link free",
+    "free custom domain link shortener",
+    "cheapest custom domain link shortener",
+    "own domain link shortener",
+    "branded url shortener free",
     "url shortener FAQ",
     "link shortener questions",
     "url shortener help",
@@ -114,7 +119,11 @@ const urlShortenerFaqs = [
   },
   {
     question: "Can I customize my shortened URL?",
-    answer: "Currently, ul0 generates random short codes for URLs. Custom aliases may be available in future updates."
+    answer: "Yes! By connecting a custom domain, you can create branded short URLs (like link.yourbrand.com/promo) with custom aliases. You get 1 custom domain and 1 short link for free, and up to 3 domains with 100 short links on our budget Pro plan."
+  },
+  {
+    question: "Can I use my own custom domain for short links?",
+    answer: "Absolutely! Connecting your own domain is fully supported. We offer a generous Free tier which includes 1 connected domain and 1 custom link. For more limits, our paid plans are the cheapest in the market (Pro is only $2/mo billed annually)."
   },
   {
     question: "What types of URLs can I shorten?",
@@ -122,7 +131,7 @@ const urlShortenerFaqs = [
   },
   {
     question: "Is there a limit on how many URLs I can shorten?",
-    answer: "There's no strict limit on URL shortening. However, automated bulk creation may be rate-limited to prevent abuse."
+    answer: "There's no strict limit on shortening links using our standard domain (ul0.site). For custom domains, limits depend on your plan: Free (1 link), Pro (100 links), and Business (unlimited links)."
   },
   {
     question: "Why was my link removed?",

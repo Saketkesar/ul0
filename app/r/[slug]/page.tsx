@@ -1,9 +1,15 @@
-import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { RedirectLanding } from "@/components/redirect-landing"
 import { headers } from "next/headers"
 import { getCachedUrl, setCachedUrl } from "@/lib/redis"
 import { validateUrl } from "@/lib/utils/slug"
+import {
+  getLinkByHostSlug,
+  logClick,
+  incrementClickCount,
+} from "@/lib/appwrite/links"
+import { DEFAULT_HOST } from "@/lib/appwrite/config"
+import { getDomainByName } from "@/lib/appwrite/domains"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -33,6 +39,17 @@ function isSafeRedirectUrl(url: string): boolean {
   return validation.valid
 }
 
+/**
+ * Resolve the host from the request headers.
+ * Returns the domain portion (no port). Falls back to DEFAULT_HOST.
+ */
+async function resolveHost(): Promise<string> {
+  const headersList = await headers()
+  const rawHost = headersList.get("host") || headersList.get("x-forwarded-host") || DEFAULT_HOST
+  // Strip port if present
+  return rawHost.split(":")[0].toLowerCase()
+}
+
 export default async function RedirectPage({ params }: Props) {
   const { slug } = await params
   
@@ -41,9 +58,24 @@ export default async function RedirectPage({ params }: Props) {
   if (!sanitizedSlug) {
     notFound()
   }
-  
-  // Try to get URL from Redis cache first
-  const cachedUrl = await getCachedUrl(sanitizedSlug)
+
+  // Resolve the host for multi-tenant routing
+  const host = await resolveHost()
+  const isCustomDomain = host !== DEFAULT_HOST && !host.endsWith(".ul0.site")
+
+  // For custom domains, verify the domain is registered and verified
+  let brandLogoUrl: string | null = null
+  if (isCustomDomain) {
+    const domainDoc = await getDomainByName(host)
+    if (!domainDoc || domainDoc.status !== "verified") {
+      // Unverified or unknown domain — don't resolve links
+      notFound()
+    }
+    brandLogoUrl = domainDoc.brand_logo_url ?? null
+  }
+
+  // Try to get URL from Redis cache first (keyed by host:slug)
+  const cachedUrl = await getCachedUrl(sanitizedSlug, host)
   
   if (cachedUrl) {
     // Validate cached URL before redirecting (security check)
@@ -51,16 +83,20 @@ export default async function RedirectPage({ params }: Props) {
       notFound()
     }
     // Cache hit - return immediately without hitting database
-    return <RedirectLanding longUrl={cachedUrl} domain={new URL(cachedUrl).hostname} />
+    return (
+      <RedirectLanding
+        longUrl={cachedUrl}
+        domain={new URL(cachedUrl).hostname}
+        customHost={isCustomDomain ? host : null}
+        brandLogoUrl={brandLogoUrl}
+      />
+    )
   }
   
-  // Cache miss - fetch from database
-  const supabase = await createClient()
+  // Cache miss - fetch from Appwrite (scoped by host)
+  const link = await getLinkByHostSlug(host, sanitizedSlug)
 
-  // Fetch the link
-  const { data: link, error } = await supabase.from("links").select("*").eq("slug", sanitizedSlug).single()
-
-  if (error || !link) {
+  if (!link) {
     notFound()
   }
 
@@ -77,7 +113,7 @@ export default async function RedirectPage({ params }: Props) {
   }
 
   // Cache the URL for future requests (async, don't block)
-  setCachedUrl(sanitizedSlug, link.long_url)
+  setCachedUrl(sanitizedSlug, link.long_url, host)
 
   // Log the click asynchronously
   const headersList = await headers()
@@ -87,21 +123,23 @@ export default async function RedirectPage({ params }: Props) {
   const deviceType = isMobile ? "mobile" : "desktop"
 
   // Fire and forget - don't block render
-  // Truncate user agent and referer to prevent database overflow
-  supabase
-    .from("clicks")
-    .insert({
-      link_id: link.id,
-      user_agent: userAgent.substring(0, 500),
-      referrer: referer.substring(0, 500),
-      device_type: deviceType,
-    })
-    .then(() => {
-      supabase
-        .from("links")
-        .update({ clicks_count: (link.clicks_count || 0) + 1 })
-        .eq("id", link.id)
-    })
+  logClick({
+    link_id: link.$id,
+    owner_id: link.owner_id,
+    user_agent: userAgent.substring(0, 500),
+    referrer: referer.substring(0, 500),
+    device_type: deviceType,
+  }).catch(console.error)
 
-  return <RedirectLanding longUrl={link.long_url} domain={link.meta_domain} />
+  incrementClickCount(link.$id).catch(console.error)
+
+  return (
+    <RedirectLanding
+      longUrl={link.long_url}
+      domain={link.meta_domain}
+      customHost={isCustomDomain ? host : null}
+      brandLogoUrl={brandLogoUrl}
+    />
+  )
 }
+

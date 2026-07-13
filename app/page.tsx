@@ -4,11 +4,26 @@ import { LinkShortenerForm } from "@/components/link-shortener-form"
 import { FeaturesSection } from "@/components/features-section"
 import { Metadata } from "next"
 import Link from "next/link"
+import { hreflangAlternates } from "@/lib/i18n"
 
 export const metadata: Metadata = {
   title: "Free URL Shortener 2026 - Shorten Links Instantly | ul0",
-  description: "ul0 is the best free URL shortener of 2026. Shorten links instantly with no signup required. Includes free QR codes, click tracking, and UTM tools.",
+  description: "ul0 is the best free URL shortener of 2026. Shorten links instantly — no signup required. Includes free QR codes, branded custom domain short links, click analytics, UTM campaign tools, and expense splitting.",
   keywords: [
+    // Branded & Custom Domain transactional keywords
+    "custom domain short link free",
+    "free custom domain link shortener",
+    "cheapest custom domain link shortener",
+    "branded url shortener free",
+    "short link with custom domain free",
+    "own domain link shortener cheapest",
+    "personal domain url shortener free",
+    "connect domain link shortener free",
+    "custom domain redirect free",
+    "cheap branded short links",
+    "dub co cheap alternative",
+    "bitly alternative custom domain",
+    
     // Primary Keywords
     "url shortener",
     "free url shortener",
@@ -151,15 +166,7 @@ export const metadata: Metadata = {
   ],
   alternates: {
     canonical: "https://ul0.site",
-    languages: {
-      "en": "https://ul0.site",
-      "es": "https://ul0.site/es",
-      "pt": "https://ul0.site/pt",
-      "hi": "https://ul0.site/hi",
-      "id": "https://ul0.site/id",
-      "vi": "https://ul0.site/vi",
-      "th": "https://ul0.site/th",
-    }
+    languages: hreflangAlternates,
   },
   openGraph: {
     title: "Free URL Shortener Online - Shorten Links Instantly | ul0",
@@ -173,14 +180,14 @@ export const metadata: Metadata = {
       width: 1200,
       height: 630,
       alt: "ul0 - Best Free URL Shortener 2026",
-      type: "image/png",
+      type: "image/webp",
     }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Free URL Shortener - Shorten Links Instantly | ul0",
     description: "ul0 is a free URL shortener with QR codes, click tracking, UTM tools, and expense splitting.",
-    images: ["https://ul0.site/ul0.png"],
+    images: ["https://ul0.site/ul0.webp"],
   },
   robots: {
     index: true,
@@ -200,6 +207,47 @@ const homePageSchema = {
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://ul0.site/#organization",
+      name: "ul0",
+      url: "https://ul0.site",
+      logo: {
+        "@type": "ImageObject",
+        url: "https://ul0.site/ul0.png",
+        width: 512,
+        height: 512
+      },
+      description: "Free URL shortener and branded link management platform with QR codes, click analytics, UTM tools, and expense splitting.",
+      foundingDate: "2024",
+      email: "support@ul0.site",
+      sameAs: [
+        "https://www.producthunt.com/products/ul0"
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        email: "support@ul0.site",
+        url: "https://ul0.site/contact",
+        availableLanguage: ["English", "Hindi"]
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://ul0.site/#website",
+      url: "https://ul0.site",
+      name: "ul0 - Free URL Shortener",
+      publisher: { "@id": "https://ul0.site/#organization" },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: "https://ul0.site/?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      },
+      inLanguage: "en-US"
+    },
+    {
       "@type": "WebPage",
       "@id": "https://ul0.site/#webpage",
       url: "https://ul0.site",
@@ -212,7 +260,7 @@ const homePageSchema = {
         url: "https://ul0.site/ul0.png"
       },
       datePublished: "2024-01-01",
-      dateModified: "2026-03-01",
+      dateModified: "2026-07-06",
       inLanguage: "en-US",
       potentialAction: [
         {
@@ -443,7 +491,7 @@ export default function HomePage() {
               {/* SEO-rich content below form */}
               <div className="mt-8 text-left text-sm text-muted-foreground space-y-6">
                 <div>
-                  <h2 className="text-lg font-semibold text-foreground mb-2">Why Use ul0 URL Shortener?</h2>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Why Use ul0 URL Shortener?</h3>
                   <ul className="space-y-1.5 list-disc list-inside">
                     <li><strong>100% Free</strong> - No hidden costs, no premium plans needed</li>
                     <li><strong>No Signup</strong> - Start shortening URLs instantly without registration</li>
@@ -454,7 +502,7 @@ export default function HomePage() {
                 </div>
 
                 <div className="space-y-3 leading-relaxed text-sm">
-                  <h2 className="text-lg font-semibold text-foreground">Advanced Link Management & QR Codes</h2>
+                  <h3 className="text-lg font-semibold text-foreground">Advanced Link Management & QR Codes</h3>
                   <p>
                     ul0 is a state-of-the-art URL shortener and link compressor designed to streamline your online sharing experience. Whether you are a social media influencer, an ecommerce brand, or a digital marketer, clean links are critical to maximizing CTR (Click-Through Rates). By transforming long, unwieldy, tracking-heavy web addresses into short, elegant redirect aliases, ul0 ensures your links look trustworthy and professional across platforms like Instagram, YouTube, Twitter, and TikTok.
                   </p>
@@ -464,9 +512,9 @@ export default function HomePage() {
                 </div>
 
                 <div className="space-y-3 leading-relaxed text-sm">
-                  <h2 className="text-lg font-semibold text-foreground">Integrated Expense Splitting & Study Workspaces</h2>
+                  <h3 className="text-lg font-semibold text-foreground">Integrated Expense Splitting & Document Tools</h3>
                   <p>
-                    Beyond link compression, ul0 offers built-in tools to support your daily productivity. Our UPI-powered Bill Splitter allows friends, housemates, and travel groups to calculate shared tabs and generate scan-and-pay payment codes on-the-fly. Additionally, our new <strong>Examcrack OS</strong> provides students with a fully local-first study operating system right inside their browser, complete with syllabus organizers, flashcard review decks, and past paper analyzers to streamline academic prep.
+                    Beyond link compression, ul0 offers built-in tools to support your daily productivity. Our UPI-powered Bill Splitter allows friends, housemates, and travel groups to calculate shared tabs and generate scan-and-pay payment codes on-the-fly. Additionally, our new <strong>PDF Scanner & Tools</strong> lets you scan documents with your camera, auto-crop them like a professional scanner, convert images into multi-page PDFs, and merge, reorder, or rename files entirely in your browser.
                   </p>
                 </div>
               </div>
@@ -605,9 +653,9 @@ export default function HomePage() {
         <section className="border-y bg-muted/10 py-12 sm:py-14">
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-6xl text-center">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+              <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                 More places featuring ul0
-              </h2>
+              </h3>
               <p className="mt-3 text-sm text-muted-foreground sm:text-base">
                 Additional directory listings and launch badges help broaden discovery and trust signals.
               </p>
@@ -625,7 +673,7 @@ export default function HomePage() {
                   {
                     href: "https://milliondothomepage.com/product/ul0",
                     src: "https://milliondothomepage.com/assets/images/badge.png",
-                    alt: "Badge",
+                    alt: "ul0 listed on Million Dot Homepage — free URL shortener",
                     width: 150,
                     height: 54,
                     className: "h-[54px] w-[150px]",
@@ -649,7 +697,7 @@ export default function HomePage() {
                   {
                     href: "https://shinylaunch.com/product/ul0",
                     src: "https://shinylaunch.com/static/images/badge.png",
-                    alt: "Submit Your",
+                    alt: "ul0 featured on ShinyLaunch — free link shortener",
                     width: 150,
                     height: 54,
                     className: "h-[54px] w-[150px]",
@@ -771,7 +819,7 @@ export default function HomePage() {
                   Our link compression engine utilizes premium 301 Permanent Redirect headers. This ensures that 100% of your link equity (PageRank) is passed seamlessly to the target destination. This means search engines like Google, Bing, and Yahoo will attribute all the indexing credit directly to your original URL, making ul0 a highly safe choice for digital marketing agencies, brand developers, and SEO consultants looking to shorten domain paths.
                 </p>
                 <p className="text-muted-foreground mt-3">
-                  Privacy and safety are at the core of our platform. We scan every shortened URL for phishing, spam, and malware before execution, protecting your audience from malicious redirects. Additionally, all user data generated on our productivity tools—such as Syllabus lists in Examcrack OS and personal ledger calculations in our UPI Bill Splitter—is stored strictly locally in your browser using IndexedDB. We do not track personal details, meaning your browsing habits remain anonymous and protected.
+                  Privacy and safety are at the core of our platform. We scan every shortened URL for phishing, spam, and malware before execution, protecting your audience from malicious redirects. Additionally, the files you process in our PDF Scanner and the personal ledger calculations in our UPI Bill Splitter are handled strictly locally in your browser. We do not track personal details, meaning your browsing habits remain anonymous and protected.
                 </p>
                 <h3 className="text-lg font-semibold mt-6 mb-3">Popular Uses for Short URLs</h3>
                 <ul className="text-muted-foreground list-disc list-inside space-y-1">
@@ -845,20 +893,6 @@ export default function HomePage() {
                       </tr>
                     </tbody>
                   </table>
-                </div>
-
-                <div className="mt-6 flex flex-wrap justify-center gap-4 text-xs font-semibold">
-                  <Link href="/compare/bitly-vs-ul0" className="text-primary hover:underline flex items-center gap-1">
-                    Compare ul0 vs Bitly &rarr;
-                  </Link>
-                  <span className="text-muted-foreground/30">|</span>
-                  <Link href="/compare/tinyurl-vs-ul0" className="text-primary hover:underline flex items-center gap-1">
-                    Compare ul0 vs TinyURL &rarr;
-                  </Link>
-                  <span className="text-muted-foreground/30">|</span>
-                  <Link href="/compare/rebrandly-vs-ul0" className="text-primary hover:underline flex items-center gap-1">
-                    Compare ul0 vs Rebrandly &rarr;
-                  </Link>
                 </div>
               </div>
 

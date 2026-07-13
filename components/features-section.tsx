@@ -1,4 +1,4 @@
-import { Link2, Users, QrCode, Smartphone, Shield, Zap, Globe, Clock, Share2, GitCompare, Award } from "lucide-react"
+import { Link2, Users, QrCode, Smartphone, Shield, Zap, Globe, Clock, Share2, ScanLine } from "lucide-react"
 import Link from "next/link"
 
 const features = [
@@ -20,16 +20,10 @@ const features = [
     href: "/split",
   },
   {
-    icon: GitCompare,
-    title: "Compare AI",
-    description: "Compare anything side-by-side using advanced AI. Get score breakdowns, verdicts, pros & cons.",
-    href: "/compare",
-  },
-  {
-    icon: Award,
-    title: "Examcrack OS",
-    description: "Your local-first student operating system. Manage semesters, datesheets, syllabi, study materials, flashcards, and quizzes.",
-    href: "/examcrack",
+    icon: ScanLine,
+    title: "PDF Scanner & Tools",
+    description: "Scan documents with your camera, auto-crop, create PDFs from images, and merge, reorder & rename PDFs. 100% free.",
+    href: "/pdf",
   },
   {
     icon: Smartphone,
@@ -48,8 +42,9 @@ const features = [
   },
   {
     icon: Globe,
-    title: "Works Everywhere",
-    description: "Share short links on social media, emails, SMS, or anywhere online.",
+    title: "Custom Domain Short Links",
+    description: "Connect your own custom domain (e.g. link.yourbrand.com) and shorten links under your own brand. 1 custom domain included free!",
+    href: "/pricing",
   },
   {
     icon: Clock,

@@ -1,7 +1,12 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { auth } from "@clerk/nextjs/server"
 import { generateSlug, validateUrl, validateCustomSlug, extractDomain } from "@/lib/utils/slug"
 import { checkRateLimit, getClientIP, getRequestFingerprint, isSuspiciousRequest } from "@/lib/utils/rate-limit"
+import { createLink, isConflictError } from "@/lib/appwrite/links"
+import { DEFAULT_HOST } from "@/lib/appwrite/config"
+import { getAccountByApiKey } from "@/lib/appwrite/accounts"
+import { getDomainsByOwner } from "@/lib/appwrite/domains"
+import { getPlanLimits } from "@/lib/plans"
 
 // Rate limit configurations
 const RATE_LIMIT_CONFIG = {
@@ -19,84 +24,103 @@ const DAILY_RATE_LIMIT_CONFIG = {
   maxRequests: 50, // Max 50 links per day per IP
 }
 
-// Check if error is a unique constraint violation
-function isUniqueConstraintError(error: unknown): boolean {
-  if (!error || typeof error !== 'object') return false
-  const err = error as Record<string, unknown>
-  // Postgres unique violation error code is 23505
-  return err.code === '23505' || 
-         (typeof err.message === 'string' && err.message.includes('duplicate key')) ||
-         (typeof err.message === 'string' && err.message.includes('unique constraint'))
-}
-
 export async function POST(request: NextRequest) {
   try {
+    // 1. Check for API key authentication headers
+    let apiKey: string | null = null
+    const authHeader = request.headers.get("authorization")
+    if (authHeader && authHeader.toLowerCase().startsWith("bearer ")) {
+      apiKey = authHeader.substring(7).trim()
+    } else {
+      apiKey = request.headers.get("x-api-key") || null
+    }
+
+    let apiKeyAccount = null
+    if (apiKey) {
+      apiKeyAccount = await getAccountByApiKey(apiKey)
+      if (!apiKeyAccount) {
+        return NextResponse.json({ error: "Invalid API key" }, { status: 401 })
+      }
+    }
+
     // Get client identifier for rate limiting
     const clientIP = getClientIP(request)
     const fingerprint = getRequestFingerprint(request)
-    
-    // Check for suspicious requests (bots, missing headers)
-    const suspiciousCheck = isSuspiciousRequest(request)
-    
-    // Use stricter rate limits for suspicious requests
-    const rateLimitConfig = suspiciousCheck.suspicious 
-      ? STRICT_RATE_LIMIT_CONFIG 
-      : RATE_LIMIT_CONFIG
-    
-    const identifier = `shorten:${clientIP}:${fingerprint}`
-    const dailyIdentifier = `shorten:daily:${clientIP}`
-    
-    // Check per-minute rate limit
-    const rateLimitResult = await checkRateLimit(identifier, rateLimitConfig)
-    
-    if (!rateLimitResult.success) {
-      return NextResponse.json(
-        { 
-          error: `Rate limit exceeded. Please wait ${rateLimitResult.resetIn} seconds before creating another short link.`,
-          retryAfter: rateLimitResult.resetIn 
-        }, 
-        { 
-          status: 429,
-          headers: {
-            "Retry-After": rateLimitResult.resetIn.toString(),
-            "X-RateLimit-Remaining": "0",
-            "X-RateLimit-Reset": rateLimitResult.resetIn.toString(),
+
+    // 2. Enforce API key-specific rate limits
+    if (apiKeyAccount) {
+      const maxRequests = apiKeyAccount.plan === "business_user" ? 300 : 60
+      const keyRateLimitResult = await checkRateLimit(`api:key:${apiKeyAccount.$id}`, {
+        windowMs: 60000,
+        maxRequests,
+      })
+
+      if (!keyRateLimitResult.success) {
+        return NextResponse.json(
+          { error: "Too many requests. API rate limit exceeded." },
+          { status: 429 }
+        )
+      }
+    } else {
+      // Standard Rate Limiting for Web/Anonymous Users
+      const suspiciousCheck = isSuspiciousRequest(request)
+      const rateLimitConfig = suspiciousCheck.suspicious 
+        ? STRICT_RATE_LIMIT_CONFIG 
+        : RATE_LIMIT_CONFIG
+      
+      const identifier = `shorten:${clientIP}:${fingerprint}`
+      const dailyIdentifier = `shorten:daily:${clientIP}`
+      
+      // Check per-minute rate limit
+      const rateLimitResult = await checkRateLimit(identifier, rateLimitConfig)
+      if (!rateLimitResult.success) {
+        return NextResponse.json(
+          { 
+            error: `Rate limit exceeded. Please wait ${rateLimitResult.resetIn} seconds before creating another short link.`,
+            retryAfter: rateLimitResult.resetIn 
+          }, 
+          { 
+            status: 429,
+            headers: {
+              "Retry-After": rateLimitResult.resetIn.toString(),
+              "X-RateLimit-Remaining": "0",
+              "X-RateLimit-Reset": rateLimitResult.resetIn.toString(),
+            }
           }
-        }
-      )
-    }
-    
-    // Check daily rate limit
-    const dailyRateLimitResult = await checkRateLimit(dailyIdentifier, DAILY_RATE_LIMIT_CONFIG)
-    
-    if (!dailyRateLimitResult.success) {
-      return NextResponse.json(
-        { 
-          error: "Daily limit reached. Please try again tomorrow or create an account for higher limits.",
-          retryAfter: dailyRateLimitResult.resetIn 
-        }, 
-        { 
-          status: 429,
-          headers: {
-            "Retry-After": dailyRateLimitResult.resetIn.toString(),
-            "X-RateLimit-Remaining": "0",
-            "X-RateLimit-Reset": dailyRateLimitResult.resetIn.toString(),
+        )
+      }
+
+      // Check daily rate limit
+      const dailyRateLimitResult = await checkRateLimit(dailyIdentifier, DAILY_RATE_LIMIT_CONFIG)
+      if (!dailyRateLimitResult.success) {
+        return NextResponse.json(
+          { 
+            error: "Daily limit reached. Please try again tomorrow or create an account for higher limits.",
+            retryAfter: dailyRateLimitResult.resetIn 
+          }, 
+          { 
+            status: 429,
+            headers: {
+              "Retry-After": dailyRateLimitResult.resetIn.toString(),
+              "X-RateLimit-Remaining": "0",
+              "X-RateLimit-Reset": dailyRateLimitResult.resetIn.toString(),
+            }
           }
-        }
-      )
+        )
+      }
     }
 
-    // Parse request body with error handling
-    let body: { longUrl?: string; customSlug?: string }
+    // 3. Parse request body
+    let body: { longUrl?: string; customSlug?: string; host?: string }
     try {
       body = await request.json()
     } catch {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
     }
     
-    const { longUrl, customSlug } = body
+    const { longUrl, customSlug, host } = body
 
-    // Comprehensive URL validation (SSRF prevention)
+    // 4. Validate URL
     if (!longUrl || typeof longUrl !== 'string') {
       return NextResponse.json({ error: "URL is required" }, { status: 400 })
     }
@@ -106,77 +130,77 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: urlValidation.error || "Invalid URL provided" }, { status: 400 })
     }
     
-    // Custom slug validation (SQL injection & path traversal prevention)
-    // Note: Supabase client uses parameterized queries internally, preventing SQL injection
-    // but we still sanitize to prevent path traversal and ensure valid slug format
+    // Custom slug validation
     const slugValidation = validateCustomSlug(customSlug)
     if (!slugValidation.valid) {
       return NextResponse.json({ error: slugValidation.error || "Invalid custom slug" }, { status: 400 })
     }
 
-    const supabase = await createClient()
-
-    // Get current user (optional - anonymous shortening allowed)
-    const {
-      data: { user },
-    } = await supabase.auth.getUser()
-
-    // Sanitize the long URL before storing (trim whitespace)
     const sanitizedLongUrl = longUrl.trim()
-    
-    // Use custom slug if provided, otherwise generate one
     const isCustomSlug = !!slugValidation.sanitized
     let slug = slugValidation.sanitized || generateSlug()
 
-    // RACE CONDITION FIX: Instead of check-then-insert, we attempt insert directly
-    // and handle unique constraint violation from the database
-    // This is atomic and prevents race conditions where two users claim the same slug
-    
-    let attempts = 0
-    const maxAttempts = isCustomSlug ? 1 : 5 // Only retry for auto-generated slugs
-    
-    while (attempts < maxAttempts) {
-      const { data: link, error } = await supabase
-        .from("links")
-        .insert({
-          slug,
-          long_url: sanitizedLongUrl,
-          owner_id: user?.id || null,
-          meta_domain: extractDomain(sanitizedLongUrl),
-        })
-        .select()
-        .single()
+    // 5. Determine host and owner ID
+    let finalHost = DEFAULT_HOST
+    let finalOwnerId = null
 
-      if (!error && link) {
-        // Success!
-        return NextResponse.json({
-          slug: link.slug,
-          shortUrl: `/r/${link.slug}`,
-        })
-      }
-      
-      // Check if it's a unique constraint violation (slug already exists)
-      if (isUniqueConstraintError(error)) {
-        if (isCustomSlug) {
-          // Custom slug is taken - inform the user
+    if (apiKeyAccount) {
+      finalOwnerId = apiKeyAccount.clerk_user_id
+      if (host && typeof host === "string" && host !== DEFAULT_HOST) {
+        // Verify user owns the connected domain
+        const userDomains = await getDomainsByOwner(finalOwnerId)
+        const matchedDomain = userDomains.find((d) => d.domain === host.trim() && d.status === "verified")
+        if (!matchedDomain) {
           return NextResponse.json(
-            { error: "This custom slug is already taken. Please try a different one." }, 
-            { status: 409 }
+            { error: "Target domain is not connected or verified on your account" },
+            { status: 403 }
           )
         }
-        // Auto-generated slug collision - try a new one
-        slug = generateSlug()
-        attempts++
-        continue
+        finalHost = matchedDomain.domain
       }
-      
-      // Other database error
-      console.error("Database error:", error)
-      return NextResponse.json({ error: "Failed to create short link" }, { status: 500 })
+    } else {
+      const { userId } = await auth()
+      finalOwnerId = userId ?? null
+    }
+
+    // 6. Create the link
+    let attempts = 0
+    const maxAttempts = isCustomSlug ? 1 : 5
+    
+    while (attempts < maxAttempts) {
+      try {
+        const link = await createLink({
+          slug,
+          long_url: sanitizedLongUrl,
+          host: finalHost,
+          owner_id: finalOwnerId,
+          meta_domain: extractDomain(sanitizedLongUrl),
+        })
+
+        const protocol = finalHost === DEFAULT_HOST ? "https" : "http"
+        return NextResponse.json({
+          slug: link.slug,
+          shortUrl: `${protocol}://${finalHost}/r/${link.slug}`,
+          host: finalHost,
+        })
+      } catch (err) {
+        if (isConflictError(err)) {
+          if (isCustomSlug) {
+            return NextResponse.json(
+              { error: "This custom slug is already taken. Please try a different one." }, 
+              { status: 409 }
+            )
+          }
+          slug = generateSlug()
+          attempts++
+          continue
+        }
+        
+        console.error("Database error:", err)
+        return NextResponse.json({ error: "Failed to create short link" }, { status: 500 })
+      }
     }
     
-    // Exhausted all attempts for auto-generated slugs (very unlikely)
-    console.error("Failed to generate unique slug after max attempts")
     return NextResponse.json({ error: "Failed to create short link. Please try again." }, { status: 500 })
     
   } catch (error) {
@@ -184,3 +208,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
+

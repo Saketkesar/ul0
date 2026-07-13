@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useState, useCallback, useEffect, useRef } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
@@ -9,9 +9,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Copy, Check, Trash2, Link2, ExternalLink, QrCode, Plus, History, Bookmark } from "lucide-react"
+import { Copy, Check, Trash2, Link2, ExternalLink, QrCode, Plus, History, Bookmark, Download } from "lucide-react"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import Link from "next/link"
+import QRCode from "qrcode"
 
 interface SavedCampaign {
   id: string
@@ -66,6 +67,66 @@ export default function UtmBuilderPage() {
   const [error, setError] = useState<string | null>(null)
   const [savedCampaigns, setSavedCampaigns] = useState<SavedCampaign[]>([])
   const [showHistory, setShowHistory] = useState(false)
+
+  // QR Code state
+  const [qrDataUrl, setQrDataUrl] = useState("")
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+
+  // Auto-generate QR code when URL is generated
+  useEffect(() => {
+    if (generatedUrl) {
+      const canvas = canvasRef.current
+      if (canvas) {
+        QRCode.toCanvas(canvas, generatedUrl, {
+          width: 300,
+          margin: 2,
+          errorCorrectionLevel: "H",
+          color: {
+            dark: "#000000",
+            light: "#ffffff",
+          },
+        }).then(async () => {
+          const ctx = canvas.getContext("2d")
+          if (ctx) {
+            const logoImg = new Image()
+            logoImg.src = "/favicon.png"
+            await new Promise((resolve) => {
+              logoImg.onload = resolve
+              logoImg.onerror = resolve
+            })
+
+            if (logoImg.complete && logoImg.naturalWidth > 0) {
+              const logoSize = canvas.width * 0.20
+              const x = (canvas.width - logoSize) / 2
+              const y = (canvas.height - logoSize) / 2
+
+              // Draw white border behind logo
+              ctx.fillStyle = "#ffffff"
+              ctx.beginPath()
+              const padding = 5
+              ctx.roundRect(x - padding, y - padding, logoSize + padding * 2, logoSize + padding * 2, 5)
+              ctx.fill()
+
+              ctx.drawImage(logoImg, x, y, logoSize, logoSize)
+            }
+          }
+          setQrDataUrl(canvas.toDataURL("image/png"))
+        }).catch(err => {
+          console.error("UTM QR code generation failed:", err)
+        })
+      }
+    } else {
+      setQrDataUrl("")
+    }
+  }, [generatedUrl])
+
+  const downloadCampaignQR = () => {
+    if (!qrDataUrl) return
+    const link = document.createElement("a")
+    link.download = `campaign-qr-${utmCampaign || "code"}.png`
+    link.href = qrDataUrl
+    link.click()
+  }
 
   // Load saved campaigns from localStorage
   useEffect(() => {
@@ -379,6 +440,9 @@ export default function UtmBuilderPage() {
             </Alert>
           )}
 
+          {/* Hidden Canvas for QR Generation */}
+          <canvas ref={canvasRef} className="hidden" />
+
           {/* Generated URL */}
           {generatedUrl && (
             <Card className="mb-6 border-primary/50 bg-primary/5">
@@ -389,32 +453,59 @@ export default function UtmBuilderPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <Textarea
-                  value={generatedUrl}
-                  readOnly
-                  className="font-mono text-sm bg-background min-h-[80px]"
-                />
-                <div className="flex flex-wrap gap-3">
-                  <Button onClick={copyToClipboard} className="gap-2">
-                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    {copied ? "Copied!" : "Copy Link"}
-                  </Button>
-                  <Button onClick={saveCampaign} variant="outline" className="gap-2">
-                    <Bookmark className="h-4 w-4" />
-                    Save Campaign
-                  </Button>
-                  <Button asChild variant="outline" className="gap-2">
-                    <a href={generatedUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-4 w-4" />
-                      Test Link
-                    </a>
-                  </Button>
-                  <Button asChild variant="outline" className="gap-2">
-                    <Link href={`/?url=${encodeURIComponent(generatedUrl)}`}>
-                      <Link2 className="h-4 w-4" />
-                      Shorten URL
-                    </Link>
-                  </Button>
+                <div className="flex flex-col md:flex-row gap-6">
+                  {/* Left Column: Link Inputs & Actions */}
+                  <div className="flex-1 space-y-4">
+                    <Textarea
+                      value={generatedUrl}
+                      readOnly
+                      className="font-mono text-sm bg-background min-h-[85px]"
+                    />
+                    <div className="flex flex-wrap gap-2.5">
+                      <Button onClick={copyToClipboard} size="sm" className="gap-1.5">
+                        {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                        {copied ? "Copied!" : "Copy Link"}
+                      </Button>
+                      <Button onClick={saveCampaign} size="sm" variant="outline" className="gap-1.5">
+                        <Bookmark className="h-3.5 w-3.5" />
+                        Save Campaign
+                      </Button>
+                      <Button asChild size="sm" variant="outline" className="gap-1.5">
+                        <a href={generatedUrl} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="h-3.5 w-3.5" />
+                          Test Link
+                        </a>
+                      </Button>
+                      <Button asChild size="sm" variant="outline" className="gap-1.5">
+                        <Link href={`/?url=${encodeURIComponent(generatedUrl)}`}>
+                          <Link2 className="h-3.5 w-3.5" />
+                          Shorten URL
+                        </Link>
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Right Column: QR Code Preview & Download */}
+                  {qrDataUrl && (
+                    <div className="flex flex-col items-center gap-3 p-4 border border-border bg-card rounded-xl shadow-xs shrink-0 self-center md:self-stretch justify-center">
+                      <div className="relative bg-white p-2.5 rounded-lg border border-border">
+                        <img 
+                          src={qrDataUrl} 
+                          alt="Campaign QR Code" 
+                          className="w-[125px] h-[125px] block object-contain" 
+                        />
+                      </div>
+                      <Button 
+                        onClick={downloadCampaignQR} 
+                        size="sm" 
+                        variant="secondary" 
+                        className="w-full gap-1.5 h-8 text-xs font-medium"
+                      >
+                        <Download className="h-3.5 w-3.5" />
+                        Download QR
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

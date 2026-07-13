@@ -3,6 +3,7 @@
 import type React from "react"
 
 import { useEffect, useState, useCallback } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import {
   ExternalLink,
@@ -14,12 +15,17 @@ import {
   Instagram,
   Facebook,
   Twitter,
+  X as XIcon,
 } from "lucide-react"
 import { AdBanner } from "@/components/ad-banner"
 
 interface Props {
   longUrl: string
   domain: string | null
+  /** If the link was accessed from a custom domain, pass the host here */
+  customHost?: string | null
+  /** Brand logo URL for the company that owns this domain */
+  brandLogoUrl?: string | null
 }
 
 const APP_CONFIGS: Record<string, { name: string; icon: React.ElementType; getDeepLink: (url: URL) => string | null }> =
@@ -128,11 +134,14 @@ function detectApp(hostname: string): string | null {
   return null
 }
 
-export function RedirectLanding({ longUrl, domain }: Props) {
+export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: Props) {
   const [countdown, setCountdown] = useState(5)
   const [canSkip, setCanSkip] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [detectedApp, setDetectedApp] = useState<string | null>(null)
+
+  // Whether this redirect is served from a custom brand domain
+  const isBrandedDomain = !!customHost
 
   const redirect = useCallback(() => {
     window.location.href = longUrl
@@ -152,7 +161,7 @@ export function RedirectLanding({ longUrl, domain }: Props) {
   }, [longUrl])
 
   useEffect(() => {
-    // Start countdown immediately (no video ad)
+    // Start countdown immediately
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
@@ -203,14 +212,14 @@ export function RedirectLanding({ longUrl, domain }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Top Banner Strip - Large 728x90 */}
-      <AdBanner slot={1} type="large" />
+      {/* Only show ads on non-branded domains */}
+      {!isBrandedDomain && <AdBanner slot={1} type="large" />}
 
       {/* Progress Bar */}
       <div className="h-1.5 w-full bg-muted">
         <div
           className="h-full bg-primary transition-all duration-1000 ease-linear"
-          style={{ width: `${((10 - countdown) / 10) * 100}%` }}
+          style={{ width: `${((5 - countdown) / 5) * 100}%` }}
         />
       </div>
 
@@ -220,7 +229,7 @@ export function RedirectLanding({ longUrl, domain }: Props) {
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Globe className="h-4 w-4" />
             <span className="hidden sm:inline">Redirecting to: </span>
-            <span className="max-w-[150px] truncate font-medium text-foreground sm:max-w-none">
+            <span className="max-w-[150px] truncate font-medium text-foreground sm:max-w-xs">
               {domain || "external site"}
             </span>
           </div>
@@ -238,8 +247,8 @@ export function RedirectLanding({ longUrl, domain }: Props) {
 
       {/* Main Content */}
       <main className="flex flex-1 flex-col items-center gap-4 overflow-auto p-4">
-        {/* Middle Banner - Small 468x60 */}
-        <AdBanner slot={2} type="small" />
+        {/* Only show middle ad on non-branded domains */}
+        {!isBrandedDomain && <AdBanner slot={2} type="small" />}
 
         {/* App Detection & Buttons */}
         {isMobile && detectedApp && (
@@ -273,16 +282,66 @@ export function RedirectLanding({ longUrl, domain }: Props) {
           <span className="max-w-xs truncate sm:max-w-md">{longUrl}</span>
         </div>
 
-        {/* Bottom Banner - Large 728x90 */}
-        <AdBanner slot={3} type="large" />
-        
-        {/* Extra Small Banner */}
-        <AdBanner slot={4} type="small" />
+        {/* Only show bottom ads on non-branded domains */}
+        {!isBrandedDomain && (
+          <>
+            <AdBanner slot={3} type="large" />
+            <AdBanner slot={4} type="small" />
+          </>
+        )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border bg-muted/30 px-4 py-2 text-center text-xs text-muted-foreground">
-        Powered by ul0 - Free URL shortener
+      {/* Footer — branded co-badge */}
+      <footer className="border-t border-border bg-muted/30 px-4 py-4">
+        <div className="container mx-auto flex flex-col items-center gap-3 sm:flex-row sm:justify-between sm:gap-0">
+          {/* Left side: company brand logo (if custom domain) */}
+          {isBrandedDomain ? (
+            <div className="flex items-center gap-3">
+              {brandLogoUrl ? (
+                <img
+                  src={brandLogoUrl}
+                  alt="Brand Logo"
+                  className="h-7 w-auto object-contain max-w-[120px]"
+                  onError={(e) => {
+                    ;(e.target as HTMLImageElement).style.display = "none"
+                  }}
+                />
+              ) : (
+                <span className="text-xs font-medium text-muted-foreground font-mono">{customHost}</span>
+              )}
+              <XIcon className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+              <a href="https://ul0.site" target="_blank" rel="noopener noreferrer">
+                <Image
+                  src="/ul0.png"
+                  alt="ul0"
+                  width={50}
+                  height={18}
+                  className="h-5 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity"
+                />
+              </a>
+            </div>
+          ) : (
+            <a
+              href="https://ul0.site"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Powered by ul0 — Free URL Shortener
+            </a>
+          )}
+
+          {isBrandedDomain && (
+            <a
+              href="https://ul0.site"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Powered by ul0.site
+            </a>
+          )}
+        </div>
       </footer>
     </div>
   )

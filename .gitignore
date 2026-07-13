@@ -30,3 +30,10 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# Local emailbot - never commit bot source or credentials
+/emailbot/
+
+# Local scratch scripts
+/scratch/
+/scripts/migration-report.json

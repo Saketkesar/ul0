@@ -1,4 +1,5 @@
 import { Metadata } from "next"
+import { hreflangAlternates } from "@/lib/i18n"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
@@ -22,10 +23,7 @@ export const metadata: Metadata = {
   ],
   alternates: {
     canonical: "https://ul0.site/th",
-    languages: {
-      "en": "https://ul0.site",
-      "th": "https://ul0.site/th",
-    },
+    languages: hreflangAlternates,
   },
   openGraph: {
     title: "ย่อลิงก์ฟรี - เครื่องมือย่อ URL | ul0",

@@ -1,6 +1,6 @@
-import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { SplitViewClient } from "./split-view-client"
+import { getSplitSessionBySlug } from "@/lib/appwrite/splits"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -33,21 +33,15 @@ export default async function SplitViewPage({ params }: Props) {
     notFound()
   }
   
-  const supabase = await createClient()
+  // Fetch the split session from Appwrite
+  const session = await getSplitSessionBySlug(sanitizedSlug)
 
-  // Fetch the split session
-  const { data: session, error } = await supabase
-    .from("split_sessions")
-    .select("*")
-    .eq("slug", sanitizedSlug)
-    .single()
-
-  if (error || !session) {
+  if (!session) {
     notFound()
   }
 
   // Check if session is expired
-  if (new Date(session.expires_at) < new Date()) {
+  if (session.expires_at && new Date(session.expires_at) < new Date()) {
     notFound()
   }
 
@@ -58,3 +52,4 @@ export default async function SplitViewPage({ params }: Props) {
     />
   )
 }
+
