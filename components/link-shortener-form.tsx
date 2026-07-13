@@ -4,9 +4,8 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
-import { Copy, Check, ExternalLink, Share2, Loader2, Clock, Leaf } from "lucide-react"
+import { Copy, Check, ExternalLink, Share2, Loader2, Leaf } from "lucide-react"
 import { isValidUrl } from "@/lib/utils/slug"
 
 // Calculate carbon savings from short links
@@ -32,7 +31,6 @@ export function LinkShortenerForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
-  const [showOptions, setShowOptions] = useState(false)
   const [carbonSaved, setCarbonSaved] = useState<{ bytesSaved: number; co2SavedGrams: number } | null>(null)
   const [cooldown, setCooldown] = useState(0) // Rate limit cooldown in seconds
 
@@ -59,7 +57,13 @@ export function LinkShortenerForm() {
     setCarbonSaved(null)
 
     if (!isValidUrl(longUrl)) {
-      setError("Please enter a valid URL (including http:// or https://)")
+      if (longUrl.startsWith('http://')) {
+        setError("Only HTTPS links are accepted. Please use https:// instead.")
+      } else if (!longUrl.startsWith('https://')) {
+        setError("Please include https:// at the start of your URL (e.g. https://example.com)")
+      } else {
+        setError("Please enter a valid URL (e.g. https://example.com)")
+      }
       return
     }
 
@@ -140,29 +144,32 @@ export function LinkShortenerForm() {
           </Button>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setShowOptions(!showOptions)}
-          className="text-xs text-muted-foreground hover:text-foreground sm:text-sm"
-        >
-          {showOptions ? "Hide options" : "Custom slug (optional)"}
-        </button>
-
-        {showOptions && (
-          <div className="space-y-2">
-            <Label htmlFor="customSlug" className="text-sm">
-              Custom slug
-            </Label>
-            <Input
-              id="customSlug"
-              type="text"
-              placeholder="my-custom-link"
-              value={customSlug}
-              onChange={(e) => setCustomSlug(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ""))}
-              className="h-10 max-w-xs"
-            />
-          </div>
-        )}
+      {/* Always-visible custom slug row */}
+        <div className="flex items-center gap-0 rounded-lg border border-border bg-muted/40 overflow-hidden focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-0 transition-all">
+          <span className="shrink-0 select-none px-3 py-2 text-xs font-mono text-muted-foreground border-r border-border bg-muted">
+            ul0.site/r/
+          </span>
+          <input
+            id="customSlug"
+            type="text"
+            placeholder="my-link  (optional)"
+            value={customSlug}
+            onChange={(e) => setCustomSlug(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ""))}
+            className="flex-1 bg-transparent px-3 py-2 text-sm font-mono placeholder:text-muted-foreground/50 outline-none"
+            autoComplete="off"
+            spellCheck={false}
+          />
+          {customSlug && (
+            <button
+              type="button"
+              onClick={() => setCustomSlug("")}
+              className="px-2 py-2 text-muted-foreground hover:text-foreground text-xs transition-colors"
+              aria-label="Clear custom slug"
+            >
+              ✕
+            </button>
+          )}
+        </div>
 
         {error && <p className="text-sm text-destructive">{error}</p>}
       </form>
@@ -213,15 +220,17 @@ export function LinkShortenerForm() {
             {/* Carbon Savings Display */}
             {carbonSaved && carbonSaved.bytesSaved > 0 && (
               <div className="mt-3 pt-3 border-t border-primary/10">
-                <div className="flex items-center gap-2 text-xs sm:text-sm text-green-600 dark:text-green-400">
-                  <Leaf className="h-4 w-4" />
-                  <span className="font-medium">🌱 Green Link!</span>
+                <div className="flex items-start gap-3 rounded-md bg-green-500/8 border border-green-500/20 px-3 py-2.5">
+                  <Leaf className="h-4 w-4 mt-0.5 shrink-0 text-green-600 dark:text-green-400" />
+                  <div>
+                    <p className="text-xs font-semibold text-green-700 dark:text-green-300 tracking-wide uppercase mb-0.5">Green Link</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Saves <span className="font-semibold text-foreground">{carbonSaved.bytesSaved.toLocaleString()} bytes</span> per 100 clicks
+                      &nbsp;&mdash; reducing approximately{" "}
+                      <span className="font-semibold text-foreground">{carbonSaved.co2SavedGrams.toFixed(3)}g CO&#8322;</span> emissions.
+                    </p>
+                  </div>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  This short link saves <strong>{carbonSaved.bytesSaved.toLocaleString()} bytes</strong> per 100 clicks, 
-                  reducing ~<strong>{carbonSaved.co2SavedGrams.toFixed(3)}g CO₂</strong> emissions. 
-                  Small actions, big impact! 🌍
-                </p>
               </div>
             )}
           </CardContent>

@@ -42,8 +42,17 @@ const BLOCKED_HOSTNAMES = [
   'kubernetes.default.svc',
 ]
 
-// Dangerous URL schemes that could be exploited
-const ALLOWED_PROTOCOLS = ['http:', 'https:']
+// Only HTTPS is allowed — http:// and protocol-less URLs are rejected
+const ALLOWED_PROTOCOLS = ['https:']
+
+// Known malicious TLD/domain pattern heuristics (supplemental layer)
+// Full protection requires server-side Google Safe Browsing API
+const SUSPICIOUS_PATTERNS = [
+  /\.(tk|ml|cf|ga|gq)$/i,           // Commonly abused free TLDs
+  /bit\.do\//i,                      // Known spam redirect
+  /free.*money/i,                    // Obvious scam patterns
+  /click.*here.*prize/i,
+]
 
 // Maximum URL length to prevent DoS
 const MAX_URL_LENGTH = 2048
@@ -127,9 +136,12 @@ export function validateUrl(urlString: string): UrlValidationResult {
     return { valid: false, error: "Invalid URL format" }
   }
   
-  // Protocol validation - only allow http and https
+  // Protocol validation - HTTPS only
   if (!ALLOWED_PROTOCOLS.includes(url.protocol)) {
-    return { valid: false, error: "Only http and https URLs are allowed" }
+    if (url.protocol === 'http:') {
+      return { valid: false, error: "Only HTTPS links are accepted. Please use https:// instead of http://" }
+    }
+    return { valid: false, error: "Only https:// links are allowed" }
   }
   
   // Hostname validation
@@ -154,11 +166,17 @@ export function validateUrl(urlString: string): UrlValidationResult {
     return { valid: false, error: "Internal URLs cannot be shortened" }
   }
   
-  // Validate that hostname has at least one dot (prevents just TLD or internal names)
-  // Allow localhost for development but block in production
+  // Validate that hostname has at least one dot
   const isDevelopment = process.env.NODE_ENV === 'development'
   if (!hostname.includes('.') && !(isDevelopment && hostname === 'localhost')) {
     return { valid: false, error: "Invalid hostname" }
+  }
+
+  // Heuristic phishing/malware check on full URL
+  for (const pattern of SUSPICIOUS_PATTERNS) {
+    if (pattern.test(url.hostname) || pattern.test(urlString)) {
+      return { valid: false, error: "This URL has been flagged as potentially unsafe and cannot be shortened" }
+    }
   }
   
   return { valid: true }
@@ -187,7 +205,9 @@ const RESERVED_SLUGS = [
 // Slug constraints
 const SLUG_MIN_LENGTH = 3
 const SLUG_MAX_LENGTH = 50
-const SLUG_PATTERN = /^[a-z0-9][a-z0-9-_]*[a-z0-9]$|^[a-z0-9]$/ // Alphanumeric, dash, underscore, no leading/trailing special chars
+// Slug pattern — written to avoid catastrophic backtracking (ReDoS)
+// Uses character class repetition without nested quantifiers
+const SLUG_PATTERN = /^[a-z0-9]([a-z0-9_-]{0,48}[a-z0-9])?$/
 
 /**
  * Custom slug validation result
