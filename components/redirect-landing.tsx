@@ -117,20 +117,23 @@ const APP_CONFIGS: Record<string, { name: string; icon: React.ElementType; getDe
 
 function detectApp(hostname: string): string | null {
   const host = hostname.toLowerCase()
-  if (host.includes("youtube.com") || host.includes("youtu.be")) return "youtube"
-  if (host.includes("instagram.com")) return "instagram"
-  if (host.includes("facebook.com") || host.includes("fb.com") || host.includes("fb.watch")) return "facebook"
-  if (host.includes("twitter.com") || host.includes("x.com")) return "twitter"
-  if (host.includes("pinterest.com") || host.includes("pin.it")) return "pinterest"
-  if (host.includes("tiktok.com")) return "tiktok"
-  if (host.includes("snapchat.com")) return "snapchat"
-  if (host.includes("spotify.com")) return "spotify"
-  if (host.includes("linkedin.com")) return "linkedin"
-  if (host.includes("wa.me") || host.includes("whatsapp.com")) return "whatsapp"
-  if (host.includes("t.me") || host.includes("telegram.me")) return "telegram"
-  if (host.includes("reddit.com")) return "reddit"
-  if (host.includes("amazon.") || host.includes("amzn.")) return "amazon"
-  if (host.includes("flipkart.com") || host.includes("fkrt.it")) return "flipkart"
+  // Use exact match or subdomain prefix to prevent subdomain-confusion attacks
+  // e.g. "youtube.com.evil.com" would pass an includes() check but fails endsWith()
+  const is = (domain: string) => host === domain || host.endsWith(`.${domain}`)
+  if (is("youtube.com") || is("youtu.be")) return "youtube"
+  if (is("instagram.com")) return "instagram"
+  if (is("facebook.com") || is("fb.com") || is("fb.watch")) return "facebook"
+  if (is("twitter.com") || is("x.com")) return "twitter"
+  if (is("pinterest.com") || is("pin.it")) return "pinterest"
+  if (is("tiktok.com")) return "tiktok"
+  if (is("snapchat.com")) return "snapchat"
+  if (is("spotify.com")) return "spotify"
+  if (is("linkedin.com")) return "linkedin"
+  if (is("wa.me") || is("whatsapp.com")) return "whatsapp"
+  if (is("t.me") || is("telegram.me")) return "telegram"
+  if (is("reddit.com")) return "reddit"
+  if (is("amazon.com") || is("amazon.in") || is("amazon.co.uk") || is("amzn.to")) return "amazon"
+  if (is("flipkart.com") || is("fkrt.it")) return "flipkart"
   return null
 }
 
