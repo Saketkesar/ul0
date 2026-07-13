@@ -200,3 +200,9 @@ img {
   mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
 }
+
+/* Link compression animation */
+@keyframes shrink {
+  from { width: 100%; }
+  to   { width: 0%; }
+}
