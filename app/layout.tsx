@@ -372,10 +372,12 @@ export default function RootLayout({
           async 
           src="https://scripts.simpleanalyticscdn.com/latest.js"
         />
+        {/* Google AdSense account verification */}
+        <meta name="google-adsense-account" content="ca-pub-8018312015732327" />
         {/* Google AdSense - Auto Ads tag */}
         <script 
           async 
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7721714820035738"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8018312015732327"
           crossOrigin="anonymous"
         />
       </head>
