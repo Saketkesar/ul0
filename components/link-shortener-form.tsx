@@ -5,15 +5,9 @@ import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import { Copy, Check, ExternalLink, Share2, Loader2, Leaf, Zap } from "lucide-react"
+import { Copy, Check, ExternalLink, Share2, Loader2, Leaf, Zap, Heart } from "lucide-react"
 import { isValidUrl } from "@/lib/utils/slug"
-import dynamic from "next/dynamic"
-import type { AdBannerProps } from "@/components/ad-banner"
-
-const AdBanner = dynamic<AdBannerProps>(
-  () => import("@/components/ad-banner").then((m) => m.AdBanner),
-  { ssr: false }
-)
+import Link from "next/link"
 
 // Calculate carbon savings from short links
 // Average URL: ~75 characters, Short URL: ~20 characters
@@ -355,10 +349,23 @@ export function LinkShortenerForm() {
                   </div>
                 </div>
               )}
-              {/* Adsterra Banner Ad — shown after link is created */}
+              {/* Donate widget — shown after link is created */}
               <div className="mt-3 pt-3 border-t border-border/50">
-                <p className="text-[10px] text-muted-foreground/50 text-center mb-1">Advertisement</p>
-                <AdBanner slot={2} type="small" />
+                <div className="flex items-center justify-between gap-3 rounded-lg border border-rose-500/20 bg-rose-500/5 px-3 py-2.5">
+                  <div className="flex items-center gap-2">
+                    <Heart className="h-3.5 w-3.5 shrink-0 text-rose-500" />
+                    <p className="text-xs text-muted-foreground">
+                      ul0 is free forever.{" "}
+                      <span className="text-foreground font-medium">Support the project?</span>
+                    </p>
+                  </div>
+                  <Link
+                    href="/donate"
+                    className="shrink-0 rounded-lg bg-rose-500 px-3 py-1.5 text-[11px] font-semibold text-white transition-all hover:bg-rose-600"
+                  >
+                    Donate
+                  </Link>
+                </div>
               </div>
           </CardContent>
           </Card>
