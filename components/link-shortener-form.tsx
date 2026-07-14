@@ -7,6 +7,13 @@ import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
 import { Copy, Check, ExternalLink, Share2, Loader2, Leaf, Zap } from "lucide-react"
 import { isValidUrl } from "@/lib/utils/slug"
+import dynamic from "next/dynamic"
+import type { AdBannerProps } from "@/components/ad-banner"
+
+const AdBanner = dynamic<AdBannerProps>(
+  () => import("@/components/ad-banner").then((m) => m.AdBanner),
+  { ssr: false }
+)
 
 // Calculate carbon savings from short links
 // Average URL: ~75 characters, Short URL: ~20 characters
@@ -348,7 +355,12 @@ export function LinkShortenerForm() {
                   </div>
                 </div>
               )}
-            </CardContent>
+              {/* Adsterra Banner Ad — shown after link is created */}
+              <div className="mt-3 pt-3 border-t border-border/50">
+                <p className="text-[10px] text-muted-foreground/50 text-center mb-1">Advertisement</p>
+                <AdBanner slot={2} type="small" />
+              </div>
+          </CardContent>
           </Card>
         )}
       </div>
