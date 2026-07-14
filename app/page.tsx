@@ -488,30 +488,6 @@ export default function HomePage() {
 
               <LinkShortenerForm />
 
-              {/* Milestone / Donate Banner */}
-              <div className="mt-6 rounded-2xl border border-rose-500/20 bg-gradient-to-r from-rose-500/8 via-rose-500/5 to-transparent p-4 sm:p-5">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div>
-                    <p className="text-sm font-semibold text-foreground">
-                      Milestone: Free Public API + Domains
-                    </p>
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      Help ul0 reach ₹10,000 to launch free public APIs and cover infrastructure costs.
-                    </p>
-                    <div className="mt-2 h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-muted">
-                      <div className="h-full w-[2%] rounded-full bg-rose-500" />
-                    </div>
-                    <p className="mt-0.5 text-[10px] text-muted-foreground">₹0 of ₹10,000 raised</p>
-                  </div>
-                  <Link
-                    href="/donate"
-                    className="shrink-0 self-start rounded-xl border border-rose-500/30 bg-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-sm shadow-rose-500/20 transition-all hover:bg-rose-600 hover:-translate-y-0.5 sm:self-auto"
-                  >
-                    Support ul0
-                  </Link>
-                </div>
-              </div>
-
               {/* SEO-rich content below form */}
               <div className="mt-8 text-left text-sm text-muted-foreground space-y-6">
                 <div>

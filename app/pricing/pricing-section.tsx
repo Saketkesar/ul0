@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Check, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
@@ -8,8 +8,10 @@ const pricingPlans = {
   monthly: [
     {
       name: "Free",
-      price: "$0",
-      period: "forever",
+      priceUSD: "$0",
+      priceINR: "₹0",
+      periodUSD: "forever",
+      periodINR: "forever",
       description: "For individuals needing clean, basic short links.",
       features: [
         { text: "1 custom domain", available: true },
@@ -26,8 +28,10 @@ const pricingPlans = {
     },
     {
       name: "Pro",
-      price: "$3",
-      period: "per month",
+      priceUSD: "$3",
+      priceINR: "₹250",
+      periodUSD: "per month",
+      periodINR: "per month",
       description: "For creators and teams needing robust link management.",
       features: [
         { text: "3 custom domains", available: true },
@@ -44,8 +48,10 @@ const pricingPlans = {
     },
     {
       name: "Business",
-      price: "$9",
-      period: "per month",
+      priceUSD: "$9",
+      priceINR: "₹750",
+      periodUSD: "per month",
+      periodINR: "per month",
       description: "For agencies and growing businesses at scale.",
       features: [
         { text: "10 custom domains", available: true },
@@ -64,8 +70,10 @@ const pricingPlans = {
   annually: [
     {
       name: "Free",
-      price: "$0",
-      period: "forever",
+      priceUSD: "$0",
+      priceINR: "₹0",
+      periodUSD: "forever",
+      periodINR: "forever",
       description: "For individuals needing clean, basic short links.",
       features: [
         { text: "1 custom domain", available: true },
@@ -82,8 +90,10 @@ const pricingPlans = {
     },
     {
       name: "Pro",
-      price: "$2",
-      period: "per month, billed annually ($24/yr)",
+      priceUSD: "$2",
+      priceINR: "₹166",
+      periodUSD: "per month, billed annually ($24/yr)",
+      periodINR: "per month, billed annually (₹2,000/yr)",
       description: "For creators and teams needing robust link management.",
       features: [
         { text: "3 custom domains", available: true },
@@ -100,8 +110,10 @@ const pricingPlans = {
     },
     {
       name: "Business",
-      price: "$6",
-      period: "per month, billed annually ($72/yr)",
+      priceUSD: "$6",
+      priceINR: "₹500",
+      periodUSD: "per month, billed annually ($72/yr)",
+      periodINR: "per month, billed annually (₹6,000/yr)",
       description: "For agencies and growing businesses at scale.",
       features: [
         { text: "10 custom domains", available: true },
@@ -121,6 +133,21 @@ const pricingPlans = {
 
 export function PricingSection() {
   const [billingCycle, setBillingCycle] = useState<"monthly" | "annually">("monthly")
+  const [isIndia, setIsIndia] = useState(false)
+
+  useEffect(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+      const isIndianTz = tz && (tz === "Asia/Kolkata" || tz === "Asia/Calcutta")
+      const locale = navigator.language || ""
+      const isIndianLocale = locale.toLowerCase().includes("-in") || locale.toLowerCase() === "hi"
+      if (isIndianTz || isIndianLocale) {
+        setIsIndia(true)
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, [])
 
   const activePlans = pricingPlans[billingCycle]
 
@@ -180,8 +207,12 @@ export function PricingSection() {
               </p>
 
               <div className="mb-6">
-                <span className="text-4xl font-bold tracking-tight text-gray-900">{plan.price}</span>
-                <span className="text-xs text-gray-400 font-mono ml-1">/ {plan.period}</span>
+                <span className="text-4xl font-bold tracking-tight text-gray-900">
+                  {isIndia ? plan.priceINR : plan.priceUSD}
+                </span>
+                <span className="text-xs text-gray-400 font-mono ml-1">
+                  / {isIndia ? plan.periodINR : plan.periodUSD}
+                </span>
               </div>
 
               <div className="border-t border-gray-100 my-4" />
@@ -189,15 +220,15 @@ export function PricingSection() {
               <ul className="space-y-2.5 mb-8">
                 {plan.features.map((feature, i) => (
                   <li
-                    key={i}
-                    className={`flex items-start gap-2.5 text-xs ${
-                      feature.available ? "text-gray-700" : "text-gray-300"
-                    }`}
+                     key={i}
+                     className={`flex items-start gap-2.5 text-xs ${
+                       feature.available ? "text-gray-700" : "text-gray-300"
+                     }`}
                   >
                     <Check
-                      className={`h-4 w-4 shrink-0 mt-0.5 ${
-                        feature.available ? "text-gray-900" : "text-gray-300"
-                      }`}
+                       className={`h-4 w-4 shrink-0 mt-0.5 ${
+                         feature.available ? "text-gray-900" : "text-gray-300"
+                       }`}
                     />
                     <span>{feature.text}</span>
                   </li>
