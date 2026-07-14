@@ -45,7 +45,23 @@ export function LinkShortenerForm() {
   const [carbonSaved, setCarbonSaved] = useState<{ bytesSaved: number; co2SavedGrams: number } | null>(null)
   const [factIndex, setFactIndex] = useState(0)
   const [cooldown, setCooldown] = useState(0)
+  const [isIndia, setIsIndia] = useState(false)
   const animRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Detect Indian users
+  useEffect(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+      const isIndianTz = tz && (tz === "Asia/Kolkata" || tz === "Asia/Calcutta")
+      const locale = navigator.language || ""
+      const isIndianLocale = locale.toLowerCase().includes("-in") || locale.toLowerCase() === "hi"
+      if (isIndianTz || isIndianLocale) {
+        setIsIndia(true)
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, [])
 
   // Countdown timer for rate limit
   useEffect(() => {
@@ -349,22 +365,36 @@ export function LinkShortenerForm() {
                   </div>
                 </div>
               )}
-              {/* Donate widget — shown after link is created */}
+              {/* Localized Donation & Environmental Stats Widget */}
               <div className="mt-3 pt-3 border-t border-border/50">
-                <div className="flex items-center justify-between gap-3 rounded-lg border border-rose-500/20 bg-rose-500/5 px-3 py-2.5">
+                <div className="rounded-lg border border-rose-500/20 bg-rose-500/5 p-3.5 space-y-3">
                   <div className="flex items-center gap-2">
-                    <Heart className="h-3.5 w-3.5 shrink-0 text-rose-500" />
-                    <p className="text-xs text-muted-foreground">
-                      ul0 is free forever.{" "}
-                      <span className="text-foreground font-medium">Support the project?</span>
+                    <Heart className="h-4 w-4 shrink-0 text-rose-500" />
+                    <p className="text-xs font-semibold text-foreground">
+                      ul0 is free forever. Support the project?
                     </p>
                   </div>
-                  <Link
-                    href="/donate"
-                    className="shrink-0 rounded-lg bg-rose-500 px-3 py-1.5 text-[11px] font-semibold text-white transition-all hover:bg-rose-600"
-                  >
-                    Donate
-                  </Link>
+                  
+                  <div className="text-[11px] text-muted-foreground leading-normal space-y-1">
+                    <p className="italic">
+                      &quot;{GREEN_FACTS[factIndex]}&quot;
+                    </p>
+                    <p className="text-[10px] text-muted-foreground/80 font-medium">
+                      You can support our server costs from {isIndia ? "₹100" : "$1"} (available in all global currencies).
+                    </p>
+                  </div>
+
+                  <div className="flex items-center justify-between gap-3 pt-1">
+                    <span className="text-[10px] text-muted-foreground">
+                      {isIndia ? "₹100 Indian Users / $1 Global" : "$1 Global Users / ₹100 Indian"}
+                    </span>
+                    <Link
+                      href="/donate"
+                      className="shrink-0 rounded-lg bg-rose-500 px-4.5 py-1.5 text-xs font-semibold text-white transition-all hover:bg-rose-600 shadow-xs"
+                    >
+                      Donate
+                    </Link>
+                  </div>
                 </div>
               </div>
           </CardContent>
