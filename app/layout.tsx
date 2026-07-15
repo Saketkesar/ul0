@@ -115,20 +115,6 @@ export const metadata: Metadata = {
     "upi qr code",
     "payment qr code",
     "share expenses",
-    // PDF scanner & document tools
-    "pdf scanner",
-    "free pdf scanner",
-    "scan document to pdf",
-    "camera document scanner",
-    "image to pdf",
-    "jpg to pdf",
-    "merge pdf",
-    "merge pdf free",
-    "combine pdf",
-    "create pdf from images",
-    "auto crop document scanner",
-    "scan to pdf online free",
-    "rename pdf",
     // International - Spanish
     "acortador de enlaces",
     "acortador de url gratis",
@@ -340,12 +326,6 @@ export default function RootLayout({
             name: "JSON Formatter",
             description: "Format and validate JSON online",
             url: "https://ul0.site/json"
-          },
-          {
-            "@type": "WebPage",
-            name: "PDF Scanner & Tools",
-            description: "Scan documents, create and merge PDFs free",
-            url: "https://ul0.site/pdf"
           }
         ]
       }

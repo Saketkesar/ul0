@@ -21,7 +21,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/utm", priority: 0.9 },
     { path: "/json", priority: 0.9 },
     { path: "/pomodoro", priority: 0.9 },
-    { path: "/pdf", priority: 0.95 },
     { path: "/clock", priority: 0.85 },
     { path: "/worldclock", priority: 0.85 },
     { path: "/ambient", priority: 0.85 },
