@@ -107,7 +107,7 @@ export default async function LinkAnalyticsPage({ params }: Props) {
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-[#fafafa] text-gray-900 font-sans antialiased pb-12">
+      <main className="min-h-screen bg-[#fafafa] text-gray-900 font-sans antialiased pb-12 pt-6">
         <div className="container mx-auto px-4 py-8 max-w-7xl">
           {/* Back Navigation */}
           <Link
