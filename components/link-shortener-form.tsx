@@ -365,42 +365,41 @@ export function LinkShortenerForm() {
                   </div>
                 </div>
               )}
-              {/* Localized Donation & Environmental Stats Widget */}
-              <div className="mt-3 pt-3 border-t border-border/50">
-                <div className="rounded-lg border border-rose-500/20 bg-rose-500/5 p-3.5 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 shrink-0 text-rose-500" />
-                    <p className="text-xs font-semibold text-foreground">
-                      ul0 is free forever. Support the project?
-                    </p>
-                  </div>
-                  
-                  <div className="text-[11px] text-muted-foreground leading-normal space-y-1">
-                    <p className="italic">
-                      &quot;{GREEN_FACTS[factIndex]}&quot;
-                    </p>
-                    <p className="text-[10px] text-muted-foreground/80 font-medium">
-                      You can support our server costs from {isIndia ? "₹100" : "$1"} (available in all global currencies).
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between gap-3 pt-1">
-                    <span className="text-[10px] text-muted-foreground">
-                      {isIndia ? "₹100 Indian Users / $1 Global" : "$1 Global Users / ₹100 Indian"}
-                    </span>
-                    <Link
-                      href="/donate"
-                      className="shrink-0 rounded-lg bg-rose-500 px-4.5 py-1.5 text-xs font-semibold text-white transition-all hover:bg-rose-600 shadow-xs"
-                    >
-                      Donate
-                    </Link>
-                  </div>
-                </div>
-              </div>
           </CardContent>
-          </Card>
-        )}
+        </Card>
+      )}
+
+      {/* Standalone Donation Progress Widget with matching theme colors */}
+      <div className="mt-6 rounded-2xl border border-rose-500/20 bg-gradient-to-r from-rose-500/8 via-rose-500/5 to-transparent p-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <Heart className="h-4 w-4 text-rose-500 animate-pulse" />
+              <p className="text-sm font-semibold text-foreground">
+                ul0 is free forever. Support the project?
+              </p>
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Help us cover domain and infrastructure costs (Target: {isIndia ? "₹10,000" : "$100"}).
+            </p>
+            <div className="mt-3 flex items-center gap-3">
+              <div className="h-2 w-full max-w-[200px] overflow-hidden rounded-full bg-muted border border-border/40">
+                <div className="h-full w-[2%] rounded-full bg-rose-500" />
+              </div>
+              <span className="text-[10px] font-mono text-muted-foreground">
+                {isIndia ? "₹0 / ₹10,000" : "$0 / $100"} raised
+              </span>
+            </div>
+          </div>
+          <Link
+            href="/donate"
+            className="shrink-0 self-start rounded-xl bg-rose-500 px-5 py-2 text-xs font-bold text-white shadow-xs shadow-rose-500/25 transition-all hover:bg-rose-600 hover:-translate-y-0.5 sm:self-auto"
+          >
+            Donate Now
+          </Link>
+        </div>
       </div>
-    </>
+    </div>
+  </>
   )
 }

@@ -111,14 +111,14 @@ export async function POST(request: NextRequest) {
     }
 
     // 3. Parse request body
-    let body: { longUrl?: string; customSlug?: string; host?: string }
+    let body: { longUrl?: string; customSlug?: string; host?: string; targeting_json?: string }
     try {
       body = await request.json()
     } catch {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
     }
     
-    const { longUrl, customSlug, host } = body
+    const { longUrl, customSlug, host, targeting_json } = body
 
     // 4. Validate URL
     if (!longUrl || typeof longUrl !== 'string') {
@@ -175,6 +175,7 @@ export async function POST(request: NextRequest) {
           host: finalHost,
           owner_id: finalOwnerId,
           meta_domain: extractDomain(sanitizedLongUrl),
+          targeting_json: targeting_json || null,
         })
 
         const protocol = finalHost === DEFAULT_HOST ? "https" : "http"

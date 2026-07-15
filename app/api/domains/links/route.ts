@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { domainId, longUrl, customSlug } = body
+    const { domainId, longUrl, customSlug, targeting_json } = body
 
     // Validate inputs
     if (!domainId || typeof domainId !== "string") {
@@ -111,6 +111,7 @@ export async function POST(request: NextRequest) {
           host: domain.domain,
           owner_id: userId,
           meta_domain: extractDomain(sanitizedUrl),
+          targeting_json: targeting_json || null,
         })
 
         return NextResponse.json({
