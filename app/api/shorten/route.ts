@@ -183,6 +183,7 @@ export async function POST(request: NextRequest) {
           slug: link.slug,
           shortUrl: `${protocol}://${finalHost}/r/${link.slug}`,
           host: finalHost,
+          id: link.$id,
         })
       } catch (err) {
         if (isConflictError(err)) {

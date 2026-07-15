@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Copy, Check, ExternalLink, Share2, Loader2, Leaf, Zap, Heart } from "lucide-react"
 import { isValidUrl } from "@/lib/utils/slug"
 import Link from "next/link"
+import { useAuth } from "@clerk/nextjs"
 
 // Calculate carbon savings from short links
 // Average URL: ~75 characters, Short URL: ~20 characters
@@ -33,6 +34,8 @@ const GREEN_FACTS = [
 ]
 
 export function LinkShortenerForm() {
+  const { isSignedIn } = useAuth()
+  const [result, setResult] = useState<{ id?: string; slug?: string } | null>(null)
   const [longUrl, setLongUrl] = useState("")
   const [customSlug, setCustomSlug] = useState("")
   const [shortUrl, setShortUrl] = useState<string | null>(null)
@@ -158,6 +161,7 @@ export function LinkShortenerForm() {
 
       const resultShortUrl = `${window.location.origin}/r/${data.slug}`
       setShortUrl(resultShortUrl)
+      setResult(data)
 
       const savings = calculateCarbonSaved(originalLength)
       setCarbonSaved(savings)
@@ -354,7 +358,7 @@ export function LinkShortenerForm() {
                     </div>
                   </div>
                   <Link
-                    href={`/dashboard/links/${result?.$id || ""}`}
+                    href={isSignedIn && result?.id ? `/dashboard/links/${result.id}` : `/qr?url=${encodeURIComponent(shortUrl || "")}`}
                     className="rounded bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-all hover:bg-primary/90"
                   >
                     Customize QR
