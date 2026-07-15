@@ -95,6 +95,15 @@ export const metadata: Metadata = {
 
 const blogPosts = [
   {
+    slug: "free-link-management-for-companies",
+    title: "Free Link Management for Companies: The Ultimate Guide",
+    description: "Discover how businesses manage branded short links on custom domains completely free in 2026.",
+    category: "Guides",
+    readTime: "8 min read",
+    date: "2026-07-15",
+    featured: true,
+  },
+  {
     slug: "cheapest-custom-domain-link-shortener",
     title: "Cheapest Custom Domain Link Shortener 2026 - Save on Branded Links",
     description: "Compare the cheapest custom domain URL shorteners in 2026. Find the best budget-friendly and free custom domain link shorteners like ul0, Dub.co, and Bitly.",
