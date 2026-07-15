@@ -26,6 +26,7 @@ export interface LinkDoc {
   link_type: string
   /** Original Supabase UUID, kept for audit trail. */
   origin_id: string | null
+  targeting_json?: string | null
 }
 
 /** Payload for creating a new link (optional fields omitted if unset). */
@@ -39,6 +40,7 @@ export interface CreateLinkInput {
   meta_favicon_url?: string | null
   link_type?: string
   expire_at?: string | null
+  targeting_json?: string | null
 }
 
 /** Shape of a document in the `clicks` collection. */
@@ -52,6 +54,21 @@ export interface ClickDoc {
   referrer: string | null
   user_agent: string | null
   ip_hash: string | null
+  region?: string | null
+  city?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  browser?: string | null
+  os?: string | null
+  device?: string | null
+  utm_source?: string | null
+  utm_medium?: string | null
+  utm_campaign?: string | null
+  language?: string | null
+  timezone?: string | null
+  bot?: boolean | null
+  unique_visitor?: boolean | null
+  qr_scan?: boolean | null
 }
 
 /** Payload for logging a click event. */
@@ -63,6 +80,21 @@ export interface LogClickInput {
   referrer?: string | null
   user_agent?: string | null
   ip_hash?: string | null
+  region?: string | null
+  city?: string | null
+  latitude?: number | null
+  longitude?: number | null
+  browser?: string | null
+  os?: string | null
+  device?: string | null
+  utm_source?: string | null
+  utm_medium?: string | null
+  utm_campaign?: string | null
+  language?: string | null
+  timezone?: string | null
+  bot?: boolean | null
+  unique_visitor?: boolean | null
+  qr_scan?: boolean | null
 }
 
 // ---------------------------------------------------------------------------
@@ -128,6 +160,7 @@ export async function createLink(input: CreateLinkInput): Promise<LinkDoc> {
     meta_favicon_url: input.meta_favicon_url ?? null,
     link_type: input.link_type ?? "normal",
     origin_id: null,
+    targeting_json: input.targeting_json ?? null,
   })
 
   return doc as unknown as LinkDoc
@@ -151,6 +184,21 @@ export async function logClick(input: LogClickInput): Promise<ClickDoc> {
     referrer: input.referrer ?? null,
     user_agent: input.user_agent ?? null,
     ip_hash: input.ip_hash ?? null,
+    region: input.region ?? null,
+    city: input.city ?? null,
+    latitude: input.latitude ?? null,
+    longitude: input.longitude ?? null,
+    browser: input.browser ?? null,
+    os: input.os ?? null,
+    device: input.device ?? null,
+    utm_source: input.utm_source ?? null,
+    utm_medium: input.utm_medium ?? null,
+    utm_campaign: input.utm_campaign ?? null,
+    language: input.language ?? null,
+    timezone: input.timezone ?? null,
+    bot: input.bot ?? false,
+    unique_visitor: input.unique_visitor ?? false,
+    qr_scan: input.qr_scan ?? false,
   })
 
   return doc as unknown as ClickDoc
@@ -209,6 +257,63 @@ export async function countLinksByDomain(host: string): Promise<number> {
   ])
 
   return total
+}
+
+/**
+ * List clicks for all links owned by a user (used for global dashboard analytics).
+ */
+export async function listClicksByOwner(
+  ownerId: string,
+  limit = 5000
+): Promise<ClickDoc[]> {
+  const { documents } = await db().listDocuments(DB, CLICKS, [
+    Query.equal("owner_id", ownerId),
+    Query.orderDesc("clicked_at"),
+    Query.limit(limit),
+  ])
+  return documents as unknown as ClickDoc[]
+}
+
+/**
+ * List clicks for a specific link.
+ */
+export async function listClicksByLink(
+  linkId: string,
+  limit = 5000
+): Promise<ClickDoc[]> {
+  const { documents } = await db().listDocuments(DB, CLICKS, [
+    Query.equal("link_id", linkId),
+    Query.orderDesc("clicked_at"),
+    Query.limit(limit),
+  ])
+  return documents as unknown as ClickDoc[]
+}
+
+/**
+ * Fetch a single link document by its database ID.
+ */
+export async function getLinkById(
+  linkId: string
+): Promise<LinkDoc | null> {
+  try {
+    const doc = await db().getDocument(DB, LINKS, linkId)
+    return doc as unknown as LinkDoc
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Update a link's premium targeting JSON settings.
+ */
+export async function updateLinkTargeting(
+  linkId: string,
+  targetingJson: string | null
+): Promise<LinkDoc> {
+  const doc = await db().updateDocument(DB, LINKS, linkId, {
+    targeting_json: targetingJson,
+  })
+  return doc as unknown as LinkDoc
 }
 
 /**

@@ -86,6 +86,9 @@ async function setup() {
   await ok(db.createStringAttribute(DB_ID, "links", "meta_favicon_url", 1000, false), "meta_favicon_url")
   await ok(db.createStringAttribute(DB_ID, "links", "link_type", 16, false, "normal"), "link_type")
   await ok(db.createStringAttribute(DB_ID, "links", "origin_id", 64, false), "origin_id")
+  // Premium Features consolidated into a single JSON string to prevent MySQL row size limit errors
+  await ok(db.createStringAttribute(DB_ID, "links", "targeting_json", 4000, false), "targeting_json")
+  
   await waitForAttributes("links")
   // One slug per host. Lookups resolve by host + slug.
   await ok(
@@ -106,6 +109,24 @@ async function setup() {
   await ok(db.createStringAttribute(DB_ID, "clicks", "referrer", 500, false), "referrer")
   await ok(db.createStringAttribute(DB_ID, "clicks", "user_agent", 500, false), "user_agent")
   await ok(db.createStringAttribute(DB_ID, "clicks", "ip_hash", 128, false), "ip_hash")
+  
+  // Geolocation & Detailed Analytics Attributes
+  await ok(db.createStringAttribute(DB_ID, "clicks", "region", 255, false), "region")
+  await ok(db.createStringAttribute(DB_ID, "clicks", "city", 255, false), "city")
+  await ok(db.createFloatAttribute(DB_ID, "clicks", "latitude", false), "latitude")
+  await ok(db.createFloatAttribute(DB_ID, "clicks", "longitude", false), "longitude")
+  await ok(db.createStringAttribute(DB_ID, "clicks", "browser", 64, false), "browser")
+  await ok(db.createStringAttribute(DB_ID, "clicks", "os", 64, false), "os")
+  await ok(db.createStringAttribute(DB_ID, "clicks", "device", 64, false), "device")
+  await ok(db.createStringAttribute(DB_ID, "clicks", "utm_source", 255, false), "utm_source")
+  await ok(db.createStringAttribute(DB_ID, "clicks", "utm_medium", 255, false), "utm_medium")
+  await ok(db.createStringAttribute(DB_ID, "clicks", "utm_campaign", 255, false), "utm_campaign")
+  await ok(db.createStringAttribute(DB_ID, "clicks", "language", 64, false), "language")
+  await ok(db.createStringAttribute(DB_ID, "clicks", "timezone", 64, false), "timezone")
+  await ok(db.createBooleanAttribute(DB_ID, "clicks", "bot", false, false), "bot")
+  await ok(db.createBooleanAttribute(DB_ID, "clicks", "unique_visitor", false, false), "unique_visitor")
+  await ok(db.createBooleanAttribute(DB_ID, "clicks", "qr_scan", false, false), "qr_scan")
+
   await waitForAttributes("clicks")
   await ok(db.createIndex(DB_ID, "clicks", "idx_link", IndexType.Key, ["link_id"]), "index idx_link")
   await ok(db.createIndex(DB_ID, "clicks", "idx_owner", IndexType.Key, ["owner_id"]), "index idx_owner")
