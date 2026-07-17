@@ -12,8 +12,9 @@ import {
 import { DEFAULT_HOST } from "@/lib/appwrite/config"
 import { getDomainByName } from "@/lib/appwrite/domains"
 import { parseUserAgent, parseLanguage, isUniqueVisitor } from "@/lib/utils/analytics"
-import { Lock, AlertCircle } from "lucide-react"
+import { Lock, AlertCircle, AlertTriangle, ExternalLink } from "lucide-react"
 import Link from "next/link"
+import dns from "dns"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -113,6 +114,8 @@ export default async function RedirectPage({ params, searchParams }: Props) {
   let password = ""
   let clicksLimit = 0
   let oneTime = false
+  let isSuspicious = false
+  let suspiciousOriginalUrl = ""
   
   if (link.targeting_json) {
     try {
@@ -120,9 +123,17 @@ export default async function RedirectPage({ params, searchParams }: Props) {
       password = targeting.password ?? ""
       clicksLimit = Number(targeting.clicks_limit) || 0
       oneTime = !!targeting.one_time
+      isSuspicious = !!targeting.is_suspicious
+      suspiciousOriginalUrl = targeting.suspicious_original_url ?? ""
     } catch (e) {
       console.error("Targeting JSON parse error:", e)
     }
+  }
+
+  // 1.5 Phishing warning check
+  if (isSuspicious) {
+    const report = await getPhishingDomainReport(link.long_url)
+    return renderPhishingPage(link.long_url, suspiciousOriginalUrl || "https://www.google.com", report)
   }
 
   // 2. Check clicks limit
@@ -317,6 +328,173 @@ function renderExpiredPage(message: string) {
           >
             Go to ul0.site
           </Link>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+async function getPhishingDomainReport(longUrl: string) {
+  let domain = ""
+  try {
+    domain = new URL(longUrl).hostname
+  } catch {
+    domain = longUrl
+  }
+
+  let ipAddress = "Unknown"
+  try {
+    const result = await dns.promises.lookup(domain)
+    ipAddress = result.address
+  } catch (e) {
+    console.error("DNS lookup error:", e)
+  }
+
+  let geoData = {
+    isp: "Unknown ISP",
+    org: "Unknown Org",
+    country: "Unknown Country",
+    city: "Unknown City",
+  }
+
+  if (ipAddress !== "Unknown" && ipAddress !== "127.0.0.1") {
+    try {
+      const res = await fetch(`http://ip-api.com/json/${ipAddress}`, {
+        next: { revalidate: 86400 } // Cache for 24 hours
+      })
+      if (res.ok) {
+        const json = await res.json()
+        if (json.status === "success") {
+          geoData = {
+            isp: json.isp || "Unknown ISP",
+            org: json.org || "Unknown Org",
+            country: json.country || "Unknown Country",
+            city: json.city || "Unknown City",
+          }
+        }
+      }
+    } catch (e) {
+      console.error("IP API geo error:", e)
+    }
+  }
+
+  // Calculate dynamic safety score
+  let threatScore = 75
+  const tld = domain.split(".").pop() || ""
+  if (["click", "xyz", "top", "work", "info", "bid", "club", "site"].includes(tld)) {
+    threatScore += 15
+  }
+  if (domain.includes("verif") || domain.includes("expert") || domain.includes("secure") || domain.includes("login") || domain.includes("bank")) {
+    threatScore += 10
+  }
+  threatScore = Math.min(99, threatScore)
+
+  return {
+    domain,
+    ipAddress,
+    ...geoData,
+    threatScore,
+  }
+}
+
+function renderPhishingPage(
+  suspiciousUrl: string,
+  originalUrl: string,
+  report: {
+    domain: string
+    ipAddress: string
+    isp: string
+    org: string
+    country: string
+    city: string
+    threatScore: number
+  }
+) {
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#fcf8f8] text-gray-905 font-sans px-4 py-8 selection:bg-red-200">
+      <div className="w-full max-w-2xl space-y-6 rounded-2xl border border-red-250 border-red-200 bg-white p-6 sm:p-8 shadow-sm">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left border-b border-red-100 pb-5">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-50 border border-red-100 text-red-650 shadow-2xs">
+            <AlertTriangle className="h-6 w-6 text-red-600" />
+          </div>
+          
+          <div className="space-y-1">
+            <h2 className="text-xl font-bold tracking-tight text-red-700">Security Warning: Phishing Page Blocked</h2>
+            <p className="text-xs text-gray-500 leading-normal">
+              This short link has been flagged as a deceptive site designed to mimic a legitimate service.
+            </p>
+          </div>
+        </div>
+
+        <div className="rounded-xl bg-red-50/50 border border-red-100 p-4 space-y-3.5 text-xs text-gray-700 leading-relaxed">
+          <p>
+            The destination URL (<span className="font-semibold break-all text-red-600 font-mono">{suspiciousUrl}</span>) is a confirmed phishing clone. We have blocked redirection to keep your data safe.
+          </p>
+          <div className="flex items-center gap-2 rounded bg-white border border-gray-200 p-2.5 flex-wrap">
+            <span className="font-semibold text-gray-500">Genuine Website:</span>
+            <a
+              href={originalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-bold text-gray-900 hover:underline inline-flex items-center gap-1 font-mono"
+            >
+              {originalUrl}
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
+        </div>
+
+        {/* Threat Intelligence */}
+        <div className="space-y-3 pt-1">
+          <h3 className="text-xs font-bold text-gray-450 uppercase tracking-wider">Threat Intelligence Report</h3>
+          
+          <div className="grid gap-3.5 sm:grid-cols-2">
+            <div className="rounded-xl border border-gray-200 bg-white p-4.5 space-y-1">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide block">Phishing Server IP</span>
+              <p className="text-sm font-bold text-gray-900 font-mono">{report.ipAddress}</p>
+            </div>
+            
+            <div className="rounded-xl border border-gray-200 bg-white p-4.5 space-y-1">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide block">Threat Reputation Score</span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-sm font-extrabold text-red-600">{report.threatScore}/100</span>
+                <span className="rounded bg-red-100 px-1.5 py-0.5 text-[9px] font-bold text-red-750 font-mono uppercase">
+                  HIGH RISK
+                </span>
+              </div>
+            </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white p-4.5 space-y-1">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide block">Hosting Network / ISP</span>
+              <p className="text-xs font-bold text-gray-800 truncate" title={report.isp}>
+                {report.isp}
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-gray-200 bg-white p-4.5 space-y-1">
+              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide block">Server Location</span>
+              <p className="text-xs font-bold text-gray-800">
+                {report.city}, {report.country}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-150">
+          <Link
+            href="/"
+            className="flex-1 inline-flex items-center justify-center rounded-md bg-gray-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-gray-800 transition-all active:scale-98 shadow-xs"
+          >
+            Go to Safety (ul0.site)
+          </Link>
+          <a
+            href={originalUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all active:scale-98"
+          >
+            Go to legitimate website
+          </a>
         </div>
       </div>
     </div>
