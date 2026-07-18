@@ -8,6 +8,9 @@ export const metadata: Metadata = {
   title: "Pricing — ul0",
   description:
     "Simple, transparent pricing. Start free, upgrade when you need custom domains and full analytics. Cheapest URL shortener SaaS in 2026.",
+  alternates: {
+    canonical: "https://ul0.site/pricing",
+  },
 }
 
 const comparison = [

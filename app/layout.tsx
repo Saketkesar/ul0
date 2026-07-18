@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Autotag } from "@/components/autotag"
 import { hreflangAlternates } from "@/lib/i18n"
+import { headers } from "next/headers"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -232,11 +233,14 @@ export const viewport: Viewport = {
   ],
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const headersList = await headers()
+  const locale = headersList.get("x-locale") || "en"
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -333,7 +337,7 @@ export default function RootLayout({
   }
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

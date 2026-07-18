@@ -1,5 +1,6 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
+import { LOCALES } from "@/lib/i18n"
 
 // Routes that require authentication
 const isProtectedRoute = createRouteMatcher([
@@ -129,8 +130,20 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(new URL("https://ul0.site", req.url))
   }
 
-  // Build response
-  const response = NextResponse.next()
+  // Determine the locale of the request based on URL pathname
+  const requestHeaders = new Headers(req.headers)
+  const pathname = req.nextUrl.pathname
+  const firstSegment = pathname.split("/")[1]
+  const isLocale = LOCALES.includes(firstSegment as any)
+  const locale = isLocale ? firstSegment : "en"
+  requestHeaders.set("x-locale", locale)
+
+  // Build response with modified request headers
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  })
 
   // Add security headers
   Object.entries(securityHeaders).forEach(([key, value]) => {
