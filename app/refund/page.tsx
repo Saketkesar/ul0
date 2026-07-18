@@ -6,6 +6,9 @@ import Link from "next/link"
 export const metadata: Metadata = {
   title: "Refund and Cancellation Policy — ul0",
   description: "Refund and cancellation guidelines for paid subscriptions on ul0.",
+  alternates: {
+    canonical: "https://ul0.site/refund",
+  },
 }
 
 export default function RefundPage() {

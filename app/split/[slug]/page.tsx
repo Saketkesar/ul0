@@ -1,6 +1,15 @@
 import { notFound } from "next/navigation"
 import { SplitViewClient } from "./split-view-client"
 import { getSplitSessionBySlug } from "@/lib/appwrite/splits"
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Split Expense Session — ul0",
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 interface Props {
   params: Promise<{ slug: string }>
