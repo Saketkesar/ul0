@@ -60,6 +60,81 @@ const MAX_URL_LENGTH = 2048
 // Minimum URL length
 const MIN_URL_LENGTH = 10
 
+// Major brand assets to check for brand mimicry attacks
+const PROTECTED_BRANDS = [
+  { name: "libero", domains: ["libero.it", "liberomail.it"] },
+  { name: "facebook", domains: ["facebook.com", "fb.com", "messenger.com"] },
+  { name: "instagram", domains: ["instagram.com"] },
+  { name: "google", domains: ["google.com", "gmail.com", "youtube.com"] },
+  { name: "paypal", domains: ["paypal.com"] },
+  { name: "netflix", domains: ["netflix.com"] },
+  { name: "microsoft", domains: ["microsoft.com", "outlook.com", "live.com"] },
+  { name: "apple", domains: ["apple.com", "icloud.com"] },
+  { name: "amazon", domains: ["amazon.com", "amzn.to"] },
+  { name: "chase", domains: ["chase.com"] },
+  { name: "steam", domains: ["steampowered.com", "steamcommunity.com"] },
+  { name: "telegram", domains: ["telegram.org", "t.me"] },
+  { name: "whatsapp", domains: ["whatsapp.com", "wa.me"] },
+]
+
+// Common keywords scammers append to spoof authentication portals
+const PHISHING_KEYWORDS = [
+  "verif",
+  "expert",
+  "secure",
+  "login",
+  "signin",
+  "signup",
+  "billing",
+  "support",
+  "update",
+  "safety",
+  "portal",
+  "redirect",
+  "resolve",
+]
+
+const HIGH_RISK_TLDS = [
+  "click",
+  "xyz",
+  "top",
+  "work",
+  "bid",
+  "club",
+  "site",
+  "online",
+  "store",
+  "link",
+]
+
+export function isPhishingAttempt(hostname: string, urlString: string): boolean {
+  const normalized = hostname.toLowerCase()
+
+  // 1. Brand Spoofing Check
+  // Check if domain contains a protected brand name, but isn't an authorized domain
+  for (const brand of PROTECTED_BRANDS) {
+    if (normalized.includes(brand.name)) {
+      const isAuthorized = brand.domains.some(domain => 
+        normalized === domain || normalized.endsWith("." + domain)
+      )
+      if (!isAuthorized) {
+        return true
+      }
+    }
+  }
+
+  // 2. High-Risk TLD + Phishing Keywords Heuristic
+  const tld = normalized.split(".").pop() || ""
+  if (HIGH_RISK_TLDS.includes(tld)) {
+    const containsPhishingWord = PHISHING_KEYWORDS.some(word => normalized.includes(word))
+    if (containsPhishingWord) {
+      return true
+    }
+  }
+
+  return false
+}
+
 /**
  * Check if a hostname resolves to a private IP
  */
@@ -170,6 +245,11 @@ export function validateUrl(urlString: string): UrlValidationResult {
   const isDevelopment = process.env.NODE_ENV === 'development'
   if (!hostname.includes('.') && !(isDevelopment && hostname === 'localhost')) {
     return { valid: false, error: "Invalid hostname" }
+  }
+
+  // Automated brand mimicry / Phishing check
+  if (isPhishingAttempt(hostname, urlString)) {
+    return { valid: false, error: "This URL has been flagged as a security risk (phishing/mimicry detection) and cannot be shortened" }
   }
 
   // Heuristic phishing/malware check on full URL
