@@ -3,6 +3,7 @@ import { Suspense } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ShareClient } from "./share-client"
+import { ShareAdBanner } from "@/components/share-ad-banner"
 import { Shield, Zap, Lock, Globe, HardDrive, Cpu, Check, HelpCircle, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
@@ -187,6 +188,11 @@ export default function SharePage() {
           }>
             <ShareClient />
           </Suspense>
+
+          {/* Mobile / Tablet Responsive Ad Placement */}
+          <div className="mt-8 block xl:hidden max-w-sm mx-auto">
+            <ShareAdBanner label="Sponsored Ad" />
+          </div>
 
           {/* SEO Comprehensive Information Sections */}
           <section className="mt-20 border-t border-border/40 pt-16 space-y-16">
