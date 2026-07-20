@@ -3,127 +3,150 @@
 import type React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { useSearchParams } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
-  Upload, Download, Copy, Check, Zap, Lock, FileIcon,
-  QrCode, ArrowRight, Share2, AlertCircle, FileCheck,
-  Globe, RefreshCcw, Wifi, MapPin, X, ChevronRight,
+  Upload, Download, Copy, Check, Zap, Lock,
+  FileIcon, QrCode, ArrowRight, Share2, AlertCircle,
+  FileCheck, Globe, RefreshCcw, X,
 } from "lucide-react"
 
-// ─── AUTHENTIC BROWSER SVG LOGOS ─────────────────────────────────────────────
-function BraveLogo({ size = 18 }: { size?: number }) {
+// ─── REAL BROWSER SVGs (from browser icons.txt) ──────────────────────────────
+function BraveIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 512 512" fill="none">
-      <path d="M477.8 189.4l-22.4-52.8-31.2-72.4-15.2-35.6c-1.2-2.8-4.4-4-7.2-2.8L256 96 110.2 26c-2.8-1.2-6 0-7.2 2.8L87.8 64.6 56.6 137 34.2 189.4c-6 14-7.6 29.6-4.4 44.4l51.6 234c2.8 12.8 10 24.2 20.4 32l130 97.2c14.4 10.8 33.8 10.8 48.2 0l130-97.2c10.4-7.8 17.6-19.2 20.4-32l51.6-234c3.2-14.8 1.6-30.4-4.2-44.4z" fill="#FF5500"/>
-      <path d="M361 219.2l-17.2-16.8c-3.2-3.2-7.6-4.8-12-4.4l-24 2-20.8-28.4c-4.4-6-11.4-9.6-18.8-9.6h-24.4c-7.4 0-14.4 3.6-18.8 9.6l-20.8 28.4-24-2c-4.4-.4-8.8 1.2-12 4.4l-17.2 16.8c-4 3.8-5.4 9.6-3.6 14.8l7.2 21.6-14.4 19.2c-3.6 4.8-4 11.2-.8 16.4l18 30.4c2.4 4 6.4 6.8 10.8 7.6l28.4 5.2 16 24c3.2 4.8 8.8 7.6 14.4 7.2l21.6-1.6 16.8 12.4c5.2 3.8 12.2 3.8 17.4 0l16.8-12.4 21.6 1.6c5.6.4 11.2-2.4 14.4-7.2l16-24 28.4-5.2c4.4-.8 8.4-3.6 10.8-7.6l18-30.4c3.2-5.2 2.8-11.6-.8-16.4l-14.4-19.2 7.2-21.6c1.8-5.2.4-11-3.6-14.8z" fill="white"/>
-      <path d="M256 320a64 64 0 1 0 0-128 64 64 0 0 0 0 128z" fill="#FF5500"/>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <path d="M15.68 0l2.096 2.38s1.84-.512 2.709.358c.868.87 1.584 1.638 1.584 1.638l-.562 1.381.715 2.047s-2.104 7.98-2.35 8.955c-.486 1.919-.818 2.66-2.198 3.633-1.38.972-3.884 2.66-4.293 2.916-.409.256-.92.692-1.38.692-.46 0-.97-.436-1.38-.692a185.796 185.796 0 01-4.293-2.916c-1.38-.973-1.712-1.714-2.197-3.633-.247-.975-2.351-8.955-2.351-8.955l.715-2.047-.562-1.381s.716-.768 1.585-1.638c.868-.87 2.708-.358 2.708-.358L8.321 0h7.36zm-3.679 14.936c-.14 0-1.038.317-1.758.69-.72.373-1.242.637-1.409.742-.167.104-.065.301.087.409.152.107 2.194 1.69 2.393 1.866.198.175.489.464.687.464.198 0 .49-.29.688-.464.198-.175 2.24-1.759 2.392-1.866.152-.108.254-.305.087-.41-.167-.104-.689-.368-1.41-.741-.72-.373-1.617-.69-1.757-.69zm0-11.278s-.409.001-1.022.206-1.278.46-1.584.46c-.307 0-2.581-.434-2.581-.434S4.119 7.152 4.119 7.849c0 .697.339.881.68 1.243l2.02 2.149c.192.203.59.511.356 1.066-.235.555-.58 1.26-.196 1.977.384.716 1.042 1.194 1.464 1.115.421-.08 1.412-.598 1.776-.834.364-.237 1.518-1.19 1.518-1.554 0-.365-1.193-1.02-1.413-1.168-.22-.15-1.226-.725-1.247-.95-.02-.227-.012-.293.284-.851.297-.559.831-1.304.742-1.8-.089-.495-.95-.753-1.565-.986-.615-.232-1.799-.671-1.947-.74-.148-.068-.11-.133.339-.175.448-.043 1.719-.212 2.292-.052.573.16 1.552.403 1.632.532.079.13.149.134.067.579-.081.445-.5 2.581-.541 2.96-.04.38-.12.63.288.724.409.094 1.097.256 1.333.256s.924-.162 1.333-.256c.408-.093.329-.344.288-.723-.04-.38-.46-2.516-.541-2.961-.082-.445-.012-.45.067-.579.08-.129 1.059-.372 1.632-.532.573-.16 1.845.009 2.292.052.449.042.487.107.339.175-.148.069-1.332.508-1.947.74-.615.233-1.476.49-1.565.986-.09.496.445 1.241.742 1.8.297.558.304.624.284.85-.02.226-1.026.802-1.247.95-.22.15-1.413.804-1.413 1.169 0 .364 1.154 1.317 1.518 1.554.364.236 1.355.755 1.776.834.422.079 1.08-.4 1.464-1.115.384-.716.039-1.422-.195-1.977-.235-.555.163-.863.355-1.066l2.02-2.149c.341-.362.68-.546.68-1.243 0-.697-2.695-3.96-2.695-3.96s-2.274.436-2.58.436c-.307 0-.972-.256-1.585-.461-.613-.205-1.022-.206-1.022-.206z" fill="#FB542B"/>
     </svg>
   )
 }
 
-function ChromeLogo({ size = 18 }: { size?: number }) {
+function ChromeIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="50" fill="#fff"/>
-      <path d="M50 30 A20 20 0 0 1 67.3 40 L95 40 A48 48 0 0 0 5 40 L32.7 40 A20 20 0 0 1 50 30z" fill="#EA4335"/>
-      <path d="M70 50 A20 20 0 0 1 52.7 70 L36.7 97.5 A48 48 0 0 0 98 54 L70 54z" fill="#FBBC05"/>
-      <path d="M30 50 A20 20 0 0 1 47.3 70 L63.3 97.5 A48 48 0 0 1 2 54 L30 54z" fill="#34A853"/>
-      <path d="M50 30 A20 20 0 1 0 50 70 A20 20 0 0 0 50 30z" fill="#4285F4"/>
-      <circle cx="50" cy="50" r="13" fill="#fff"/>
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none">
+      <path fill="#00ac47" d="M4.7434,22.505A12.9769,12.9769,0,0,0,14.88,28.949l5.8848-10.1927L16,16.0058,11.2385,18.755l-1.5875-2.75L8.4885,13.9919,5.3553,8.5649A12.9894,12.9894,0,0,0,4.7434,22.505Z"/>
+      <path fill="#ea4435" d="M16,3.0072A12.9769,12.9769,0,0,0,5.3507,8.5636l5.8848,10.1927L16,16.0057V10.5072H27.766A12.99,12.99,0,0,0,16,3.0072Z"/>
+      <path fill="#ffba00" d="M27.2557,22.505a12.9772,12.9772,0,0,0,.5124-12H15.9986v5.5011l4.7619,2.7492-1.5875,2.75-1.1625,2.0135-3.1333,5.4269A12.99,12.99,0,0,0,27.2557,22.505Z"/>
+      <circle cx="15.999" cy="16.007" r="5.5" fill="#fff"/>
+      <circle cx="15.999" cy="16.007" r="4.25" fill="#4285f4"/>
     </svg>
   )
 }
 
-function SafariLogo({ size = 18 }: { size?: number }) {
+function EdgeIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100">
-      <defs>
-        <linearGradient id="saf-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#1AA3FF"/>
-          <stop offset="100%" stopColor="#006ED4"/>
-        </linearGradient>
-      </defs>
-      <circle cx="50" cy="50" r="50" fill="url(#saf-bg)"/>
-      <circle cx="50" cy="50" r="38" fill="none" stroke="white" strokeWidth="3" opacity="0.4"/>
-      <polygon points="50,20 57,50 50,80 43,50" fill="white" opacity="0.9"/>
-      <polygon points="20,50 50,43 80,50 50,57" fill="white" opacity="0.6"/>
-      <polygon points="50,30 55,50 50,70 45,50" fill="#FF3B30"/>
-      <circle cx="50" cy="50" r="4" fill="white"/>
+    <svg width={size} height={size} viewBox="0 0 512 512">
+      <rect width="512" height="512" fill="#fff" rx="15%"/>
+      <radialGradient id="eg1" cx=".6" cy=".5"><stop offset=".8" stopColor="#148"/><stop offset="1" stopColor="#137"/></radialGradient>
+      <radialGradient id="eg2" cx=".5" cy=".6" fx=".2" fy=".6"><stop offset=".8" stopColor="#38c"/><stop offset="1" stopColor="#269"/></radialGradient>
+      <linearGradient id="eg3" y1=".5" y2="1"><stop offset=".1" stopColor="#5ad"/><stop offset=".6" stopColor="#5c8"/><stop offset=".8" stopColor="#7d5"/></linearGradient>
+      <path fill="url(#eg1)" d="M439 374c-50 77-131 98-163 96-191-9-162-262-47-261-82 52 30 224 195 157 17-12 20 3 15 8"/>
+      <path fill="url(#eg2)" d="M311 255c18-82-31-135-129-135S38 212 38 259c0 124 125 253 287 203-134 39-214-116-146-210 46-66 123-68 132 3"/>
+      <path fill="url(#eg3)" d="M39 253C51-15 419-30 472 202c14 107-86 149-166 115-42-26 26-20-3-99-48-112-251-103-264 35"/>
     </svg>
   )
 }
 
-function FirefoxLogo({ size = 18 }: { size?: number }) {
+function SafariIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="50" fill="#FF9500"/>
-      <circle cx="50" cy="50" r="33" fill="#0060DF"/>
-      <path d="M50 17 C30 17 14 33 14 53 C14 65 20 76 29 83 C25 76 23 68 23 59 C23 44 34 31 50 31 C62 31 72 39 75 51 C78 39 76 25 66 17 C61 17.3 55.5 17 50 17z" fill="#FF9500"/>
-      <circle cx="50" cy="50" r="16" fill="#00B3F4"/>
+    <svg width={size} height={size} viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="12" fill="#EEE"/>
+      <radialGradient id="sg1" cx="3.946" cy="916.391" r=".006" gradientTransform="matrix(2240.2344 0 0 -2240.2344 -8827.055 2052939.25)" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stopColor="#2abce1"/>
+        <stop offset=".114" stopColor="#2abbe1"/>
+        <stop offset="1" stopColor="#3375f8"/>
+      </radialGradient>
+      <circle cx="12" cy="12" r="11.1" fill="url(#sg1)"/>
+      <path fill="#CD151E" d="m19.584 4.416-8.85 6.291 2.625 2.606 6.225-8.897z"/>
+      <path fill="#FA5153" d="m10.744 10.688 1.322 1.303 7.519-7.575-8.841 6.272z"/>
+      <path fill="#ACACAC" d="m10.744 10.688 2.625 2.606-8.85 6.291 6.225-8.897z"/>
+      <path fill="#EEE" d="m4.519 19.584 7.547-7.594-1.322-1.303-6.225 8.897z"/>
     </svg>
   )
 }
 
-function EdgeLogo({ size = 18 }: { size?: number }) {
+function FirefoxIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100">
-      <defs>
-        <linearGradient id="edge-g1" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#2F9BD8"/>
-          <stop offset="100%" stopColor="#0078D4"/>
-        </linearGradient>
-      </defs>
-      <circle cx="50" cy="50" r="50" fill="url(#edge-g1)"/>
-      <path d="M50 20 C34 20 21 33 21 49 C21 59 26 67 35 73 C29 69 25 62 25 54 C25 38 38 25 54 25 C65 25 73 31 76 40 C78 32 75 20 66 14 C61 21 56 20 50 20z" fill="white" opacity="0.9"/>
-      <ellipse cx="52" cy="72" rx="28" ry="10" fill="white" opacity="0.8"/>
-      <path d="M24 56 C24 72 36 83 50 83 C62 83 72 76 77 65 C49 65 30 58 24 56z" fill="white"/>
+    <svg width={size} height={size} viewBox="0 0 512 512">
+      <rect width="512" height="512" fill="#fff" rx="15%"/>
+      <linearGradient id="ff1" x1=".7" x2=".3" y2=".8"><stop offset=".3" stopColor="#fd5"/><stop offset=".6" stopColor="#f85"/><stop offset="1" stopColor="#d06"/></linearGradient>
+      <radialGradient id="ff2" cx=".4" cy=".7"><stop offset=".4" stopColor="#74d"/><stop offset="1" stopColor="#a2d"/></radialGradient>
+      <linearGradient id="ff3" x1=".8" x2=".4" y1=".2" y2=".8"><stop offset=".2" stopColor="#fd5"/><stop offset="1" stopColor="#f33"/></linearGradient>
+      <g transform="scale(4)">
+        <path fill="url(#ff1)" d="M48 49s-3-9-1-16c-9 2-33 35-33 35a51 48 0 1087-32s5 9 5 15c-3-9-20-25-26-37-24 13-16 39-16 39"/>
+        <circle cx="64" cy="67" r="26" fill="url(#ff2)"/>
+        <path fill="url(#ff1)" d="M21 45l43 12c-6 11-16 3-23 14a22 22 0 1034-20s33 3 17 42H28"/>
+        <path fill="url(#ff3)" d="M35 43c16 0 12 7 29 14-18 6-23-9-38 0 5 9 12 8 12 8 1 43 72 29 67-17a50 46.6 47 01-88 33c-9-18-1-40 16-51"/>
+      </g>
     </svg>
   )
 }
 
-function OperaLogo({ size = 18 }: { size?: number }) {
+function AndroidIcon({ size = 16 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100">
-      <circle cx="50" cy="50" r="50" fill="#FF1B2D"/>
-      <ellipse cx="50" cy="50" rx="21" ry="30" fill="white"/>
-      <ellipse cx="50" cy="50" rx="14" ry="26" fill="#FF1B2D"/>
+    <svg width={size} height={size} viewBox="0 0 256 256">
+      <rect width="224" height="224" x="16" y="16" fill="#EEE" rx="70"/>
+      <path fill="#3DDC84" d="M163.935 111.433L176.14 90.278c.336-.584.427-1.277.253-1.928a2.635 2.635 0 00-1.182-1.544 2.635 2.635 0 00-1.927-.231 2.635 2.635 0 00-1.542 1.163L159.385 109.16C149.933 104.844 139.32 102.44 127.995 102.44c-11.325 0-21.94 2.405-31.39 6.72L84.248 87.737a2.635 2.635 0 00-1.542-1.163 2.635 2.635 0 00-1.927.231 2.635 2.635 0 00-1.183 1.544 2.635 2.635 0 00.253 1.928L92.055 111.433C71.097 122.84 56.763 144.075 54.666 169.162H201.324c-2.099-25.087-16.433-46.32-37.389-57.73zM161.689 148.374a6.17 6.17 0 01-6.054-6.17 6.17 6.17 0 016.054-6.166 6.17 6.17 0 016.054 6.167 6.17 6.17 0 01-6.054 6.17zm-67.388 0a6.17 6.17 0 01-6.054-6.17 6.17 6.17 0 016.054-6.166 6.17 6.17 0 016.054 6.167 6.17 6.17 0 01-6.054 6.17z"/>
     </svg>
   )
 }
 
-function BrowserIcon({ browser, size = 18 }: { browser: string; size?: number }) {
-  const b = browser.toLowerCase()
-  if (b.includes("brave")) return <BraveLogo size={size} />
-  if (b.includes("chrome")) return <ChromeLogo size={size} />
-  if (b.includes("safari")) return <SafariLogo size={size} />
-  if (b.includes("firefox")) return <FirefoxLogo size={size} />
-  if (b.includes("edge") || b.includes("edg")) return <EdgeLogo size={size} />
-  if (b.includes("opera")) return <OperaLogo size={size} />
-  return <Globe width={size} height={size} className="text-gray-400" />
+function AppleIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 40 40">
+      <path d="M30.54 26.24a14 14 0 0 1-1.41 2.52 13.16 13.16 0 0 1-1.8 2.24A3.55 3.55 0 0 1 25 32a5.94 5.94 0 0 1-2.15-.51 6.13 6.13 0 0 0-2.31-.49 6.42 6.42 0 0 0-2.38.51 6.49 6.49 0 0 1-2.05.54A3.35 3.35 0 0 1 13.73 31a14 14 0 0 1-1.89-2.27 15.54 15.54 0 0 1-2-4A14.55 14.55 0 0 1 9 20a8.6 8.6 0 0 1 1.14-4.52A6.6 6.6 0 0 1 12.51 13a6.44 6.44 0 0 1 3.22-.91 7.7 7.7 0 0 1 2.49.58 7.67 7.67 0 0 0 2 .58 12 12 0 0 0 2.19-.68 7.23 7.23 0 0 1 3-.53 6.34 6.34 0 0 1 4.95 2.61 5.48 5.48 0 0 0-2.92 5 5.52 5.52 0 0 0 1.81 4.16A6.18 6.18 0 0 0 31 25c-.15.42-.3.82-.46 1.21ZM25.5 6.4a5.59 5.59 0 0 1-1.43 3.66 4.85 4.85 0 0 1-4 2 3.79 3.79 0 0 1 0-.49 5.7 5.7 0 0 1 1.51-3.69 5.85 5.85 0 0 1 1.85-1.39 5.65 5.65 0 0 1 2.11-.6 4.67 4.67 0 0 1 0 .52Z" fill="#1d1d1f"/>
+    </svg>
+  )
+}
+
+function WindowsIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 256 257">
+      <path fill="#00ADEF" d="M0 36.357L104.62 22.11l.045 100.914-104.57.595L0 36.358zm104.57 98.293l.08 101.002L.081 221.275l-.006-87.302 104.494.677zm12.682-114.405L255.968 0v121.74l-138.716 1.1V20.246zM256 135.6l-.033 121.191-138.716-19.578-.194-101.84L256 135.6z"/>
+    </svg>
+  )
+}
+
+function LinuxIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 128 128">
+      <path d="M108.095 81.343c-1.534 6.324-9.322 19.527-13.459 25.338-4.138 5.835-3.626 11.089-11.275 9.043-7.625-2.045-9.763-1.673-17.644-1.208-7.833.464-6.137-.233-11.042 1.976-4.882 2.208-21.27-26.78-22.595-32.173-1.301-5.393-1.93-4.743 1.464-10.577 3.395-5.834 3.883-11.6 8.368-18.667 4.487-7.09 9.671-10.693 9.299-16.109-1.464-20.108-2.626-30.15 6.301-34.8 8.507-4.417 15.621-1.79 18.434-.279 1.208.651 3.673 1.906 5.509 4.115 1.836 2.162 3.487 5.44 4.417 9.577 1.906 8.299-.791 5.556 1.371 15.064 2.139 9.484 6.485 14.133 11.787 21.642 5.299 7.508 10.832 19.898 9.065 27.058z" fill="#000"/>
+    </svg>
+  )
+}
+
+function BrowserIcon({ browser, os, size = 16 }: { browser: string; os?: string; size?: number }) {
+  const b = (browser || "").toLowerCase()
+  const o = (os || "").toLowerCase()
+  if (b.includes("brave")) return <BraveIcon size={size} />
+  if (b.includes("firefox")) return <FirefoxIcon size={size} />
+  if (b.includes("edge") || b.includes("edg")) return <EdgeIcon size={size} />
+  if (b.includes("chrome")) return <ChromeIcon size={size} />
+  if (b.includes("safari")) return <SafariIcon size={size} />
+  if (o.includes("android")) return <AndroidIcon size={size} />
+  if (o.includes("ios") || o.includes("macos")) return <AppleIcon size={size} />
+  if (o.includes("windows")) return <WindowsIcon size={size} />
+  if (o.includes("linux")) return <LinuxIcon size={size} />
+  return <Globe width={size} height={size} style={{ color: "#94a3b8" }} />
 }
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
-  let binary = ""
+  let bin = ""
   const bytes = new Uint8Array(buffer)
-  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i])
-  return btoa(binary)
+  for (let i = 0; i < bytes.byteLength; i++) bin += String.fromCharCode(bytes[i])
+  return btoa(bin)
 }
 
-function formatBytes(bytes: number, dec = 1): string {
+function formatBytes(bytes: number): string {
   if (bytes === 0) return "0 B"
   const k = 1024, sizes = ["B", "KB", "MB", "GB", "TB"]
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dec))} ${sizes[i]}`
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(1))} ${sizes[i]}`
 }
 
 function formatETA(sec: number): string {
-  if (!isFinite(sec) || sec <= 0) return "calculating…"
+  if (!isFinite(sec) || sec <= 0 || sec > 86400) return "calculating…"
   if (sec < 60) return `${Math.ceil(sec)}s left`
   const m = Math.floor(sec / 60), s = Math.floor(sec % 60)
-  if (m < 60) return `${m}m ${s}s left`
-  return `${Math.floor(m / 60)}h ${m % 60}m left`
+  return m < 60 ? `${m}m ${s}s left` : `${Math.floor(m / 60)}h ${m % 60}m left`
 }
 
 function generateCode(): string {
@@ -137,23 +160,21 @@ function detectDevice() {
   let os = "Desktop"
   if (/Android/.test(ua)) os = "Android"
   else if (/iPhone|iPad/.test(ua)) os = "iOS"
-  else if (/Linux/.test(ua)) os = "Linux"
   else if (/Mac OS/.test(ua)) os = "macOS"
+  else if (/Linux/.test(ua)) os = "Linux"
   else if (/Windows/.test(ua)) os = "Windows"
-
   let browser = "Browser"
-  if ((navigator as any).brave || /Brave/.test(ua)) browser = "Brave"
-  else if (/Chrome/.test(ua) && !/Edg/.test(ua)) browser = "Chrome"
-  else if (/Safari/.test(ua) && !/Chrome/.test(ua)) browser = "Safari"
-  else if (/Firefox/.test(ua)) browser = "Firefox"
+  if ((navigator as any).brave) browser = "Brave"
   else if (/Edg/.test(ua)) browser = "Edge"
-  else if (/OPR|Opera/.test(ua)) browser = "Opera"
-
+  else if (/Chrome/.test(ua)) browser = "Chrome"
+  else if (/Firefox/.test(ua)) browser = "Firefox"
+  else if (/Safari/.test(ua)) browser = "Safari"
   return { os, browser }
 }
 
-// ─── AUDIO ───────────────────────────────────────────────────────────────────
+// ─── AUDIO — play ONCE on connect ─────────────────────────────────────────────
 let audioCtx: AudioContext | null = null
+let chimePlayed = false
 
 function ensureAudio() {
   try {
@@ -165,34 +186,31 @@ function ensureAudio() {
   } catch {}
 }
 
-function playChime() {
+function playConnectChime() {
+  if (chimePlayed) return
+  chimePlayed = true
   try {
     ensureAudio()
     if (!audioCtx) return
     const ctx = audioCtx
     const now = ctx.currentTime
-    const notes = [523.25, 659.25, 783.99, 1046.5]
-    notes.forEach((freq, i) => {
+    ;[523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
       const osc = ctx.createOscillator()
       const gain = ctx.createGain()
-      osc.type = "sine"
-      osc.frequency.value = freq
+      osc.type = "sine"; osc.frequency.value = freq
       gain.gain.setValueAtTime(0, now + i * 0.1)
-      gain.gain.linearRampToValueAtTime(0.12, now + i * 0.1 + 0.02)
-      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.3)
-      osc.connect(gain)
-      gain.connect(ctx.destination)
-      osc.start(now + i * 0.1)
-      osc.stop(now + i * 0.1 + 0.3)
+      gain.gain.linearRampToValueAtTime(0.1, now + i * 0.1 + 0.02)
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.35)
+      osc.connect(gain); gain.connect(ctx.destination)
+      osc.start(now + i * 0.1); osc.stop(now + i * 0.1 + 0.35)
     })
   } catch {}
 }
 
-// ─── TYPES ────────────────────────────────────────────────────────────────────
-interface DeviceInfo { os: string; browser: string; ip: string; countryFlag?: string }
-interface NearbyRoom { code: string; distance: number }
+// ─── TYPES ───────────────────────────────────────────────────────────────────
+interface DeviceInfo { os: string; browser: string; ip?: string; countryFlag?: string }
 
-// ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
+// ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
 export function ShareClient() {
   const searchParams = useSearchParams()
   const urlCode = searchParams.get("code")
@@ -201,12 +219,10 @@ export function ShareClient() {
   const [roomCode, setRoomCode] = useState("")
   const [inputCode, setInputCode] = useState("")
 
-  // Connection
   const [isConnected, setIsConnected] = useState(false)
-  const [connType, setConnType] = useState<"p2p" | "relay">("p2p")
-  const [status, setStatus] = useState("Waiting for peer…")
+  const [status, setStatus] = useState("")
   const [error, setError] = useState<string | null>(null)
-  const [myDevice, setMyDevice] = useState({ os: "Device", browser: "Browser" })
+  const [myDevice] = useState(detectDevice)
   const [peerDevice, setPeerDevice] = useState<DeviceInfo | null>(null)
 
   // Send
@@ -216,6 +232,7 @@ export function ShareClient() {
   const [sendBps, setSendBps] = useState(0)
   const [sendEta, setSendEta] = useState(0)
   const [sendDone, setSendDone] = useState(false)
+  const [drag, setDrag] = useState(false)
 
   // Receive
   const [incoming, setIncoming] = useState<{ name: string; size: number; mime: string } | null>(null)
@@ -230,21 +247,13 @@ export function ShareClient() {
   const [copied, setCopied] = useState(false)
   const [copiedLink, setCopiedLink] = useState(false)
   const [showQr, setShowQr] = useState(false)
-  const [drag, setDrag] = useState(false)
-  const [connPulse, setConnPulse] = useState(false)
-
-  // Nearby
-  const [nearbyRooms, setNearbyRooms] = useState<NearbyRoom[]>([])
-  const [nearbyLoading, setNearbyLoading] = useState(false)
-  const [userLat, setUserLat] = useState<number | null>(null)
-  const [userLng, setUserLng] = useState<number | null>(null)
 
   const pcRef = useRef<RTCPeerConnection | null>(null)
   const dcRef = useRef<RTCDataChannel | null>(null)
   const pollRef = useRef<any>(null)
   const appliedIce = useRef<Set<string>>(new Set())
+  const connectedRef = useRef(false)
 
-  // Unlock audio on first gesture
   useEffect(() => {
     const h = () => ensureAudio()
     window.addEventListener("click", h, { once: true })
@@ -252,23 +261,23 @@ export function ShareClient() {
     return () => { window.removeEventListener("click", h); window.removeEventListener("touchstart", h) }
   }, [])
 
-  // Init
   useEffect(() => {
-    setMyDevice(detectDevice())
-    if (urlCode && urlCode.trim().length >= 4) {
+    if (urlCode?.trim()) {
       setMode("receive")
       setInputCode(urlCode.trim().toUpperCase())
     } else {
       setRoomCode(generateCode())
     }
-    // Try get geolocation quietly
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => { setUserLat(pos.coords.latitude); setUserLng(pos.coords.longitude) },
-        () => {}
-      )
-    }
   }, [urlCode])
+
+  const markConnected = useCallback((peer?: DeviceInfo) => {
+    if (connectedRef.current) return
+    connectedRef.current = true
+    setIsConnected(true)
+    if (peer) setPeerDevice(peer)
+    playConnectChime()
+    setStatus("Connected")
+  }, [])
 
   const createPC = useCallback(() => {
     const pc = new RTCPeerConnection({
@@ -280,31 +289,66 @@ export function ShareClient() {
       ],
     })
     pc.oniceconnectionstatechange = () => {
-      if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
-        setIsConnected(true)
-        setConnType("p2p")
-        setStatus("Direct P2P Connected ⚡")
-        setConnPulse(true)
-        playChime()
-        setTimeout(() => setConnPulse(false), 3000)
-      } else if (pc.iceConnectionState === "failed" || pc.iceConnectionState === "disconnected") {
-        setIsConnected(false)
-        setStatus("Connection lost")
+      if ((pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") && !connectedRef.current) {
+        markConnected()
+        setStatus("Direct P2P ⚡")
       }
     }
     pcRef.current = pc
     return pc
-  }, [])
+  }, [markConnected])
 
-  // SENDER: init offer + poll
+  // Listen on DataChannel
+  const listenChannel = useCallback((dc: RTCDataChannel) => {
+    let chunks: ArrayBuffer[] = [], header: { name: string; size: number; mime: string } | null = null
+    let got = 0, lastT = Date.now(), lastB = 0
+    dc.binaryType = "arraybuffer"
+
+    dc.onopen = () => { markConnected(); setStatus("P2P Ready ⚡") }
+
+    dc.onmessage = (e) => {
+      if (typeof e.data === "string") {
+        try {
+          const p = JSON.parse(e.data)
+          if (p.type === "header") {
+            header = { name: p.name, size: p.size, mime: p.mime }
+            setIncoming(header); setReceiving(true); setRecvPct(0); setRecvDone(false); setRecvUrl(null)
+            chunks = []; got = 0; lastT = Date.now(); lastB = 0
+            setStatus(`Receiving ${p.name}`)
+          }
+        } catch {}
+        return
+      }
+      if (e.data instanceof ArrayBuffer && header) {
+        chunks.push(e.data); got += e.data.byteLength
+        setRecvPct(Math.min(100, Math.round((got / header.size) * 100)))
+        const now = Date.now(), dt = (now - lastT) / 1000
+        if (dt >= 0.5) {
+          const bps = (got - lastB) / dt; setRecvBps(bps)
+          setRecvEta(bps > 0 ? (header.size - got) / bps : 0); lastT = now; lastB = got
+        }
+        if (got >= header.size) {
+          setReceiving(false); setRecvDone(true); setRecvPct(100); setStatus("Transfer complete ✓")
+          const blob = new Blob(chunks, { type: header.mime || "application/octet-stream" })
+          const url = URL.createObjectURL(blob); setRecvUrl(url)
+          const a = document.createElement("a"); a.href = url; a.download = header.name
+          document.body.appendChild(a); a.click(); document.body.removeChild(a)
+        }
+      }
+    }
+    dc.onclose = () => { setStatus("Disconnected") }
+    dcRef.current = dc
+  }, [markConnected])
+
+  // SENDER init
   useEffect(() => {
     if (mode !== "send" || !roomCode) return
     let alive = true
+    connectedRef.current = false; chimePlayed = false
 
     async function init() {
       const pc = createPC()
       const dc = pc.createDataChannel("ft", { ordered: true })
-      dcRef.current = dc
       listenChannel(dc)
 
       pc.onicecandidate = (e) => {
@@ -320,42 +364,33 @@ export function ShareClient() {
 
       await fetch("/api/share/signal", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "create_room", code: roomCode, offer,
-          deviceInfo: detectDevice(),
-          lat: userLat, lng: userLng,
-        }),
+        body: JSON.stringify({ action: "create_room", code: roomCode, offer, deviceInfo: detectDevice() }),
       })
-      setStatus("Room ready. Waiting for receiver…")
+      setStatus("Waiting for receiver…")
 
       const poll = async () => {
         if (!alive) return
         try {
-          const res = await fetch("/api/share/signal", {
+          const r = await fetch("/api/share/signal", {
             method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ action: "poll", code: roomCode, role: "sender" }),
           })
-          const d = await res.json()
-
-          if (d.found && d.receiverDeviceInfo) {
+          const d = await r.json()
+          if (d.receiverDeviceInfo) {
             setPeerDevice(d.receiverDeviceInfo)
-            if (!isConnected) {
+            if (!connectedRef.current) {
+              connectedRef.current = true
               setIsConnected(true)
-              setStatus(`Peer joined: ${d.receiverDeviceInfo.os} (${d.receiverDeviceInfo.browser})`)
-              playChime()
+              playConnectChime()
+              setStatus("Peer joined — P2P handshake…")
             }
           }
-
           if (d.hasAnswer && pc.signalingState === "have-local-offer") {
             await pc.setRemoteDescription(new RTCSessionDescription(d.answer))
           }
-
           for (const c of (d.receiverCandidates || [])) {
-            const k = JSON.stringify(c)
-            if (!appliedIce.current.has(k)) {
-              appliedIce.current.add(k)
-              try { await pc.addIceCandidate(new RTCIceCandidate(c)) } catch {}
-            }
+            const k = c.candidate
+            if (!appliedIce.current.has(k)) { appliedIce.current.add(k); try { await pc.addIceCandidate(new RTCIceCandidate(c)) } catch {} }
           }
         } catch {}
         if (alive) pollRef.current = setTimeout(poll, 900)
@@ -365,40 +400,32 @@ export function ShareClient() {
 
     init()
     return () => {
-      alive = false
-      clearTimeout(pollRef.current)
-      pcRef.current?.close()
+      alive = false; clearTimeout(pollRef.current); pcRef.current?.close()
     }
-  }, [mode, roomCode, userLat, userLng])
+  }, [mode, roomCode])
 
-  // RECEIVER: join room
+  // RECEIVER join
   const joinRoom = async (code = inputCode) => {
     const c = code.trim().toUpperCase()
-    if (c.length < 4) { setError("Enter a valid 4–8 character room code."); return }
+    if (c.length < 4) { setError("Enter a valid room code (4–8 chars)."); return }
     setError(null)
+    connectedRef.current = false; chimePlayed = false
     setStatus(`Connecting to ${c}…`)
 
-    const res = await fetch("/api/share/signal", {
+    const r = await fetch("/api/share/signal", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ action: "join_room", code: c, deviceInfo: detectDevice() }),
     })
-    const data = await res.json()
-    if (!res.ok || !data.offer) {
-      setError(data.error || "Room not found. Make sure sender has ul0.site/share open.")
+    const data = await r.json()
+    if (!r.ok || !data.offer) {
+      setError(data.error || "Room not found. Make sure the sender has ul0.site/share open.")
       return
     }
 
-    if (data.senderDeviceInfo) {
-      setPeerDevice(data.senderDeviceInfo)
-      setIsConnected(true)
-      setStatus(`Connected to ${data.senderDeviceInfo.os} (${data.senderDeviceInfo.browser})`)
-      playChime()
-      setConnPulse(true)
-      setTimeout(() => setConnPulse(false), 3000)
-    }
+    if (data.senderDeviceInfo) markConnected(data.senderDeviceInfo)
 
     const pc = createPC()
-    pc.ondatachannel = (e) => { dcRef.current = e.channel; listenChannel(e.channel) }
+    pc.ondatachannel = (e) => listenChannel(e.channel)
     pc.onicecandidate = (e) => {
       if (!e.candidate) return
       fetch("/api/share/signal", {
@@ -416,667 +443,501 @@ export function ShareClient() {
       body: JSON.stringify({ action: "join_room", code: c, answer, deviceInfo: detectDevice() }),
     })
 
-    // Poll sender ICE candidates
+    // Poll sender ICE
     let alive = true
     const poll = async () => {
-      if (!alive || pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") return
+      if (!alive || (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed")) return
       try {
-        const r = await fetch("/api/share/signal", {
+        const pr = await fetch("/api/share/signal", {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ action: "poll", code: c, role: "receiver" }),
         })
-        const d = await r.json()
-        for (const cand of (d.senderCandidates || [])) {
-          const k = JSON.stringify(cand)
-          if (!appliedIce.current.has(k)) {
-            appliedIce.current.add(k)
-            try { await pc.addIceCandidate(new RTCIceCandidate(cand)) } catch {}
-          }
+        const pd = await pr.json()
+        for (const cand of (pd.senderCandidates || [])) {
+          const k = cand.candidate
+          if (!appliedIce.current.has(k)) { appliedIce.current.add(k); try { await pc.addIceCandidate(new RTCIceCandidate(cand)) } catch {} }
         }
       } catch {}
       if (alive) setTimeout(poll, 900)
     }
     poll()
-
-    // Relay fallback poll after 3s
-    startRelayReceiverPoll(c, () => { alive = false })
+    return () => { alive = false }
   }
 
-  // Relay receiver poll
-  const startRelayReceiverPoll = (code: string, onDone?: () => void) => {
-    let lastIdx = 0
-    let relayChunks: ArrayBuffer[] = []
-    let relayHeader: { name: string; size: number; mime: string } | null = null
-
-    const check = async () => {
-      if (dcRef.current?.readyState === "open") return
-      try {
-        const r = await fetch("/api/share/relay", {
-          method: "POST", headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "get_chunks", code, fromIndex: lastIdx }),
-        })
-        const d = await r.json()
-        if (d.found && d.header) {
-          if (!relayHeader) {
-            relayHeader = d.header
-            setIncoming(relayHeader)
-            setReceiving(true)
-            setConnType("relay")
-            setStatus(`Receiving via relay: ${relayHeader!.name}`)
-          }
-          for (const b64 of (d.chunks || [])) {
-            const bin = atob(b64), arr = new Uint8Array(bin.length)
-            for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i)
-            relayChunks.push(arr.buffer)
-          }
-          lastIdx = d.nextIndex
-          if (relayHeader) {
-            const got = relayChunks.reduce((a, c) => a + c.byteLength, 0)
-            setRecvPct(Math.min(100, Math.round(got / relayHeader.size * 100)))
-          }
-          if (d.isComplete && relayHeader) {
-            setReceiving(false); setRecvDone(true); setRecvPct(100)
-            setStatus("Transfer complete!")
-            const blob = new Blob(relayChunks, { type: relayHeader.mime || "application/octet-stream" })
-            const url = URL.createObjectURL(blob)
-            setRecvUrl(url)
-            const a = document.createElement("a"); a.href = url; a.download = relayHeader.name
-            document.body.appendChild(a); a.click(); document.body.removeChild(a)
-            onDone?.(); return
-          }
-        }
-      } catch {}
-      if (!recvDone) setTimeout(check, 1200)
-    }
-    setTimeout(check, 3000)
-  }
-
-  // DataChannel listeners
-  const listenChannel = (dc: RTCDataChannel) => {
-    let chunks: ArrayBuffer[] = [], header: { name: string; size: number; mime: string } | null = null
-    let got = 0, lastT = Date.now(), lastB = 0
-    dc.binaryType = "arraybuffer"
-
-    dc.onopen = () => {
-      setIsConnected(true); setConnType("p2p")
-      setStatus("P2P Channel Open ⚡"); playChime()
-      setConnPulse(true); setTimeout(() => setConnPulse(false), 3000)
-    }
-    dc.onmessage = (e) => {
-      if (typeof e.data === "string") {
-        try {
-          const p = JSON.parse(e.data)
-          if (p.type === "header") {
-            header = { name: p.name, size: p.size, mime: p.mime }
-            setIncoming(header); setReceiving(true); setRecvPct(0); setRecvDone(false)
-            chunks = []; got = 0; lastT = Date.now(); lastB = 0
-            setStatus(`Receiving ${p.name}…`)
-          }
-        } catch {}
-        return
-      }
-      if (e.data instanceof ArrayBuffer) {
-        chunks.push(e.data); got += e.data.byteLength
-        if (header) {
-          setRecvPct(Math.min(100, Math.round(got / header.size * 100)))
-          const now = Date.now(), dt = (now - lastT) / 1000
-          if (dt >= 0.5) {
-            const bps = (got - lastB) / dt; setRecvBps(bps)
-            setRecvEta(bps > 0 ? (header.size - got) / bps : 0)
-            lastT = now; lastB = got
-          }
-          if (got >= header.size) {
-            setReceiving(false); setRecvDone(true); setRecvPct(100); setStatus("Transfer complete! 🎉")
-            const blob = new Blob(chunks, { type: header.mime || "application/octet-stream" })
-            const url = URL.createObjectURL(blob); setRecvUrl(url)
-            const a = document.createElement("a"); a.href = url; a.download = header.name
-            document.body.appendChild(a); a.click(); document.body.removeChild(a)
-          }
-        }
-      }
-    }
-    dc.onclose = () => { setIsConnected(false); setStatus("Channel closed") }
-  }
-
-  // Send file
+  // Send file over DataChannel
   const startSend = async () => {
     if (!file) { setError("Pick a file first."); return }
-
-    setSending(true); setSendPct(0); setSendDone(false); setError(null)
-
-    // Primary: WebRTC
-    if (dcRef.current?.readyState === "open") {
-      const dc = dcRef.current, chunk = 64 * 1024
-      dc.send(JSON.stringify({ type: "header", name: file.name, size: file.size, mime: file.type || "application/octet-stream" }))
-      let off = 0, lastT = Date.now(), lastB = 0
-
-      const next = () => {
-        if (off >= file.size) { setSending(false); setSendDone(true); setSendPct(100); setStatus("Sent! 🎉"); return }
-        const slice = file.slice(off, off + chunk)
-        const reader = new FileReader()
-        reader.onload = (ev) => {
-          if (!(ev.target?.result instanceof ArrayBuffer)) return
-          dc.send(ev.target.result); off += ev.target.result.byteLength
-          setSendPct(Math.min(100, Math.round(off / file.size * 100)))
-          const now = Date.now(), dt = (now - lastT) / 1000
-          if (dt >= 0.5) {
-            const bps = (off - lastB) / dt; setSendBps(bps)
-            setSendEta(bps > 0 ? (file.size - off) / bps : 0); lastT = now; lastB = off
-          }
-          setTimeout(next, dc.bufferedAmount > 512 * 1024 ? 25 : 2)
-        }
-        reader.readAsArrayBuffer(slice)
-      }
-      next(); return
+    if (!dcRef.current || dcRef.current.readyState !== "open") {
+      setError("Not connected yet. Wait for receiver to join."); return
     }
-
-    // Fallback: Relay
-    setConnType("relay"); setStatus("Uploading via server relay…")
-    await fetch("/api/share/relay", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "init_relay", code: roomCode, header: { name: file.name, size: file.size, mime: file.type || "application/octet-stream" } }),
-    })
+    setSending(true); setSendPct(0); setSendDone(false); setError(null)
+    const dc = dcRef.current, chunkSize = 64 * 1024
+    dc.send(JSON.stringify({ type: "header", name: file.name, size: file.size, mime: file.type || "application/octet-stream" }))
 
     let off = 0, lastT = Date.now(), lastB = 0
-    const chunk = 64 * 1024
-
-    const upload = async () => {
-      if (off >= file.size) { setSending(false); setSendDone(true); setSendPct(100); setStatus("Sent via relay! 🎉"); return }
-      const slice = file.slice(off, off + chunk)
+    const next = () => {
+      if (off >= file.size) { setSending(false); setSendDone(true); setSendPct(100); setStatus("Sent ✓"); return }
+      const slice = file.slice(off, off + chunkSize)
       const reader = new FileReader()
-      reader.onload = async (ev) => {
+      reader.onload = (ev) => {
         if (!(ev.target?.result instanceof ArrayBuffer)) return
-        const b64 = arrayBufferToBase64(ev.target.result)
-        const isLast = off + slice.size >= file.size
-        try {
-          const r = await fetch("/api/share/relay", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "upload_chunk", code: roomCode, header: { name: file.name, size: file.size, mime: file.type || "application/octet-stream" }, chunk: b64, isLast }),
-          })
-          if (r.ok) {
-            off += slice.size
-            setSendPct(Math.min(100, Math.round(off / file.size * 100)))
-            const now = Date.now(), dt = (now - lastT) / 1000
-            if (dt >= 0.5) {
-              const bps = (off - lastB) / dt; setSendBps(bps)
-              setSendEta(bps > 0 ? (file.size - off) / bps : 0); lastT = now; lastB = off
-            }
-            setTimeout(upload, 10)
-          } else { setError("Relay upload failed. Retrying…"); setTimeout(upload, 800) }
-        } catch { setError("Network issue. Retrying…"); setTimeout(upload, 800) }
+        dc.send(ev.target.result); off += ev.target.result.byteLength
+        setSendPct(Math.min(100, Math.round((off / file.size) * 100)))
+        const now = Date.now(), dt = (now - lastT) / 1000
+        if (dt >= 0.5) {
+          const bps = (off - lastB) / dt; setSendBps(bps)
+          setSendEta(bps > 0 ? (file.size - off) / bps : 0); lastT = now; lastB = off
+        }
+        setTimeout(next, dc.bufferedAmount > 512 * 1024 ? 25 : 2)
       }
       reader.readAsArrayBuffer(slice)
     }
-    upload()
-  }
-
-  // Nearby rooms discovery
-  const discoverNearby = async () => {
-    if (!userLat || !userLng) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => { setUserLat(pos.coords.latitude); setUserLng(pos.coords.longitude) },
-        () => setError("Location permission denied. Enable to use Nearby Share.")
-      )
-      return
-    }
-    setNearbyLoading(true)
-    try {
-      const r = await fetch("/api/share/signal", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "nearby", lat: userLat, lng: userLng }),
-      })
-      const d = await r.json()
-      setNearbyRooms(d.nearby || [])
-    } catch {}
-    setNearbyLoading(false)
+    next()
   }
 
   const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/share?code=${roomCode}` : ""
-
   const copyCode = () => { navigator.clipboard?.writeText(roomCode); setCopied(true); setTimeout(() => setCopied(false), 2000) }
   const copyUrl = () => { navigator.clipboard?.writeText(shareUrl); setCopiedLink(true); setTimeout(() => setCopiedLink(false), 2000) }
 
-  // ─── RENDER ────────────────────────────────────────────────────────────────
-  return (
-    <div className="w-full max-w-2xl mx-auto space-y-4">
+  // ─── NOTION-LIKE STYLES ───────────────────────────────────────────────────
+  const cardStyle: React.CSSProperties = {
+    background: "#fff",
+    border: "1px solid #e5e7eb",
+    borderRadius: "12px",
+    padding: "0",
+    overflow: "hidden",
+  }
 
-      {/* Mode Switcher */}
-      <div className="flex justify-center">
-        <div
-          className="inline-flex rounded-full p-1 gap-1"
-          style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
-        >
-          {(["send", "receive"] as const).map((m) => (
-            <button
-              key={m}
-              onClick={() => { setMode(m); setError(null) }}
-              className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold transition-all duration-200"
-              style={mode === m
-                ? { background: "white", color: "#0a0a0f", boxShadow: "0 2px 8px rgba(0,0,0,0.3)" }
-                : { color: "rgba(255,255,255,0.5)" }
-              }
-            >
-              {m === "send" ? <Upload className="h-3.5 w-3.5" /> : <Download className="h-3.5 w-3.5" />}
-              {m === "send" ? "Send" : "Receive"}
-            </button>
-          ))}
-        </div>
+  const pillStyle: React.CSSProperties = {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "6px",
+    padding: "3px 10px",
+    borderRadius: "6px",
+    fontSize: "11px",
+    fontFamily: "ui-monospace, monospace",
+    border: "1px solid #e5e7eb",
+    background: "#f9fafb",
+    color: "#6b7280",
+  }
+
+  // ─── RENDER ───────────────────────────────────────────────────────────────
+  return (
+    <div className="w-full max-w-xl mx-auto" style={{ fontFamily: "ui-sans-serif, system-ui, -apple-system, sans-serif" }}>
+
+      {/* Mode tabs — Notion sidebar style */}
+      <div style={{ display: "flex", gap: "2px", marginBottom: "16px", padding: "3px", background: "#f3f4f6", borderRadius: "10px" }}>
+        {(["send", "receive"] as const).map((m) => (
+          <button
+            key={m}
+            onClick={() => { setMode(m); setError(null) }}
+            style={{
+              flex: 1,
+              padding: "8px 0",
+              borderRadius: "8px",
+              fontSize: "13px",
+              fontWeight: 500,
+              border: "none",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "6px",
+              transition: "all 0.15s",
+              background: mode === m ? "#fff" : "transparent",
+              color: mode === m ? "#111827" : "#6b7280",
+              boxShadow: mode === m ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+            }}
+          >
+            {m === "send" ? <Upload style={{ width: 13, height: 13 }} /> : <Download style={{ width: 13, height: 13 }} />}
+            {m === "send" ? "Send" : "Receive"}
+          </button>
+        ))}
       </div>
 
-      {/* Main Card */}
-      <div
-        className="rounded-3xl overflow-hidden"
-        style={{
-          background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)",
-          border: "1px solid rgba(255,255,255,0.1)",
-          backdropFilter: "blur(20px)",
-          boxShadow: "0 25px 50px rgba(0,0,0,0.5)",
-        }}
-      >
-        {/* Card Header: Device Telemetry */}
-        <div
-          className="flex flex-wrap items-center justify-between gap-3 px-6 py-4"
-          style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
-        >
-          <div className="flex items-center gap-2">
-            <span
-              className="h-2 w-2 rounded-full"
-              style={{
-                background: isConnected ? "#22c55e" : "#f59e0b",
-                boxShadow: isConnected ? "0 0 8px #22c55e" : "0 0 8px #f59e0b",
-              }}
-            />
-            <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>{status}</span>
+      {/* Main card */}
+      <div style={cardStyle}>
+
+        {/* Status bar */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 16px",
+          borderBottom: "1px solid #f3f4f6",
+          background: "#fafafa",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+            <span style={{
+              width: 6, height: 6, borderRadius: "50%",
+              background: isConnected ? "#22c55e" : "#f59e0b",
+              boxShadow: isConnected ? "0 0 0 2px rgba(34,197,94,0.2)" : "0 0 0 2px rgba(245,158,11,0.2)",
+              display: "inline-block",
+              flexShrink: 0,
+            }} />
+            <span style={{ fontSize: 11, color: "#9ca3af", fontFamily: "ui-monospace, monospace" }}>
+              {status || (mode === "send" ? "Ready to send" : "Enter code to receive")}
+            </span>
           </div>
-
-          <div className="flex flex-wrap items-center gap-2">
-            {/* My device badge */}
-            <div
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono"
-              style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)" }}
-            >
-              <BrowserIcon browser={myDevice.browser} size={13} />
-              <span>{myDevice.os} · {myDevice.browser}</span>
-            </div>
-
-            {/* Peer device badge */}
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            {/* My device */}
+            <span style={pillStyle}>
+              <BrowserIcon browser={myDevice.browser} os={myDevice.os} size={12} />
+              {myDevice.os}
+            </span>
+            {/* Peer device */}
             {peerDevice && (
-              <div
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono"
-                style={{ background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)", color: "#86efac" }}
-              >
-                <span>{peerDevice.countryFlag || "🌐"}</span>
-                <BrowserIcon browser={peerDevice.browser} size={13} />
-                <span>{peerDevice.os} · {peerDevice.browser}</span>
-                {peerDevice.ip && <span style={{ opacity: 0.6 }}>[{peerDevice.ip}]</span>}
-              </div>
+              <span style={{ ...pillStyle, background: "#f0fdf4", borderColor: "#bbf7d0", color: "#166534" }}>
+                {peerDevice.countryFlag || ""} <BrowserIcon browser={peerDevice.browser} os={peerDevice.os} size={12} />
+                {peerDevice.os} · {peerDevice.browser}
+              </span>
             )}
-
-            <div className="flex items-center gap-1 text-[11px] font-mono" style={{ color: "rgba(255,255,255,0.35)" }}>
-              <Lock className="h-3 w-3 text-green-500" />
-              <span>E2EE</span>
-            </div>
+            <span style={{ ...pillStyle, color: "#22c55e", borderColor: "#dcfce7", background: "#f0fdf4" }}>
+              <Lock style={{ width: 10, height: 10 }} />E2EE
+            </span>
           </div>
         </div>
 
         {/* Error */}
         {error && (
-          <div
-            className="mx-6 mt-4 flex items-center gap-2.5 rounded-2xl px-4 py-3 text-xs"
-            style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#fca5a5" }}
-          >
-            <AlertCircle className="h-4 w-4 shrink-0" />
-            <span className="flex-1">{error}</span>
-            <button onClick={() => setError(null)}><X className="h-4 w-4 opacity-60 hover:opacity-100" /></button>
+          <div style={{
+            margin: "12px 16px 0",
+            padding: "10px 12px",
+            borderRadius: "8px",
+            background: "#fef2f2",
+            border: "1px solid #fecaca",
+            color: "#dc2626",
+            fontSize: "12px",
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "8px",
+          }}>
+            <AlertCircle style={{ width: 14, height: 14, flexShrink: 0, marginTop: 1 }} />
+            <span style={{ flex: 1 }}>{error}</span>
+            <button onClick={() => setError(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#dc2626", padding: 0 }}>
+              <X style={{ width: 14, height: 14 }} />
+            </button>
           </div>
         )}
 
-        <div className="p-6 space-y-5">
+        <div style={{ padding: "20px 16px", display: "flex", flexDirection: "column", gap: "16px" }}>
 
           {/* ══ SEND MODE ══════════════════════════════════════════════════ */}
           {mode === "send" && (
-            <div className="space-y-5">
-
-              {/* Dropzone */}
+            <>
+              {/* Drop zone */}
               <div
                 onDragOver={(e) => { e.preventDefault(); setDrag(true) }}
                 onDragLeave={() => setDrag(false)}
                 onDrop={(e) => { e.preventDefault(); setDrag(false); if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]) }}
-                className="relative flex flex-col items-center justify-center rounded-2xl p-8 text-center cursor-pointer transition-all duration-300"
                 style={{
-                  border: `2px dashed ${drag ? "rgba(99,102,241,0.8)" : file ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.15)"}`,
-                  background: drag
-                    ? "rgba(99,102,241,0.08)"
-                    : file
-                    ? "rgba(34,197,94,0.05)"
-                    : "rgba(255,255,255,0.02)",
+                  position: "relative",
+                  border: `1.5px dashed ${drag ? "#6366f1" : file ? "#22c55e" : "#d1d5db"}`,
+                  borderRadius: "10px",
+                  padding: "28px 16px",
+                  textAlign: "center",
+                  background: drag ? "#f0f0ff" : file ? "#f0fdf4" : "#fafafa",
+                  cursor: "pointer",
+                  transition: "all 0.15s",
                 }}
               >
                 <input type="file" onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])}
-                  className="absolute inset-0 opacity-0 cursor-pointer" />
+                  style={{ position: "absolute", inset: 0, opacity: 0, cursor: "pointer", width: "100%", height: "100%" }} />
                 {file ? (
-                  <div className="space-y-2">
-                    <div className="mx-auto h-14 w-14 rounded-2xl flex items-center justify-center"
-                      style={{ background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)" }}>
-                      <FileCheck className="h-7 w-7 text-green-400" />
+                  <div>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: "10px",
+                      background: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center",
+                      margin: "0 auto 10px",
+                    }}>
+                      <FileCheck style={{ width: 22, height: 22, color: "#16a34a" }} />
                     </div>
-                    <p className="font-bold text-white text-sm max-w-xs truncate mx-auto">{file.name}</p>
-                    <p className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.4)" }}>{formatBytes(file.size)}</p>
-                    <button className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>change file</button>
+                    <p style={{ margin: "0 0 2px", fontWeight: 600, fontSize: 14, color: "#111827" }}>{file.name}</p>
+                    <p style={{ margin: 0, fontSize: 12, color: "#6b7280", fontFamily: "ui-monospace, monospace" }}>{formatBytes(file.size)}</p>
+                    <button onClick={(e) => { e.stopPropagation(); setFile(null) }}
+                      style={{ marginTop: 8, fontSize: 11, color: "#9ca3af", background: "none", border: "none", cursor: "pointer" }}>
+                      change file
+                    </button>
                   </div>
                 ) : (
-                  <div className="space-y-3 pointer-events-none">
-                    <div className="mx-auto h-14 w-14 rounded-2xl flex items-center justify-center"
-                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                      <Upload className="h-6 w-6" style={{ color: "rgba(255,255,255,0.4)" }} />
+                  <div style={{ pointerEvents: "none" }}>
+                    <div style={{
+                      width: 44, height: 44, borderRadius: "10px",
+                      background: "#f3f4f6", border: "1px solid #e5e7eb",
+                      display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px",
+                    }}>
+                      <Upload style={{ width: 20, height: 20, color: "#9ca3af" }} />
                     </div>
-                    <div>
-                      <p className="font-semibold text-white text-sm">Drop any file here</p>
-                      <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>or click to browse · no size limit</p>
-                    </div>
+                    <p style={{ margin: "0 0 4px", fontWeight: 500, fontSize: 14, color: "#374151" }}>Drop any file here</p>
+                    <p style={{ margin: 0, fontSize: 12, color: "#9ca3af" }}>or click to browse · no size limit</p>
                   </div>
                 )}
               </div>
 
-              {/* Room Code Display */}
-              <div className="rounded-2xl p-4 space-y-3"
-                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <p className="text-[10px] font-semibold uppercase tracking-widest"
-                      style={{ color: "rgba(255,255,255,0.35)" }}>Room Code</p>
-                    <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.25)" }}>
-                      Share at <code className="text-white/40">ul0.site/share</code>
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    {/* Large glowing room code */}
-                    <div
-                      className="px-4 py-2 rounded-xl"
-                      style={{
-                        background: "rgba(99,102,241,0.15)",
-                        border: "1px solid rgba(99,102,241,0.4)",
-                        boxShadow: "0 0 20px rgba(99,102,241,0.15)",
-                      }}
-                    >
-                      <span className="text-xl font-black font-mono tracking-[0.2em] text-indigo-300">
-                        {roomCode}
-                      </span>
+              {/* Room Code block — Notion callout style */}
+              <div style={{ border: "1px solid #e5e7eb", borderRadius: "10px", overflow: "hidden" }}>
+                <div style={{ padding: "12px 14px", background: "#f9fafb", borderBottom: "1px solid #f3f4f6" }}>
+                  <p style={{ margin: "0 0 2px", fontSize: 10, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    Share Code
+                  </p>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+                    <span style={{
+                      fontSize: 28, fontWeight: 800, fontFamily: "ui-monospace, monospace",
+                      letterSpacing: "0.15em", color: "#111827",
+                    }}>
+                      {roomCode}
+                    </span>
+                    <div style={{ display: "flex", gap: 6 }}>
+                      <button onClick={copyCode} style={{
+                        padding: "6px 10px", borderRadius: "7px", fontSize: 12,
+                        border: "1px solid #e5e7eb", background: "#fff",
+                        display: "flex", alignItems: "center", gap: 4, cursor: "pointer",
+                        color: copied ? "#16a34a" : "#374151", transition: "all 0.15s",
+                      }}>
+                        {copied ? <Check style={{ width: 12, height: 12 }} /> : <Copy style={{ width: 12, height: 12 }} />}
+                        {copied ? "Copied" : "Copy"}
+                      </button>
+                      <button onClick={() => setShowQr(!showQr)} style={{
+                        padding: "6px 8px", borderRadius: "7px",
+                        border: "1px solid #e5e7eb", background: "#fff",
+                        display: "flex", alignItems: "center", cursor: "pointer", color: "#6b7280",
+                      }}>
+                        <QrCode style={{ width: 13, height: 13 }} />
+                      </button>
                     </div>
-                    <button
-                      onClick={copyCode}
-                      className="h-9 w-9 rounded-xl flex items-center justify-center transition-all"
-                      style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}
-                    >
-                      {copied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-white/50" />}
-                    </button>
                   </div>
                 </div>
 
-                {/* Share link row */}
-                <div className="flex gap-2">
-                  <input readOnly value={shareUrl}
-                    className="flex-1 bg-transparent rounded-xl px-3 py-2 text-xs font-mono truncate outline-none"
-                    style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" }}
-                  />
-                  <button onClick={copyUrl}
-                    className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all"
-                    style={{ background: copiedLink ? "rgba(34,197,94,0.2)" : "rgba(99,102,241,0.2)", border: `1px solid ${copiedLink ? "rgba(34,197,94,0.4)" : "rgba(99,102,241,0.4)"}`, color: copiedLink ? "#86efac" : "#a5b4fc" }}
-                  >
-                    {copiedLink ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
-                    {copiedLink ? "Copied" : "Copy Link"}
-                  </button>
-                  <button onClick={() => setShowQr(!showQr)}
-                    className="h-9 w-9 rounded-xl flex items-center justify-center"
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.4)" }}
-                  >
-                    <QrCode className="h-4 w-4" />
+                <div style={{ padding: "10px 14px", display: "flex", gap: 6, alignItems: "center" }}>
+                  <input readOnly value={shareUrl} style={{
+                    flex: 1, fontSize: 11, fontFamily: "ui-monospace, monospace",
+                    background: "#f9fafb", border: "1px solid #f3f4f6",
+                    borderRadius: "6px", padding: "6px 8px", color: "#6b7280",
+                    outline: "none",
+                  }} />
+                  <button onClick={copyUrl} style={{
+                    flexShrink: 0, padding: "6px 12px", borderRadius: "7px", fontSize: 12,
+                    border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 5,
+                    background: copiedLink ? "#22c55e" : "#111827",
+                    color: "#fff", transition: "all 0.15s",
+                  }}>
+                    {copiedLink ? <Check style={{ width: 12, height: 12 }} /> : <Share2 style={{ width: 12, height: 12 }} />}
+                    {copiedLink ? "Copied!" : "Share Link"}
                   </button>
                 </div>
 
                 {showQr && (
-                  <div className="flex justify-center pt-1">
-                    <div className="p-3 bg-white rounded-2xl shadow-lg">
-                      <img src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(shareUrl)}`}
-                        alt="QR" className="w-32 h-32" />
+                  <div style={{ padding: "0 14px 14px", display: "flex", justifyContent: "center" }}>
+                    <div style={{ padding: 8, border: "1px solid #e5e7eb", borderRadius: 10, background: "#fff" }}>
+                      <img src={`https://api.qrserver.com/v1/create-qr-code/?size=128x128&data=${encodeURIComponent(shareUrl)}`}
+                        alt="QR" style={{ width: 128, height: 128, display: "block" }} />
                     </div>
                   </div>
                 )}
               </div>
 
-              {/* Transfer Button / Progress */}
+              {/* Send button + progress */}
               {file && !sendDone && !sending && (
                 <button
                   onClick={startSend}
-                  className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95"
+                  disabled={!isConnected}
                   style={{
-                    background: isConnected
-                      ? "linear-gradient(135deg, #6366f1, #818cf8)"
-                      : "rgba(255,255,255,0.06)",
-                    color: isConnected ? "white" : "rgba(255,255,255,0.3)",
-                    boxShadow: isConnected ? "0 8px 24px rgba(99,102,241,0.4)" : "none",
-                    border: isConnected ? "none" : "1px solid rgba(255,255,255,0.08)",
-                    cursor: isConnected ? "pointer" : "default",
+                    width: "100%", padding: "11px", borderRadius: "9px",
+                    fontSize: 14, fontWeight: 600, border: "none", cursor: isConnected ? "pointer" : "not-allowed",
+                    display: "flex", alignItems: "center", justifyContent: "center", gap: 7,
+                    background: isConnected ? "#111827" : "#f3f4f6",
+                    color: isConnected ? "#fff" : "#9ca3af",
+                    transition: "all 0.15s",
                   }}
                 >
-                  <Zap className="h-4 w-4" />
-                  {isConnected ? "Start Transfer" : "Waiting for receiver to connect…"}
+                  <Zap style={{ width: 15, height: 15 }} />
+                  {isConnected ? "Send File" : "Waiting for receiver to connect…"}
                 </button>
               )}
 
-              {/* Progress bar */}
-              {(sending || sendDone) && (
-                <div className="rounded-2xl p-4 space-y-3"
-                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                  <div className="flex items-center justify-between text-xs font-mono">
-                    <span className="text-white/60 truncate max-w-[200px]">{file?.name}</span>
-                    <span className="font-bold text-white">{sendPct}%</span>
+              {(sending || sendDone) && file && (
+                <div style={{ border: "1px solid #e5e7eb", borderRadius: "10px", padding: "14px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 12 }}>
+                    <span style={{ color: "#374151", fontWeight: 500, maxWidth: 260, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {file.name}
+                    </span>
+                    <span style={{ fontFamily: "ui-monospace, monospace", fontWeight: 700, color: "#111827" }}>{sendPct}%</span>
                   </div>
-                  <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-                    <div className="h-full rounded-full transition-all duration-300"
-                      style={{
-                        width: `${sendPct}%`,
-                        background: sendDone
-                          ? "linear-gradient(90deg, #22c55e, #86efac)"
-                          : "linear-gradient(90deg, #6366f1, #818cf8)",
-                      }} />
+                  <div style={{ height: 4, background: "#f3f4f6", borderRadius: 4, overflow: "hidden" }}>
+                    <div style={{
+                      height: "100%", borderRadius: 4, transition: "width 0.3s",
+                      width: `${sendPct}%`,
+                      background: sendDone ? "#22c55e" : "#111827",
+                    }} />
                   </div>
                   {!sendDone && (
-                    <div className="flex gap-3 text-[11px] font-mono" style={{ color: "rgba(255,255,255,0.4)" }}>
-                      <span>{(sendBps / 1048576).toFixed(2)} MB/s</span>
-                      <span>·</span>
-                      <span>{formatETA(sendEta)}</span>
-                      <span>·</span>
-                      <span className="uppercase">{connType === "p2p" ? "⚡ Direct P2P" : "☁ Relay"}</span>
-                    </div>
+                    <p style={{ margin: "8px 0 0", fontSize: 11, fontFamily: "ui-monospace, monospace", color: "#9ca3af" }}>
+                      {(sendBps / 1048576).toFixed(2)} MB/s · {formatETA(sendEta)}
+                    </p>
                   )}
                   {sendDone && (
-                    <p className="text-xs text-green-400 font-semibold text-center">🎉 File sent successfully!</p>
+                    <p style={{ margin: "8px 0 0", fontSize: 12, color: "#16a34a", fontWeight: 500 }}>
+                      ✓ File sent successfully
+                    </p>
                   )}
                 </div>
               )}
-
-            </div>
+            </>
           )}
 
           {/* ══ RECEIVE MODE ═══════════════════════════════════════════════ */}
           {mode === "receive" && (
-            <div className="space-y-5">
+            <>
               {!isConnected ? (
-                <div className="space-y-4">
-                  {/* Code Input */}
-                  <div className="space-y-2">
-                    <p className="text-[11px] font-semibold uppercase tracking-widest"
-                      style={{ color: "rgba(255,255,255,0.35)" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  <div>
+                    <p style={{ margin: "0 0 8px", fontSize: 11, fontWeight: 600, color: "#9ca3af", textTransform: "uppercase", letterSpacing: "0.08em" }}>
                       Enter Room Code
                     </p>
-                    <div className="flex gap-2">
+                    <div style={{ display: "flex", gap: 8 }}>
                       <input
                         value={inputCode}
                         onChange={(e) => setInputCode(e.target.value.toUpperCase())}
                         placeholder="e.g. A3BX7K"
                         maxLength={8}
                         onKeyDown={(e) => e.key === "Enter" && joinRoom()}
-                        className="flex-1 text-center text-xl font-black font-mono tracking-[0.2em] uppercase rounded-2xl py-3 outline-none transition-all"
                         style={{
-                          background: "rgba(255,255,255,0.05)",
-                          border: "1px solid rgba(255,255,255,0.12)",
-                          color: "white",
-                          letterSpacing: "0.2em",
+                          flex: 1, textAlign: "center",
+                          fontSize: 24, fontWeight: 800, fontFamily: "ui-monospace, monospace",
+                          letterSpacing: "0.15em", textTransform: "uppercase",
+                          border: "1.5px solid #e5e7eb", borderRadius: "9px",
+                          padding: "10px 12px", outline: "none", color: "#111827",
+                          background: "#fafafa",
                         }}
                       />
                       <button
                         onClick={() => joinRoom()}
-                        className="flex items-center gap-2 px-5 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95"
-                        style={{ background: "linear-gradient(135deg, #6366f1, #818cf8)", color: "white", boxShadow: "0 8px 24px rgba(99,102,241,0.4)" }}
+                        style={{
+                          flexShrink: 0, padding: "10px 18px", borderRadius: "9px",
+                          fontSize: 14, fontWeight: 600, border: "none", cursor: "pointer",
+                          background: "#111827", color: "#fff",
+                          display: "flex", alignItems: "center", gap: 6,
+                        }}
                       >
-                        Connect
-                        <ArrowRight className="h-4 w-4" />
+                        Connect <ArrowRight style={{ width: 14, height: 14 }} />
                       </button>
                     </div>
-                    <p className="text-[11px] text-center" style={{ color: "rgba(255,255,255,0.25)" }}>
+                    <p style={{ margin: "8px 0 0", fontSize: 11, color: "#9ca3af", textAlign: "center" }}>
                       or open the sender's shared link directly
                     </p>
                   </div>
-
-                  {/* Nearby Share */}
-                  <div className="rounded-2xl p-4 space-y-3"
-                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <MapPin className="h-4 w-4" style={{ color: "rgba(99,102,241,0.8)" }} />
-                        <span className="text-xs font-semibold text-white/60">Nearby Share</span>
-                        <span className="text-[10px] px-2 py-0.5 rounded-full font-mono"
-                          style={{ background: "rgba(99,102,241,0.15)", color: "#a5b4fc", border: "1px solid rgba(99,102,241,0.3)" }}>
-                          within 50km
-                        </span>
-                      </div>
-                      <button
-                        onClick={discoverNearby}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
-                        style={{ background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.3)", color: "#a5b4fc" }}
-                      >
-                        {nearbyLoading
-                          ? <RefreshCcw className="h-3 w-3 animate-spin" />
-                          : <Wifi className="h-3 w-3" />}
-                        {nearbyLoading ? "Scanning…" : "Discover"}
-                      </button>
-                    </div>
-
-                    {nearbyRooms.length > 0 ? (
-                      <div className="space-y-2">
-                        {nearbyRooms.map((r) => (
-                          <button key={r.code} onClick={() => { setInputCode(r.code); joinRoom(r.code) }}
-                            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs transition-all hover:scale-[1.01]"
-                            style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.25)", color: "white" }}
-                          >
-                            <div className="flex items-center gap-2">
-                              <MapPin className="h-3 w-3 text-indigo-400" />
-                              <span className="font-mono font-bold tracking-wider text-indigo-300">{r.code}</span>
-                            </div>
-                            <div className="flex items-center gap-2" style={{ color: "rgba(255,255,255,0.4)" }}>
-                              <span>{r.distance} km away</span>
-                              <ChevronRight className="h-3.5 w-3.5" />
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    ) : (
-                      <p className="text-[11px] text-center" style={{ color: "rgba(255,255,255,0.2)" }}>
-                        Click Discover to find nearby senders (uses your location)
-                      </p>
-                    )}
-                  </div>
                 </div>
               ) : (
-                <div className="space-y-4">
-                  {/* Connected Badge */}
-                  <div className="flex items-center justify-between rounded-2xl px-4 py-3"
-                    style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)" }}>
-                    <div className="flex items-center gap-2.5">
-                      <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse"
-                        style={{ boxShadow: "0 0 8px #22c55e" }} />
-                      <span className="text-xs font-semibold text-green-300">
-                        {peerDevice
-                          ? `${peerDevice.countryFlag || ""} ${peerDevice.os} (${peerDevice.browser})`
-                          : "Sender connected"}
-                      </span>
-                    </div>
-                    <button onClick={() => setIsConnected(false)}
-                      className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
-                      disconnect
-                    </button>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {/* Connected */}
+                  <div style={{
+                    padding: "10px 14px", borderRadius: "9px",
+                    background: "#f0fdf4", border: "1px solid #bbf7d0",
+                    display: "flex", alignItems: "center", gap: 8,
+                  }}>
+                    <span style={{
+                      width: 7, height: 7, borderRadius: "50%", background: "#22c55e",
+                      flexShrink: 0, display: "inline-block",
+                    }} />
+                    <span style={{ fontSize: 12, fontWeight: 500, color: "#166534" }}>
+                      {peerDevice
+                        ? `Connected — ${peerDevice.os} (${peerDevice.browser})`
+                        : "Connected to sender"}
+                    </span>
                   </div>
 
-                  {/* Incoming file */}
+                  {/* Incoming file info */}
                   {incoming ? (
-                    <div className="rounded-2xl p-4 space-y-4"
-                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
-                      <div className="flex items-center gap-3">
-                        <div className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0"
-                          style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
-                          <FileIcon className="h-5 w-5 text-white/60" />
+                    <div style={{ border: "1px solid #e5e7eb", borderRadius: "10px", overflow: "hidden" }}>
+                      <div style={{ padding: "12px 14px", background: "#fafafa", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", gap: 10 }}>
+                        <div style={{
+                          width: 38, height: 38, borderRadius: "8px", flexShrink: 0,
+                          background: "#f3f4f6", border: "1px solid #e5e7eb",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}>
+                          <FileIcon style={{ width: 18, height: 18, color: "#6b7280" }} />
                         </div>
-                        <div className="min-w-0">
-                          <p className="font-bold text-white text-sm truncate">{incoming.name}</p>
-                          <p className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.35)" }}>
+                        <div style={{ minWidth: 0 }}>
+                          <p style={{ margin: "0 0 2px", fontWeight: 600, fontSize: 13, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {incoming.name}
+                          </p>
+                          <p style={{ margin: 0, fontSize: 11, fontFamily: "ui-monospace, monospace", color: "#6b7280" }}>
                             {formatBytes(incoming.size)}
                           </p>
                         </div>
                       </div>
 
                       {(receiving || recvDone) && (
-                        <>
-                          <div className="flex items-center justify-between text-xs font-mono">
-                            <span style={{ color: "rgba(255,255,255,0.4)" }}>
-                              {recvDone ? "Complete" : "Receiving…"}
-                            </span>
-                            <span className="font-bold text-white">{recvPct}%</span>
+                        <div style={{ padding: "12px 14px" }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 12 }}>
+                            <span style={{ color: "#6b7280" }}>{recvDone ? "Complete" : "Receiving…"}</span>
+                            <span style={{ fontFamily: "ui-monospace, monospace", fontWeight: 700, color: "#111827" }}>{recvPct}%</span>
                           </div>
-                          <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-                            <div className="h-full rounded-full transition-all duration-300"
-                              style={{
-                                width: `${recvPct}%`,
-                                background: recvDone
-                                  ? "linear-gradient(90deg, #22c55e, #86efac)"
-                                  : "linear-gradient(90deg, #6366f1, #818cf8)",
-                              }} />
+                          <div style={{ height: 4, background: "#f3f4f6", borderRadius: 4, overflow: "hidden" }}>
+                            <div style={{
+                              height: "100%", borderRadius: 4, transition: "width 0.3s",
+                              width: `${recvPct}%`,
+                              background: recvDone ? "#22c55e" : "#111827",
+                            }} />
                           </div>
                           {receiving && (
-                            <div className="flex gap-3 text-[11px] font-mono" style={{ color: "rgba(255,255,255,0.35)" }}>
-                              <span>{(recvBps / 1048576).toFixed(2)} MB/s</span>
-                              <span>·</span>
-                              <span>{formatETA(recvEta)}</span>
-                              <span>·</span>
-                              <span className="uppercase">{connType === "p2p" ? "⚡ Direct P2P" : "☁ Relay"}</span>
-                            </div>
+                            <p style={{ margin: "8px 0 0", fontSize: 11, fontFamily: "ui-monospace, monospace", color: "#9ca3af" }}>
+                              {(recvBps / 1048576).toFixed(2)} MB/s · {formatETA(recvEta)} · {formatBytes(Math.round(recvPct / 100 * incoming.size))} of {formatBytes(incoming.size)}
+                            </p>
                           )}
-                        </>
+                          {recvDone && recvUrl && (
+                            <a href={recvUrl} download={incoming.name} style={{
+                              display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
+                              marginTop: 10, padding: "9px", borderRadius: "8px",
+                              background: "#111827", color: "#fff",
+                              fontSize: 13, fontWeight: 600, textDecoration: "none",
+                            }}>
+                              <Download style={{ width: 14, height: 14 }} />
+                              Download Again
+                            </a>
+                          )}
+                        </div>
                       )}
 
-                      {recvDone && recvUrl && (
-                        <a href={recvUrl} download={incoming.name}
-                          className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl font-bold text-sm transition-all active:scale-95"
-                          style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "white", boxShadow: "0 8px 24px rgba(34,197,94,0.3)" }}
-                        >
-                          <Download className="h-4 w-4" />
-                          Download Again
-                        </a>
+                      {!receiving && !recvDone && (
+                        <div style={{ padding: "16px 14px", textAlign: "center" }}>
+                          <RefreshCcw style={{ width: 16, height: 16, color: "#9ca3af", animation: "spin 1.5s linear infinite", display: "inline-block" }} />
+                          <p style={{ margin: "8px 0 0", fontSize: 12, color: "#9ca3af" }}>Waiting for sender to start…</p>
+                        </div>
                       )}
                     </div>
                   ) : (
-                    <div className="rounded-2xl p-6 text-center space-y-3"
-                      style={{ border: "1px dashed rgba(255,255,255,0.1)" }}>
-                      <RefreshCcw className="h-6 w-6 animate-spin mx-auto" style={{ color: "rgba(255,255,255,0.3)" }} />
-                      <p className="text-xs font-semibold text-white/50">Waiting for sender to start transfer…</p>
+                    <div style={{
+                      padding: "24px 16px", textAlign: "center",
+                      border: "1.5px dashed #e5e7eb", borderRadius: "10px",
+                    }}>
+                      <RefreshCcw style={{ width: 18, height: 18, color: "#d1d5db", display: "inline-block" }} />
+                      <p style={{ margin: "10px 0 0", fontSize: 12, color: "#9ca3af" }}>Waiting for sender to pick a file and start the transfer…</p>
                     </div>
                   )}
                 </div>
               )}
-            </div>
+            </>
           )}
+
+          {/* Footer trust row */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, paddingTop: 4 }}>
+            {[
+              { icon: <Lock style={{ width: 10, height: 10 }} />, text: "End-to-end encrypted" },
+              { icon: <Zap style={{ width: 10, height: 10 }} />, text: "No file size limit" },
+              { icon: <Globe style={{ width: 10, height: 10 }} />, text: "No server storage" },
+            ].map(({ icon, text }) => (
+              <div key={text} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#9ca3af" }}>
+                {icon} {text}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+      `}</style>
     </div>
   )
 }
