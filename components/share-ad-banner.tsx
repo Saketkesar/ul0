@@ -2,16 +2,26 @@
 
 import { useEffect, useRef } from "react"
 
-export function ShareAdBanner() {
+interface ShareAdBannerProps {
+  label?: string
+  className?: string
+}
+
+export function ShareAdBanner({ label = "Sponsored", className = "" }: ShareAdBannerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!containerRef.current) return
 
-    // Clean up previous children
+    // Clear previous contents to prevent duplicates
     containerRef.current.innerHTML = ""
 
-    // Create inline script setting atOptions
+    const wrapper = document.createElement("div")
+    wrapper.style.width = "160px"
+    wrapper.style.height = "300px"
+    wrapper.style.margin = "0 auto"
+
+    // Inline script defining atOptions
     const optsScript = document.createElement("script")
     optsScript.type = "text/javascript"
     optsScript.text = `
@@ -24,24 +34,28 @@ export function ShareAdBanner() {
       };
     `
 
-    // Create external invoke script
+    // External script loading invoke.js
     const invokeScript = document.createElement("script")
     invokeScript.type = "text/javascript"
     invokeScript.src = "https://unsettledradiator.com/25084f2a22060ec74cff3a46dbf2fb73/invoke.js"
     invokeScript.async = true
 
-    containerRef.current.appendChild(optsScript)
-    containerRef.current.appendChild(invokeScript)
+    wrapper.appendChild(optsScript)
+    wrapper.appendChild(invokeScript)
+    containerRef.current.appendChild(wrapper)
   }, [])
 
   return (
-    <div className="flex flex-col items-center justify-center p-3 rounded-2xl border border-border/40 bg-card/50 backdrop-blur-xs shadow-xs text-center">
-      <span className="text-[10px] font-mono tracking-widest text-muted-foreground/60 uppercase mb-2">
-        Sponsored
-      </span>
+    <div className={`relative overflow-hidden rounded-3xl border border-primary/20 bg-card/60 backdrop-blur-md p-4 shadow-lg text-center transition-all hover:border-primary/40 ${className}`}>
+      <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-3">
+        <span className="text-[10px] font-mono font-bold tracking-widest text-primary/80 uppercase">
+          {label}
+        </span>
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+      </div>
       <div 
         ref={containerRef} 
-        className="w-[160px] h-[300px] overflow-hidden rounded-xl bg-muted/20 flex items-center justify-center"
+        className="w-[160px] h-[300px] mx-auto overflow-hidden rounded-2xl bg-muted/30 flex items-center justify-center border border-border/30"
       />
     </div>
   )
