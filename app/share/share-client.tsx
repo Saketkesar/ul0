@@ -11,7 +11,6 @@ import {
   Download,
   Copy,
   Check,
-  Shield,
   Zap,
   Lock,
   FileIcon,
@@ -24,14 +23,55 @@ import {
   FileCheck,
   Smartphone,
   Laptop,
-  Monitor,
-  Activity,
-  Wifi,
-  Sparkles,
+  Globe,
   RefreshCcw,
+  Sparkles,
+  Link2,
 } from "lucide-react"
 
-// Helper to format byte sizes
+// Real Browser SVG Icons
+function BraveIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2L3 7v10l9 5 9-5V7l-9-5zm6 13.8L12 19.1l-6-3.3V8.2l6-3.3 6 3.3v7.6z" />
+    </svg>
+  )
+}
+
+function ChromeIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8zm0-13a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 8a3 3 0 1 1 3-3 3 3 0 0 1-3 3z" />
+    </svg>
+  )
+}
+
+function SafariIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm2.5 11.5L8.5 15.5l2-6 6-2-2 6z" />
+    </svg>
+  )
+}
+
+function FirefoxIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm4 7a4 4 0 1 1-4-4 4 4 0 0 1 4 4z" />
+    </svg>
+  )
+}
+
+function BrowserBadgeIcon({ browser }: { browser: string }) {
+  const b = browser.toLowerCase()
+  if (b.includes("brave")) return <BraveIcon className="h-4 w-4 text-orange-500 shrink-0" />
+  if (b.includes("chrome")) return <ChromeIcon className="h-4 w-4 text-blue-500 shrink-0" />
+  if (b.includes("safari")) return <SafariIcon className="h-4 w-4 text-sky-500 shrink-0" />
+  if (b.includes("firefox")) return <FirefoxIcon className="h-4 w-4 text-amber-500 shrink-0" />
+  return <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
+}
+
+// Format byte sizes
 function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return "0 Bytes"
   const k = 1024
@@ -85,12 +125,26 @@ function detectDeviceInfo() {
   return { os, browser }
 }
 
-// Web Audio API Connection Chime
+// AudioContext singleton to ensure audio plays on user interaction
+let globalAudioCtx: AudioContext | null = null
+
+function unlockAudioContext() {
+  try {
+    if (!globalAudioCtx) {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext
+      if (AudioContextClass) globalAudioCtx = new AudioContextClass()
+    }
+    if (globalAudioCtx && globalAudioCtx.state === "suspended") {
+      globalAudioCtx.resume()
+    }
+  } catch {}
+}
+
 function playConnectionChime() {
   try {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext
-    if (!AudioContextClass) return
-    const ctx = new AudioContextClass()
+    unlockAudioContext()
+    if (!globalAudioCtx) return
+    const ctx = globalAudioCtx
 
     const osc = ctx.createOscillator()
     const gain = ctx.createGain()
@@ -108,9 +162,7 @@ function playConnectionChime() {
 
     osc.start()
     osc.stop(ctx.currentTime + 0.5)
-  } catch {
-    // ignore
-  }
+  } catch {}
 }
 
 export function ShareClient() {
@@ -123,9 +175,9 @@ export function ShareClient() {
 
   // WebRTC Connection State
   const [isConnected, setIsConnected] = useState<boolean>(false)
-  const [statusText, setStatusText] = useState<string>("Ready. Share code or QR to pair.")
+  const [statusText, setStatusText] = useState<string>("Ready. Share room code or link to connect.")
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [peerDevice, setPeerDevice] = useState<{ os: string; browser: string; ip: string } | null>(null)
+  const [peerDevice, setPeerDevice] = useState<{ os: string; browser: string; ip: string; countryCode?: string; countryFlag?: string } | null>(null)
   const [myDeviceInfo, setMyDeviceInfo] = useState<{ os: string; browser: string }>({ os: "Device", browser: "Browser" })
 
   // File state (Sender)
@@ -154,19 +206,32 @@ export function ShareClient() {
   const pcRef = useRef<RTCPeerConnection | null>(null)
   const dcRef = useRef<RTCDataChannel | null>(null)
   const pollTimerRef = useRef<any>(null)
+  const appliedCandidates = useRef<Set<string>>(new Set())
+
+  // Unlock AudioContext on page click
+  useEffect(() => {
+    const handleGesture = () => unlockAudioContext()
+    window.addEventListener("click", handleGesture, { once: true })
+    window.addEventListener("touchstart", handleGesture, { once: true })
+    return () => {
+      window.removeEventListener("click", handleGesture)
+      window.removeEventListener("touchstart", handleGesture)
+    }
+  }, [])
 
   // Initialize room code & device info
   useEffect(() => {
     setMyDeviceInfo(detectDeviceInfo())
     if (urlCode && urlCode.trim().length >= 4) {
       setMode("receive")
-      setInputCode(urlCode.trim().toUpperCase())
+      const clean = urlCode.trim().toUpperCase()
+      setInputCode(clean)
     } else {
       setRoomCode(generateCode())
     }
   }, [urlCode])
 
-  // Setup PeerConnection with STUN configuration
+  // Setup WebRTC PeerConnection with Google & Twilio STUN servers
   const createPeerConnection = () => {
     const pc = new RTCPeerConnection({
       iceServers: [
@@ -179,14 +244,14 @@ export function ShareClient() {
     })
 
     pc.oniceconnectionstatechange = () => {
-      console.log("ICE Connection State:", pc.iceConnectionState)
+      console.log("ICE State:", pc.iceConnectionState)
       if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
         setIsConnected(true)
-        setStatusText("Direct P2P WebRTC Tunnel Established!")
+        setStatusText("Direct P2P WebRTC Connection Active")
         playConnectionChime()
       } else if (pc.iceConnectionState === "failed" || pc.iceConnectionState === "disconnected") {
         setIsConnected(false)
-        setStatusText("Peer disconnected.")
+        setStatusText("Peer disconnected")
       }
     }
 
@@ -194,7 +259,7 @@ export function ShareClient() {
     return pc
   }
 
-  // SENDER ROLE: Publish Offer & Poll for Answer
+  // SENDER ROLE: Publish Offer & Poll Receiver's Answer + Candidates continuously
   useEffect(() => {
     if (mode !== "send" || !roomCode) return
 
@@ -207,7 +272,6 @@ export function ShareClient() {
 
       setupDataChannelListeners(dc)
 
-      // Collect sender ICE candidates
       pc.onicecandidate = (evt) => {
         if (evt.candidate) {
           fetch("/api/share/signal", {
@@ -226,7 +290,6 @@ export function ShareClient() {
       const offer = await pc.createOffer()
       await pc.setLocalDescription(offer)
 
-      // Post Offer to server signaling API
       await fetch("/api/share/signal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -238,7 +301,6 @@ export function ShareClient() {
         }),
       })
 
-      // Poll for Receiver's Answer
       const pollAnswer = async () => {
         if (!isSubscribed || isConnected) return
         try {
@@ -255,20 +317,22 @@ export function ShareClient() {
 
           if (data.hasAnswer && pc.signalingState === "have-local-offer") {
             await pc.setRemoteDescription(new RTCSessionDescription(data.answer))
-            
-            // Add receiver ICE candidates
-            if (data.receiverCandidates && data.receiverCandidates.length > 0) {
-              for (const cand of data.receiverCandidates) {
+          }
+
+          // Continuously add receiver ICE candidates
+          if (data.receiverCandidates && data.receiverCandidates.length > 0) {
+            for (const cand of data.receiverCandidates) {
+              const candStr = JSON.stringify(cand)
+              if (!appliedCandidates.current.has(candStr)) {
+                appliedCandidates.current.add(candStr)
                 try { await pc.addIceCandidate(new RTCIceCandidate(cand)) } catch {}
               }
             }
           }
-        } catch (e) {
-          // ignore
-        }
+        } catch (e) {}
 
         if (isSubscribed && !isConnected) {
-          pollTimerRef.current = setTimeout(pollAnswer, 1500)
+          pollTimerRef.current = setTimeout(pollAnswer, 800)
         }
       }
 
@@ -284,7 +348,7 @@ export function ShareClient() {
     }
   }, [mode, roomCode])
 
-  // RECEIVER ROLE: Connect to Room, Get Offer & Post Answer
+  // RECEIVER ROLE: Join Room, Set Remote Offer, Create Answer & Poll Sender ICE Candidates
   const handleConnectReceiver = async (targetCode?: string) => {
     const code = (targetCode || inputCode).trim().toUpperCase()
     if (!code || code.length < 4) {
@@ -293,7 +357,7 @@ export function ShareClient() {
     }
 
     setErrorMsg(null)
-    setStatusText(`Locating sender for room ${code}…`)
+    setStatusText(`Connecting to room ${code}…`)
 
     try {
       const res = await fetch("/api/share/signal", {
@@ -304,7 +368,7 @@ export function ShareClient() {
       const data = await res.json()
 
       if (!res.ok || !data.offer) {
-        setErrorMsg(data.error || `Room ${code} not found. Make sure the sender has ul0.site/share open!`)
+        setErrorMsg(data.error || `Room ${code} not found. Make sure the sender has ul0.site/share open.`)
         return
       }
 
@@ -338,7 +402,6 @@ export function ShareClient() {
       const answer = await pc.createAnswer()
       await pc.setLocalDescription(answer)
 
-      // Send Answer back
       await fetch("/api/share/signal", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -350,14 +413,41 @@ export function ShareClient() {
         }),
       })
 
-      setStatusText("Exchanging WebRTC handshake…")
+      // Poll Sender Candidates continuously until connected
+      const pollSenderCandidates = async () => {
+        if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") return
+        try {
+          const pollRes = await fetch("/api/share/signal", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "poll", code, role: "receiver" }),
+          })
+          const pollData = await pollRes.json()
+
+          if (pollData.senderCandidates && pollData.senderCandidates.length > 0) {
+            for (const cand of pollData.senderCandidates) {
+              const candStr = JSON.stringify(cand)
+              if (!appliedCandidates.current.has(candStr)) {
+                appliedCandidates.current.add(candStr)
+                try { await pc.addIceCandidate(new RTCIceCandidate(cand)) } catch {}
+              }
+            }
+          }
+        } catch {}
+
+        if (pc.iceConnectionState !== "connected" && pc.iceConnectionState !== "completed") {
+          setTimeout(pollSenderCandidates, 800)
+        }
+      }
+
+      pollSenderCandidates()
     } catch (err: any) {
       console.error("Join room error:", err)
-      setErrorMsg("Failed to connect to room. Please check code and try again.")
+      setErrorMsg("Failed to connect to room. Please check code.")
     }
   }
 
-  // Setup DataChannel chunk receiver
+  // DataChannel Handlers
   const setupDataChannelListeners = (dc: RTCDataChannel) => {
     let receivedChunks: ArrayBuffer[] = []
     let expectedHeader: { name: string; size: number; mime: string } | null = null
@@ -369,14 +459,13 @@ export function ShareClient() {
 
     dc.onopen = () => {
       setIsConnected(true)
-      setStatusText("WebRTC P2P DataChannel Active!")
+      setStatusText("WebRTC P2P Channel Active")
       playConnectionChime()
     }
 
     dc.onmessage = (evt) => {
       const data = evt.data
 
-      // Text Packet (Header)
       if (typeof data === "string") {
         try {
           const parsed = JSON.parse(data)
@@ -396,7 +485,6 @@ export function ShareClient() {
         } catch {}
       }
 
-      // Binary Packet (File Chunk)
       if (data instanceof ArrayBuffer) {
         receivedChunks.push(data)
         receivedBytes += data.byteLength
@@ -433,7 +521,6 @@ export function ShareClient() {
           const url = URL.createObjectURL(blob)
           setReceivedBlobUrl(url)
 
-          // Auto Download
           const a = document.createElement("a")
           a.href = url
           a.download = expectedHeader.name
@@ -446,11 +533,11 @@ export function ShareClient() {
 
     dc.onclose = () => {
       setIsConnected(false)
-      setStatusText("DataChannel closed.")
+      setStatusText("Channel closed.")
     }
   }
 
-  // Handle File Select (Sender)
+  // Handle File Selection (Sender)
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0])
@@ -487,7 +574,7 @@ export function ShareClient() {
       return
     }
     if (!dcRef.current || dcRef.current.readyState !== "open") {
-      setErrorMsg("No receiver connected yet. Share your code or link with receiver.")
+      setErrorMsg("No receiver connected yet. Share code or link with receiver.")
       return
     }
 
@@ -498,9 +585,8 @@ export function ShareClient() {
     setErrorMsg(null)
 
     const file = selectedFile
-    const chunkSize = 32 * 1024 // 32KB chunks for high stability
+    const chunkSize = 32 * 1024 // 32KB chunks
 
-    // Send header first
     dc.send(
       JSON.stringify({
         type: "header",
@@ -552,7 +638,7 @@ export function ShareClient() {
         }
 
         if (dc.bufferedAmount > 1024 * 512) {
-          setTimeout(sendNextSlice, 25)
+          setTimeout(sendNextSlice, 20)
         } else {
           setTimeout(sendNextSlice, 2)
         }
@@ -584,22 +670,22 @@ export function ShareClient() {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto space-y-8">
-      {/* Mode Switcher Tabs */}
+    <div className="w-full max-w-4xl mx-auto space-y-6 font-sans">
+      {/* Notion-Style Header Segment Switcher */}
       <div className="flex justify-center">
-        <div className="inline-flex rounded-2xl border border-white/10 p-1.5 bg-[#0e111a]/90 backdrop-blur-2xl shadow-2xl">
+        <div className="inline-flex rounded-xl border border-border/80 p-1 bg-card shadow-xs">
           <button
             onClick={() => {
               setMode("send")
               setErrorMsg(null)
             }}
-            className={`flex items-center gap-2 px-8 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-semibold transition-all ${
               mode === "send"
-                ? "bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow-lg shadow-indigo-500/25 scale-[1.02]"
-                : "text-gray-400 hover:text-white"
+                ? "bg-foreground text-background shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Upload className="h-4 w-4" />
+            <Upload className="h-3.5 w-3.5" />
             Send File
           </button>
           <button
@@ -607,75 +693,55 @@ export function ShareClient() {
               setMode("receive")
               setErrorMsg(null)
             }}
-            className={`flex items-center gap-2 px-8 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all ${
+            className={`flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-semibold transition-all ${
               mode === "receive"
-                ? "bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow-lg shadow-indigo-500/25 scale-[1.02]"
-                : "text-gray-400 hover:text-white"
+                ? "bg-foreground text-background shadow-xs"
+                : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            <Download className="h-4 w-4" />
+            <Download className="h-3.5 w-3.5" />
             Receive File
           </button>
         </div>
       </div>
 
-      {/* Main Interactive Card Canvas */}
-      <Card className="border border-white/10 bg-[#0d1017]/95 backdrop-blur-2xl shadow-2xl rounded-3xl overflow-hidden relative">
-        {/* Neon Glow Accents */}
-        <div className="absolute top-0 right-0 -z-10 h-80 w-80 rounded-full bg-indigo-500/15 blur-3xl" />
-        <div className="absolute bottom-0 left-0 -z-10 h-80 w-80 rounded-full bg-cyan-500/15 blur-3xl" />
-
-        <CardContent className="p-6 sm:p-10 space-y-8">
+      {/* Main Notion-Style Card Container */}
+      <Card className="border border-border/80 bg-card shadow-sm rounded-2xl overflow-hidden">
+        <CardContent className="p-6 sm:p-8 space-y-6">
           
-          {/* HEADER & DEVICE TELEMETRY CARD */}
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-6 border-b border-white/10">
-            <div className="flex items-center gap-4">
-              <div
-                className={`flex h-14 w-14 items-center justify-center rounded-2xl border transition-all ${
-                  isConnected
-                    ? "bg-emerald-500/10 border-emerald-500/40 text-emerald-400 shadow-lg shadow-emerald-500/20"
-                    : "bg-indigo-500/10 border-indigo-500/30 text-indigo-400"
-                }`}
-              >
-                {isConnected ? (
-                  <CheckCircle2 className="h-7 w-7 animate-pulse" />
-                ) : (
-                  <Shield className="h-7 w-7" />
-                )}
+          {/* Notion Callout Box with Real Device Telemetry & Country Flags */}
+          <div className="rounded-xl border border-border/70 bg-muted/40 p-4 space-y-3">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <span className={`h-2.5 w-2.5 rounded-full ${isConnected ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`} />
+                <span className="text-xs font-medium text-foreground">
+                  {mode === "send" ? "Sender Station" : "Receiver Station"}
+                </span>
+                <span className="text-xs text-muted-foreground">·</span>
+                <span className="text-xs text-muted-foreground font-mono">{statusText}</span>
               </div>
-              <div>
-                <h3 className="font-extrabold text-white text-lg sm:text-xl flex items-center gap-2">
-                  {mode === "send" ? "P2P Sender Station" : "P2P Receiver Station"}
-                </h3>
-                <p className="text-xs text-gray-400 font-mono flex items-center gap-2 mt-1">
-                  <span
-                    className={`h-2 w-2 rounded-full ${
-                      isConnected ? "bg-emerald-400 animate-ping" : "bg-amber-400"
-                    }`}
-                  />
-                  {statusText}
-                </p>
+
+              <div className="text-[11px] font-mono text-muted-foreground flex items-center gap-1.5">
+                <Lock className="h-3 w-3 text-emerald-500" />
+                <span>WebRTC E2E Encrypted</span>
               </div>
             </div>
 
-            {/* EXACT DEVICE TELEMETRY DISPLAY */}
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-xs font-mono text-gray-300">
-                {myDeviceInfo.os === "Android" ? (
-                  <Smartphone className="h-4 w-4 text-emerald-400" />
-                ) : (
-                  <Laptop className="h-4 w-4 text-indigo-400" />
-                )}
+            {/* REAL DEVICE & COUNTRY TELEMETRY BADGES */}
+            <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-border/40">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border/60 text-[11px] font-mono text-foreground">
+                <BrowserBadgeIcon browser={myDeviceInfo.browser} />
                 <span>
-                  This Device: <strong className="text-white">{myDeviceInfo.os} ({myDeviceInfo.browser})</strong>
+                  This Device: <strong>{myDeviceInfo.os} ({myDeviceInfo.browser})</strong>
                 </span>
               </div>
 
               {peerDevice && (
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs font-mono text-emerald-400">
-                  <Activity className="h-4 w-4 animate-pulse" />
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
+                  <span>{peerDevice.countryFlag || "🌐"}</span>
+                  <BrowserBadgeIcon browser={peerDevice.browser} />
                   <span>
-                    Peer: <strong className="text-white">{peerDevice.os} ({peerDevice.browser})</strong> [{peerDevice.ip}]
+                    Peer: <strong>{peerDevice.os} ({peerDevice.browser})</strong> [{peerDevice.ip}]
                   </span>
                 </div>
               )}
@@ -684,26 +750,26 @@ export function ShareClient() {
 
           {/* ERROR ALERT */}
           {errorMsg && (
-            <div className="flex items-center gap-3 rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3.5 text-sm text-rose-300">
-              <AlertCircle className="h-5 w-5 shrink-0 text-rose-400" />
-              <p className="flex-1 text-xs sm:text-sm">{errorMsg}</p>
+            <div className="flex items-center gap-2.5 rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive font-medium">
+              <AlertCircle className="h-4 w-4 shrink-0" />
+              <p className="flex-1">{errorMsg}</p>
             </div>
           )}
 
           {/* ================= SENDER MODE ================= */}
           {mode === "send" && (
-            <div className="space-y-8">
+            <div className="space-y-6">
               {/* Dropzone */}
               <div
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
-                className={`relative flex flex-col items-center justify-center rounded-3xl border-2 border-dashed p-8 sm:p-12 text-center transition-all ${
+                className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 sm:p-10 text-center transition-all ${
                   isDragging
-                    ? "border-indigo-400 bg-indigo-500/15 scale-[1.01]"
+                    ? "border-primary bg-primary/5"
                     : selectedFile
-                    ? "border-emerald-500/40 bg-emerald-500/5 shadow-inner"
-                    : "border-white/15 bg-white/5 hover:border-indigo-500/50 hover:bg-white/10"
+                    ? "border-emerald-500/50 bg-emerald-500/5"
+                    : "border-border/80 bg-background hover:border-primary/50"
                 }`}
               >
                 <input
@@ -713,175 +779,144 @@ export function ShareClient() {
                 />
 
                 {selectedFile ? (
-                  <div className="space-y-3">
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 shadow-md">
-                      <FileCheck className="h-8 w-8" />
+                  <div className="space-y-2">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                      <FileCheck className="h-6 w-6" />
                     </div>
-                    <div>
-                      <p className="font-bold text-white text-lg max-w-xs sm:max-w-md truncate mx-auto">
-                        {selectedFile.name}
-                      </p>
-                      <p className="text-xs font-mono text-emerald-400 mt-1">
-                        {formatBytes(selectedFile.size)} · Direct P2P Ready
-                      </p>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      className="text-xs text-gray-400 hover:text-white"
-                    >
-                      Change Selected File
+                    <p className="font-semibold text-foreground text-sm max-w-xs sm:max-w-md truncate mx-auto">
+                      {selectedFile.name}
+                    </p>
+                    <p className="text-xs font-mono text-muted-foreground">
+                      {formatBytes(selectedFile.size)} · Unlimited Transfer Ready
+                    </p>
+                    <Button size="sm" variant="ghost" className="text-xs text-muted-foreground hover:text-foreground mt-1">
+                      Change File
                     </Button>
                   </div>
                 ) : (
-                  <div className="space-y-3 pointer-events-none">
-                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 shadow-sm">
-                      <Upload className="h-8 w-8 animate-bounce" />
+                  <div className="space-y-2.5 pointer-events-none">
+                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-muted border border-border text-foreground">
+                      <Upload className="h-5 w-5" />
                     </div>
-                    <div>
-                      <p className="font-bold text-white text-lg sm:text-xl">
-                        Drag &amp; Drop Any File Here
-                      </p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        or click to select from your device. Zero file size limits!
-                      </p>
-                    </div>
-                    <div className="flex flex-wrap justify-center gap-2 pt-2 text-[11px] font-mono text-gray-500">
-                      <span>Videos</span> · <span>PDFs</span> · <span>RAW Photos</span> · <span>Archives</span> · <span>Software</span>
-                    </div>
+                    <p className="font-semibold text-foreground text-sm">
+                      Drag &amp; drop any file or click to browse
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      No file size limits. Direct browser-to-browser P2P.
+                    </p>
                   </div>
                 )}
               </div>
 
-              {/* Room Code Box with Pulsing Ring */}
-              <div className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-4 shadow-xl">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              {/* Notion-Style Property Room Code Box */}
+              <div className="rounded-xl border border-border/70 bg-background p-4 space-y-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
-                    <span className="text-xs font-bold text-gray-300 uppercase tracking-wider">
-                      Transfer Room Code
+                    <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
+                      Room Code
                     </span>
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      Receiver inputs this code at <code className="text-cyan-400 font-mono">ul0.site/share</code>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Share with receiver to open at <code className="text-foreground font-mono">ul0.site/share</code>
                     </p>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <div className="relative">
-                      <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-indigo-500 to-cyan-500 opacity-70 blur-xs animate-pulse" />
-                      <code className="relative px-5 py-2.5 rounded-2xl bg-[#090b10] border border-white/20 text-2xl font-black font-mono tracking-widest text-cyan-400 shadow-xl block">
-                        {roomCode}
-                      </code>
-                    </div>
-
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={copyRoomCode}
-                      className="h-11 text-xs gap-1.5 rounded-xl border-white/15 bg-white/5 text-white hover:bg-white/10"
-                    >
-                      {copiedCode ? <Check className="h-4 w-4 text-emerald-400" /> : <Copy className="h-4 w-4" />}
-                      {copiedCode ? "Copied" : "Copy Code"}
+                  <div className="flex items-center gap-2">
+                    <code className="px-4 py-1.5 rounded-lg bg-muted border border-border text-lg font-bold font-mono tracking-widest text-foreground">
+                      {roomCode}
+                    </code>
+                    <Button size="sm" variant="outline" onClick={copyRoomCode} className="h-9 text-xs gap-1.5">
+                      {copiedCode ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                      {copiedCode ? "Copied" : "Copy"}
                     </Button>
                   </div>
                 </div>
 
-                <div className="pt-2 flex flex-col sm:flex-row gap-2">
+                <div className="pt-1 flex flex-col sm:flex-row gap-2">
                   <Input
                     readOnly
                     value={shareUrl}
-                    className="bg-[#080a0e] border-white/10 text-xs font-mono text-gray-300 truncate h-11 rounded-xl"
+                    className="bg-muted/40 text-xs font-mono truncate h-9 rounded-lg border-border/60"
                   />
                   <div className="flex gap-2">
-                    <Button
-                      onClick={copyShareLink}
-                      className="h-11 text-xs gap-1.5 shrink-0 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold"
-                    >
-                      {copiedLink ? <Check className="h-4 w-4" /> : <Share2 className="h-4 w-4" />}
-                      {copiedLink ? "Link Copied!" : "Copy Link"}
+                    <Button onClick={copyShareLink} size="sm" className="h-9 text-xs gap-1.5 shrink-0">
+                      {copiedLink ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
+                      {copiedLink ? "Copied" : "Copy Link"}
                     </Button>
-                    <Button
-                      onClick={() => setShowQr(!showQr)}
-                      variant="outline"
-                      className="h-11 text-xs gap-1.5 shrink-0 rounded-xl border-white/15 bg-white/5 text-white hover:bg-white/10"
-                    >
-                      <QrCode className="h-4 w-4" />
-                      QR Code
+                    <Button onClick={() => setShowQr(!showQr)} size="sm" variant="outline" className="h-9 text-xs gap-1.5 shrink-0">
+                      <QrCode className="h-3.5 w-3.5" />
+                      QR
                     </Button>
                   </div>
                 </div>
 
                 {showQr && (
-                  <div className="pt-3 text-center flex flex-col items-center animate-in fade-in duration-300">
-                    <div className="p-3 bg-white rounded-2xl shadow-2xl border">
+                  <div className="pt-2 text-center flex flex-col items-center animate-in fade-in duration-300">
+                    <div className="p-2 bg-white rounded-xl shadow-xs border">
                       <img
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(
-                          shareUrl
-                        )}`}
-                        alt="Scan QR code"
-                        className="w-40 h-40"
+                        src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(shareUrl)}`}
+                        alt="QR code"
+                        className="w-36 h-36"
                       />
                     </div>
-                    <p className="text-xs text-gray-400 mt-2">
-                      Scan with camera to open instantly on mobile
-                    </p>
+                    <p className="text-[11px] text-muted-foreground mt-1.5">Scan to connect on mobile</p>
                   </div>
                 )}
               </div>
 
-              {/* Telemetry Dashboard & Progress Bar */}
+              {/* Progress & Speed Dashboard */}
               {selectedFile && (
-                <div className="space-y-4 pt-2">
+                <div className="space-y-3 pt-1">
                   {isSending ? (
-                    <div className="space-y-4 rounded-3xl border border-indigo-500/30 bg-indigo-500/10 p-6 shadow-xl">
-                      <div className="flex items-center justify-between text-xs font-bold">
-                        <span className="text-white">Transmitting {selectedFile.name}…</span>
-                        <span className="font-mono text-cyan-400 text-base">{sendProgress}%</span>
+                    <div className="space-y-3 rounded-xl border border-border/70 bg-muted/20 p-4">
+                      <div className="flex items-center justify-between text-xs font-semibold">
+                        <span className="text-foreground truncate max-w-xs">Sending {selectedFile.name}…</span>
+                        <span className="font-mono text-foreground font-bold">{sendProgress}%</span>
                       </div>
 
-                      <div className="h-4 w-full rounded-full bg-black/50 overflow-hidden border border-white/10">
+                      <div className="h-2.5 w-full rounded-full bg-muted overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-300"
+                          className="h-full bg-foreground rounded-full transition-all duration-300"
                           style={{ width: `${sendProgress}%` }}
                         />
                       </div>
 
-                      <div className="grid grid-cols-3 gap-3 pt-2 text-center text-xs font-mono">
-                        <div className="p-3 rounded-2xl bg-black/40 border border-white/10">
-                          <span className="text-[10px] text-gray-400 block uppercase">Real-Time Speed</span>
-                          <span className="font-bold text-cyan-400 text-sm mt-0.5 block">
+                      <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono pt-1">
+                        <div className="p-2 rounded-lg bg-background border border-border/50">
+                          <span className="text-[10px] text-muted-foreground block">Speed</span>
+                          <span className="font-semibold text-foreground text-xs mt-0.5 block">
                             {(sendSpeedBps / (1024 * 1024)).toFixed(2)} MB/s
                           </span>
                         </div>
-                        <div className="p-3 rounded-2xl bg-black/40 border border-white/10">
-                          <span className="text-[10px] text-gray-400 block uppercase">Time Remaining</span>
-                          <span className="font-bold text-white text-sm mt-0.5 block">
+                        <div className="p-2 rounded-lg bg-background border border-border/50">
+                          <span className="text-[10px] text-muted-foreground block">Time Remaining</span>
+                          <span className="font-semibold text-foreground text-xs mt-0.5 block">
                             {formatTimeRemaining(sendEtaSeconds)}
                           </span>
                         </div>
-                        <div className="p-3 rounded-2xl bg-black/40 border border-white/10">
-                          <span className="text-[10px] text-gray-400 block uppercase">Connection</span>
-                          <span className="font-bold text-emerald-400 text-xs mt-1 block truncate">
-                            WebRTC P2P Active
+                        <div className="p-2 rounded-lg bg-background border border-border/50">
+                          <span className="text-[10px] text-muted-foreground block">Connection</span>
+                          <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-[11px] mt-0.5 block">
+                            WebRTC P2P
                           </span>
                         </div>
                       </div>
                     </div>
                   ) : sendCompleted ? (
-                    <div className="rounded-3xl border border-emerald-500/40 bg-emerald-500/10 p-6 text-center space-y-2 shadow-xl">
-                      <p className="font-extrabold text-emerald-400 text-lg">
-                        🎉 Transfer Completed Successfully!
+                    <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-center space-y-1">
+                      <p className="font-semibold text-emerald-600 dark:text-emerald-400 text-xs">
+                        🎉 Transfer Finished!
                       </p>
-                      <p className="text-xs text-gray-300">
-                        Receiver has safely downloaded <strong className="text-white">{selectedFile.name}</strong>.
+                      <p className="text-[11px] text-muted-foreground">
+                        Receiver downloaded <strong className="text-foreground">{selectedFile.name}</strong>.
                       </p>
                     </div>
                   ) : (
                     <Button
                       onClick={handleStartTransfer}
                       disabled={!isConnected}
-                      className="w-full h-14 text-base font-extrabold gap-2 rounded-2xl shadow-2xl bg-gradient-to-r from-indigo-500 to-cyan-500 hover:from-indigo-600 hover:to-cyan-600 text-white"
+                      className="w-full h-11 text-xs font-bold gap-2 rounded-xl shadow-xs"
                     >
-                      <Zap className="h-5 w-5 fill-current" />
+                      <Zap className="h-4 w-4 fill-current" />
                       {isConnected ? "Start Direct Transfer Now" : "Waiting for Receiver to Connect…"}
                     </Button>
                   )}
@@ -892,103 +927,100 @@ export function ShareClient() {
 
           {/* ================= RECEIVER MODE ================= */}
           {mode === "receive" && (
-            <div className="space-y-8">
+            <div className="space-y-6">
               {!isConnected ? (
-                <div className="space-y-5">
+                <div className="space-y-4">
                   <div>
-                    <label className="text-xs font-bold text-gray-300 uppercase tracking-wider block mb-2">
-                      Enter 6-Character Transfer Code
+                    <label className="text-xs font-semibold text-foreground uppercase tracking-wider block mb-2">
+                      Enter 6-Character Room Code
                     </label>
-                    <div className="flex flex-col sm:flex-row gap-3">
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <Input
                         placeholder="e.g. DV4UV7"
                         value={inputCode}
                         onChange={(e) => setInputCode(e.target.value.toUpperCase())}
                         maxLength={8}
-                        className="h-14 text-xl font-mono font-bold tracking-widest text-center uppercase bg-[#080a0e] border-white/15 rounded-2xl text-cyan-400"
+                        className="h-11 text-base font-mono font-bold tracking-widest text-center uppercase bg-background rounded-lg border-border"
                       />
                       <Button
                         onClick={() => handleConnectReceiver()}
-                        className="h-14 px-8 text-sm font-extrabold gap-2 shrink-0 rounded-2xl bg-gradient-to-r from-indigo-500 to-cyan-500 text-white shadow-xl"
+                        className="h-11 px-6 text-xs font-bold gap-2 shrink-0 rounded-lg"
                       >
                         Connect to Sender
-                        <ArrowRight className="h-5 w-5" />
+                        <ArrowRight className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-400 text-center">
-                    Enter the room code provided by sender or open shared URL directly.
+                  <p className="text-xs text-muted-foreground text-center">
+                    Enter the code provided by sender or open their shared URL directly.
                   </p>
                 </div>
               ) : (
-                <div className="space-y-6">
-                  <div className="rounded-2xl border border-emerald-500/40 bg-emerald-500/10 p-5 flex items-center justify-between shadow-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="h-3 w-3 rounded-full bg-emerald-400 animate-ping" />
-                      <div>
-                        <p className="text-sm font-bold text-white">Direct P2P WebRTC Tunnel Connected</p>
-                        <p className="text-xs text-gray-300 font-mono">
-                          Sender: {peerDevice ? `${peerDevice.os} (${peerDevice.browser}) [${peerDevice.ip}]` : "Active"}
-                        </p>
-                      </div>
+                <div className="space-y-5">
+                  <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-xs font-medium text-foreground">
+                        Connected to Sender: {peerDevice ? `${peerDevice.countryFlag || ""} ${peerDevice.os} (${peerDevice.browser})` : "Active"}
+                      </span>
                     </div>
                     <Button
                       size="sm"
                       variant="ghost"
                       onClick={() => setIsConnected(false)}
-                      className="text-xs text-gray-400 hover:text-white"
+                      className="text-xs text-muted-foreground hover:text-foreground h-7"
                     >
                       Disconnect
                     </Button>
                   </div>
 
                   {incomingFile ? (
-                    <div className="rounded-3xl border border-white/10 bg-white/5 p-6 space-y-6 shadow-xl">
-                      <div className="flex items-center gap-4">
-                        <div className="h-14 w-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shrink-0 shadow-sm">
-                          <FileIcon className="h-7 w-7" />
+                    <div className="rounded-xl border border-border/80 bg-background p-5 space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-muted border border-border flex items-center justify-center text-foreground shrink-0">
+                          <FileIcon className="h-5 w-5" />
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="font-bold text-white text-base truncate">
+                          <p className="font-semibold text-foreground text-sm truncate">
                             {incomingFile.name}
                           </p>
-                          <p className="text-xs font-mono text-gray-400 mt-0.5">
+                          <p className="text-xs font-mono text-muted-foreground mt-0.5">
                             File Size: {formatBytes(incomingFile.size)}
                           </p>
                         </div>
                       </div>
 
                       {isReceiving && (
-                        <div className="space-y-4 pt-2">
-                          <div className="flex justify-between text-xs font-bold">
-                            <span className="text-white">Downloading directly from sender…</span>
-                            <span className="font-mono text-cyan-400 text-base">{receiveProgress}%</span>
+                        <div className="space-y-3 pt-1">
+                          <div className="flex justify-between text-xs font-semibold">
+                            <span className="text-foreground">Downloading from sender…</span>
+                            <span className="font-mono text-foreground font-bold">{receiveProgress}%</span>
                           </div>
 
-                          <div className="h-4 w-full rounded-full bg-black/50 overflow-hidden border border-white/10">
+                          <div className="h-2.5 w-full rounded-full bg-muted overflow-hidden">
                             <div
-                              className="h-full bg-gradient-to-r from-indigo-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-300"
+                              className="h-full bg-foreground rounded-full transition-all duration-300"
                               style={{ width: `${receiveProgress}%` }}
                             />
                           </div>
 
-                          <div className="grid grid-cols-3 gap-3 text-center text-xs font-mono">
-                            <div className="p-3 rounded-2xl bg-black/40 border border-white/10">
-                              <span className="text-[10px] text-gray-400 block uppercase">Download Speed</span>
-                              <span className="font-bold text-cyan-400 text-sm mt-0.5 block">
+                          <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono pt-1">
+                            <div className="p-2 rounded-lg bg-muted/40 border border-border/50">
+                              <span className="text-[10px] text-muted-foreground block">Speed</span>
+                              <span className="font-semibold text-foreground text-xs mt-0.5 block">
                                 {(receiveSpeedBps / (1024 * 1024)).toFixed(2)} MB/s
                               </span>
                             </div>
-                            <div className="p-3 rounded-2xl bg-black/40 border border-white/10">
-                              <span className="text-[10px] text-gray-400 block uppercase">Time Remaining</span>
-                              <span className="font-bold text-white text-sm mt-0.5 block">
+                            <div className="p-2 rounded-lg bg-muted/40 border border-border/50">
+                              <span className="text-[10px] text-muted-foreground block">Time Remaining</span>
+                              <span className="font-semibold text-foreground text-xs mt-0.5 block">
                                 {formatTimeRemaining(receiveEtaSeconds)}
                               </span>
                             </div>
-                            <div className="p-3 rounded-2xl bg-black/40 border border-white/10">
-                              <span className="text-[10px] text-gray-400 block uppercase">Connection</span>
-                              <span className="font-bold text-emerald-400 text-xs mt-1 block truncate">
-                                Direct Encrypted P2P
+                            <div className="p-2 rounded-lg bg-muted/40 border border-border/50">
+                              <span className="text-[10px] text-muted-foreground block">Connection</span>
+                              <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-[11px] mt-0.5 block">
+                                Direct P2P
                               </span>
                             </div>
                           </div>
@@ -996,16 +1028,16 @@ export function ShareClient() {
                       )}
 
                       {receiveCompleted && receivedBlobUrl && (
-                        <div className="space-y-3 pt-2">
-                          <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/30 p-4 text-center text-xs text-emerald-400 font-bold">
-                            ✨ Transfer finished! Your file downloaded automatically.
+                        <div className="space-y-2 pt-1">
+                          <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-3 text-center text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                            ✨ Transfer finished! File downloaded automatically.
                           </div>
                           <Button
                             asChild
-                            className="w-full h-14 text-base font-extrabold gap-2 rounded-2xl shadow-xl bg-emerald-600 hover:bg-emerald-700 text-white"
+                            className="w-full h-11 text-xs font-bold gap-2 rounded-lg shadow-xs bg-emerald-600 hover:bg-emerald-700 text-white"
                           >
                             <a href={receivedBlobUrl} download={incomingFile.name}>
-                              <Download className="h-5 w-5" />
+                              <Download className="h-4 w-4" />
                               Download Again ({formatBytes(incomingFile.size)})
                             </a>
                           </Button>
@@ -1013,10 +1045,10 @@ export function ShareClient() {
                       )}
                     </div>
                   ) : (
-                    <div className="rounded-3xl border border-dashed border-white/15 p-8 text-center space-y-3">
-                      <RefreshCcw className="h-8 w-8 text-indigo-400 animate-spin mx-auto" />
-                      <p className="font-bold text-white text-base">Waiting for Sender to Start File Transfer</p>
-                      <p className="text-xs text-gray-400">Sender will select and send the file now.</p>
+                    <div className="rounded-xl border border-dashed border-border/70 p-6 text-center space-y-2">
+                      <RefreshCcw className="h-6 w-6 text-muted-foreground animate-spin mx-auto" />
+                      <p className="font-semibold text-foreground text-xs">Waiting for Sender to Start File Transfer</p>
+                      <p className="text-[11px] text-muted-foreground">The sender will choose and transmit the file now.</p>
                     </div>
                   )}
                 </div>
@@ -1024,8 +1056,8 @@ export function ShareClient() {
             </div>
           )}
 
-          </CardContent>
-        </Card>
-      </div>
-    )
+        </CardContent>
+      </Card>
+    </div>
+  )
 }
