@@ -153,37 +153,63 @@ export default function SharePage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-primary/20">
+    <div
+      className="flex min-h-screen flex-col text-foreground selection:bg-indigo-500/20"
+      style={{ background: "linear-gradient(135deg, #0a0a0f 0%, #0d0d1a 50%, #0a0a0f 100%)" }}
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
 
-      <main className="flex-1 py-12 sm:py-16">
-        <div className="container mx-auto px-4">
+      <main className="flex-1 py-12 sm:py-16 relative overflow-hidden">
+        {/* Background radial glow blobs */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[900px] rounded-full opacity-20"
+            style={{ background: "radial-gradient(ellipse at center, #6366f1 0%, transparent 70%)" }} />
+          <div className="absolute top-1/2 -left-40 h-[400px] w-[400px] rounded-full opacity-10"
+            style={{ background: "radial-gradient(ellipse at center, #22c55e 0%, transparent 70%)" }} />
+          <div className="absolute top-1/3 -right-40 h-[400px] w-[400px] rounded-full opacity-10"
+            style={{ background: "radial-gradient(ellipse at center, #3b82f6 0%, transparent 70%)" }} />
+        </div>
+
+        <div className="container mx-auto px-4 relative">
           
           {/* SEO Hero Header */}
-          <div className="mx-auto max-w-3xl text-center mb-10 space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
+          <div className="mx-auto max-w-3xl text-center mb-10 space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold"
+              style={{ background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.35)", color: "#a5b4fc" }}>
               <Zap className="h-3.5 w-3.5 fill-current" />
-              <span>Unlimited P2P WebRTC Transfer</span>
+              <span>Unlimited P2P Transfer · No Signup · 100% Free</span>
             </div>
 
-            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
-              Free Online <span className="text-primary">P2P File Sharing</span>
+            <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-none">
+              <span style={{ background: "linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #818cf8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                P2P File Sharing
+              </span>
             </h1>
 
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-              Send files of <strong className="text-foreground font-semibold">any size</strong> directly from browser to browser. 
-              100% end-to-end encrypted, zero cloud storage, and no registration required.
+            <p className="text-sm sm:text-base leading-relaxed max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Send files of any size directly browser-to-browser.
+              End-to-end encrypted. No cloud. No registration.
             </p>
+
+            {/* Browser compat strip */}
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+              {["Chrome", "Brave", "Safari", "Firefox", "Edge"].map((b) => (
+                <span key={b} className="text-[11px] font-mono px-2.5 py-1 rounded-full"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.4)" }}>
+                  {b}
+                </span>
+              ))}
+            </div>
           </div>
 
           {/* Interactive Client P2P App Component */}
           <Suspense fallback={
-            <div className="py-20 text-center text-muted-foreground text-sm font-mono animate-pulse">
-              Loading secure P2P WebRTC engine…
+            <div className="py-20 text-center text-sm font-mono animate-pulse" style={{ color: "rgba(255,255,255,0.3)" }}>
+              Loading P2P engine…
             </div>
           }>
             <ShareClient />

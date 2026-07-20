@@ -1,31 +1,22 @@
 import { NextResponse } from "next/server"
+import { Redis } from "@upstash/redis"
 
-// In-memory ephemeral file chunk relay buffer for fallback transfers
-interface RelayBuffer {
-  code: string
-  createdAt: number
-  header?: { name: string; size: number; mime: string }
-  chunks: ArrayBuffer[]
-  totalReceivedBytes: number
-  isComplete: boolean
+const redis = new Redis({
+  url: process.env.UPSTASH_REDIS_REST_URL!,
+  token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+})
+
+const RELAY_TTL = 60 * 20 // 20 minutes
+
+function relayMetaKey(code: string) {
+  return `share:relay:meta:${code.toUpperCase()}`
 }
-
-const relayMap = new Map<string, RelayBuffer>()
-
-// Clean up old relay sessions older than 30 minutes
-function cleanupOldRelays() {
-  const now = Date.now()
-  for (const [code, relay] of relayMap.entries()) {
-    if (now - relay.createdAt > 30 * 60 * 1000) {
-      relayMap.delete(code)
-    }
-  }
+function relayChunksKey(code: string) {
+  return `share:relay:chunks:${code.toUpperCase()}`
 }
 
 export async function POST(req: Request) {
   try {
-    cleanupOldRelays()
-
     const body = await req.json()
     const { action, code, header, chunk, isLast, fromIndex } = body
 
@@ -34,88 +25,114 @@ export async function POST(req: Request) {
     }
 
     const cleanCode = code.trim().toUpperCase()
+    const metaKey = relayMetaKey(cleanCode)
+    const chunksKey = relayChunksKey(cleanCode)
 
-    // 1. Initialize Relay Session
+    // ─── 1. INIT RELAY SESSION ─────────────────────────────────────────────
     if (action === "init_relay") {
-      relayMap.set(cleanCode, {
+      const meta = {
         code: cleanCode,
         createdAt: Date.now(),
         header,
-        chunks: [],
         totalReceivedBytes: 0,
         isComplete: false,
-      })
+      }
+      await redis.set(metaKey, JSON.stringify(meta), { ex: RELAY_TTL })
+      // Clear any old chunks
+      await redis.del(chunksKey)
       return NextResponse.json({ success: true })
     }
 
-    const relay = relayMap.get(cleanCode)
-
-    // 2. Upload Chunk (Base64 JSON format - 100% Vercel & mobile compatible)
+    // ─── 2. UPLOAD CHUNK (Base64 JSON) ─────────────────────────────────────
     if (action === "upload_chunk") {
-      if (!relay) {
-        // Auto-create relay if missing
-        relayMap.set(cleanCode, {
+      // Auto-init if needed
+      let rawMeta = await redis.get<string>(metaKey)
+      if (!rawMeta) {
+        const meta = {
           code: cleanCode,
           createdAt: Date.now(),
           header,
-          chunks: [],
           totalReceivedBytes: 0,
           isComplete: false,
-        })
+        }
+        await redis.set(metaKey, JSON.stringify(meta), { ex: RELAY_TTL })
+        rawMeta = JSON.stringify(meta)
       }
-      const activeRelay = relayMap.get(cleanCode)!
+
+      const meta = typeof rawMeta === "string" ? JSON.parse(rawMeta) : rawMeta as any
 
       if (chunk) {
-        const buffer = Buffer.from(chunk, "base64")
-        const arrayBuf = buffer.buffer.slice(
-          buffer.byteOffset,
-          buffer.byteOffset + buffer.byteLength
-        ) as ArrayBuffer
-        activeRelay.chunks.push(arrayBuf)
-        activeRelay.totalReceivedBytes += arrayBuf.byteLength
+        // Push base64 chunk to Redis list
+        await redis.rpush(chunksKey, chunk)
+        await redis.expire(chunksKey, RELAY_TTL)
+
+        // Compute byte size from base64 length
+        const byteLen = Math.floor((chunk.length * 3) / 4)
+        meta.totalReceivedBytes = (meta.totalReceivedBytes || 0) + byteLen
       }
 
-      if (isLast || (activeRelay.header && activeRelay.totalReceivedBytes >= activeRelay.header.size)) {
-        activeRelay.isComplete = true
+      if (isLast || (meta.header && meta.totalReceivedBytes >= meta.header.size)) {
+        meta.isComplete = true
       }
+
+      await redis.set(metaKey, JSON.stringify(meta), { ex: RELAY_TTL })
 
       return NextResponse.json({
         success: true,
-        totalReceivedBytes: activeRelay.totalReceivedBytes,
+        totalReceivedBytes: meta.totalReceivedBytes,
       })
     }
 
-    // 3. Get Status
+    // ─── 3. GET STATUS ─────────────────────────────────────────────────────
     if (action === "get_status") {
-      if (!relay) return NextResponse.json({ found: false })
+      const rawMeta = await redis.get<string>(metaKey)
+      if (!rawMeta) return NextResponse.json({ found: false })
+      const meta = typeof rawMeta === "string" ? JSON.parse(rawMeta) : rawMeta as any
+      const chunkCount = await redis.llen(chunksKey)
       return NextResponse.json({
         found: true,
-        header: relay.header,
-        totalReceivedBytes: relay.totalReceivedBytes,
-        isComplete: relay.isComplete,
-        chunkCount: relay.chunks.length,
+        header: meta.header,
+        totalReceivedBytes: meta.totalReceivedBytes,
+        isComplete: meta.isComplete,
+        chunkCount,
       })
     }
 
-    // 4. Get Chunks for Receiver
+    // ─── 4. GET CHUNKS (Receiver polling) ──────────────────────────────────
     if (action === "get_chunks") {
-      if (!relay) return NextResponse.json({ found: false })
+      const rawMeta = await redis.get<string>(metaKey)
+      if (!rawMeta) return NextResponse.json({ found: false })
+      const meta = typeof rawMeta === "string" ? JSON.parse(rawMeta) : rawMeta as any
 
       const startIndex = typeof fromIndex === "number" ? fromIndex : 0
-      const slice = relay.chunks.slice(startIndex)
+      const totalLen = await redis.llen(chunksKey)
+
+      if (startIndex >= totalLen) {
+        return NextResponse.json({
+          found: true,
+          header: meta.header,
+          chunks: [],
+          nextIndex: startIndex,
+          isComplete: meta.isComplete,
+        })
+      }
+
+      // Fetch up to 20 chunks at a time
+      const endIndex = Math.min(startIndex + 19, totalLen - 1)
+      const chunks = await redis.lrange(chunksKey, startIndex, endIndex)
 
       return NextResponse.json({
         found: true,
-        header: relay.header,
-        chunks: slice.map((c) => Buffer.from(c).toString("base64")),
-        nextIndex: startIndex + slice.length,
-        isComplete: relay.isComplete,
+        header: meta.header,
+        chunks,
+        nextIndex: endIndex + 1,
+        isComplete: meta.isComplete,
       })
     }
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 })
   } catch (error: any) {
-    console.error("Relay route error:", error)
+    console.error("Relay API error:", error)
     return NextResponse.json({ error: "Server relay error" }, { status: 500 })
   }
 }

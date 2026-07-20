@@ -1,1276 +1,1082 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { useSearchParams } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
-  Upload,
-  Download,
-  Copy,
-  Check,
-  Zap,
-  Lock,
-  FileIcon,
-  HardDrive,
-  QrCode,
-  ArrowRight,
-  Share2,
-  CheckCircle2,
-  AlertCircle,
-  FileCheck,
-  Smartphone,
-  Laptop,
-  Globe,
-  RefreshCcw,
-  Sparkles,
-  Link2,
+  Upload, Download, Copy, Check, Zap, Lock, FileIcon,
+  QrCode, ArrowRight, Share2, AlertCircle, FileCheck,
+  Globe, RefreshCcw, Wifi, MapPin, X, ChevronRight,
 } from "lucide-react"
 
-// Authentic High-Precision Brand SVG Logos
-function BraveLogo({ className = "h-4 w-4" }: { className?: string }) {
+// ─── AUTHENTIC BROWSER SVG LOGOS ─────────────────────────────────────────────
+function BraveLogo({ size = 18 }: { size?: number }) {
   return (
-    <svg className={className} viewBox="0 0 32 32" fill="none">
-      <path
-        d="M16 2L3.5 7.5v9.8c0 7.8 5.3 15.1 12.5 16.7 7.2-1.6 12.5-8.9 12.5-16.7V7.5L16 2z"
-        fill="#FF5500"
-      />
-      <path
-        d="M16 6.5l-4.5 3h9L16 6.5zm-6.2 5.5l-1.5 5h15.4l-1.5-5H9.8zm1.7 7l4.5 3.5 4.5-3.5H11.5z"
-        fill="#FFFFFF"
-      />
+    <svg width={size} height={size} viewBox="0 0 512 512" fill="none">
+      <path d="M477.8 189.4l-22.4-52.8-31.2-72.4-15.2-35.6c-1.2-2.8-4.4-4-7.2-2.8L256 96 110.2 26c-2.8-1.2-6 0-7.2 2.8L87.8 64.6 56.6 137 34.2 189.4c-6 14-7.6 29.6-4.4 44.4l51.6 234c2.8 12.8 10 24.2 20.4 32l130 97.2c14.4 10.8 33.8 10.8 48.2 0l130-97.2c10.4-7.8 17.6-19.2 20.4-32l51.6-234c3.2-14.8 1.6-30.4-4.2-44.4z" fill="#FF5500"/>
+      <path d="M361 219.2l-17.2-16.8c-3.2-3.2-7.6-4.8-12-4.4l-24 2-20.8-28.4c-4.4-6-11.4-9.6-18.8-9.6h-24.4c-7.4 0-14.4 3.6-18.8 9.6l-20.8 28.4-24-2c-4.4-.4-8.8 1.2-12 4.4l-17.2 16.8c-4 3.8-5.4 9.6-3.6 14.8l7.2 21.6-14.4 19.2c-3.6 4.8-4 11.2-.8 16.4l18 30.4c2.4 4 6.4 6.8 10.8 7.6l28.4 5.2 16 24c3.2 4.8 8.8 7.6 14.4 7.2l21.6-1.6 16.8 12.4c5.2 3.8 12.2 3.8 17.4 0l16.8-12.4 21.6 1.6c5.6.4 11.2-2.4 14.4-7.2l16-24 28.4-5.2c4.4-.8 8.4-3.6 10.8-7.6l18-30.4c3.2-5.2 2.8-11.6-.8-16.4l-14.4-19.2 7.2-21.6c1.8-5.2.4-11-3.6-14.8z" fill="white"/>
+      <path d="M256 320a64 64 0 1 0 0-128 64 64 0 0 0 0 128z" fill="#FF5500"/>
     </svg>
   )
 }
 
-function ChromeLogo({ className = "h-4 w-4" }: { className?: string }) {
+function ChromeLogo({ size = 18 }: { size?: number }) {
   return (
-    <svg className={className} viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10" fill="#4285F4" />
-      <path d="M12 12L7.3 3.9A10 10 0 0 1 12 2a10 10 0 0 1 8.7 5.1L12 12z" fill="#EA4335" />
-      <path d="M12 12l8.7-4.9A10 10 0 0 1 18 19.4L12 12z" fill="#FBBC05" />
-      <path d="M12 12l6 7.4A10 10 0 0 1 3.9 12L12 12z" fill="#34A853" />
-      <circle cx="12" cy="12" r="4.5" fill="#FFFFFF" />
-      <circle cx="12" cy="12" r="3.5" fill="#1A73E8" />
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="50" fill="#fff"/>
+      <path d="M50 30 A20 20 0 0 1 67.3 40 L95 40 A48 48 0 0 0 5 40 L32.7 40 A20 20 0 0 1 50 30z" fill="#EA4335"/>
+      <path d="M70 50 A20 20 0 0 1 52.7 70 L36.7 97.5 A48 48 0 0 0 98 54 L70 54z" fill="#FBBC05"/>
+      <path d="M30 50 A20 20 0 0 1 47.3 70 L63.3 97.5 A48 48 0 0 1 2 54 L30 54z" fill="#34A853"/>
+      <path d="M50 30 A20 20 0 1 0 50 70 A20 20 0 0 0 50 30z" fill="#4285F4"/>
+      <circle cx="50" cy="50" r="13" fill="#fff"/>
     </svg>
   )
 }
 
-function SafariLogo({ className = "h-4 w-4" }: { className?: string }) {
+function SafariLogo({ size = 18 }: { size?: number }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none">
-      <circle cx="12" cy="12" r="10" fill="#0066CC" />
-      <path d="M12 4a8 8 0 1 0 8 8 8 8 0 0 0-8-8zm2.8 5.2l-2 5.6-5.6 2 2-5.6 5.6-2z" fill="#FFFFFF" />
-      <polygon points="12,12 14.8,9.2 12.8,14.8" fill="#FF3B30" />
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="saf-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#1AA3FF"/>
+          <stop offset="100%" stopColor="#006ED4"/>
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="50" fill="url(#saf-bg)"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="white" strokeWidth="3" opacity="0.4"/>
+      <polygon points="50,20 57,50 50,80 43,50" fill="white" opacity="0.9"/>
+      <polygon points="20,50 50,43 80,50 50,57" fill="white" opacity="0.6"/>
+      <polygon points="50,30 55,50 50,70 45,50" fill="#FF3B30"/>
+      <circle cx="50" cy="50" r="4" fill="white"/>
     </svg>
   )
 }
 
-function FirefoxLogo({ className = "h-4 w-4" }: { className?: string }) {
+function FirefoxLogo({ size = 18 }: { size?: number }) {
   return (
-    <svg className={className} viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10" fill="#E66000" />
-      <path d="M12 4a8 8 0 0 1 7 11.8A7.9 7.9 0 0 0 12 4z" fill="#FF9400" />
-      <circle cx="12" cy="12" r="5" fill="#0060DF" />
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="50" fill="#FF9500"/>
+      <circle cx="50" cy="50" r="33" fill="#0060DF"/>
+      <path d="M50 17 C30 17 14 33 14 53 C14 65 20 76 29 83 C25 76 23 68 23 59 C23 44 34 31 50 31 C62 31 72 39 75 51 C78 39 76 25 66 17 C61 17.3 55.5 17 50 17z" fill="#FF9500"/>
+      <circle cx="50" cy="50" r="16" fill="#00B3F4"/>
     </svg>
   )
 }
 
-function EdgeLogo({ className = "h-4 w-4" }: { className?: string }) {
+function EdgeLogo({ size = 18 }: { size?: number }) {
   return (
-    <svg className={className} viewBox="0 0 24 24" fill="none">
-      <path
-        d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10 4.8 0 8.8-3.4 9.7-8h-6.2a4 4 0 1 1-3.5-5.8h9.8A10 10 0 0 0 12 2z"
-        fill="#0078D4"
-      />
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      <defs>
+        <linearGradient id="edge-g1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#2F9BD8"/>
+          <stop offset="100%" stopColor="#0078D4"/>
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="50" fill="url(#edge-g1)"/>
+      <path d="M50 20 C34 20 21 33 21 49 C21 59 26 67 35 73 C29 69 25 62 25 54 C25 38 38 25 54 25 C65 25 73 31 76 40 C78 32 75 20 66 14 C61 21 56 20 50 20z" fill="white" opacity="0.9"/>
+      <ellipse cx="52" cy="72" rx="28" ry="10" fill="white" opacity="0.8"/>
+      <path d="M24 56 C24 72 36 83 50 83 C62 83 72 76 77 65 C49 65 30 58 24 56z" fill="white"/>
     </svg>
   )
 }
 
-function BrowserBrandIcon({ browser }: { browser: string }) {
+function OperaLogo({ size = 18 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="50" fill="#FF1B2D"/>
+      <ellipse cx="50" cy="50" rx="21" ry="30" fill="white"/>
+      <ellipse cx="50" cy="50" rx="14" ry="26" fill="#FF1B2D"/>
+    </svg>
+  )
+}
+
+function BrowserIcon({ browser, size = 18 }: { browser: string; size?: number }) {
   const b = browser.toLowerCase()
-  if (b.includes("brave")) return <BraveLogo className="h-4 w-4 shrink-0" />
-  if (b.includes("chrome")) return <ChromeLogo className="h-4 w-4 shrink-0" />
-  if (b.includes("safari")) return <SafariLogo className="h-4 w-4 shrink-0" />
-  if (b.includes("firefox")) return <FirefoxLogo className="h-4 w-4 shrink-0" />
-  if (b.includes("edge") || b.includes("edg")) return <EdgeLogo className="h-4 w-4 shrink-0" />
-  return <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
+  if (b.includes("brave")) return <BraveLogo size={size} />
+  if (b.includes("chrome")) return <ChromeLogo size={size} />
+  if (b.includes("safari")) return <SafariLogo size={size} />
+  if (b.includes("firefox")) return <FirefoxLogo size={size} />
+  if (b.includes("edge") || b.includes("edg")) return <EdgeLogo size={size} />
+  if (b.includes("opera")) return <OperaLogo size={size} />
+  return <Globe width={size} height={size} className="text-gray-400" />
 }
 
-// Convert ArrayBuffer to Base64 safely
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   let binary = ""
   const bytes = new Uint8Array(buffer)
-  const len = bytes.byteLength
-  for (let i = 0; i < len; i++) {
-    binary += String.fromCharCode(bytes[i])
-  }
+  for (let i = 0; i < bytes.byteLength; i++) binary += String.fromCharCode(bytes[i])
   return btoa(binary)
 }
 
-// Format byte sizes
-function formatBytes(bytes: number, decimals = 2): string {
-  if (bytes === 0) return "0 Bytes"
-  const k = 1024
-  const dm = decimals < 0 ? 0 : decimals
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"]
+function formatBytes(bytes: number, dec = 1): string {
+  if (bytes === 0) return "0 B"
+  const k = 1024, sizes = ["B", "KB", "MB", "GB", "TB"]
   const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + " " + sizes[i]
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dec))} ${sizes[i]}`
 }
 
-// Format ETA
-function formatTimeRemaining(seconds: number): string {
-  if (!isFinite(seconds) || seconds <= 0) return "Calculating ETA…"
-  if (seconds < 60) return `${Math.ceil(seconds)}s remaining`
-  const mins = Math.floor(seconds / 60)
-  const secs = Math.floor(seconds % 60)
-  if (mins < 60) return `${mins}m ${secs}s remaining`
-  const hrs = Math.floor(mins / 60)
-  const remMins = mins % 60
-  return `${hrs}h ${remMins}m remaining`
+function formatETA(sec: number): string {
+  if (!isFinite(sec) || sec <= 0) return "calculating…"
+  if (sec < 60) return `${Math.ceil(sec)}s left`
+  const m = Math.floor(sec / 60), s = Math.floor(sec % 60)
+  if (m < 60) return `${m}m ${s}s left`
+  return `${Math.floor(m / 60)}h ${m % 60}m left`
 }
 
-// Generate 6-character room code
 function generateCode(): string {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-  let res = ""
-  for (let i = 0; i < 6; i++) {
-    res += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return res
+  return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join("")
 }
 
-// Detect client OS & Browser
-function detectDeviceInfo() {
-  if (typeof window === "undefined") return { os: "Device", browser: "Browser" }
+function detectDevice() {
+  if (typeof window === "undefined") return { os: "Unknown", browser: "Browser" }
   const ua = navigator.userAgent
-
   let os = "Desktop"
-  if (ua.includes("Android")) os = "Android"
-  else if (ua.includes("iPhone") || ua.includes("iPad")) os = "iOS"
-  else if (ua.includes("Linux")) os = "Linux"
-  else if (ua.includes("Mac OS")) os = "macOS"
-  else if (ua.includes("Windows")) os = "Windows"
+  if (/Android/.test(ua)) os = "Android"
+  else if (/iPhone|iPad/.test(ua)) os = "iOS"
+  else if (/Linux/.test(ua)) os = "Linux"
+  else if (/Mac OS/.test(ua)) os = "macOS"
+  else if (/Windows/.test(ua)) os = "Windows"
 
   let browser = "Browser"
-  if ((navigator as any).brave || ua.includes("Brave")) browser = "Brave"
-  else if (ua.includes("Chrome") && !ua.includes("Edg")) browser = "Chrome"
-  else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari"
-  else if (ua.includes("Firefox")) browser = "Firefox"
-  else if (ua.includes("Edg")) browser = "Edge"
+  if ((navigator as any).brave || /Brave/.test(ua)) browser = "Brave"
+  else if (/Chrome/.test(ua) && !/Edg/.test(ua)) browser = "Chrome"
+  else if (/Safari/.test(ua) && !/Chrome/.test(ua)) browser = "Safari"
+  else if (/Firefox/.test(ua)) browser = "Firefox"
+  else if (/Edg/.test(ua)) browser = "Edge"
+  else if (/OPR|Opera/.test(ua)) browser = "Opera"
 
   return { os, browser }
 }
 
-// Global AudioContext singleton to unlock browser sound
-let globalAudioCtx: AudioContext | null = null
+// ─── AUDIO ───────────────────────────────────────────────────────────────────
+let audioCtx: AudioContext | null = null
 
-function unlockAudioContext() {
+function ensureAudio() {
   try {
-    if (!globalAudioCtx) {
-      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext
-      if (AudioContextClass) globalAudioCtx = new AudioContextClass()
+    if (!audioCtx) {
+      const Cls = window.AudioContext || (window as any).webkitAudioContext
+      if (Cls) audioCtx = new Cls()
     }
-    if (globalAudioCtx && globalAudioCtx.state === "suspended") {
-      globalAudioCtx.resume()
-    }
+    if (audioCtx?.state === "suspended") audioCtx.resume()
   } catch {}
 }
 
-function playConnectionChime() {
+function playChime() {
   try {
-    unlockAudioContext()
-    if (!globalAudioCtx) return
-    const ctx = globalAudioCtx
-
-    const osc = ctx.createOscillator()
-    const gain = ctx.createGain()
-
-    osc.type = "sine"
-    osc.frequency.setValueAtTime(523.25, ctx.currentTime) // C5
-    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.12) // E5
-    osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.25) // G5
-
-    gain.gain.setValueAtTime(0.15, ctx.currentTime)
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5)
-
-    osc.connect(gain)
-    gain.connect(ctx.destination)
-
-    osc.start()
-    osc.stop(ctx.currentTime + 0.5)
+    ensureAudio()
+    if (!audioCtx) return
+    const ctx = audioCtx
+    const now = ctx.currentTime
+    const notes = [523.25, 659.25, 783.99, 1046.5]
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator()
+      const gain = ctx.createGain()
+      osc.type = "sine"
+      osc.frequency.value = freq
+      gain.gain.setValueAtTime(0, now + i * 0.1)
+      gain.gain.linearRampToValueAtTime(0.12, now + i * 0.1 + 0.02)
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.1 + 0.3)
+      osc.connect(gain)
+      gain.connect(ctx.destination)
+      osc.start(now + i * 0.1)
+      osc.stop(now + i * 0.1 + 0.3)
+    })
   } catch {}
 }
 
+// ─── TYPES ────────────────────────────────────────────────────────────────────
+interface DeviceInfo { os: string; browser: string; ip: string; countryFlag?: string }
+interface NearbyRoom { code: string; distance: number }
+
+// ─── MAIN COMPONENT ───────────────────────────────────────────────────────────
 export function ShareClient() {
   const searchParams = useSearchParams()
   const urlCode = searchParams.get("code")
 
   const [mode, setMode] = useState<"send" | "receive">("send")
-  const [roomCode, setRoomCode] = useState<string>("")
-  const [inputCode, setInputCode] = useState<string>("")
+  const [roomCode, setRoomCode] = useState("")
+  const [inputCode, setInputCode] = useState("")
 
-  // Connection State (WebRTC or Fail-Safe Server Relay)
-  const [isConnected, setIsConnected] = useState<boolean>(false)
-  const [connectionType, setConnectionType] = useState<"p2p" | "relay">("p2p")
-  const [statusText, setStatusText] = useState<string>("Ready. Share room code or link to connect.")
-  const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [peerDevice, setPeerDevice] = useState<{ os: string; browser: string; ip: string; countryCode?: string; countryFlag?: string } | null>(null)
-  const [myDeviceInfo, setMyDeviceInfo] = useState<{ os: string; browser: string }>({ os: "Device", browser: "Browser" })
+  // Connection
+  const [isConnected, setIsConnected] = useState(false)
+  const [connType, setConnType] = useState<"p2p" | "relay">("p2p")
+  const [status, setStatus] = useState("Waiting for peer…")
+  const [error, setError] = useState<string | null>(null)
+  const [myDevice, setMyDevice] = useState({ os: "Device", browser: "Browser" })
+  const [peerDevice, setPeerDevice] = useState<DeviceInfo | null>(null)
 
-  // File state (Sender)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [isSending, setIsSending] = useState<boolean>(false)
-  const [sendProgress, setSendProgress] = useState<number>(0)
-  const [sendSpeedBps, setSendSpeedBps] = useState<number>(0)
-  const [sendEtaSeconds, setSendEtaSeconds] = useState<number>(0)
-  const [sendCompleted, setSendCompleted] = useState<boolean>(false)
+  // Send
+  const [file, setFile] = useState<File | null>(null)
+  const [sending, setSending] = useState(false)
+  const [sendPct, setSendPct] = useState(0)
+  const [sendBps, setSendBps] = useState(0)
+  const [sendEta, setSendEta] = useState(0)
+  const [sendDone, setSendDone] = useState(false)
 
-  // File state (Receiver)
-  const [incomingFile, setIncomingFile] = useState<{ name: string; size: number; mime: string } | null>(null)
-  const [isReceiving, setIsReceiving] = useState<boolean>(false)
-  const [receiveProgress, setReceiveProgress] = useState<number>(0)
-  const [receiveSpeedBps, setReceiveSpeedBps] = useState<number>(0)
-  const [receiveEtaSeconds, setReceiveEtaSeconds] = useState<number>(0)
-  const [receivedBlobUrl, setReceivedBlobUrl] = useState<string | null>(null)
-  const [receiveCompleted, setReceiveCompleted] = useState<boolean>(false)
+  // Receive
+  const [incoming, setIncoming] = useState<{ name: string; size: number; mime: string } | null>(null)
+  const [receiving, setReceiving] = useState(false)
+  const [recvPct, setRecvPct] = useState(0)
+  const [recvBps, setRecvBps] = useState(0)
+  const [recvEta, setRecvEta] = useState(0)
+  const [recvUrl, setRecvUrl] = useState<string | null>(null)
+  const [recvDone, setRecvDone] = useState(false)
 
-  // UI state
-  const [copiedLink, setCopiedLink] = useState<boolean>(false)
-  const [copiedCode, setCopiedCode] = useState<boolean>(false)
-  const [showQr, setShowQr] = useState<boolean>(false)
-  const [isDragging, setIsDragging] = useState<boolean>(false)
+  // UI
+  const [copied, setCopied] = useState(false)
+  const [copiedLink, setCopiedLink] = useState(false)
+  const [showQr, setShowQr] = useState(false)
+  const [drag, setDrag] = useState(false)
+  const [connPulse, setConnPulse] = useState(false)
+
+  // Nearby
+  const [nearbyRooms, setNearbyRooms] = useState<NearbyRoom[]>([])
+  const [nearbyLoading, setNearbyLoading] = useState(false)
+  const [userLat, setUserLat] = useState<number | null>(null)
+  const [userLng, setUserLng] = useState<number | null>(null)
 
   const pcRef = useRef<RTCPeerConnection | null>(null)
   const dcRef = useRef<RTCDataChannel | null>(null)
-  const pollTimerRef = useRef<any>(null)
-  const appliedCandidates = useRef<Set<string>>(new Set())
+  const pollRef = useRef<any>(null)
+  const appliedIce = useRef<Set<string>>(new Set())
 
-  // Unlock AudioContext on click/touch
+  // Unlock audio on first gesture
   useEffect(() => {
-    const handleGesture = () => unlockAudioContext()
-    window.addEventListener("click", handleGesture, { once: true })
-    window.addEventListener("touchstart", handleGesture, { once: true })
-    return () => {
-      window.removeEventListener("click", handleGesture)
-      window.removeEventListener("touchstart", handleGesture)
-    }
+    const h = () => ensureAudio()
+    window.addEventListener("click", h, { once: true })
+    window.addEventListener("touchstart", h, { once: true })
+    return () => { window.removeEventListener("click", h); window.removeEventListener("touchstart", h) }
   }, [])
 
-  // Initialize room code & device info
+  // Init
   useEffect(() => {
-    setMyDeviceInfo(detectDeviceInfo())
+    setMyDevice(detectDevice())
     if (urlCode && urlCode.trim().length >= 4) {
       setMode("receive")
-      const clean = urlCode.trim().toUpperCase()
-      setInputCode(clean)
+      setInputCode(urlCode.trim().toUpperCase())
     } else {
       setRoomCode(generateCode())
     }
+    // Try get geolocation quietly
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => { setUserLat(pos.coords.latitude); setUserLng(pos.coords.longitude) },
+        () => {}
+      )
+    }
   }, [urlCode])
 
-  // Create WebRTC PeerConnection
-  const createPeerConnection = () => {
+  const createPC = useCallback(() => {
     const pc = new RTCPeerConnection({
       iceServers: [
         { urls: "stun:stun.l.google.com:19302" },
         { urls: "stun:stun1.l.google.com:19302" },
         { urls: "stun:stun2.l.google.com:19302" },
-        { urls: "stun:stun3.l.google.com:19302" },
         { urls: "stun:global.stun.twilio.com:3478" },
       ],
     })
-
     pc.oniceconnectionstatechange = () => {
       if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
         setIsConnected(true)
-        setConnectionType("p2p")
-        setStatusText("Direct WebRTC P2P Channel Active")
-        playConnectionChime()
+        setConnType("p2p")
+        setStatus("Direct P2P Connected ⚡")
+        setConnPulse(true)
+        playChime()
+        setTimeout(() => setConnPulse(false), 3000)
       } else if (pc.iceConnectionState === "failed" || pc.iceConnectionState === "disconnected") {
         setIsConnected(false)
-        setStatusText("Peer disconnected")
+        setStatus("Connection lost")
       }
     }
-
     pcRef.current = pc
     return pc
-  }
+  }, [])
 
-  // SENDER ROLE: Publish Offer & Poll Receiver's Answer + Candidates continuously
+  // SENDER: init offer + poll
   useEffect(() => {
     if (mode !== "send" || !roomCode) return
+    let alive = true
 
-    let isSubscribed = true
-
-    async function initSender() {
-      const pc = createPeerConnection()
-      const dc = pc.createDataChannel("fileTransfer", { ordered: true })
+    async function init() {
+      const pc = createPC()
+      const dc = pc.createDataChannel("ft", { ordered: true })
       dcRef.current = dc
+      listenChannel(dc)
 
-      setupDataChannelListeners(dc)
-
-      pc.onicecandidate = (evt) => {
-        if (evt.candidate) {
-          fetch("/api/share/signal", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              action: "add_ice",
-              code: roomCode,
-              role: "sender",
-              candidate: evt.candidate,
-            }),
-          }).catch(() => {})
-        }
+      pc.onicecandidate = (e) => {
+        if (!e.candidate) return
+        fetch("/api/share/signal", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "add_ice", code: roomCode, role: "sender", candidate: e.candidate }),
+        }).catch(() => {})
       }
 
       const offer = await pc.createOffer()
       await pc.setLocalDescription(offer)
 
       await fetch("/api/share/signal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: "create_room",
-          code: roomCode,
-          offer,
-          deviceInfo: detectDeviceInfo(),
+          action: "create_room", code: roomCode, offer,
+          deviceInfo: detectDevice(),
+          lat: userLat, lng: userLng,
         }),
       })
+      setStatus("Room ready. Waiting for receiver…")
 
-      const pollAnswer = async () => {
-        if (!isSubscribed || isConnected) return
+      const poll = async () => {
+        if (!alive) return
         try {
           const res = await fetch("/api/share/signal", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
+            method: "POST", headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ action: "poll", code: roomCode, role: "sender" }),
           })
-          const data = await res.json()
+          const d = await res.json()
 
-          if (data.found && data.receiverDeviceInfo) {
-            setPeerDevice(data.receiverDeviceInfo)
-            setIsConnected(true)
-            setStatusText(`Connected to Receiver (${data.receiverDeviceInfo.os})`)
-            playConnectionChime()
-          }
-
-          if (data.hasAnswer && pc.signalingState === "have-local-offer") {
-            await pc.setRemoteDescription(new RTCSessionDescription(data.answer))
-          }
-
-          if (data.receiverCandidates && data.receiverCandidates.length > 0) {
-            for (const cand of data.receiverCandidates) {
-              const candStr = JSON.stringify(cand)
-              if (!appliedCandidates.current.has(candStr)) {
-                appliedCandidates.current.add(candStr)
-                try { await pc.addIceCandidate(new RTCIceCandidate(cand)) } catch {}
-              }
+          if (d.found && d.receiverDeviceInfo) {
+            setPeerDevice(d.receiverDeviceInfo)
+            if (!isConnected) {
+              setIsConnected(true)
+              setStatus(`Peer joined: ${d.receiverDeviceInfo.os} (${d.receiverDeviceInfo.browser})`)
+              playChime()
             }
           }
-        } catch (e) {}
 
-        if (isSubscribed && !isConnected) {
-          pollTimerRef.current = setTimeout(pollAnswer, 800)
-        }
-      }
+          if (d.hasAnswer && pc.signalingState === "have-local-offer") {
+            await pc.setRemoteDescription(new RTCSessionDescription(d.answer))
+          }
 
-      pollAnswer()
-    }
-
-    initSender()
-
-    return () => {
-      isSubscribed = false
-      if (pollTimerRef.current) clearTimeout(pollTimerRef.current)
-      if (pcRef.current) pcRef.current.close()
-    }
-  }, [mode, roomCode])
-
-  // RECEIVER ROLE: Join Room, Set Remote Offer, Create Answer & Poll Sender Candidates
-  const handleConnectReceiver = async (targetCode?: string) => {
-    const code = (targetCode || inputCode).trim().toUpperCase()
-    if (!code || code.length < 4) {
-      setErrorMsg("Please enter a valid 6-character room code.")
-      return
-    }
-
-    setErrorMsg(null)
-    setStatusText(`Connecting to room ${code}…`)
-
-    try {
-      const res = await fetch("/api/share/signal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "join_room", code, deviceInfo: detectDeviceInfo() }),
-      })
-      const data = await res.json()
-
-      if (!res.ok || !data.offer) {
-        setErrorMsg(data.error || `Room ${code} not found. Make sure the sender has ul0.site/share open.`)
-        return
-      }
-
-      if (data.senderDeviceInfo) {
-        setPeerDevice(data.senderDeviceInfo)
-        setIsConnected(true)
-        setStatusText(`Connected to Sender (${data.senderDeviceInfo.os})`)
-        playConnectionChime()
-      }
-
-      const pc = createPeerConnection()
-
-      pc.ondatachannel = (evt) => {
-        dcRef.current = evt.channel
-        setupDataChannelListeners(evt.channel)
-      }
-
-      pc.onicecandidate = (evt) => {
-        if (evt.candidate) {
-          fetch("/api/share/signal", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              action: "add_ice",
-              code,
-              role: "receiver",
-              candidate: evt.candidate,
-            }),
-          }).catch(() => {})
-        }
-      }
-
-      await pc.setRemoteDescription(new RTCSessionDescription(data.offer))
-      const answer = await pc.createAnswer()
-      await pc.setLocalDescription(answer)
-
-      await fetch("/api/share/signal", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "join_room",
-          code,
-          answer,
-          deviceInfo: detectDeviceInfo(),
-        }),
-      })
-
-      // Continuous ICE Candidate poll
-      const pollSenderCandidates = async () => {
-        if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") return
-        try {
-          const pollRes = await fetch("/api/share/signal", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ action: "poll", code, role: "receiver" }),
-          })
-          const pollData = await pollRes.json()
-
-          if (pollData.senderCandidates && pollData.senderCandidates.length > 0) {
-            for (const cand of pollData.senderCandidates) {
-              const candStr = JSON.stringify(cand)
-              if (!appliedCandidates.current.has(candStr)) {
-                appliedCandidates.current.add(candStr)
-                try { await pc.addIceCandidate(new RTCIceCandidate(cand)) } catch {}
-              }
+          for (const c of (d.receiverCandidates || [])) {
+            const k = JSON.stringify(c)
+            if (!appliedIce.current.has(k)) {
+              appliedIce.current.add(k)
+              try { await pc.addIceCandidate(new RTCIceCandidate(c)) } catch {}
             }
           }
         } catch {}
-
-        if (pc.iceConnectionState !== "connected" && pc.iceConnectionState !== "completed") {
-          setTimeout(pollSenderCandidates, 800)
-        }
+        if (alive) pollRef.current = setTimeout(poll, 900)
       }
-
-      pollSenderCandidates()
-
-      // Backup Receiver Server Relay Poll
-      startRelayReceiverPoll(code)
-    } catch (err: any) {
-      console.error("Join room error:", err)
-      setErrorMsg("Failed to connect to room. Please check code.")
+      poll()
     }
-  }
 
-  // Backup Receiver Server Relay Polling
-  const startRelayReceiverPoll = (code: string) => {
-    let lastFetchedIndex = 0
-    let relayChunks: ArrayBuffer[] = []
-    let relayHeader: { name: string; size: number; mime: string } | null = null
+    init()
+    return () => {
+      alive = false
+      clearTimeout(pollRef.current)
+      pcRef.current?.close()
+    }
+  }, [mode, roomCode, userLat, userLng])
 
-    const checkRelay = async () => {
-      if (dcRef.current && dcRef.current.readyState === "open") return
+  // RECEIVER: join room
+  const joinRoom = async (code = inputCode) => {
+    const c = code.trim().toUpperCase()
+    if (c.length < 4) { setError("Enter a valid 4–8 character room code."); return }
+    setError(null)
+    setStatus(`Connecting to ${c}…`)
 
+    const res = await fetch("/api/share/signal", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "join_room", code: c, deviceInfo: detectDevice() }),
+    })
+    const data = await res.json()
+    if (!res.ok || !data.offer) {
+      setError(data.error || "Room not found. Make sure sender has ul0.site/share open.")
+      return
+    }
+
+    if (data.senderDeviceInfo) {
+      setPeerDevice(data.senderDeviceInfo)
+      setIsConnected(true)
+      setStatus(`Connected to ${data.senderDeviceInfo.os} (${data.senderDeviceInfo.browser})`)
+      playChime()
+      setConnPulse(true)
+      setTimeout(() => setConnPulse(false), 3000)
+    }
+
+    const pc = createPC()
+    pc.ondatachannel = (e) => { dcRef.current = e.channel; listenChannel(e.channel) }
+    pc.onicecandidate = (e) => {
+      if (!e.candidate) return
+      fetch("/api/share/signal", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "add_ice", code: c, role: "receiver", candidate: e.candidate }),
+      }).catch(() => {})
+    }
+
+    await pc.setRemoteDescription(new RTCSessionDescription(data.offer))
+    const answer = await pc.createAnswer()
+    await pc.setLocalDescription(answer)
+
+    await fetch("/api/share/signal", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "join_room", code: c, answer, deviceInfo: detectDevice() }),
+    })
+
+    // Poll sender ICE candidates
+    let alive = true
+    const poll = async () => {
+      if (!alive || pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") return
       try {
-        const res = await fetch("/api/share/relay", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "get_chunks", code, fromIndex: lastFetchedIndex }),
+        const r = await fetch("/api/share/signal", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "poll", code: c, role: "receiver" }),
         })
-        const data = await res.json()
-
-        if (data.found && data.header) {
-          if (!relayHeader) {
-            relayHeader = data.header
-            setIncomingFile(relayHeader)
-            setIsReceiving(true)
-            setConnectionType("relay")
-            setStatusText(`Receiving ${relayHeader.name} via Fast Stream Relay…`)
-          }
-
-          if (data.chunks && data.chunks.length > 0) {
-            for (const b64 of data.chunks) {
-              const bin = atob(b64)
-              const len = bin.length
-              const bytes = new Uint8Array(len)
-              for (let i = 0; i < len; i++) bytes[i] = bin.charCodeAt(i)
-              relayChunks.push(bytes.buffer)
-            }
-            lastFetchedIndex = data.nextIndex
-
-            const receivedBytes = relayChunks.reduce((acc, c) => acc + c.byteLength, 0)
-            if (relayHeader.size > 0) {
-              const pct = Math.min(100, Math.round((receivedBytes / relayHeader.size) * 100))
-              setReceiveProgress(pct)
-            }
-          }
-
-          if (data.isComplete && relayHeader) {
-            setIsReceiving(false)
-            setReceiveCompleted(true)
-            setReceiveProgress(100)
-            setStatusText("File received successfully!")
-
-            const blob = new Blob(relayChunks, {
-              type: relayHeader.mime || "application/octet-stream",
-            })
-            const url = URL.createObjectURL(blob)
-            setReceivedBlobUrl(url)
-
-            const a = document.createElement("a")
-            a.href = url
-            a.download = relayHeader.name
-            document.body.appendChild(a)
-            a.click()
-            document.body.removeChild(a)
-            return
+        const d = await r.json()
+        for (const cand of (d.senderCandidates || [])) {
+          const k = JSON.stringify(cand)
+          if (!appliedIce.current.has(k)) {
+            appliedIce.current.add(k)
+            try { await pc.addIceCandidate(new RTCIceCandidate(cand)) } catch {}
           }
         }
       } catch {}
-
-      if (!receiveCompleted) {
-        setTimeout(checkRelay, 1000)
-      }
+      if (alive) setTimeout(poll, 900)
     }
+    poll()
 
-    setTimeout(checkRelay, 3000)
+    // Relay fallback poll after 3s
+    startRelayReceiverPoll(c, () => { alive = false })
   }
 
-  // DataChannel Handlers
-  const setupDataChannelListeners = (dc: RTCDataChannel) => {
-    let receivedChunks: ArrayBuffer[] = []
-    let expectedHeader: { name: string; size: number; mime: string } | null = null
-    let receivedBytes = 0
-    let lastTime = Date.now()
-    let lastBytes = 0
+  // Relay receiver poll
+  const startRelayReceiverPoll = (code: string, onDone?: () => void) => {
+    let lastIdx = 0
+    let relayChunks: ArrayBuffer[] = []
+    let relayHeader: { name: string; size: number; mime: string } | null = null
 
+    const check = async () => {
+      if (dcRef.current?.readyState === "open") return
+      try {
+        const r = await fetch("/api/share/relay", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ action: "get_chunks", code, fromIndex: lastIdx }),
+        })
+        const d = await r.json()
+        if (d.found && d.header) {
+          if (!relayHeader) {
+            relayHeader = d.header
+            setIncoming(relayHeader)
+            setReceiving(true)
+            setConnType("relay")
+            setStatus(`Receiving via relay: ${relayHeader!.name}`)
+          }
+          for (const b64 of (d.chunks || [])) {
+            const bin = atob(b64), arr = new Uint8Array(bin.length)
+            for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i)
+            relayChunks.push(arr.buffer)
+          }
+          lastIdx = d.nextIndex
+          if (relayHeader) {
+            const got = relayChunks.reduce((a, c) => a + c.byteLength, 0)
+            setRecvPct(Math.min(100, Math.round(got / relayHeader.size * 100)))
+          }
+          if (d.isComplete && relayHeader) {
+            setReceiving(false); setRecvDone(true); setRecvPct(100)
+            setStatus("Transfer complete!")
+            const blob = new Blob(relayChunks, { type: relayHeader.mime || "application/octet-stream" })
+            const url = URL.createObjectURL(blob)
+            setRecvUrl(url)
+            const a = document.createElement("a"); a.href = url; a.download = relayHeader.name
+            document.body.appendChild(a); a.click(); document.body.removeChild(a)
+            onDone?.(); return
+          }
+        }
+      } catch {}
+      if (!recvDone) setTimeout(check, 1200)
+    }
+    setTimeout(check, 3000)
+  }
+
+  // DataChannel listeners
+  const listenChannel = (dc: RTCDataChannel) => {
+    let chunks: ArrayBuffer[] = [], header: { name: string; size: number; mime: string } | null = null
+    let got = 0, lastT = Date.now(), lastB = 0
     dc.binaryType = "arraybuffer"
 
     dc.onopen = () => {
-      setIsConnected(true)
-      setConnectionType("p2p")
-      setStatusText("WebRTC P2P Channel Active")
-      playConnectionChime()
+      setIsConnected(true); setConnType("p2p")
+      setStatus("P2P Channel Open ⚡"); playChime()
+      setConnPulse(true); setTimeout(() => setConnPulse(false), 3000)
     }
-
-    dc.onmessage = (evt) => {
-      const data = evt.data
-
-      if (typeof data === "string") {
+    dc.onmessage = (e) => {
+      if (typeof e.data === "string") {
         try {
-          const parsed = JSON.parse(data)
-          if (parsed.type === "header") {
-            expectedHeader = { name: parsed.name, size: parsed.size, mime: parsed.mime }
-            setIncomingFile(expectedHeader)
-            setIsReceiving(true)
-            setReceiveProgress(0)
-            setReceiveCompleted(false)
-            receivedChunks = []
-            receivedBytes = 0
-            lastTime = Date.now()
-            lastBytes = 0
-            setStatusText(`Receiving ${parsed.name} (${formatBytes(parsed.size)})…`)
-            return
+          const p = JSON.parse(e.data)
+          if (p.type === "header") {
+            header = { name: p.name, size: p.size, mime: p.mime }
+            setIncoming(header); setReceiving(true); setRecvPct(0); setRecvDone(false)
+            chunks = []; got = 0; lastT = Date.now(); lastB = 0
+            setStatus(`Receiving ${p.name}…`)
           }
         } catch {}
+        return
       }
-
-      if (data instanceof ArrayBuffer) {
-        receivedChunks.push(data)
-        receivedBytes += data.byteLength
-
-        if (expectedHeader && expectedHeader.size > 0) {
-          const pct = Math.min(100, Math.round((receivedBytes / expectedHeader.size) * 100))
-          setReceiveProgress(pct)
-
-          const now = Date.now()
-          const diffSec = (now - lastTime) / 1000
-          if (diffSec >= 0.5) {
-            const bytesDiff = receivedBytes - lastBytes
-            const bps = bytesDiff / diffSec
-            setReceiveSpeedBps(bps)
-
-            const remBytes = expectedHeader.size - receivedBytes
-            const etaSec = bps > 0 ? remBytes / bps : 0
-            setReceiveEtaSeconds(etaSec)
-
-            lastTime = now
-            lastBytes = receivedBytes
+      if (e.data instanceof ArrayBuffer) {
+        chunks.push(e.data); got += e.data.byteLength
+        if (header) {
+          setRecvPct(Math.min(100, Math.round(got / header.size * 100)))
+          const now = Date.now(), dt = (now - lastT) / 1000
+          if (dt >= 0.5) {
+            const bps = (got - lastB) / dt; setRecvBps(bps)
+            setRecvEta(bps > 0 ? (header.size - got) / bps : 0)
+            lastT = now; lastB = got
+          }
+          if (got >= header.size) {
+            setReceiving(false); setRecvDone(true); setRecvPct(100); setStatus("Transfer complete! 🎉")
+            const blob = new Blob(chunks, { type: header.mime || "application/octet-stream" })
+            const url = URL.createObjectURL(blob); setRecvUrl(url)
+            const a = document.createElement("a"); a.href = url; a.download = header.name
+            document.body.appendChild(a); a.click(); document.body.removeChild(a)
           }
         }
+      }
+    }
+    dc.onclose = () => { setIsConnected(false); setStatus("Channel closed") }
+  }
 
-        if (expectedHeader && receivedBytes >= expectedHeader.size) {
-          setIsReceiving(false)
-          setReceiveCompleted(true)
-          setStatusText("Transfer finished! File ready.")
-          setReceiveProgress(100)
+  // Send file
+  const startSend = async () => {
+    if (!file) { setError("Pick a file first."); return }
 
-          const blob = new Blob(receivedChunks, {
-            type: expectedHeader.mime || "application/octet-stream",
+    setSending(true); setSendPct(0); setSendDone(false); setError(null)
+
+    // Primary: WebRTC
+    if (dcRef.current?.readyState === "open") {
+      const dc = dcRef.current, chunk = 64 * 1024
+      dc.send(JSON.stringify({ type: "header", name: file.name, size: file.size, mime: file.type || "application/octet-stream" }))
+      let off = 0, lastT = Date.now(), lastB = 0
+
+      const next = () => {
+        if (off >= file.size) { setSending(false); setSendDone(true); setSendPct(100); setStatus("Sent! 🎉"); return }
+        const slice = file.slice(off, off + chunk)
+        const reader = new FileReader()
+        reader.onload = (ev) => {
+          if (!(ev.target?.result instanceof ArrayBuffer)) return
+          dc.send(ev.target.result); off += ev.target.result.byteLength
+          setSendPct(Math.min(100, Math.round(off / file.size * 100)))
+          const now = Date.now(), dt = (now - lastT) / 1000
+          if (dt >= 0.5) {
+            const bps = (off - lastB) / dt; setSendBps(bps)
+            setSendEta(bps > 0 ? (file.size - off) / bps : 0); lastT = now; lastB = off
+          }
+          setTimeout(next, dc.bufferedAmount > 512 * 1024 ? 25 : 2)
+        }
+        reader.readAsArrayBuffer(slice)
+      }
+      next(); return
+    }
+
+    // Fallback: Relay
+    setConnType("relay"); setStatus("Uploading via server relay…")
+    await fetch("/api/share/relay", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "init_relay", code: roomCode, header: { name: file.name, size: file.size, mime: file.type || "application/octet-stream" } }),
+    })
+
+    let off = 0, lastT = Date.now(), lastB = 0
+    const chunk = 64 * 1024
+
+    const upload = async () => {
+      if (off >= file.size) { setSending(false); setSendDone(true); setSendPct(100); setStatus("Sent via relay! 🎉"); return }
+      const slice = file.slice(off, off + chunk)
+      const reader = new FileReader()
+      reader.onload = async (ev) => {
+        if (!(ev.target?.result instanceof ArrayBuffer)) return
+        const b64 = arrayBufferToBase64(ev.target.result)
+        const isLast = off + slice.size >= file.size
+        try {
+          const r = await fetch("/api/share/relay", {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ action: "upload_chunk", code: roomCode, header: { name: file.name, size: file.size, mime: file.type || "application/octet-stream" }, chunk: b64, isLast }),
           })
-          const url = URL.createObjectURL(blob)
-          setReceivedBlobUrl(url)
-
-          const a = document.createElement("a")
-          a.href = url
-          a.download = expectedHeader.name
-          document.body.appendChild(a)
-          a.click()
-          document.body.removeChild(a)
-        }
-      }
-    }
-
-    dc.onclose = () => {
-      setIsConnected(false)
-      setStatusText("Channel closed.")
-    }
-  }
-
-  // Handle File Select (Sender)
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0])
-      setSendCompleted(false)
-      setSendProgress(0)
-      setErrorMsg(null)
-    }
-  }
-
-  // Drag & Drop
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
-  }
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setSelectedFile(e.dataTransfer.files[0])
-      setSendCompleted(false)
-      setSendProgress(0)
-      setErrorMsg(null)
-    }
-  }
-
-  // Send File Chunks (Dual WebRTC + Server Stream Relay Fallback)
-  const handleStartTransfer = async () => {
-    if (!selectedFile) {
-      setErrorMsg("Please select a file to send first.")
-      return
-    }
-
-    const file = selectedFile
-    setIsSending(true)
-    setSendProgress(0)
-    setSendCompleted(false)
-    setErrorMsg(null)
-
-    // Mode A: WebRTC DataChannel (Primary)
-    if (dcRef.current && dcRef.current.readyState === "open") {
-      const dc = dcRef.current
-      const chunkSize = 32 * 1024
-
-      dc.send(
-        JSON.stringify({
-          type: "header",
-          name: file.name,
-          size: file.size,
-          mime: file.type || "application/octet-stream",
-        })
-      )
-
-      let offset = 0
-      let lastTime = Date.now()
-      let lastBytes = 0
-
-      const sendNextSlice = () => {
-        if (offset >= file.size) {
-          setIsSending(false)
-          setSendCompleted(true)
-          setSendProgress(100)
-          setStatusText("File sent successfully!")
-          return
-        }
-
-        const slice = file.slice(offset, offset + chunkSize)
-        const reader = new FileReader()
-
-        reader.onload = (evt) => {
-          if (!evt.target || !(evt.target.result instanceof ArrayBuffer)) return
-          const buffer = evt.target.result
-          offset += buffer.byteLength
-
-          dc.send(buffer)
-
-          const pct = Math.min(100, Math.round((offset / file.size) * 100))
-          setSendProgress(pct)
-
-          const now = Date.now()
-          const diffSec = (now - lastTime) / 1000
-          if (diffSec >= 0.5) {
-            const bytesDiff = offset - lastBytes
-            const bps = bytesDiff / diffSec
-            setSendSpeedBps(bps)
-
-            const remBytes = file.size - offset
-            const etaSec = bps > 0 ? remBytes / bps : 0
-            setSendEtaSeconds(etaSec)
-
-            lastTime = now
-            lastBytes = offset
-          }
-
-          if (dc.bufferedAmount > 1024 * 512) {
-            setTimeout(sendNextSlice, 20)
-          } else {
-            setTimeout(sendNextSlice, 2)
-          }
-        }
-
-        reader.readAsArrayBuffer(slice)
-      }
-
-      sendNextSlice()
-      return
-    }
-
-    // Mode B: Server Relay Base64 JSON Stream Fallback
-    try {
-      setConnectionType("relay")
-      setStatusText("Uploading via Fast Stream Relay…")
-
-      await fetch("/api/share/relay", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "init_relay",
-          code: roomCode,
-          header: { name: file.name, size: file.size, mime: file.type || "application/octet-stream" },
-        }),
-      })
-
-      const chunkSize = 64 * 1024 // 64KB chunks for optimal Vercel payload speed
-      let offset = 0
-      let lastTime = Date.now()
-      let lastBytes = 0
-
-      const uploadRelayChunk = async () => {
-        if (offset >= file.size) {
-          setIsSending(false)
-          setSendCompleted(true)
-          setSendProgress(100)
-          setStatusText("File sent successfully!")
-          return
-        }
-
-        const slice = file.slice(offset, offset + chunkSize)
-        const reader = new FileReader()
-
-        reader.onload = async (evt) => {
-          if (!evt.target || !(evt.target.result instanceof ArrayBuffer)) return
-          const base64Chunk = arrayBufferToBase64(evt.target.result)
-          const isLast = offset + slice.size >= file.size
-
-          try {
-            const res = await fetch("/api/share/relay", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                action: "upload_chunk",
-                code: roomCode,
-                header: { name: file.name, size: file.size, mime: file.type || "application/octet-stream" },
-                chunk: base64Chunk,
-                isLast,
-              }),
-            })
-
-            if (res.ok) {
-              offset += slice.size
-              const pct = Math.min(100, Math.round((offset / file.size) * 100))
-              setSendProgress(pct)
-
-              const now = Date.now()
-              const diffSec = (now - lastTime) / 1000
-              if (diffSec >= 0.5) {
-                const bytesDiff = offset - lastBytes
-                const bps = bytesDiff / diffSec
-                setSendSpeedBps(bps)
-
-                const remBytes = file.size - offset
-                const etaSec = bps > 0 ? remBytes / bps : 0
-                setSendEtaSeconds(etaSec)
-
-                lastTime = now
-                lastBytes = offset
-              }
-
-              setTimeout(uploadRelayChunk, 10)
-            } else {
-              setErrorMsg("Relay upload error. Please try again.")
-              setIsSending(false)
+          if (r.ok) {
+            off += slice.size
+            setSendPct(Math.min(100, Math.round(off / file.size * 100)))
+            const now = Date.now(), dt = (now - lastT) / 1000
+            if (dt >= 0.5) {
+              const bps = (off - lastB) / dt; setSendBps(bps)
+              setSendEta(bps > 0 ? (file.size - off) / bps : 0); lastT = now; lastB = off
             }
-          } catch (e) {
-            setErrorMsg("Relay network issue. Retrying…")
-            setTimeout(uploadRelayChunk, 500)
-          }
-        }
-
-        reader.readAsArrayBuffer(slice)
+            setTimeout(upload, 10)
+          } else { setError("Relay upload failed. Retrying…"); setTimeout(upload, 800) }
+        } catch { setError("Network issue. Retrying…"); setTimeout(upload, 800) }
       }
-
-      uploadRelayChunk()
-    } catch (err: any) {
-      console.error("Relay error:", err)
-      setErrorMsg("Transfer error. Please check connection.")
-      setIsSending(false)
+      reader.readAsArrayBuffer(slice)
     }
+    upload()
   }
 
-  const shareUrl =
-    typeof window !== "undefined" ? `${window.location.origin}/share?code=${roomCode}` : ""
-
-  const copyShareLink = () => {
-    if (navigator.clipboard && shareUrl) {
-      navigator.clipboard.writeText(shareUrl)
-      setCopiedLink(true)
-      setTimeout(() => setCopiedLink(false), 2500)
+  // Nearby rooms discovery
+  const discoverNearby = async () => {
+    if (!userLat || !userLng) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => { setUserLat(pos.coords.latitude); setUserLng(pos.coords.longitude) },
+        () => setError("Location permission denied. Enable to use Nearby Share.")
+      )
+      return
     }
+    setNearbyLoading(true)
+    try {
+      const r = await fetch("/api/share/signal", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "nearby", lat: userLat, lng: userLng }),
+      })
+      const d = await r.json()
+      setNearbyRooms(d.nearby || [])
+    } catch {}
+    setNearbyLoading(false)
   }
 
-  const copyRoomCode = () => {
-    if (navigator.clipboard && roomCode) {
-      navigator.clipboard.writeText(roomCode)
-      setCopiedCode(true)
-      setTimeout(() => setCopiedCode(false), 2500)
-    }
-  }
+  const shareUrl = typeof window !== "undefined" ? `${window.location.origin}/share?code=${roomCode}` : ""
 
+  const copyCode = () => { navigator.clipboard?.writeText(roomCode); setCopied(true); setTimeout(() => setCopied(false), 2000) }
+  const copyUrl = () => { navigator.clipboard?.writeText(shareUrl); setCopiedLink(true); setTimeout(() => setCopiedLink(false), 2000) }
+
+  // ─── RENDER ────────────────────────────────────────────────────────────────
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6 font-sans">
-      {/* Notion-Style Header Segment Switcher */}
+    <div className="w-full max-w-2xl mx-auto space-y-4">
+
+      {/* Mode Switcher */}
       <div className="flex justify-center">
-        <div className="inline-flex rounded-xl border border-border/80 p-1 bg-card shadow-xs">
-          <button
-            onClick={() => {
-              setMode("send")
-              setErrorMsg(null)
-            }}
-            className={`flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-semibold transition-all ${
-              mode === "send"
-                ? "bg-foreground text-background shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Upload className="h-3.5 w-3.5" />
-            Send File
-          </button>
-          <button
-            onClick={() => {
-              setMode("receive")
-              setErrorMsg(null)
-            }}
-            className={`flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-semibold transition-all ${
-              mode === "receive"
-                ? "bg-foreground text-background shadow-xs"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Download className="h-3.5 w-3.5" />
-            Receive File
-          </button>
+        <div
+          className="inline-flex rounded-full p-1 gap-1"
+          style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)" }}
+        >
+          {(["send", "receive"] as const).map((m) => (
+            <button
+              key={m}
+              onClick={() => { setMode(m); setError(null) }}
+              className="flex items-center gap-2 px-5 py-2 rounded-full text-xs font-semibold transition-all duration-200"
+              style={mode === m
+                ? { background: "white", color: "#0a0a0f", boxShadow: "0 2px 8px rgba(0,0,0,0.3)" }
+                : { color: "rgba(255,255,255,0.5)" }
+              }
+            >
+              {m === "send" ? <Upload className="h-3.5 w-3.5" /> : <Download className="h-3.5 w-3.5" />}
+              {m === "send" ? "Send" : "Receive"}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Main Notion-Style Card Container */}
-      <Card className="border border-border/80 bg-card shadow-sm rounded-2xl overflow-hidden">
-        <CardContent className="p-6 sm:p-8 space-y-6">
-          
-          {/* Notion Callout Box with Real Device Telemetry & Country Flags */}
-          <div className="rounded-xl border border-border/70 bg-muted/40 p-4 space-y-3">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                <span className={`h-2.5 w-2.5 rounded-full ${isConnected ? "bg-emerald-500 animate-pulse" : "bg-amber-500"}`} />
-                <span className="text-xs font-medium text-foreground">
-                  {mode === "send" ? "Sender Station" : "Receiver Station"}
-                </span>
-                <span className="text-xs text-muted-foreground">·</span>
-                <span className="text-xs text-muted-foreground font-mono">{statusText}</span>
-              </div>
-
-              <div className="text-[11px] font-mono text-muted-foreground flex items-center gap-1.5">
-                <Lock className="h-3 w-3 text-emerald-500" />
-                <span>E2E Encrypted</span>
-              </div>
-            </div>
-
-            {/* REAL DEVICE & COUNTRY TELEMETRY BADGES WITH BRAND LOGOS */}
-            <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-border/40">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border/60 text-[11px] font-mono text-foreground">
-                <BrowserBrandIcon browser={myDeviceInfo.browser} />
-                <span>
-                  This Device: <strong>{myDeviceInfo.os} ({myDeviceInfo.browser})</strong>
-                </span>
-              </div>
-
-              {peerDevice && (
-                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
-                  <span>{peerDevice.countryFlag || "🌐"}</span>
-                  <BrowserBrandIcon browser={peerDevice.browser} />
-                  <span>
-                    Peer: <strong>{peerDevice.os} ({peerDevice.browser})</strong> [{peerDevice.ip}]
-                  </span>
-                </div>
-              )}
-            </div>
+      {/* Main Card */}
+      <div
+        className="rounded-3xl overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.03) 100%)",
+          border: "1px solid rgba(255,255,255,0.1)",
+          backdropFilter: "blur(20px)",
+          boxShadow: "0 25px 50px rgba(0,0,0,0.5)",
+        }}
+      >
+        {/* Card Header: Device Telemetry */}
+        <div
+          className="flex flex-wrap items-center justify-between gap-3 px-6 py-4"
+          style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}
+        >
+          <div className="flex items-center gap-2">
+            <span
+              className="h-2 w-2 rounded-full"
+              style={{
+                background: isConnected ? "#22c55e" : "#f59e0b",
+                boxShadow: isConnected ? "0 0 8px #22c55e" : "0 0 8px #f59e0b",
+              }}
+            />
+            <span className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.5)" }}>{status}</span>
           </div>
 
-          {/* ERROR ALERT */}
-          {errorMsg && (
-            <div className="flex items-center gap-2.5 rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-3 text-xs text-destructive font-medium">
-              <AlertCircle className="h-4 w-4 shrink-0" />
-              <p className="flex-1">{errorMsg}</p>
+          <div className="flex flex-wrap items-center gap-2">
+            {/* My device badge */}
+            <div
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono"
+              style={{ background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.7)" }}
+            >
+              <BrowserIcon browser={myDevice.browser} size={13} />
+              <span>{myDevice.os} · {myDevice.browser}</span>
             </div>
-          )}
 
-          {/* ================= SENDER MODE ================= */}
+            {/* Peer device badge */}
+            {peerDevice && (
+              <div
+                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-mono"
+                style={{ background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)", color: "#86efac" }}
+              >
+                <span>{peerDevice.countryFlag || "🌐"}</span>
+                <BrowserIcon browser={peerDevice.browser} size={13} />
+                <span>{peerDevice.os} · {peerDevice.browser}</span>
+                {peerDevice.ip && <span style={{ opacity: 0.6 }}>[{peerDevice.ip}]</span>}
+              </div>
+            )}
+
+            <div className="flex items-center gap-1 text-[11px] font-mono" style={{ color: "rgba(255,255,255,0.35)" }}>
+              <Lock className="h-3 w-3 text-green-500" />
+              <span>E2EE</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Error */}
+        {error && (
+          <div
+            className="mx-6 mt-4 flex items-center gap-2.5 rounded-2xl px-4 py-3 text-xs"
+            style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", color: "#fca5a5" }}
+          >
+            <AlertCircle className="h-4 w-4 shrink-0" />
+            <span className="flex-1">{error}</span>
+            <button onClick={() => setError(null)}><X className="h-4 w-4 opacity-60 hover:opacity-100" /></button>
+          </div>
+        )}
+
+        <div className="p-6 space-y-5">
+
+          {/* ══ SEND MODE ══════════════════════════════════════════════════ */}
           {mode === "send" && (
-            <div className="space-y-6">
+            <div className="space-y-5">
+
               {/* Dropzone */}
               <div
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                onDrop={handleDrop}
-                className={`relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed p-8 sm:p-10 text-center transition-all ${
-                  isDragging
-                    ? "border-primary bg-primary/5"
-                    : selectedFile
-                    ? "border-emerald-500/50 bg-emerald-500/5"
-                    : "border-border/80 bg-background hover:border-primary/50"
-                }`}
+                onDragOver={(e) => { e.preventDefault(); setDrag(true) }}
+                onDragLeave={() => setDrag(false)}
+                onDrop={(e) => { e.preventDefault(); setDrag(false); if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]) }}
+                className="relative flex flex-col items-center justify-center rounded-2xl p-8 text-center cursor-pointer transition-all duration-300"
+                style={{
+                  border: `2px dashed ${drag ? "rgba(99,102,241,0.8)" : file ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.15)"}`,
+                  background: drag
+                    ? "rgba(99,102,241,0.08)"
+                    : file
+                    ? "rgba(34,197,94,0.05)"
+                    : "rgba(255,255,255,0.02)",
+                }}
               >
-                <input
-                  type="file"
-                  onChange={handleFileSelect}
-                  className="absolute inset-0 cursor-pointer opacity-0"
-                />
-
-                {selectedFile ? (
+                <input type="file" onChange={(e) => e.target.files?.[0] && setFile(e.target.files[0])}
+                  className="absolute inset-0 opacity-0 cursor-pointer" />
+                {file ? (
                   <div className="space-y-2">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                      <FileCheck className="h-6 w-6" />
+                    <div className="mx-auto h-14 w-14 rounded-2xl flex items-center justify-center"
+                      style={{ background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)" }}>
+                      <FileCheck className="h-7 w-7 text-green-400" />
                     </div>
-                    <p className="font-semibold text-foreground text-sm max-w-xs sm:max-w-md truncate mx-auto">
-                      {selectedFile.name}
-                    </p>
-                    <p className="text-xs font-mono text-muted-foreground">
-                      {formatBytes(selectedFile.size)} · Unlimited Transfer Ready
-                    </p>
-                    <Button size="sm" variant="ghost" className="text-xs text-muted-foreground hover:text-foreground mt-1">
-                      Change File
-                    </Button>
+                    <p className="font-bold text-white text-sm max-w-xs truncate mx-auto">{file.name}</p>
+                    <p className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.4)" }}>{formatBytes(file.size)}</p>
+                    <button className="text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>change file</button>
                   </div>
                 ) : (
-                  <div className="space-y-2.5 pointer-events-none">
-                    <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-muted border border-border text-foreground">
-                      <Upload className="h-5 w-5" />
+                  <div className="space-y-3 pointer-events-none">
+                    <div className="mx-auto h-14 w-14 rounded-2xl flex items-center justify-center"
+                      style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                      <Upload className="h-6 w-6" style={{ color: "rgba(255,255,255,0.4)" }} />
                     </div>
-                    <p className="font-semibold text-foreground text-sm">
-                      Drag &amp; drop any file or click to browse
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      No file size limits. Direct browser-to-browser P2P.
-                    </p>
+                    <div>
+                      <p className="font-semibold text-white text-sm">Drop any file here</p>
+                      <p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.3)" }}>or click to browse · no size limit</p>
+                    </div>
                   </div>
                 )}
               </div>
 
-              {/* Notion-Style Property Room Code Box */}
-              <div className="rounded-xl border border-border/70 bg-background p-4 space-y-3">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+              {/* Room Code Display */}
+              <div className="rounded-2xl p-4 space-y-3"
+                style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                <div className="flex items-center justify-between gap-3">
                   <div>
-                    <span className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider block">
-                      Room Code
-                    </span>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      Share with receiver to open at <code className="text-foreground font-mono">ul0.site/share</code>
+                    <p className="text-[10px] font-semibold uppercase tracking-widest"
+                      style={{ color: "rgba(255,255,255,0.35)" }}>Room Code</p>
+                    <p className="text-[11px] mt-0.5" style={{ color: "rgba(255,255,255,0.25)" }}>
+                      Share at <code className="text-white/40">ul0.site/share</code>
                     </p>
                   </div>
-
                   <div className="flex items-center gap-2">
-                    <code className="px-4 py-1.5 rounded-lg bg-muted border border-border text-lg font-bold font-mono tracking-widest text-foreground">
-                      {roomCode}
-                    </code>
-                    <Button size="sm" variant="outline" onClick={copyRoomCode} className="h-9 text-xs gap-1.5">
-                      {copiedCode ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
-                      {copiedCode ? "Copied" : "Copy"}
-                    </Button>
+                    {/* Large glowing room code */}
+                    <div
+                      className="px-4 py-2 rounded-xl"
+                      style={{
+                        background: "rgba(99,102,241,0.15)",
+                        border: "1px solid rgba(99,102,241,0.4)",
+                        boxShadow: "0 0 20px rgba(99,102,241,0.15)",
+                      }}
+                    >
+                      <span className="text-xl font-black font-mono tracking-[0.2em] text-indigo-300">
+                        {roomCode}
+                      </span>
+                    </div>
+                    <button
+                      onClick={copyCode}
+                      className="h-9 w-9 rounded-xl flex items-center justify-center transition-all"
+                      style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}
+                    >
+                      {copied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4 text-white/50" />}
+                    </button>
                   </div>
                 </div>
 
-                <div className="pt-1 flex flex-col sm:flex-row gap-2">
-                  <Input
-                    readOnly
-                    value={shareUrl}
-                    className="bg-muted/40 text-xs font-mono truncate h-9 rounded-lg border-border/60"
+                {/* Share link row */}
+                <div className="flex gap-2">
+                  <input readOnly value={shareUrl}
+                    className="flex-1 bg-transparent rounded-xl px-3 py-2 text-xs font-mono truncate outline-none"
+                    style={{ background: "rgba(0,0,0,0.3)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.4)" }}
                   />
-                  <div className="flex gap-2">
-                    <Button onClick={copyShareLink} size="sm" className="h-9 text-xs gap-1.5 shrink-0">
-                      {copiedLink ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
-                      {copiedLink ? "Copied" : "Copy Link"}
-                    </Button>
-                    <Button onClick={() => setShowQr(!showQr)} size="sm" variant="outline" className="h-9 text-xs gap-1.5 shrink-0">
-                      <QrCode className="h-3.5 w-3.5" />
-                      QR
-                    </Button>
-                  </div>
+                  <button onClick={copyUrl}
+                    className="shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold transition-all"
+                    style={{ background: copiedLink ? "rgba(34,197,94,0.2)" : "rgba(99,102,241,0.2)", border: `1px solid ${copiedLink ? "rgba(34,197,94,0.4)" : "rgba(99,102,241,0.4)"}`, color: copiedLink ? "#86efac" : "#a5b4fc" }}
+                  >
+                    {copiedLink ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
+                    {copiedLink ? "Copied" : "Copy Link"}
+                  </button>
+                  <button onClick={() => setShowQr(!showQr)}
+                    className="h-9 w-9 rounded-xl flex items-center justify-center"
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.4)" }}
+                  >
+                    <QrCode className="h-4 w-4" />
+                  </button>
                 </div>
 
                 {showQr && (
-                  <div className="pt-2 text-center flex flex-col items-center animate-in fade-in duration-300">
-                    <div className="p-2 bg-white rounded-xl shadow-xs border">
-                      <img
-                        src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(shareUrl)}`}
-                        alt="QR code"
-                        className="w-36 h-36"
-                      />
+                  <div className="flex justify-center pt-1">
+                    <div className="p-3 bg-white rounded-2xl shadow-lg">
+                      <img src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(shareUrl)}`}
+                        alt="QR" className="w-32 h-32" />
                     </div>
-                    <p className="text-[11px] text-muted-foreground mt-1.5">Scan to connect on mobile</p>
                   </div>
                 )}
               </div>
 
-              {/* Progress & Speed Dashboard */}
-              {selectedFile && (
-                <div className="space-y-3 pt-1">
-                  {isSending ? (
-                    <div className="space-y-3 rounded-xl border border-border/70 bg-muted/20 p-4">
-                      <div className="flex items-center justify-between text-xs font-semibold">
-                        <span className="text-foreground truncate max-w-xs">Sending {selectedFile.name}…</span>
-                        <span className="font-mono text-foreground font-bold">{sendProgress}%</span>
-                      </div>
+              {/* Transfer Button / Progress */}
+              {file && !sendDone && !sending && (
+                <button
+                  onClick={startSend}
+                  className="w-full py-3.5 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-all active:scale-95"
+                  style={{
+                    background: isConnected
+                      ? "linear-gradient(135deg, #6366f1, #818cf8)"
+                      : "rgba(255,255,255,0.06)",
+                    color: isConnected ? "white" : "rgba(255,255,255,0.3)",
+                    boxShadow: isConnected ? "0 8px 24px rgba(99,102,241,0.4)" : "none",
+                    border: isConnected ? "none" : "1px solid rgba(255,255,255,0.08)",
+                    cursor: isConnected ? "pointer" : "default",
+                  }}
+                >
+                  <Zap className="h-4 w-4" />
+                  {isConnected ? "Start Transfer" : "Waiting for receiver to connect…"}
+                </button>
+              )}
 
-                      <div className="h-2.5 w-full rounded-full bg-muted overflow-hidden">
-                        <div
-                          className="h-full bg-foreground rounded-full transition-all duration-300"
-                          style={{ width: `${sendProgress}%` }}
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono pt-1">
-                        <div className="p-2 rounded-lg bg-background border border-border/50">
-                          <span className="text-[10px] text-muted-foreground block">Speed</span>
-                          <span className="font-semibold text-foreground text-xs mt-0.5 block">
-                            {(sendSpeedBps / (1024 * 1024)).toFixed(2)} MB/s
-                          </span>
-                        </div>
-                        <div className="p-2 rounded-lg bg-background border border-border/50">
-                          <span className="text-[10px] text-muted-foreground block">Time Remaining</span>
-                          <span className="font-semibold text-foreground text-xs mt-0.5 block">
-                            {formatTimeRemaining(sendEtaSeconds)}
-                          </span>
-                        </div>
-                        <div className="p-2 rounded-lg bg-background border border-border/50">
-                          <span className="text-[10px] text-muted-foreground block">Mode</span>
-                          <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-[11px] mt-0.5 block uppercase">
-                            {connectionType === "p2p" ? "Direct P2P" : "Stream Relay"}
-                          </span>
-                        </div>
-                      </div>
+              {/* Progress bar */}
+              {(sending || sendDone) && (
+                <div className="rounded-2xl p-4 space-y-3"
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="text-white/60 truncate max-w-[200px]">{file?.name}</span>
+                    <span className="font-bold text-white">{sendPct}%</span>
+                  </div>
+                  <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                    <div className="h-full rounded-full transition-all duration-300"
+                      style={{
+                        width: `${sendPct}%`,
+                        background: sendDone
+                          ? "linear-gradient(90deg, #22c55e, #86efac)"
+                          : "linear-gradient(90deg, #6366f1, #818cf8)",
+                      }} />
+                  </div>
+                  {!sendDone && (
+                    <div className="flex gap-3 text-[11px] font-mono" style={{ color: "rgba(255,255,255,0.4)" }}>
+                      <span>{(sendBps / 1048576).toFixed(2)} MB/s</span>
+                      <span>·</span>
+                      <span>{formatETA(sendEta)}</span>
+                      <span>·</span>
+                      <span className="uppercase">{connType === "p2p" ? "⚡ Direct P2P" : "☁ Relay"}</span>
                     </div>
-                  ) : sendCompleted ? (
-                    <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-4 text-center space-y-1">
-                      <p className="font-semibold text-emerald-600 dark:text-emerald-400 text-xs">
-                        🎉 Transfer Finished!
-                      </p>
-                      <p className="text-[11px] text-muted-foreground">
-                        Receiver downloaded <strong className="text-foreground">{selectedFile.name}</strong>.
-                      </p>
-                    </div>
-                  ) : (
-                    <Button
-                      onClick={handleStartTransfer}
-                      className="w-full h-11 text-xs font-bold gap-2 rounded-xl shadow-xs"
-                    >
-                      <Zap className="h-4 w-4 fill-current" />
-                      Start File Transfer Now
-                    </Button>
+                  )}
+                  {sendDone && (
+                    <p className="text-xs text-green-400 font-semibold text-center">🎉 File sent successfully!</p>
                   )}
                 </div>
               )}
+
             </div>
           )}
 
-          {/* ================= RECEIVER MODE ================= */}
+          {/* ══ RECEIVE MODE ═══════════════════════════════════════════════ */}
           {mode === "receive" && (
-            <div className="space-y-6">
+            <div className="space-y-5">
               {!isConnected ? (
                 <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-semibold text-foreground uppercase tracking-wider block mb-2">
-                      Enter 6-Character Room Code
-                    </label>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Input
-                        placeholder="e.g. DV4UV7"
+                  {/* Code Input */}
+                  <div className="space-y-2">
+                    <p className="text-[11px] font-semibold uppercase tracking-widest"
+                      style={{ color: "rgba(255,255,255,0.35)" }}>
+                      Enter Room Code
+                    </p>
+                    <div className="flex gap-2">
+                      <input
                         value={inputCode}
                         onChange={(e) => setInputCode(e.target.value.toUpperCase())}
+                        placeholder="e.g. A3BX7K"
                         maxLength={8}
-                        className="h-11 text-base font-mono font-bold tracking-widest text-center uppercase bg-background rounded-lg border-border"
+                        onKeyDown={(e) => e.key === "Enter" && joinRoom()}
+                        className="flex-1 text-center text-xl font-black font-mono tracking-[0.2em] uppercase rounded-2xl py-3 outline-none transition-all"
+                        style={{
+                          background: "rgba(255,255,255,0.05)",
+                          border: "1px solid rgba(255,255,255,0.12)",
+                          color: "white",
+                          letterSpacing: "0.2em",
+                        }}
                       />
-                      <Button
-                        onClick={() => handleConnectReceiver()}
-                        className="h-11 px-6 text-xs font-bold gap-2 shrink-0 rounded-lg"
+                      <button
+                        onClick={() => joinRoom()}
+                        className="flex items-center gap-2 px-5 py-3 rounded-2xl font-bold text-sm transition-all active:scale-95"
+                        style={{ background: "linear-gradient(135deg, #6366f1, #818cf8)", color: "white", boxShadow: "0 8px 24px rgba(99,102,241,0.4)" }}
                       >
-                        Connect to Sender
+                        Connect
                         <ArrowRight className="h-4 w-4" />
-                      </Button>
+                      </button>
                     </div>
-                  </div>
-                  <p className="text-xs text-muted-foreground text-center">
-                    Enter the code provided by sender or open their shared URL directly.
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-5">
-                  <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
-                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-xs font-medium text-foreground">
-                        Connected to Sender: {peerDevice ? `${peerDevice.countryFlag || ""} ${peerDevice.os} (${peerDevice.browser})` : "Active"}
-                      </span>
-                    </div>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => setIsConnected(false)}
-                      className="text-xs text-muted-foreground hover:text-foreground h-7"
-                    >
-                      Disconnect
-                    </Button>
+                    <p className="text-[11px] text-center" style={{ color: "rgba(255,255,255,0.25)" }}>
+                      or open the sender's shared link directly
+                    </p>
                   </div>
 
-                  {incomingFile ? (
-                    <div className="rounded-xl border border-border/80 bg-background p-5 space-y-4">
+                  {/* Nearby Share */}
+                  <div className="rounded-2xl p-4 space-y-3"
+                    style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4" style={{ color: "rgba(99,102,241,0.8)" }} />
+                        <span className="text-xs font-semibold text-white/60">Nearby Share</span>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full font-mono"
+                          style={{ background: "rgba(99,102,241,0.15)", color: "#a5b4fc", border: "1px solid rgba(99,102,241,0.3)" }}>
+                          within 50km
+                        </span>
+                      </div>
+                      <button
+                        onClick={discoverNearby}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all"
+                        style={{ background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.3)", color: "#a5b4fc" }}
+                      >
+                        {nearbyLoading
+                          ? <RefreshCcw className="h-3 w-3 animate-spin" />
+                          : <Wifi className="h-3 w-3" />}
+                        {nearbyLoading ? "Scanning…" : "Discover"}
+                      </button>
+                    </div>
+
+                    {nearbyRooms.length > 0 ? (
+                      <div className="space-y-2">
+                        {nearbyRooms.map((r) => (
+                          <button key={r.code} onClick={() => { setInputCode(r.code); joinRoom(r.code) }}
+                            className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs transition-all hover:scale-[1.01]"
+                            style={{ background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.25)", color: "white" }}
+                          >
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-3 w-3 text-indigo-400" />
+                              <span className="font-mono font-bold tracking-wider text-indigo-300">{r.code}</span>
+                            </div>
+                            <div className="flex items-center gap-2" style={{ color: "rgba(255,255,255,0.4)" }}>
+                              <span>{r.distance} km away</span>
+                              <ChevronRight className="h-3.5 w-3.5" />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-[11px] text-center" style={{ color: "rgba(255,255,255,0.2)" }}>
+                        Click Discover to find nearby senders (uses your location)
+                      </p>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Connected Badge */}
+                  <div className="flex items-center justify-between rounded-2xl px-4 py-3"
+                    style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.25)" }}>
+                    <div className="flex items-center gap-2.5">
+                      <span className="h-2 w-2 rounded-full bg-green-400 animate-pulse"
+                        style={{ boxShadow: "0 0 8px #22c55e" }} />
+                      <span className="text-xs font-semibold text-green-300">
+                        {peerDevice
+                          ? `${peerDevice.countryFlag || ""} ${peerDevice.os} (${peerDevice.browser})`
+                          : "Sender connected"}
+                      </span>
+                    </div>
+                    <button onClick={() => setIsConnected(false)}
+                      className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.25)" }}>
+                      disconnect
+                    </button>
+                  </div>
+
+                  {/* Incoming file */}
+                  {incoming ? (
+                    <div className="rounded-2xl p-4 space-y-4"
+                      style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-lg bg-muted border border-border flex items-center justify-center text-foreground shrink-0">
-                          <FileIcon className="h-5 w-5" />
+                        <div className="h-11 w-11 rounded-xl flex items-center justify-center shrink-0"
+                          style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.1)" }}>
+                          <FileIcon className="h-5 w-5 text-white/60" />
                         </div>
-                        <div className="min-w-0 flex-1">
-                          <p className="font-semibold text-foreground text-sm truncate">
-                            {incomingFile.name}
-                          </p>
-                          <p className="text-xs font-mono text-muted-foreground mt-0.5">
-                            File Size: {formatBytes(incomingFile.size)}
+                        <div className="min-w-0">
+                          <p className="font-bold text-white text-sm truncate">{incoming.name}</p>
+                          <p className="text-xs font-mono" style={{ color: "rgba(255,255,255,0.35)" }}>
+                            {formatBytes(incoming.size)}
                           </p>
                         </div>
                       </div>
 
-                      {isReceiving && (
-                        <div className="space-y-3 pt-1">
-                          <div className="flex justify-between text-xs font-semibold">
-                            <span className="text-foreground">Downloading from sender…</span>
-                            <span className="font-mono text-foreground font-bold">{receiveProgress}%</span>
+                      {(receiving || recvDone) && (
+                        <>
+                          <div className="flex items-center justify-between text-xs font-mono">
+                            <span style={{ color: "rgba(255,255,255,0.4)" }}>
+                              {recvDone ? "Complete" : "Receiving…"}
+                            </span>
+                            <span className="font-bold text-white">{recvPct}%</span>
                           </div>
-
-                          <div className="h-2.5 w-full rounded-full bg-muted overflow-hidden">
-                            <div
-                              className="h-full bg-foreground rounded-full transition-all duration-300"
-                              style={{ width: `${receiveProgress}%` }}
-                            />
+                          <div className="h-2 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+                            <div className="h-full rounded-full transition-all duration-300"
+                              style={{
+                                width: `${recvPct}%`,
+                                background: recvDone
+                                  ? "linear-gradient(90deg, #22c55e, #86efac)"
+                                  : "linear-gradient(90deg, #6366f1, #818cf8)",
+                              }} />
                           </div>
-
-                          <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono pt-1">
-                            <div className="p-2 rounded-lg bg-muted/40 border border-border/50">
-                              <span className="text-[10px] text-muted-foreground block">Speed</span>
-                              <span className="font-semibold text-foreground text-xs mt-0.5 block">
-                                {(receiveSpeedBps / (1024 * 1024)).toFixed(2)} MB/s
-                              </span>
+                          {receiving && (
+                            <div className="flex gap-3 text-[11px] font-mono" style={{ color: "rgba(255,255,255,0.35)" }}>
+                              <span>{(recvBps / 1048576).toFixed(2)} MB/s</span>
+                              <span>·</span>
+                              <span>{formatETA(recvEta)}</span>
+                              <span>·</span>
+                              <span className="uppercase">{connType === "p2p" ? "⚡ Direct P2P" : "☁ Relay"}</span>
                             </div>
-                            <div className="p-2 rounded-lg bg-muted/40 border border-border/50">
-                              <span className="text-[10px] text-muted-foreground block">Time Remaining</span>
-                              <span className="font-semibold text-foreground text-xs mt-0.5 block">
-                                {formatTimeRemaining(receiveEtaSeconds)}
-                              </span>
-                            </div>
-                            <div className="p-2 rounded-lg bg-muted/40 border border-border/50">
-                              <span className="text-[10px] text-muted-foreground block">Mode</span>
-                              <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-[11px] mt-0.5 block uppercase">
-                                {connectionType === "p2p" ? "Direct P2P" : "Stream Relay"}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
+                          )}
+                        </>
                       )}
 
-                      {receiveCompleted && receivedBlobUrl && (
-                        <div className="space-y-2 pt-1">
-                          <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-3 text-center text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                            ✨ Transfer finished! File downloaded automatically.
-                          </div>
-                          <Button
-                            asChild
-                            className="w-full h-11 text-xs font-bold gap-2 rounded-lg shadow-xs bg-emerald-600 hover:bg-emerald-700 text-white"
-                          >
-                            <a href={receivedBlobUrl} download={incomingFile.name}>
-                              <Download className="h-4 w-4" />
-                              Download Again ({formatBytes(incomingFile.size)})
-                            </a>
-                          </Button>
-                        </div>
+                      {recvDone && recvUrl && (
+                        <a href={recvUrl} download={incoming.name}
+                          className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl font-bold text-sm transition-all active:scale-95"
+                          style={{ background: "linear-gradient(135deg, #22c55e, #16a34a)", color: "white", boxShadow: "0 8px 24px rgba(34,197,94,0.3)" }}
+                        >
+                          <Download className="h-4 w-4" />
+                          Download Again
+                        </a>
                       )}
                     </div>
                   ) : (
-                    <div className="rounded-xl border border-dashed border-border/70 p-6 text-center space-y-2">
-                      <RefreshCcw className="h-6 w-6 text-muted-foreground animate-spin mx-auto" />
-                      <p className="font-semibold text-foreground text-xs">Waiting for Sender to Start File Transfer</p>
-                      <p className="text-[11px] text-muted-foreground">The sender will choose and transmit the file now.</p>
+                    <div className="rounded-2xl p-6 text-center space-y-3"
+                      style={{ border: "1px dashed rgba(255,255,255,0.1)" }}>
+                      <RefreshCcw className="h-6 w-6 animate-spin mx-auto" style={{ color: "rgba(255,255,255,0.3)" }} />
+                      <p className="text-xs font-semibold text-white/50">Waiting for sender to start transfer…</p>
                     </div>
                   )}
                 </div>
               )}
             </div>
           )}
-
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }
