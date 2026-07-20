@@ -2,18 +2,12 @@
 
 import { useEffect, useRef } from "react"
 
-interface ShareAdBannerProps {
-  label?: string
-  className?: string
-}
-
-export function ShareAdBanner({ label = "Sponsored", className = "" }: ShareAdBannerProps) {
+export function ShareAdBanner() {
   const containerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!containerRef.current) return
 
-    // Clear previous contents to prevent duplicates
     containerRef.current.innerHTML = ""
 
     const wrapper = document.createElement("div")
@@ -21,7 +15,6 @@ export function ShareAdBanner({ label = "Sponsored", className = "" }: ShareAdBa
     wrapper.style.height = "300px"
     wrapper.style.margin = "0 auto"
 
-    // Inline script defining atOptions
     const optsScript = document.createElement("script")
     optsScript.type = "text/javascript"
     optsScript.text = `
@@ -34,7 +27,6 @@ export function ShareAdBanner({ label = "Sponsored", className = "" }: ShareAdBa
       };
     `
 
-    // External script loading invoke.js
     const invokeScript = document.createElement("script")
     invokeScript.type = "text/javascript"
     invokeScript.src = "https://unsettledradiator.com/25084f2a22060ec74cff3a46dbf2fb73/invoke.js"
@@ -46,16 +38,16 @@ export function ShareAdBanner({ label = "Sponsored", className = "" }: ShareAdBa
   }, [])
 
   return (
-    <div className={`relative overflow-hidden rounded-3xl border border-primary/20 bg-card/60 backdrop-blur-md p-4 shadow-lg text-center transition-all hover:border-primary/40 ${className}`}>
-      <div className="flex items-center justify-between border-b border-border/40 pb-2 mb-3">
-        <span className="text-[10px] font-mono font-bold tracking-widest text-primary/80 uppercase">
-          {label}
+    <div className="relative overflow-hidden rounded-3xl border border-indigo-500/20 bg-[#0d1017]/90 backdrop-blur-xl p-4 shadow-2xl text-center max-w-xs mx-auto my-6">
+      <div className="flex items-center justify-between border-b border-white/10 pb-2 mb-3">
+        <span className="text-[10px] font-mono font-bold tracking-widest text-indigo-400 uppercase">
+          SPONSORED AD
         </span>
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
       </div>
-      <div 
-        ref={containerRef} 
-        className="w-[160px] h-[300px] mx-auto overflow-hidden rounded-2xl bg-muted/30 flex items-center justify-center border border-border/30"
+      <div
+        ref={containerRef}
+        className="w-[160px] h-[300px] mx-auto overflow-hidden rounded-2xl bg-black/40 flex items-center justify-center border border-white/5 shadow-inner"
       />
     </div>
   )

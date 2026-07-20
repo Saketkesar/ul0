@@ -189,9 +189,9 @@ export default function SharePage() {
             <ShareClient />
           </Suspense>
 
-          {/* Mobile / Tablet Responsive Ad Placement */}
-          <div className="mt-8 block xl:hidden max-w-sm mx-auto">
-            <ShareAdBanner label="Sponsored Ad" />
+          {/* Single Aesthetic Sponsored Ad Placement */}
+          <div className="mt-8">
+            <ShareAdBanner />
           </div>
 
           {/* SEO Comprehensive Information Sections */}
