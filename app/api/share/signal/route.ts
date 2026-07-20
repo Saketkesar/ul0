@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server"
 
-// In-memory ephemeral signaling store for WebRTC P2P pairing
 interface RoomSignal {
   code: string
   createdAt: number
-  senderDeviceInfo?: { os: string; browser: string; ip: string }
-  receiverDeviceInfo?: { os: string; browser: string; ip: string }
+  senderDeviceInfo?: { os: string; browser: string; ip: string; countryCode?: string; countryFlag?: string }
+  receiverDeviceInfo?: { os: string; browser: string; ip: string; countryCode?: string; countryFlag?: string }
   offer?: any
   answer?: any
   senderCandidates: any[]
@@ -24,6 +23,16 @@ function cleanupOldRooms() {
   }
 }
 
+// Convert 2-letter country code (e.g. "IN", "US") to flag emoji
+function getCountryFlag(countryCode?: string | null): string {
+  if (!countryCode || countryCode.length !== 2) return "🌐"
+  const codePoints = countryCode
+    .toUpperCase()
+    .split("")
+    .map((char) => 127397 + char.charCodeAt(0))
+  return String.fromCodePoint(...codePoints)
+}
+
 export async function POST(req: Request) {
   try {
     cleanupOldRooms()
@@ -36,18 +45,28 @@ export async function POST(req: Request) {
 
     const cleanCode = code.trim().toUpperCase()
 
-    // Get client IP from headers
+    // Get client IP and Vercel geo country code
     const clientIp =
       req.headers.get("x-real-ip") ||
       req.headers.get("x-forwarded-for")?.split(",")[0] ||
       "127.0.0.1"
+
+    const countryCode = req.headers.get("x-vercel-ip-country") || "IN"
+    const countryFlag = getCountryFlag(countryCode)
+
+    const fullDeviceInfo = {
+      ...(deviceInfo || { os: "Device", browser: "Browser" }),
+      ip: clientIp,
+      countryCode,
+      countryFlag,
+    }
 
     // 1. Create Room / Publish Offer (Sender)
     if (action === "create_room") {
       const room: RoomSignal = {
         code: cleanCode,
         createdAt: Date.now(),
-        senderDeviceInfo: { ...(deviceInfo || {}), ip: clientIp },
+        senderDeviceInfo: fullDeviceInfo,
         offer,
         senderCandidates: [],
         receiverCandidates: [],
@@ -58,7 +77,7 @@ export async function POST(req: Request) {
 
     const room = rooms.get(cleanCode)
 
-    // 2. Poll Room Status (Both Sender & Receiver)
+    // 2. Poll Room Status (Continuous SDP & Candidate sync)
     if (action === "poll") {
       if (!room) {
         return NextResponse.json({ found: false, error: "Room not found or expired" })
@@ -86,20 +105,27 @@ export async function POST(req: Request) {
     // 3. Join Room & Publish Answer (Receiver)
     if (action === "join_room") {
       if (!room) {
-        return NextResponse.json({ error: "Room not found. Make sure sender is active." }, { status: 404 })
+        return NextResponse.json({ error: "Room not found. Make sure sender has ul0.site/share open." }, { status: 404 })
       }
       room.answer = answer
-      room.receiverDeviceInfo = { ...(deviceInfo || {}), ip: clientIp }
-      return NextResponse.json({ success: true, senderDeviceInfo: room.senderDeviceInfo, offer: room.offer })
+      room.receiverDeviceInfo = fullDeviceInfo
+      return NextResponse.json({
+        success: true,
+        senderDeviceInfo: room.senderDeviceInfo,
+        offer: room.offer,
+      })
     }
 
-    // 4. Push ICE Candidate
+    // 4. Push ICE Candidate (Append new candidates dynamically)
     if (action === "add_ice") {
       if (!room) return NextResponse.json({ error: "Room not found" }, { status: 404 })
       if (role === "sender" && candidate) {
-        room.senderCandidates.push(candidate)
+        // Prevent duplicates
+        const exists = room.senderCandidates.some(c => c.candidate === candidate.candidate)
+        if (!exists) room.senderCandidates.push(candidate)
       } else if (role === "receiver" && candidate) {
-        room.receiverCandidates.push(candidate)
+        const exists = room.receiverCandidates.some(c => c.candidate === candidate.candidate)
+        if (!exists) room.receiverCandidates.push(candidate)
       }
       return NextResponse.json({ success: true })
     }
