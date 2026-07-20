@@ -16,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const toolPages: { path: string; priority: number }[] = [
     { path: "", priority: 1.0 }, // homepage
     { path: "/split", priority: 0.95 },
+    { path: "/share", priority: 0.95 },
     { path: "/qr", priority: 0.95 },
     { path: "/wifi", priority: 0.9 },
     { path: "/utm", priority: 0.9 },
