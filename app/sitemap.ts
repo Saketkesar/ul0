@@ -52,6 +52,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/about", priority: 0.7 },
     { path: "/buy", priority: 0.6 },
     { path: "/contact", priority: 0.6 },
+    { path: "/donate", priority: 0.8 },
+    { path: "/supporters", priority: 0.7 },
     { path: "/refund", priority: 0.4 },
     { path: "/privacy", priority: 0.4 },
     { path: "/terms", priority: 0.4 },

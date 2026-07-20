@@ -39,6 +39,10 @@ export async function GET(req: Request) {
       body: JSON.stringify({
         product_price_id: priceId,
         success_url: successUrl,
+        require_billing_address: true,
+        customer_billing_address: {
+          country: "IN",
+        },
         metadata: {
           clerk_user_id: userId,
         },

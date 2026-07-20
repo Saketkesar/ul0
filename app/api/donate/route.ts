@@ -17,6 +17,10 @@ export async function GET(req: Request) {
       body: JSON.stringify({
         product_price_id: DONATION_PRICE_ID,
         success_url: successUrl,
+        require_billing_address: true,
+        customer_billing_address: {
+          country: "IN",
+        },
         metadata: { source: "ul0-donate" },
       }),
     })

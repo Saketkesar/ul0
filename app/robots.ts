@@ -15,8 +15,26 @@ export default function robots(): MetadataRoute.Robots {
           "/_next/",
           "/dashboard/",
           "/sign-in/",
-          "/sign-up/"
+          "/sign-up/",
+          "/split/*/",
         ],
+      },
+      // Explicitly allow AI search crawlers for GEO/AEO
+      {
+        userAgent: "ClaudeBot",
+        allow: ["/", "/llms.txt"],
+      },
+      {
+        userAgent: "ChatGPT-User",
+        allow: ["/", "/llms.txt"],
+      },
+      {
+        userAgent: "Google-Extended",
+        allow: "/",
+      },
+      {
+        userAgent: "Applebot-Extended",
+        allow: "/",
       },
     ],
     sitemap: `${BASE_URL}/sitemap.xml`,
