@@ -363,8 +363,33 @@ export function LinkShortenerForm() {
               </CardContent>
             </Card>
 
+            {/* Pro Custom Domain Teaser (High Intent Conversion Prompt) */}
+            <div className="mt-4 rounded-xl border border-primary/25 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-4 sm:p-5">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
+                      Pro Upgrade
+                    </span>
+                    <p className="text-sm font-semibold text-foreground">
+                      Want short links using your own domain?
+                    </p>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Connect <code className="text-primary font-mono">link.yourbrand.com</code>, track device/country analytics, and edit link destinations anytime.
+                  </p>
+                </div>
+                <Link
+                  href="/pricing"
+                  className="shrink-0 self-start rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-sm transition-all hover:opacity-90 hover:-translate-y-0.5 sm:self-auto"
+                >
+                  Upgrade for $2/mo →
+                </Link>
+              </div>
+            </div>
+
             {/* Standalone Supporters Progress Widget with matching theme colors */}
-            <div className="mt-6 rounded-2xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/8 via-emerald-500/5 to-transparent p-4 sm:p-5">
+            <div className="mt-4 rounded-2xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/8 via-emerald-500/5 to-transparent p-4 sm:p-5">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <div className="flex items-center gap-2">
