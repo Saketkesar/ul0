@@ -154,8 +154,8 @@ export default function SharePage() {
 
   return (
     <div
-      className="flex min-h-screen flex-col text-foreground selection:bg-indigo-500/20"
-      style={{ background: "linear-gradient(135deg, #0a0a0f 0%, #0d0d1a 50%, #0a0a0f 100%)" }}
+      className="flex min-h-screen flex-col text-foreground"
+      style={{ background: "#f9fafb" }}
     >
       <script
         type="application/ld+json"
@@ -163,47 +163,25 @@ export default function SharePage() {
       />
       <Header />
 
-      <main className="flex-1 py-12 sm:py-16 relative overflow-hidden">
-        {/* Background radial glow blobs */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 left-1/2 -translate-x-1/2 h-[600px] w-[900px] rounded-full opacity-20"
-            style={{ background: "radial-gradient(ellipse at center, #6366f1 0%, transparent 70%)" }} />
-          <div className="absolute top-1/2 -left-40 h-[400px] w-[400px] rounded-full opacity-10"
-            style={{ background: "radial-gradient(ellipse at center, #22c55e 0%, transparent 70%)" }} />
-          <div className="absolute top-1/3 -right-40 h-[400px] w-[400px] rounded-full opacity-10"
-            style={{ background: "radial-gradient(ellipse at center, #3b82f6 0%, transparent 70%)" }} />
-        </div>
-
+      <main className="flex-1 py-12 sm:py-16 relative">
         <div className="container mx-auto px-4 relative">
           
           {/* SEO Hero Header */}
-          <div className="mx-auto max-w-3xl text-center mb-10 space-y-4">
-            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-semibold"
-              style={{ background: "rgba(99,102,241,0.15)", border: "1px solid rgba(99,102,241,0.35)", color: "#a5b4fc" }}>
-              <Zap className="h-3.5 w-3.5 fill-current" />
-              <span>Unlimited P2P Transfer · No Signup · 100% Free</span>
+          <div className="mx-auto max-w-xl text-center mb-10 space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full px-3.5 py-1 text-xs font-medium"
+              style={{ background: "#fff", border: "1px solid #e5e7eb", color: "#6b7280" }}>
+              <Zap className="h-3 w-3" style={{ color: "#f59e0b" }} />
+              <span>Free · No signup · Browser-to-browser P2P</span>
             </div>
 
-            <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-none">
-              <span style={{ background: "linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #818cf8 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                P2P File Sharing
-              </span>
+            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight" style={{ color: "#111827", letterSpacing: "-0.03em" }}>
+              P2P File Sharing
             </h1>
 
-            <p className="text-sm sm:text-base leading-relaxed max-w-xl mx-auto" style={{ color: "rgba(255,255,255,0.5)" }}>
-              Send files of any size directly browser-to-browser.
-              End-to-end encrypted. No cloud. No registration.
+            <p className="text-sm leading-relaxed max-w-sm mx-auto" style={{ color: "#6b7280" }}>
+              Send any file directly browser-to-browser.
+              End-to-end encrypted. Files never touch our servers.
             </p>
-
-            {/* Browser compat strip */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
-              {["Chrome", "Brave", "Safari", "Firefox", "Edge"].map((b) => (
-                <span key={b} className="text-[11px] font-mono px-2.5 py-1 rounded-full"
-                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.4)" }}>
-                  {b}
-                </span>
-              ))}
-            </div>
           </div>
 
           {/* Interactive Client P2P App Component */}
