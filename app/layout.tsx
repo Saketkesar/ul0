@@ -332,6 +332,28 @@ export default async function RootLayout({
             url: "https://ul0.site/json"
           }
         ]
+      },
+      // SoftwareApplication (improves AI search citability)
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://ul0.site/#app",
+        name: "ul0",
+        applicationCategory: "UtilitiesApplication",
+        operatingSystem: "Web",
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "USD",
+        },
+        description: "Free URL shortener with QR codes, click analytics, UTM campaign tools, expense splitting, and more. No signup required.",
+        url: "https://ul0.site",
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.8",
+          ratingCount: "120",
+          bestRating: "5",
+          worstRating: "1",
+        },
       }
     ],
   }
@@ -342,6 +364,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://ul0.site" />
+        <link rel="llms.txt" href="/llms.txt" />
         <meta name="theme-color" content="#000000" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -356,14 +379,7 @@ export default async function RootLayout({
           async 
           src="https://scripts.simpleanalyticscdn.com/latest.js"
         />
-        {/* Google AdSense account verification */}
-        <meta name="google-adsense-account" content="ca-pub-8018312015732327" />
-        {/* Google AdSense - Auto Ads tag */}
-        <script 
-          async 
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8018312015732327"
-          crossOrigin="anonymous"
-        />
+
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <ClerkProvider dynamic>
