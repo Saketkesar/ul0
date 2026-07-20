@@ -32,6 +32,7 @@ export function Footer() {
               <Link href="/wifi" className="hover:text-foreground transition-colors">WiFi QR Generator</Link>
               <Link href="/utm" className="hover:text-foreground transition-colors">UTM Link Builder</Link>
               <Link href="/split" className="hover:text-foreground transition-colors">Split Expenses</Link>
+              <Link href="/share" className="hover:text-foreground transition-colors font-semibold text-foreground">P2P File Transfer</Link>
               <Link href="/docs" className="hover:text-foreground transition-colors font-semibold text-foreground">Developer API</Link>
             </nav>
           </div>
