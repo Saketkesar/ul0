@@ -29,12 +29,12 @@ import {
   Link2,
 } from "lucide-react"
 
-// Authentic High-Definition Brand SVG Logos for Browsers
+// Authentic High-Precision Brand SVG Logos
 function BraveLogo({ className = "h-4 w-4" }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 32 32" fill="none">
       <path
-        d="M27.2 9.4L22.5 2h-13L4.8 9.4c-.6.9-.7 2.1-.3 3.1l4 9.8c.4 1 1.3 1.7 2.4 1.7h10.2c1.1 0 2-.7 2.4-1.7l4-9.8c.4-1 .3-2.2-.3-3.1z"
+        d="M16 2L3.5 7.5v9.8c0 7.8 5.3 15.1 12.5 16.7 7.2-1.6 12.5-8.9 12.5-16.7V7.5L16 2z"
         fill="#FF5500"
       />
       <path
@@ -99,7 +99,18 @@ function BrowserBrandIcon({ browser }: { browser: string }) {
   return <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
 }
 
-// Format bytes
+// Convert ArrayBuffer to Base64 safely
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  let binary = ""
+  const bytes = new Uint8Array(buffer)
+  const len = bytes.byteLength
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(bytes[i])
+  }
+  return btoa(binary)
+}
+
+// Format byte sizes
 function formatBytes(bytes: number, decimals = 2): string {
   if (bytes === 0) return "0 Bytes"
   const k = 1024
@@ -476,7 +487,7 @@ export function ShareClient() {
 
       pollSenderCandidates()
 
-      // Backup Receiver Server Relay Poll (If WebRTC DataChannel doesn't open in 4s)
+      // Backup Receiver Server Relay Poll
       startRelayReceiverPoll(code)
     } catch (err: any) {
       console.error("Join room error:", err)
@@ -484,14 +495,13 @@ export function ShareClient() {
     }
   }
 
-  // Backup Receiver Server Relay Polling (Ensures 100% transfer success rate even on mobile 4G symmetric NATs)
+  // Backup Receiver Server Relay Polling
   const startRelayReceiverPoll = (code: string) => {
     let lastFetchedIndex = 0
     let relayChunks: ArrayBuffer[] = []
     let relayHeader: { name: string; size: number; mime: string } | null = null
 
     const checkRelay = async () => {
-      // If WebRTC P2P DataChannel is already open, skip relay!
       if (dcRef.current && dcRef.current.readyState === "open") return
 
       try {
@@ -762,12 +772,11 @@ export function ShareClient() {
       return
     }
 
-    // Mode B: Server Relay Stream Fallback (If WebRTC P2P is blocked by mobile 4G symmetric NATs)
+    // Mode B: Server Relay Base64 JSON Stream Fallback
     try {
       setConnectionType("relay")
-      setStatusText("Uploading via Fail-Safe Stream Relay…")
+      setStatusText("Uploading via Fast Stream Relay…")
 
-      // Init relay
       await fetch("/api/share/relay", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -778,7 +787,7 @@ export function ShareClient() {
         }),
       })
 
-      const chunkSize = 128 * 1024 // 128KB chunks
+      const chunkSize = 64 * 1024 // 64KB chunks for optimal Vercel payload speed
       let offset = 0
       let lastTime = Date.now()
       let lastBytes = 0
@@ -793,39 +802,58 @@ export function ShareClient() {
         }
 
         const slice = file.slice(offset, offset + chunkSize)
-        const isLast = offset + slice.size >= file.size
+        const reader = new FileReader()
 
-        const res = await fetch(`/api/share/relay?code=${roomCode}&isLast=${isLast}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/octet-stream" },
-          body: slice,
-        })
+        reader.onload = async (evt) => {
+          if (!evt.target || !(evt.target.result instanceof ArrayBuffer)) return
+          const base64Chunk = arrayBufferToBase64(evt.target.result)
+          const isLast = offset + slice.size >= file.size
 
-        if (res.ok) {
-          offset += slice.size
-          const pct = Math.min(100, Math.round((offset / file.size) * 100))
-          setSendProgress(pct)
+          try {
+            const res = await fetch("/api/share/relay", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                action: "upload_chunk",
+                code: roomCode,
+                header: { name: file.name, size: file.size, mime: file.type || "application/octet-stream" },
+                chunk: base64Chunk,
+                isLast,
+              }),
+            })
 
-          const now = Date.now()
-          const diffSec = (now - lastTime) / 1000
-          if (diffSec >= 0.5) {
-            const bytesDiff = offset - lastBytes
-            const bps = bytesDiff / diffSec
-            setSendSpeedBps(bps)
+            if (res.ok) {
+              offset += slice.size
+              const pct = Math.min(100, Math.round((offset / file.size) * 100))
+              setSendProgress(pct)
 
-            const remBytes = file.size - offset
-            const etaSec = bps > 0 ? remBytes / bps : 0
-            setSendEtaSeconds(etaSec)
+              const now = Date.now()
+              const diffSec = (now - lastTime) / 1000
+              if (diffSec >= 0.5) {
+                const bytesDiff = offset - lastBytes
+                const bps = bytesDiff / diffSec
+                setSendSpeedBps(bps)
 
-            lastTime = now
-            lastBytes = offset
+                const remBytes = file.size - offset
+                const etaSec = bps > 0 ? remBytes / bps : 0
+                setSendEtaSeconds(etaSec)
+
+                lastTime = now
+                lastBytes = offset
+              }
+
+              setTimeout(uploadRelayChunk, 10)
+            } else {
+              setErrorMsg("Relay upload error. Please try again.")
+              setIsSending(false)
+            }
+          } catch (e) {
+            setErrorMsg("Relay network issue. Retrying…")
+            setTimeout(uploadRelayChunk, 500)
           }
-
-          setTimeout(uploadRelayChunk, 10)
-        } else {
-          setErrorMsg("Relay upload error. Please try again.")
-          setIsSending(false)
         }
+
+        reader.readAsArrayBuffer(slice)
       }
 
       uploadRelayChunk()
@@ -913,7 +941,7 @@ export function ShareClient() {
               </div>
             </div>
 
-            {/* REAL DEVICE & COUNTRY TELEMETRY BADGES */}
+            {/* REAL DEVICE & COUNTRY TELEMETRY BADGES WITH BRAND LOGOS */}
             <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-border/40">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background border border-border/60 text-[11px] font-mono text-foreground">
                 <BrowserBrandIcon browser={myDeviceInfo.browser} />
