@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 
 export interface AdBannerProps {
   slot?: number
-  type?: "large" | "small"
+  type?: "large" | "small" | "skyscraper" | "medium_skyscraper"
   scripts?: Array<{
     iframe?: boolean
     src?: string
@@ -13,41 +13,45 @@ export interface AdBannerProps {
   }>
 }
 
-// Adsterra keys from adsscript.txt
-const AD_KEY_LARGE = "ea31a2b23b71044ce04e59b9147c7ffc" // 728x90
-const AD_KEY_SMALL = "1ef074fb53b9c298ba4b329b92f27240" // 468x60
-const AD_DOMAIN = "https://corruptioneasiestsubmarine.com"
+// Adsterra ad keys on unsettledradiator.com
+const AD_DOMAIN = "https://unsettledradiator.com"
+
+const AD_KEYS = {
+  large: { key: "ea31a2b23b71044ce04e59b9147c7ffc", width: 728, height: 90 },
+  small: { key: "1ef074fb53b9c298ba4b329b92f27240", width: 468, height: 60 },
+  skyscraper: { key: "c675322a5f6d9f2ad9e187be52a5721e", width: 160, height: 600 },
+  medium_skyscraper: { key: "25084f2a22060ec74cff3a46dbf2fb73", width: 160, height: 300 },
+}
 
 /**
  * Renders Adsterra banner ads inside a sandboxed iframe (srcdoc).
  *
- * WHY: Adsterra's invoke.js attaches onclick handlers to the *parent* document,
- * causing popunder behavior. Running inside a sandboxed iframe with
- * `sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms"`
- * isolates the script while letting ads load and open tabs when clicked.
+ * PREVENTS AUTO-REDIRECTS:
+ * By running the script inside an iframe with sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms"
+ * without `allow-top-navigation` or `allow-same-origin`, the script can NEVER redirect or navigate the parent page.
  */
 export function AdBanner({ slot = 1, type = "large", scripts }: AdBannerProps) {
   const [mounted, setMounted] = useState(false)
   const [scale, setScale] = useState(1)
 
+  const preset = AD_KEYS[type] || AD_KEYS.large
   const customScript = scripts && scripts[0]
-  const defaultKey = type === "large" ? AD_KEY_LARGE : AD_KEY_SMALL
   const adKey = customScript?.src
-    ? customScript.src.split("/")[3] || defaultKey
-    : defaultKey
+    ? customScript.src.split("/")[3] || preset.key
+    : preset.key
 
   const adSrc = customScript?.src || `${AD_DOMAIN}/${adKey}/invoke.js`
-  const baseWidth = customScript?.width || (type === "large" ? 728 : 468)
-  const baseHeight = customScript?.height || (type === "large" ? 90 : 60)
+  const baseWidth = customScript?.width || preset.width
+  const baseHeight = customScript?.height || preset.height
 
   useEffect(() => {
     setMounted(true)
     const updateScale = () => {
       if (typeof window === "undefined") return
-      const containerPadding = 32
+      const containerPadding = 24
       const availableW = window.innerWidth - containerPadding
       if (availableW < baseWidth) {
-        setScale(Math.max(0.4, availableW / baseWidth))
+        setScale(Math.max(0.35, availableW / baseWidth))
       } else {
         setScale(1)
       }
@@ -59,8 +63,7 @@ export function AdBanner({ slot = 1, type = "large", scripts }: AdBannerProps) {
 
   if (!mounted) return null
 
-  // Adsterra requires atOptions.width and atOptions.height to match registered zone dimensions exactly.
-  // Using explicit https:// protocol prevents about:srcdoc resolution errors.
+  // Adsterra requires atOptions width and height to match registered zone dimensions.
   const srcdoc = `<!DOCTYPE html>
 <html>
 <head>
@@ -88,7 +91,7 @@ var atOptions = {
 
   return (
     <div
-      className="w-full flex justify-center items-center py-2 px-2 overflow-hidden"
+      className="w-full flex justify-center items-center py-1.5 px-1 overflow-hidden"
       style={{ minHeight: containerHeight }}
     >
       <div

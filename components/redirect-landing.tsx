@@ -117,8 +117,6 @@ const APP_CONFIGS: Record<string, { name: string; icon: React.ElementType; getDe
 
 function detectApp(hostname: string): string | null {
   const host = hostname.toLowerCase()
-  // Use exact match or subdomain prefix to prevent subdomain-confusion attacks
-  // e.g. "youtube.com.evil.com" would pass an includes() check but fails endsWith()
   const is = (domain: string) => host === domain || host.endsWith(`.${domain}`)
   if (is("youtube.com") || is("youtu.be")) return "youtube"
   if (is("instagram.com")) return "instagram"
@@ -215,7 +213,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      {/* Only show ads on non-branded domains */}
+      {/* 1. Top Banner Ad (728x90) */}
       {!isBrandedDomain && <AdBanner slot={1} type="large" />}
 
       {/* Progress Bar */}
@@ -248,49 +246,69 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex flex-1 flex-col items-center gap-4 overflow-auto p-4">
-        {/* Only show middle ad on non-branded domains */}
-        {!isBrandedDomain && <AdBanner slot={2} type="small" />}
+      {/* Main Content with Left, Center & Right Ad Slots */}
+      <main className="flex-1 container mx-auto p-4 flex flex-col lg:flex-row items-center lg:items-start justify-between gap-6 overflow-auto">
 
-        {/* App Detection & Buttons */}
-        {isMobile && detectedApp && (
-          <div className="flex flex-col items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4 w-full max-w-md">
-            <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-              <AppIcon className="h-5 w-5 text-primary" />
-              <span>Open in {appConfig?.name}</span>
-            </div>
-            <div className="flex flex-wrap justify-center gap-2">
-              <Button onClick={handleOpenInApp} size="sm" className="gap-2">
-                <Smartphone className="h-4 w-4" />
-                Open App
-              </Button>
-              <Button variant="outline" size="sm" onClick={redirect} className="gap-2 bg-transparent">
-                <Globe className="h-4 w-4" />
-                Browser
-              </Button>
-            </div>
+        {/* 2. Left Side Tower Ad (160x600 on PC, centered stack on mobile) */}
+        {!isBrandedDomain && (
+          <div className="w-full lg:w-[170px] flex justify-center flex-shrink-0">
+            <AdBanner slot={2} type="skyscraper" />
           </div>
         )}
 
-        {/* Trust Badge */}
-        <div className="flex items-center gap-2 rounded-full bg-green-500/10 px-4 py-2 text-sm text-green-600 dark:text-green-400">
-          <Shield className="h-4 w-4" />
-          <span>Link verified safe</span>
+        {/* Center Main Redirect Card */}
+        <div className="flex-1 w-full max-w-xl flex flex-col items-center gap-5 text-center my-auto">
+          {/* App Detection & Buttons */}
+          {isMobile && detectedApp && (
+            <div className="flex flex-col items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4 w-full">
+              <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                <AppIcon className="h-5 w-5 text-primary" />
+                <span>Open in {appConfig?.name}</span>
+              </div>
+              <div className="flex flex-wrap justify-center gap-2">
+                <Button onClick={handleOpenInApp} size="sm" className="gap-2">
+                  <Smartphone className="h-4 w-4" />
+                  Open App
+                </Button>
+                <Button variant="outline" size="sm" onClick={redirect} className="gap-2 bg-transparent">
+                  <Globe className="h-4 w-4" />
+                  Browser
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Trust Badge */}
+          <div className="flex items-center gap-2 rounded-full bg-green-500/10 px-4 py-2 text-sm text-green-600 dark:text-green-400">
+            <Shield className="h-4 w-4" />
+            <span>Link verified safe</span>
+          </div>
+
+          {/* Destination URL */}
+          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/20 px-4 py-3 rounded-xl border border-border/50 max-w-md w-full justify-center">
+            <ExternalLink className="h-4 w-4 flex-shrink-0" />
+            <span className="truncate">{longUrl}</span>
+          </div>
+
+          {/* 4. Center Content Ad (468x60) */}
+          {!isBrandedDomain && <AdBanner slot={4} type="small" />}
+
+          {/* Disclaimer / Support Notice */}
+          <div className="mt-2 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center text-xs max-w-md w-full space-y-1">
+            <p className="font-semibold text-amber-900 dark:text-amber-200">
+              Please don't click on ads. These ads support the ul0 project.
+            </p>
+            <p className="text-amber-800/80 dark:text-amber-300/80 text-[11px]">
+              Please disable ad blockers to support our free service!
+            </p>
+          </div>
         </div>
 
-        {/* Destination */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <ExternalLink className="h-4 w-4 flex-shrink-0" />
-          <span className="max-w-xs truncate sm:max-w-md">{longUrl}</span>
-        </div>
-
-        {/* Only show bottom ads on non-branded domains */}
+        {/* 3. Right Side Tower Ad (160x300 on PC, centered stack on mobile) */}
         {!isBrandedDomain && (
-          <>
-            <AdBanner slot={3} type="large" />
-            <AdBanner slot={4} type="small" />
-          </>
+          <div className="w-full lg:w-[170px] flex justify-center flex-shrink-0">
+            <AdBanner slot={3} type="medium_skyscraper" />
+          </div>
         )}
       </main>
 
