@@ -1,22 +1,18 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef } from "react"
 
 export interface AdBannerProps {
   slot?: number
   type?: "large" | "small" | "skyscraper" | "medium_skyscraper"
-  scripts?: Array<{
-    iframe?: boolean
-    src?: string
-    width?: number
-    height?: number
-  }>
+  scriptKey?: string
+  width?: number
+  height?: number
 }
 
-// Adsterra ad keys on unsettledradiator.com
 const AD_DOMAIN = "https://unsettledradiator.com"
 
-const AD_KEYS = {
+const AD_CONFIGS = {
   large: { key: "ea31a2b23b71044ce04e59b9147c7ffc", width: 728, height: 90 },
   small: { key: "1ef074fb53b9c298ba4b329b92f27240", width: 468, height: 60 },
   skyscraper: { key: "c675322a5f6d9f2ad9e187be52a5721e", width: 160, height: 600 },
@@ -24,106 +20,90 @@ const AD_KEYS = {
 }
 
 /**
- * Renders Adsterra banner ads inside a sandboxed iframe (srcdoc).
+ * Direct DOM script injection component for Adsterra banners.
  *
- * PREVENTS AUTO-REDIRECTS:
- * By running the script inside an iframe with sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms"
- * without `allow-top-navigation` or `allow-same-origin`, the script can NEVER redirect or navigate the parent page.
+ * WHY DIRECT INJECTION:
+ * Adsterra's invoke.js checks `window.location.hostname` against the user's
+ * registered domain (ul0.site). Using srcdoc hidden domain context (about:srcdoc)
+ * causes Adsterra to return blank 0-byte responses. Direct DOM injection allows
+ * Adsterra to verify `ul0.site` and serve ads reliably.
+ *
+ * NO AUTO-REDIRECT:
+ * A MutationObserver attaches sandbox restriction attributes (`allow-scripts allow-popups allow-forms`)
+ * to any iframe created by Adsterra, stripping `allow-top-navigation` to prevent parent page redirects.
  */
-export function AdBanner({ slot = 1, type = "large", scripts }: AdBannerProps) {
-  const [mounted, setMounted] = useState(false)
-  const [scale, setScale] = useState(1)
+export function AdBanner({ slot = 1, type = "large", scriptKey, width, height }: AdBannerProps) {
+  const containerRef = useRef<HTMLDivElement>(null)
 
-  const preset = AD_KEYS[type] || AD_KEYS.large
-  const customScript = scripts && scripts[0]
-  const adKey = customScript?.src
-    ? customScript.src.split("/")[3] || preset.key
-    : preset.key
-
-  const adSrc = customScript?.src || `${AD_DOMAIN}/${adKey}/invoke.js`
-  const baseWidth = customScript?.width || preset.width
-  const baseHeight = customScript?.height || preset.height
+  const config = AD_CONFIGS[type] || AD_CONFIGS.large
+  const finalKey = scriptKey || config.key
+  const finalW = width || config.width
+  const finalH = height || config.height
 
   useEffect(() => {
-    setMounted(true)
-    const updateScale = () => {
-      if (typeof window === "undefined") return
-      const containerPadding = 24
-      const availableW = window.innerWidth - containerPadding
-      if (availableW < baseWidth) {
-        setScale(Math.max(0.35, availableW / baseWidth))
-      } else {
-        setScale(1)
-      }
+    const el = containerRef.current
+    if (!el) return
+
+    el.innerHTML = ""
+
+    const wrapper = document.createElement("div")
+    wrapper.style.width = "100%"
+    wrapper.style.maxWidth = `${finalW}px`
+    wrapper.style.height = `${finalH}px`
+    wrapper.style.margin = "0 auto"
+    wrapper.style.overflow = "hidden"
+    wrapper.style.display = "flex"
+    wrapper.style.justifyContent = "center"
+    wrapper.style.alignItems = "center"
+
+    // Observe when Adsterra creates an iframe and enforce sandbox security
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((m) => {
+        m.addedNodes.forEach((node) => {
+          if (node.nodeName === "IFRAME") {
+            const iframe = node as HTMLIFrameElement
+            iframe.setAttribute("sandbox", "allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms")
+          }
+        })
+      })
+    })
+
+    observer.observe(wrapper, { childList: true, subtree: true })
+
+    const optsScript = document.createElement("script")
+    optsScript.type = "text/javascript"
+    optsScript.text = `
+      atOptions = {
+        'key' : '${finalKey}',
+        'format' : 'iframe',
+        'height' : ${finalH},
+        'width' : ${finalW},
+        'params' : {}
+      };
+    `
+
+    const invokeScript = document.createElement("script")
+    invokeScript.type = "text/javascript"
+    invokeScript.src = `${AD_DOMAIN}/${finalKey}/invoke.js`
+    invokeScript.async = true
+
+    wrapper.appendChild(optsScript)
+    wrapper.appendChild(invokeScript)
+    el.appendChild(wrapper)
+
+    return () => {
+      observer.disconnect()
+      if (el) el.innerHTML = ""
     }
-    updateScale()
-    window.addEventListener("resize", updateScale)
-    return () => window.removeEventListener("resize", updateScale)
-  }, [baseWidth])
-
-  if (!mounted) return null
-
-  // Adsterra requires atOptions width and height to match registered zone dimensions.
-  const srcdoc = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8"/>
-<style>
-  * { margin:0; padding:0; overflow:hidden; }
-  html, body { width: ${baseWidth}px; height: ${baseHeight}px; background: transparent; }
-</style>
-</head>
-<body>
-<script type="text/javascript">
-var atOptions = {
-  'key': '${adKey}',
-  'format': 'iframe',
-  'height': ${baseHeight},
-  'width': ${baseWidth},
-  'params': {}
-};
-</script>
-<script type="text/javascript" src="${adSrc}"></script>
-</body>
-</html>`
-
-  const containerHeight = Math.round(baseHeight * scale)
+  }, [finalKey, finalW, finalH])
 
   return (
-    <div
-      className="w-full flex justify-center items-center py-1.5 px-1 overflow-hidden"
-      style={{ minHeight: containerHeight }}
-    >
+    <div className="w-full flex justify-center items-center py-2 px-1 overflow-hidden">
       <div
-        style={{
-          width: baseWidth,
-          height: baseHeight,
-          transform: scale < 1 ? `scale(${scale})` : "none",
-          transformOrigin: "center center",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexShrink: 0,
-        }}
-      >
-        <iframe
-          srcDoc={srcdoc}
-          sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms"
-          scrolling="no"
-          frameBorder="0"
-          width={baseWidth}
-          height={baseHeight}
-          style={{
-            width: `${baseWidth}px`,
-            height: `${baseHeight}px`,
-            border: "none",
-            overflow: "hidden",
-            display: "block",
-            background: "transparent",
-          }}
-          title={`Advertisement ${slot}`}
-        />
-      </div>
+        ref={containerRef}
+        className="w-full flex justify-center items-center overflow-hidden"
+        style={{ minHeight: `${Math.min(finalH, 60)}px` }}
+      />
     </div>
   )
 }
