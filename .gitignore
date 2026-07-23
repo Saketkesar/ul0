@@ -37,3 +37,4 @@ yarn-error.log*
 # Local scratch scripts
 /scratch/
 /scripts/migration-report.json
+.env*
