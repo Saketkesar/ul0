@@ -253,7 +253,14 @@ export default async function RedirectPage({ params, searchParams }: Props) {
     ).catch(console.error)
   }
 
-  return redirect(targetUrl)
+  return (
+    <RedirectLanding
+      longUrl={targetUrl}
+      domain={link.meta_domain}
+      customHost={isCustomDomain ? host : null}
+      brandLogoUrl={brandLogoUrl}
+    />
+  )
 }
 
 function renderPasswordPage(isWrong: boolean) {
