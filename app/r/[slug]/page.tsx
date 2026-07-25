@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { RedirectLanding } from "@/components/redirect-landing"
 import { headers } from "next/headers"
 import { getCachedUrl, setCachedUrl, redis } from "@/lib/redis"
@@ -253,14 +253,7 @@ export default async function RedirectPage({ params, searchParams }: Props) {
     ).catch(console.error)
   }
 
-  return (
-    <RedirectLanding
-      longUrl={targetUrl}
-      domain={link.meta_domain}
-      customHost={isCustomDomain ? host : null}
-      brandLogoUrl={brandLogoUrl}
-    />
-  )
+  return redirect(targetUrl)
 }
 
 function renderPasswordPage(isWrong: boolean) {
