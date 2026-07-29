@@ -70,13 +70,7 @@ export function Header() {
           >
             Split
           </Link>
-          <Link
-            href="/claude-hub"
-            className="rounded-md px-3 py-2 text-sm font-semibold text-sky-400 bg-sky-500/10 border border-sky-500/20 hover:bg-sky-500/20 transition-all flex items-center gap-1.5"
-          >
-            <span>Claude Hub</span>
-            <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-sky-500 text-white font-bold">PRO</span>
-          </Link>
+
           <Link
             href="/pricing"
             className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"

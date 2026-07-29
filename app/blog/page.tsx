@@ -188,6 +188,38 @@ const blogPosts = [
     readTime: "6 min read",
     date: "2026-03-01",
   },
+  {
+    slug: "how-to-track-link-clicks-free",
+    title: "How to Track Link Clicks for Free in 2026 - Analytics Guide",
+    description: "Learn how to track URL clicks for free without paying for expensive tools. Track CTR, referrer sources, geographic locations, and devices.",
+    category: "Analytics",
+    readTime: "6 min read",
+    date: "2026-03-05",
+  },
+  {
+    slug: "wifi-qr-code-business-guide",
+    title: "WiFi QR Codes for Businesses: Complete Setup & Security Guide 2026",
+    description: "Learn how cafes, restaurants, hotels, and offices use WiFi QR codes to streamline guest access, protect private networks, and improve customer experience.",
+    category: "Business",
+    readTime: "5 min read",
+    date: "2026-03-08",
+  },
+  {
+    slug: "custom-domain-short-links-guide",
+    title: "Why Branded Custom Domain Short Links Outperform Generic URLs in 2026",
+    description: "Learn how custom domain short links boost brand trust, increase email deliverability, and raise link Click-Through Rates (CTR) by up to 39%.",
+    category: "Branding",
+    readTime: "5 min read",
+    date: "2026-03-10",
+  },
+  {
+    slug: "pomodoro-technique-productivity-guide",
+    title: "The Science of the Pomodoro Technique: Boost Deep Work & Focus in 2026",
+    description: "Learn how the 25-minute Pomodoro time management technique fights cognitive fatigue, prevents burnout, and increases daily productivity.",
+    category: "Productivity",
+    readTime: "5 min read",
+    date: "2026-03-12",
+  },
 ]
 
 export default function BlogPage() {

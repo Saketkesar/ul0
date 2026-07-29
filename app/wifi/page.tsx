@@ -288,19 +288,65 @@ export default function WifiQRGeneratorPage() {
           </section>
 
           {/* Security Note */}
-          <section className="mt-12 max-w-2xl mx-auto">
+          <section className="mt-12 max-w-4xl mx-auto">
             <Card className="border-primary/20 bg-primary/5">
               <CardContent className="flex items-start gap-4 pt-6">
                 <Shield className="h-8 w-8 text-primary flex-shrink-0" />
                 <div>
-                  <h3 className="font-semibold mb-2">Security Note</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Your WiFi credentials are processed locally in your browser. We never store or transmit your password. 
-                    The QR code is generated entirely on your device for maximum security.
+                  <h3 className="font-semibold mb-2">Zero-Server Data Processing Security Guarantee</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Your Wi-Fi SSID network name and security passphrases are parsed and rendered 100% locally within your client browser session using Web Canvas API primitives. Credentials are never dispatched across network sockets or saved in server logs.
                   </p>
                 </div>
               </CardContent>
             </Card>
+          </section>
+
+          {/* Deep Educational Content & Wi-Fi Protocol Technical Breakdown */}
+          <section className="mt-12 max-w-4xl mx-auto space-y-8 text-muted-foreground leading-relaxed text-sm">
+            <div>
+              <h2 className="text-xl font-bold text-foreground mb-3">How Wi-Fi QR Code Authentication Works (MECARD / WIFI Protocol)</h2>
+              <p className="mb-3">
+                Wi-Fi QR codes utilize a standardized structured string schema natively recognized by iOS (version 11+), Android (version 10+), and Windows devices. When a smartphone camera detects a Wi-Fi matrix code, it parses the payload parameters structured as follows:
+              </p>
+              <div className="bg-muted p-3 rounded-md font-mono text-xs text-foreground overflow-x-auto">
+                WIFI:S:YourNetworkSSID;T:WPA;P:YourPassword;H:false;;
+              </div>
+              <ul className="list-disc list-inside mt-3 space-y-1">
+                <li><strong>S:</strong> Network Service Set Identifier (SSID)</li>
+                <li><strong>T:</strong> Security Encryption Protocol (WPA, WPA2, WPA3, WEP, or nopass)</li>
+                <li><strong>P:</strong> Pre-Shared Key (PSK) or WPA Passphrase</li>
+                <li><strong>H:</strong> Boolean flag indicating whether the SSID is hidden</li>
+              </ul>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-bold text-foreground mb-3">Best Practices for Business & Hospitality Wi-Fi Sharing</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="border border-border p-4 rounded-lg bg-card">
+                  <h3 className="font-semibold text-foreground mb-1">Separate Guest VLANs</h3>
+                  <p className="text-xs">Never share primary administrative Wi-Fi networks with customers. Always configure an isolated Guest SSID to prevent unauthorized local network device discovery.</p>
+                </div>
+                <div className="border border-border p-4 rounded-lg bg-card">
+                  <h3 className="font-semibold text-foreground mb-1">Printed Tabletop Displays</h3>
+                  <p className="text-xs">Display Wi-Fi QR codes on durable acrylic stands at reception desks, hotel rooms, or cafe tables to minimize staff time spent dictating complex passwords.</p>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-xl font-bold text-foreground mb-3">Frequently Asked Questions</h2>
+              <div className="space-y-3">
+                <div>
+                  <h4 className="font-semibold text-foreground">Do guests need a special app to scan the Wi-Fi QR code?</h4>
+                  <p className="text-xs">No. Standard native camera applications on iPhone, iPad, Samsung, Google Pixel, and Xiaomi smartphones automatically detect Wi-Fi QR codes and prompt a one-tap &quot;Join Network&quot; dialog.</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-foreground">Does changing my Wi-Fi password break printed QR codes?</h4>
+                  <p className="text-xs">Yes. Because static Wi-Fi QR codes encode the passphrase directly into the graphic pattern, updating your router's password requires generating and printing a new QR code.</p>
+                </div>
+              </div>
+            </div>
           </section>
 
           {/* CTA */}

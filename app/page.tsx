@@ -351,13 +351,7 @@ const homePageSchema = {
         { "@type": "Country", name: "Australia" },
         { "@type": "Country", name: "India" }
       ],
-      aggregateRating: {
-        "@type": "AggregateRating",
-        ratingValue: "4.8",
-        ratingCount: "1250",
-        bestRating: "5",
-        worstRating: "1"
-      }
+
     },
     {
       "@type": "FAQPage",
@@ -649,129 +643,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* More external tool badges */}
-        <section className="border-y bg-muted/10 py-12 sm:py-14">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-6xl text-center">
-              <h3 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                More places featuring ul0
-              </h3>
-              <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-                Additional directory listings and launch badges help broaden discovery and trust signals.
-              </p>
 
-              <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                {[
-                  {
-                    href: "https://twelve.tools",
-                    src: "https://twelve.tools/badge0-light.svg",
-                    alt: "Featured on Twelve Tools",
-                    width: 200,
-                    height: 54,
-                    className: "h-[54px] w-[200px]",
-                  },
-                  {
-                    href: "https://milliondothomepage.com/product/ul0",
-                    src: "https://milliondothomepage.com/assets/images/badge.png",
-                    alt: "ul0 listed on Million Dot Homepage — free URL shortener",
-                    width: 150,
-                    height: 54,
-                    className: "h-[54px] w-[150px]",
-                  },
-                  {
-                    href: "https://besttoolvault.com",
-                    src: "https://besttoolvault.com/assets/images/badge.png",
-                    alt: "Best Tool Vault",
-                    width: 150,
-                    height: 54,
-                    className: "h-[54px] w-[150px]",
-                  },
-                  {
-                    href: "https://launchclash.com/product/ul0",
-                    src: "https://launchclash.com/static/images/badge.png",
-                    alt: "Featured on Submit Your Product - LaunchClash",
-                    width: 150,
-                    height: 54,
-                    className: "h-[54px] w-[150px]",
-                  },
-                  {
-                    href: "https://shinylaunch.com/product/ul0",
-                    src: "https://shinylaunch.com/static/images/badge.png",
-                    alt: "ul0 featured on ShinyLaunch — free link shortener",
-                    width: 150,
-                    height: 54,
-                    className: "h-[54px] w-[150px]",
-                  },
-                  {
-                    href: "https://acidtools.com",
-                    src: "https://acidtools.com/assets/images/badge.png",
-                    alt: "Acid Tools",
-                    width: 150,
-                    height: 54,
-                    className: "h-[54px] w-[150px]",
-                  },
-                  {
-                    href: "https://aigc160.com",
-                    src: "https://aigc160.com/assets/images/badge.png",
-                    alt: "AIGC 160",
-                    width: 150,
-                    height: 54,
-                    className: "h-[54px] w-[150px]",
-                  },
-                  {
-                    href: "https://aitechviral.com",
-                    src: "https://aitechviral.com/assets/images/badge.png",
-                    alt: "AI Tech Viral",
-                    width: 150,
-                    height: 54,
-                    className: "h-[54px] w-[150px]",
-                  },
-                  {
-                    href: "https://aitoolzs.com",
-                    src: "https://aitoolzs.com/assets/images/badge.png",
-                    alt: "AI Toolz",
-                    width: 150,
-                    height: 54,
-                    className: "h-[54px] w-[150px]",
-                  },
-                  {
-                    href: "https://appalist.com",
-                    src: "https://appalist.com/assets/images/badge.png",
-                    alt: "Appa List",
-                    width: 150,
-                    height: 54,
-                    className: "h-[54px] w-[150px]",
-                  },
-                  {
-                    href: "https://appsytools.com",
-                    src: "https://appsytools.com/assets/images/badge.png",
-                    alt: "Appsy Tools",
-                    width: 150,
-                    height: 54,
-                    className: "h-[54px] w-[150px]",
-                  },
-                ].map((badge) => (
-                  <a
-                    key={badge.href}
-                    href={badge.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center rounded-2xl border bg-background p-4 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
-                  >
-                    <img
-                      src={badge.src}
-                      alt={badge.alt}
-                      width={badge.width}
-                      height={badge.height}
-                      loading="lazy"
-                      className={badge.className}
-                    />
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
 
         {/* ...existing code... */}
 

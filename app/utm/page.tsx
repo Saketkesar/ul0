@@ -577,26 +577,58 @@ export default function UtmBuilderPage() {
             </Card>
           </div>
 
-          {/* SEO Content */}
+          {/* SEO Content & Comprehensive Guide */}
           <Card>
             <CardHeader>
-              <CardTitle>What are UTM Parameters?</CardTitle>
+              <CardTitle>Mastering UTM Parameters for Campaign Tracking & Analytics</CardTitle>
             </CardHeader>
-            <CardContent className="text-muted-foreground space-y-3">
-              <p>
-                <strong>UTM parameters</strong> (Urchin Tracking Module) are tags added to URLs that help you track the effectiveness of your marketing campaigns in Google Analytics. When someone clicks a link with UTM parameters, the data is sent to your analytics, allowing you to see exactly where your traffic comes from.
+            <CardContent className="text-muted-foreground space-y-6">
+              <p className="leading-relaxed">
+                <strong>UTM parameters</strong> (Urchin Tracking Module parameters) are standardized text snippets appended to destination URLs. When visitors click a tagged link, Google Analytics (GA4), Adobe Analytics, and Mixpanel parse these query strings to pinpoint the exact traffic acquisition channel, marketing creative, and ad campaign driving engagement and conversions.
               </p>
-              <p>
-                By using consistent UTM parameters across all your marketing channels, you can compare performance, calculate ROI, and make data-driven decisions about where to invest your marketing budget.
-              </p>
-              <h3 className="font-semibold text-foreground pt-2">Best Practices:</h3>
-              <ul className="list-disc list-inside space-y-1">
-                <li>Use lowercase letters to avoid duplicate entries in analytics</li>
-                <li>Replace spaces with underscores or hyphens</li>
-                <li>Be consistent with naming conventions across campaigns</li>
-                <li>Document your UTM strategy for your team</li>
-                <li>Use utm_content for A/B testing different ads or links</li>
-              </ul>
+              
+              <div className="grid gap-4 md:grid-cols-2 pt-2">
+                <div className="border border-border p-4 rounded-lg bg-background">
+                  <h4 className="font-semibold text-foreground mb-2">Required Parameters:</h4>
+                  <ul className="text-sm space-y-1.5 list-disc list-inside">
+                    <li><strong>utm_source:</strong> Identifies the traffic provider or referrer platform (e.g. <code className="text-xs">google, newsletter, linkedin</code>).</li>
+                    <li><strong>utm_medium:</strong> Categorizes the high-level marketing mechanism (e.g. <code className="text-xs">cpc, email, social, affiliate</code>).</li>
+                    <li><strong>utm_campaign:</strong> Names the specific strategic promotion or product launch (e.g. <code className="text-xs">summer_sale_2026, webinar_q3</code>).</li>
+                  </ul>
+                </div>
+
+                <div className="border border-border p-4 rounded-lg bg-background">
+                  <h4 className="font-semibold text-foreground mb-2">Optional Parameters:</h4>
+                  <ul className="text-sm space-y-1.5 list-disc list-inside">
+                    <li><strong>utm_term:</strong> Captures paid search keywords or audience targeting criteria (e.g. <code className="text-xs">free_url_shortener</code>).</li>
+                    <li><strong>utm_content:</strong> Differentiates specific ad creatives, CTA button variations, or link positions for A/B testing.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-foreground text-lg mb-3">Enterprise UTM Naming Conventions & Best Practices</h3>
+                <ul className="list-disc list-inside space-y-2 text-sm">
+                  <li><strong>Enforce Lowercase Formatting:</strong> Analytics tools treat <code className="text-xs">Facebook</code> and <code className="text-xs">facebook</code> as two separate sources. Standardize strictly on lowercase text.</li>
+                  <li><strong>Avoid Spaces & Special Characters:</strong> Replace spaces with hyphens (<code className="text-xs">-</code>) or underscores (<code className="text-xs">_</code>) to maintain clean URL encoding.</li>
+                  <li><strong>Never Embed PII (Personally Identifiable Information):</strong> Avoid putting user email addresses or real names into UTM parameters to maintain compliance with GDPR and Google Analytics policy.</li>
+                  <li><strong>Pair tagged long URLs with short aliases:</strong> Tagging URLs can result in 100+ character addresses. Shorten your tagged UTM links using ul0 to maintain clean social media posts.</li>
+                </ul>
+              </div>
+
+              <div className="border-t border-border pt-4">
+                <h3 className="font-semibold text-foreground text-lg mb-3">Frequently Asked Questions</h3>
+                <div className="space-y-3 text-sm">
+                  <div>
+                    <h4 className="font-semibold text-foreground">Do UTM parameters impact search engine SEO rankings?</h4>
+                    <p className="text-xs mt-0.5">No. Search engines ignore standard tracking parameters when crawling pages, especially when canonical tags are properly configured on target landing pages.</p>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-foreground">What is the difference between utm_source and utm_medium?</h4>
+                    <p className="text-xs mt-0.5">Source answers &quot;WHERE is the visitor coming from?&quot; (e.g. Twitter). Medium answers &quot;HOW did they get here?&quot; (e.g. organic social post vs paid ad click).</p>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </div>
