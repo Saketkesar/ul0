@@ -32,18 +32,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/custom-domain-landing", priority: 0.85 },
   ]
 
-  // Blog posts
+  // Blog posts (All 15 published articles)
   const blogPosts = [
+    "free-link-management-for-companies",
+    "cheapest-custom-domain-link-shortener",
     "best-url-shorteners-2026",
     "bitly-alternative-free",
-    "cheapest-custom-domain-link-shortener",
+    "tinyurl-alternative",
     "free-url-shortener-no-signup",
     "how-to-shorten-url-free",
     "qr-code-marketing-guide",
-    "short-links-instagram-bio",
     "split-expenses-friends-app",
-    "tinyurl-alternative",
+    "short-links-instagram-bio",
     "url-shortener-seo-impact",
+    "how-to-track-link-clicks-free",
+    "wifi-qr-code-business-guide",
+    "custom-domain-short-links-guide",
+    "pomodoro-technique-productivity-guide",
   ]
 
   // Informational / legal pages
