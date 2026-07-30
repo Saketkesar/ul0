@@ -46,9 +46,7 @@ export default function KoreanPage() {
         url: "https://ul0.site/ko",
         applicationCategory: "UtilityApplication",
         operatingSystem: "All",
-        inLanguage: "ko",
         offers: { "@type": "Offer", price: "0", priceCurrency: "KRW" },
-        aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "640" },
       },
       {
         "@type": "FAQPage",

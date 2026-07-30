@@ -6,6 +6,30 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/blog/best-url-shorteners-2025',
+        destination: '/blog/best-url-shorteners-2026',
+        permanent: true,
+      },
+      {
+        source: '/compare/ul0-vs-goo-gl',
+        destination: '/blog/best-url-shorteners-2026',
+        permanent: true,
+      },
+      {
+        source: '/compare/ul0-vs-bitly',
+        destination: '/blog/bitly-alternative-free',
+        permanent: true,
+      },
+      {
+        source: '/compare/:path*',
+        destination: '/blog',
+        permanent: true,
+      },
+    ]
+  },
 }
 
 export default nextConfig

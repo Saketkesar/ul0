@@ -347,13 +347,6 @@ export default async function RootLayout({
         },
         description: "Free URL shortener with QR codes, click analytics, UTM campaign tools, expense splitting, and more. No signup required.",
         url: "https://ul0.site",
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: "4.8",
-          ratingCount: "120",
-          bestRating: "5",
-          worstRating: "1",
-        },
       }
     ],
   }

@@ -46,9 +46,7 @@ export default function FrenchPage() {
         url: "https://ul0.site/fr",
         applicationCategory: "UtilityApplication",
         operatingSystem: "All",
-        inLanguage: "fr",
         offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-        aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "1120" },
       },
       {
         "@type": "FAQPage",

@@ -49,11 +49,6 @@ export default function PortuguesePage() {
       price: "0",
       priceCurrency: "BRL",
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      ratingCount: "850",
-    },
   }
 
   return (

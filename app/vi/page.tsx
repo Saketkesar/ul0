@@ -47,11 +47,6 @@ export default function VietnamesePage() {
       price: "0",
       priceCurrency: "VND",
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.8",
-      ratingCount: "720",
-    },
   }
 
   return (
