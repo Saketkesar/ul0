@@ -47,11 +47,6 @@ export default function ThaiPage() {
       price: "0",
       priceCurrency: "THB",
     },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: "4.9",
-      ratingCount: "650",
-    },
   }
 
   return (

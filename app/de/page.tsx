@@ -46,9 +46,7 @@ export default function GermanPage() {
         url: "https://ul0.site/de",
         applicationCategory: "UtilityApplication",
         operatingSystem: "All",
-        inLanguage: "de",
         offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-        aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "1240" },
       },
       {
         "@type": "FAQPage",
