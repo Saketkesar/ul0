@@ -27,9 +27,6 @@ if (!supabaseUrl || !supabaseKey) {
   process.exit(1);
 }
 
-// Disable SSL validation if self-signed cert is used
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function run() {

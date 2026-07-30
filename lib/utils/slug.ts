@@ -313,8 +313,9 @@ export function validateCustomSlug(slug: string | undefined | null): SlugValidat
     .trim()
     .toLowerCase()
     .replace(/[^a-z0-9-_]/g, '') // Only allow alphanumeric, dash, underscore
-    .replace(/^[-_]+|[-_]+$/g, '') // Remove leading/trailing dashes and underscores
-    .replace(/[-_]{2,}/g, '-') // Replace multiple consecutive dashes/underscores with single dash
+    .replace(/^[-_]+/, '') // Remove leading dashes and underscores
+    .replace(/[-_]+$/, '') // Remove trailing dashes and underscores
+    .replace(/[-_]+/g, '-') // Replace multiple consecutive dashes/underscores with single dash
   
   // Check length after sanitization
   if (sanitized.length < SLUG_MIN_LENGTH) {
