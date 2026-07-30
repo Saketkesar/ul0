@@ -46,9 +46,7 @@ export default function JapanesePage() {
         url: "https://ul0.site/ja",
         applicationCategory: "UtilityApplication",
         operatingSystem: "All",
-        inLanguage: "ja",
         offers: { "@type": "Offer", price: "0", priceCurrency: "JPY" },
-        aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "980" },
       },
       {
         "@type": "FAQPage",

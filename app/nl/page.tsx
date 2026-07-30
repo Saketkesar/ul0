@@ -46,9 +46,7 @@ export default function DutchPage() {
         url: "https://ul0.site/nl",
         applicationCategory: "UtilityApplication",
         operatingSystem: "All",
-        inLanguage: "nl",
         offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
-        aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", ratingCount: "760" },
       },
       {
         "@type": "FAQPage",
