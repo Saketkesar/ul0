@@ -32,8 +32,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/custom-domain-landing", priority: 0.85 },
   ]
 
-  // Blog posts (All 15 published articles)
+  // Blog posts (All 18 published articles)
   const blogPosts = [
+    "link-shortening-best-practices-2026",
+    "qr-code-generator-security-guide",
+    "custom-domain-dns-cname-setup-guide",
     "free-link-management-for-companies",
     "cheapest-custom-domain-link-shortener",
     "best-url-shorteners-2026",

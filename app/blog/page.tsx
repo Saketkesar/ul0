@@ -95,6 +95,33 @@ export const metadata: Metadata = {
 
 const blogPosts = [
   {
+    slug: "link-shortening-best-practices-2026",
+    title: "10 Link Shortening Best Practices Every Marketer Must Know in 2026",
+    description: "Master link shortening in 2026 with 10 expert best practices to boost CTR, protect link equity, brand your URLs, and prevent spam blocks.",
+    category: "Best Practices",
+    readTime: "9 min read",
+    date: "2026-08-10",
+    featured: true,
+  },
+  {
+    slug: "qr-code-generator-security-guide",
+    title: "QR Code Security & Privacy Guide: Preventing Quishing Scams in 2026",
+    description: "Learn how to secure QR codes against quishing scams, malicious redirects, and data tracking in 2026. Complete enterprise security guide.",
+    category: "Security",
+    readTime: "8 min read",
+    date: "2026-08-10",
+    featured: true,
+  },
+  {
+    slug: "custom-domain-dns-cname-setup-guide",
+    title: "How to Configure Custom Domain CNAME DNS & SSL for Branded Short Links",
+    description: "Step-by-step technical guide to configuring CNAME DNS records, SSL/TLS certificates, and Cloudflare settings for custom branded short links.",
+    category: "Infrastructure",
+    readTime: "7 min read",
+    date: "2026-08-10",
+    featured: true,
+  },
+  {
     slug: "free-link-management-for-companies",
     title: "Free Link Management for Companies: The Ultimate Guide",
     description: "Discover how businesses manage branded short links on custom domains completely free in 2026.",
