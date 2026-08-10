@@ -6,8 +6,8 @@ import Image from "next/image"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "About ul0 - Best Free URL Shortener & Bill Splitter 2025",
-  description: "ul0 is the best free URL shortener 2025. Shorten links instantly, split expenses with friends, generate QR codes. Bitly & Splitwise alternative - no signup required!",
+  title: "About ul0 - Digital Infrastructure & Free Link Management 2026",
+  description: "ul0 is a digital infrastructure platform and publication for link management, custom domain short links, QR code security, and UTM campaign analytics.",
   keywords: [
     // Primary Keywords
     "about ul0",
