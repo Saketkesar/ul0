@@ -588,6 +588,28 @@ export default function HomePage() {
                     className="h-[54px] w-[139px]"
                   />
                 </a>
+
+                <div className="flex items-center justify-center rounded-2xl border bg-background p-4 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md col-span-full lg:col-span-1">
+                  <a
+                    href="https://strategic-flow-audit.replit.app/directory"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "inline-block",
+                      fontFamily: "monospace",
+                      fontSize: "12px",
+                      fontWeight: 700,
+                      padding: "6px 14px",
+                      background: "#0a1628",
+                      color: "#00d4c8",
+                      border: "1px solid rgba(0,212,200,0.6)",
+                      borderRadius: "6px",
+                      textDecoration: "none",
+                    }}
+                  >
+                    🔗 Listed on ToolIndex · DR 86 dofollow
+                  </a>
+                </div>
               </div>
             </div>
           </div>
