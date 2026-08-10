@@ -5,6 +5,7 @@ import { FeaturesSection } from "@/components/features-section"
 import { Metadata } from "next"
 import Link from "next/link"
 import { hreflangAlternates } from "@/lib/i18n"
+import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
   title: "Free URL Shortener 2026 - Shorten Links Instantly | ul0",
