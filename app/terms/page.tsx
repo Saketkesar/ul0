@@ -56,7 +56,7 @@ export default function TermsPage() {
                 ul0 offers free plans and paid subscriptions (Pro, Business). Paid plans are processed securely via our billing merchant partner, <strong>Polar.sh</strong> and <strong>Stripe</strong>. Subscriptions are billed in advance on a recurring monthly or annual basis. 
               </p>
               <p className="text-muted-foreground leading-relaxed mt-2">
-                You can cancel your subscription at any time. Canceled subscriptions will remain active until the end of the paid billing period. We offer a 14-day refund window for initial subscription purchases. Refund requests should be sent to <a href="mailto:support@ul0.site" className="text-primary hover:underline">support@ul0.site</a>. For details, refer to our <Link href="/refund" className="text-primary hover:underline">Refund and Cancellation Policy</Link>.
+                You can cancel your subscription at any time. Canceled subscriptions will remain active until the end of the paid billing period. We offer a 14-day refund window for initial subscription purchases. Refund requests should be sent to <a href="mailto:getul0site@gmail.com" className="text-primary hover:underline">getul0site@gmail.com</a>. For details, refer to our <Link href="/refund" className="text-primary hover:underline">Refund and Cancellation Policy</Link>.
               </p>
             </section>
 
@@ -170,7 +170,7 @@ export default function TermsPage() {
                 For questions about these Terms, please contact us at:
               </p>
               <p className="text-muted-foreground mt-2">
-                Email: <a href="mailto:support@ul0.site" className="text-primary hover:underline font-medium">support@ul0.site</a><br />
+                Email: <a href="mailto:getul0site@gmail.com" className="text-primary hover:underline font-medium">getul0site@gmail.com</a><br />
                 Website: https://ul0.site/contact
               </p>
             </section>
