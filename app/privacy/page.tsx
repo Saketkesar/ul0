@@ -153,7 +153,7 @@ export default function PrivacyPage() {
                 If you have any questions about this Privacy Policy, please contact us at:
               </p>
               <p className="text-muted-foreground mt-2">
-                Email: <a href="mailto:support@ul0.site" className="text-primary hover:underline font-medium">support@ul0.site</a><br />
+                Email: <a href="mailto:getul0site@gmail.com" className="text-primary hover:underline font-medium">getul0site@gmail.com</a><br />
                 Website: https://ul0.site/contact
               </p>
             </section>

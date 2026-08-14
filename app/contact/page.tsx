@@ -37,10 +37,10 @@ export default function ContactPage() {
                   For all inquiries, support requests, feedback, or business proposals, please email us at:
                 </p>
                 <a 
-                  href="mailto:stablersleet@duck.com" 
+                  href="mailto:getul0site@gmail.com" 
                   className="text-xl font-semibold text-primary hover:underline"
                 >
-                  stablersleet@duck.com
+                  getul0site@gmail.com
                 </a>
               </CardContent>
             </Card>

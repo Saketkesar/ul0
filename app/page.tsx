@@ -220,14 +220,14 @@ const homePageSchema = {
       },
       description: "Free URL shortener and branded link management platform with QR codes, click analytics, UTM tools, and expense splitting.",
       foundingDate: "2024",
-      email: "support@ul0.site",
+      email: "getul0site@gmail.com",
       sameAs: [
         "https://www.producthunt.com/products/ul0"
       ],
       contactPoint: {
         "@type": "ContactPoint",
         contactType: "customer support",
-        email: "support@ul0.site",
+        email: "getul0site@gmail.com",
         url: "https://ul0.site/contact",
         availableLanguage: ["English", "Hindi"]
       }

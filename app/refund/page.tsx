@@ -61,7 +61,7 @@ export default function RefundPage() {
               </p>
               <ul className="list-disc pl-6 space-y-1.5">
                 <li>If you cancel within 14 days of your initial purchase or renewal, you are eligible for a full refund.</li>
-                <li>To request a refund, please send an email to <a href="mailto:support@ul0.site" className="underline hover:text-gray-950">support@ul0.site</a> with your account email address and checkout details.</li>
+                <li>To request a refund, please send an email to <a href="mailto:getul0site@gmail.com" className="underline hover:text-gray-950">getul0site@gmail.com</a> with your account email address and checkout details.</li>
                 <li>Refunds are processed within 5 to 10 business days and returned to your original payment method.</li>
               </ul>
             </section>
@@ -77,8 +77,8 @@ export default function RefundPage() {
               <h2 className="text-base font-bold text-gray-900 font-mono">5. Contact</h2>
               <p>
                 If you have any questions or require assistance with cancellations or refunds, please contact us at{" "}
-                <a href="mailto:support@ul0.site" className="underline hover:text-gray-950 font-medium">
-                  support@ul0.site
+                <a href="mailto:getul0site@gmail.com" className="underline hover:text-gray-950 font-medium">
+                  getul0site@gmail.com
                 </a>.
               </p>
             </section>
