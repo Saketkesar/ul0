@@ -3,7 +3,7 @@
 
 const HOST = "ul0.site"
 const KEY = "1b98f244195a4bb896890d3bb639f7ee"
-const KEY_LOCATION = `https://${HOST}/api/indexnow-key`
+const KEY_LOCATION = `https://${HOST}/${KEY}.txt`
 const SITEMAP_URL = `https://${HOST}/sitemap.xml`
 
 const BLOG_SLUGS = [
