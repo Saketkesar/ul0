@@ -30,6 +30,14 @@ const nextConfig = {
       },
     ]
   },
+  async rewrites() {
+    return [
+      {
+        source: '/1b98f244195a4bb896890d3bb639f7ee.txt',
+        destination: '/api/indexnow-key',
+      },
+    ]
+  },
 }
 
 export default nextConfig
