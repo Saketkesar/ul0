@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next"
 import { SITE_URL, LOCALES, hreflangAlternates } from "@/lib/i18n"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 const BASE_URL = SITE_URL
 
 // Language variants that have a localized homepage
