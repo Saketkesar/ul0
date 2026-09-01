@@ -1,0 +1,1415 @@
+UL0.SITE — SEPTEMBER 2026 US-GROWTH MASTER PLAN
+GOAL: 10,000 PAGEVIEWS BY SEPTEMBER 30, 2026
+PRIMARY OBJECTIVE: Increase real, engaged traffic from high-value advertising markets, especially the United States, while building a product people genuinely use.
+SECONDARY OBJECTIVES: Improve retention, SEO, tool usage, repeat visits, backlinks, referrals, and ad revenue per visitor.
+
+IMPORTANT REALITY CHECK
+=======================
+10,000 pageviews by September 30 is an aggressive target. Current analytics show roughly 1.3K pageviews and 1.0K visitors over the last 30 days, with approximately 52% of visitors from the United States. Reaching 10K this month requires roughly 7.7x current monthly pageview volume. This plan is designed to maximize the probability of hitting it, not to guarantee it.
+
+DO NOT CHEAT THE TRAFFIC
+========================
+Do NOT buy bot traffic, fake US traffic, click farms, incentivized ad clicks, traffic-exchange traffic, or misleading redirects.
+Do NOT hide content from users while showing different content to search engines.
+Do NOT mass-generate hundreds of thin AI pages.
+Do NOT create fake "USA" landing pages that all contain essentially the same content.
+Do NOT stuff pages with high-CPC keywords that have nothing to do with the tool.
+Do NOT force users through ad-heavy interstitials before redirects.
+
+The goal is REAL US/CA/UK/AU/NZ/Western-European users who actually use the tools.
+
+CURRENT ANALYTICS DIAGNOSIS
+===========================
+Current screenshots:
+- Visitors: ~1.0K / 30 days
+- Pageviews: ~1.3K / 30 days
+- Time on page: ~9 seconds
+- US: ~52%
+- India: ~9%
+- China: ~7%
+- Direct referrals: ~920
+- Facebook: ~59
+- Google: ~21
+- ChatGPT: ~4
+- Instagram: ~4
+- A single /r/fjzBRK page/link shows ~565 pageviews
+- Homepage shows ~249 pageviews
+- Mobile + desktop traffic are both significant
+
+BIGGEST INSIGHT:
+UL0 already attracts a majority-US audience. Do not destroy that advantage by trying to artificially block every other country. Instead, build products and distribution channels that naturally attract more users from the US and other high-value markets.
+
+BIGGEST PRODUCT PROBLEM:
+The site currently tries to communicate URL shortening, QR codes, bill splitting, UPI, PDF tools, technical guides, and other utilities at once. That makes the product positioning fuzzy.
+
+PRIMARY POSITIONING
+===================
+UL0 should become:
+
+"Free link tools for creators, marketers, small businesses, and everyday sharing."
+
+Core promise:
+- Free URL shortener
+- No signup for basic shortening
+- Fast redirects
+- QR generation
+- Click analytics
+- UTM builder
+- Link tracking
+- Useful marketing tools
+
+Secondary utilities can remain, but they should not dominate the homepage.
+
+HOMEPAGE REBUILD
+================
+Above the fold:
+
+H1:
+"Free URL Shortener & QR Code Generator"
+
+Subheadline:
+"Create short, shareable links with click tracking and QR codes — free, fast, and no signup required."
+
+Primary input:
+"Paste your long URL..."
+
+Primary CTA:
+"Shorten URL"
+
+Secondary CTA:
+"Create QR Code"
+
+Trust row:
+- No signup required
+- Free to use
+- Fast redirects
+- Security checked
+- Mobile friendly
+
+Immediately below:
+"Everything you need to share and track links"
+
+Cards:
+1. URL Shortener
+2. QR Code Generator
+3. Link Tracker
+4. UTM Builder
+5. WiFi QR
+6. Link-in-Bio
+7. URL Expander / Safety Checker
+8. Campaign Link Generator
+
+Move Bill Splitter, UPI and PDF utilities into a separate "Free Tools" section/nav. Keep them discoverable but stop them from competing with the core positioning.
+
+CORE PRODUCT ROADMAP
+====================
+BUILD THESE IN THIS ORDER:
+
+1. URL SHORTENER
+- random slug
+- custom slug
+- instant copy
+- QR generation
+- click count
+- country
+- device
+- browser
+- referrer
+- timestamp
+- UTM support
+- link management
+- abuse reporting
+- destination preview
+
+2. QR CODE GENERATOR
+Route:
+ /qr-code-generator
+
+Support:
+- URL QR
+- text QR
+- WiFi QR
+- vCard QR
+- email QR
+- phone QR
+- SMS QR
+- Google Maps QR
+- event/info QR
+- downloadable PNG
+- downloadable SVG
+- configurable error correction
+- configurable size
+- safe whitespace / quiet zone
+- mobile-first UX
+
+Important:
+The QR tool must actually work. Do not create SEO pages pretending to be tools.
+
+3. UTM BUILDER
+Route:
+ /utm-builder
+
+Fields:
+- Website URL
+- utm_source
+- utm_medium
+- utm_campaign
+- utm_term
+- utm_content
+
+Buttons:
+- Copy URL
+- Shorten
+- Generate QR
+- Save locally
+
+Useful presets:
+- Google Ads
+- Facebook
+- Instagram
+- LinkedIn
+- YouTube
+- Email
+- Newsletter
+- QR / Print
+- Influencer
+- Affiliate
+
+4. LINK TRACKER
+Route:
+ /link-tracker
+
+Explain:
+"See where your links are getting clicks."
+
+Dashboard:
+- clicks
+- unique clicks
+- country
+- device
+- browser
+- referrer
+- time/day
+- campaign
+- QR scans
+
+5. LINK-IN-BIO
+Route:
+ /link-in-bio
+
+Free mini landing page:
+- profile photo
+- name
+- bio
+- social links
+- website
+- newsletter
+- store links
+- analytics
+- shareable UL0 URL
+
+6. URL EXPANDER / SAFETY CHECKER
+Route:
+ /url-expander
+
+Let a user inspect a shortened URL before visiting it.
+Show:
+- destination domain
+- HTTPS
+- redirect chain if available
+- security status
+- warning if suspicious
+
+This directly addresses trust concerns around shortened URLs.
+
+7. WIFI QR
+Route:
+ /wifi-qr-code-generator
+
+Target:
+- cafes
+- Airbnbs
+- hotels
+- offices
+- homes
+- events
+- restaurants
+
+US MARKET PRIORITY
+==================
+Primary markets:
+1. United States
+2. Canada
+3. United Kingdom
+4. Australia
+5. New Zealand
+
+Secondary:
+- Germany
+- Switzerland
+- Netherlands
+- Sweden
+- Norway
+- Denmark
+- France
+
+Do NOT block India or other countries.
+Do NOT serve fake regional content.
+Do NOT create doorway pages.
+
+Instead:
+- Write content in natural US English.
+- Use USD examples on marketing pages.
+- Use US business examples.
+- Mention other currencies only where relevant.
+- Use US spelling where appropriate.
+- Build genuine use-case pages for American users.
+- Keep the core tool globally usable.
+
+WHY US-FIRST
+============
+The current analytics already show about 52% US traffic. That is a strong signal.
+The goal is to increase the number of US users, not merely the percentage.
+
+TARGET:
+By Sep 30:
+- 10,000+ pageviews total
+- 4,500–6,500 US pageviews if possible
+- 55–65% US traffic is a good target, but volume matters more than percentage
+- Average engaged time should move well above the current ~9 seconds
+- Tool completion rate should increase
+- Returning visitors should increase
+- Organic impressions should rise
+- Referral traffic should diversify
+
+SEO STRATEGY
+============
+Do NOT make 100 generic blog posts.
+
+Create 15–25 genuinely useful tool/use-case pages.
+
+TIER 1 — MONEY / HIGH-INTENT TOOL PAGES
+---------------------------------------
+/free-url-shortener
+/qr-code-generator
+/utm-builder
+/link-tracker
+/url-expander
+/wifi-qr-code-generator
+/link-in-bio
+/qr-code-for-business
+
+TIER 2 — USE-CASE PAGES
+-----------------------
+/url-shortener-for-marketing
+/url-shortener-for-small-business
+/url-shortener-for-social-media
+/url-shortener-for-email
+/url-shortener-for-instagram
+/url-shortener-for-youtube
+/url-shortener-for-reddit
+/url-shortener-for-discord
+/qr-code-for-flyers
+/qr-code-for-business-cards
+/qr-code-for-restaurants
+/qr-code-for-real-estate
+/qr-code-for-events
+/qr-code-for-wifi
+/qr-code-for-product-packaging
+
+Only publish a page when it contains genuinely different useful information, examples, screenshots, FAQs, and/or functionality.
+
+TIER 3 — EDUCATIONAL CONTENT
+----------------------------
+Examples:
+- How to create a QR code for a flyer
+- How to track a marketing link
+- UTM parameters explained for beginners
+- UTM source vs medium vs campaign
+- How to make a QR code for WiFi
+- How to shorten a URL for social media
+- How to safely check a shortened URL
+- QR code mistakes businesses should avoid
+- How to track offline marketing with QR codes
+- How to create trackable links for newsletters
+- How to create campaign links for Instagram
+- How to track links from printed flyers
+
+TRENDING-KEYWORD SYSTEM
+=======================
+Do NOT ask AI to blindly invent "trending keywords."
+
+Use a live keyword workflow:
+
+EVERY MONDAY:
+1. Google Search Console
+2. Google Trends
+3. Google Ads Keyword Planner if available
+4. Bing Webmaster Tools if available
+5. Reddit search
+6. YouTube search autocomplete
+7. Competitor page/title analysis
+8. Your own analytics
+
+Search Console:
+- filter Country = United States
+- filter non-branded queries
+- inspect Queries
+- inspect Pages
+- inspect CTR
+- inspect average position
+- find queries with high impressions + low CTR
+- find queries in positions 5–20
+- find queries that are suddenly trending upward
+- create/update pages based on those findings
+
+IMPORTANT:
+Search Console officially supports filtering by country and query and lets you inspect impressions, clicks, CTR and average position. Use this data before guessing what people want.
+
+KEYWORD SCORING MODEL
+=====================
+For every candidate keyword, score:
+
+Search demand: 0–10
+US relevance: 0–10
+Commercial intent: 0–10
+Product fit: 0–10
+Competition difficulty: 0–10 (reverse score)
+Trend momentum: 0–10
+Ease of building useful content: 0–10
+
+Priority Score =
+Search demand
++ US relevance
++ commercial intent
++ product fit
++ trend momentum
++ content opportunity
+- competition difficulty
+
+Do not chase a keyword simply because its CPC is high.
+The keyword must have real product intent.
+
+KEYWORD CLUSTERS TO INVESTIGATE
+================================
+URL SHORTENER:
+- free url shortener
+- best free url shortener
+- short url generator
+- shorten a link
+- shorten url free
+- custom url shortener
+- link shortener with analytics
+- url shortener with qr code
+- free branded links
+- trackable short links
+
+QR:
+- qr code generator
+- free qr code generator
+- qr code generator free
+- qr code for business
+- qr code for flyer
+- qr code for business card
+- qr code for restaurant menu
+- wifi qr code generator
+- qr code for event
+- qr code for real estate
+- dynamic qr code
+- track qr code scans
+
+MARKETING:
+- utm builder
+- free utm builder
+- campaign url builder
+- url tracking
+- link tracking
+- campaign link generator
+- marketing link tracker
+- track clicks on a link
+- link analytics
+
+CREATOR:
+- link in bio
+- free link in bio
+- bio link generator
+- social media link page
+
+SECURITY:
+- url expander
+- check shortened url
+- safe url checker
+- link checker
+- suspicious link checker
+
+AI KEYWORD RESEARCH PROMPT
+==========================
+Give Gemini this exact task:
+
+"You are the SEO growth analyst for ul0.site.
+
+Do NOT invent keyword volume or CPC.
+Do NOT fabricate trends.
+Do NOT generate hundreds of pages.
+
+Every week, analyze:
+1. Google Search Console data for ul0.site
+2. Google Trends
+3. Google search autocomplete patterns
+4. Reddit discussions
+5. YouTube autocomplete
+6. Bing Webmaster data if available
+7. Competitor SERPs
+8. Existing ul0 pages and analytics
+
+Prioritize real search opportunities in the United States, Canada, UK, Australia and New Zealand.
+
+For each keyword opportunity, return:
+- keyword
+- search intent
+- country relevance
+- trend direction
+- estimated competition
+- current UL0 ranking if known
+- current impressions if known
+- current clicks if known
+- CTR
+- best existing URL
+- whether to update an existing page or create a new page
+- recommended title
+- recommended H1
+- recommended URL slug
+- 5–10 supporting terms
+- FAQ opportunities
+- internal links
+- product feature that should be promoted
+
+Never fabricate metrics. If a metric is unavailable, write UNKNOWN.
+
+Only recommend a page if UL0 can provide genuinely useful functionality or original information.
+
+Output the top 10 opportunities sorted by expected impact."
+
+GEMINI WEBSITE UPDATE MASTER PROMPT
+====================================
+Paste this into Gemini when asking it to modify the website:
+
+"You are the senior product engineer, UX designer, SEO strategist and growth engineer for ul0.site.
+
+Your mission is to increase REAL engaged traffic and product usage, with a strong focus on users in the United States, Canada, UK, Australia and New Zealand.
+
+Do not use black-hat SEO.
+Do not create doorway pages.
+Do not create hundreds of thin AI pages.
+Do not cloak content.
+Do not fabricate statistics, reviews, backlinks, customers or security claims.
+Do not buy traffic.
+Do not change content solely to manipulate ad RPM.
+Do not break existing short links.
+
+FIRST:
+Audit the existing codebase and preserve all working functionality.
+
+SECOND:
+Create a prioritized implementation plan.
+
+THIRD:
+Implement changes in small, testable stages.
+
+CORE PRODUCT:
+1. Free URL shortener
+2. QR code generator
+3. UTM builder
+4. Link tracker
+5. URL expander/safety checker
+6. WiFi QR generator
+7. Link-in-bio
+8. Existing PDF and bill-splitting tools remain available but secondary
+
+HOMEPAGE:
+Make the primary value proposition URL shortening + QR + tracking.
+Do not put unrelated utilities above the fold.
+
+UX:
+- mobile-first
+- extremely fast
+- accessible
+- clear CTA
+- zero unnecessary popups
+- no fake countdowns
+- no dark patterns
+- no intrusive interstitials
+- copy/share buttons must work
+- preserve existing links
+
+SEO:
+Implement:
+- clean URLs
+- canonical tags
+- sitemap
+- robots.txt
+- descriptive titles
+- useful meta descriptions
+- semantic headings
+- internal linking
+- breadcrumbs where useful
+- Open Graph metadata
+- Twitter/X metadata
+- Organization/WebSite/Breadcrumb/SoftwareApplication structured data only where accurate
+- FAQ structured data only when the visible page genuinely contains the FAQ
+- no keyword stuffing
+- no duplicate city/country pages
+- no autogenerated doorway pages
+
+PERFORMANCE:
+Target:
+- fast first load
+- minimal JavaScript
+- optimized images
+- lazy loading where appropriate
+- no unnecessary third-party scripts
+- responsive layout
+- Core Web Vitals optimization
+
+TRUST:
+Create:
+- About
+- Contact
+- Privacy
+- Terms
+- Abuse/report link
+- Security
+- URL safety explanation
+
+For every shortened URL:
+- scan submitted destination where the existing infrastructure supports it
+- flag malicious destinations
+- provide a report mechanism
+- never claim a security vendor/API is used unless it is actually integrated
+
+ANALYTICS:
+Track:
+- tool viewed
+- tool started
+- tool completed
+- URL shortened
+- QR generated
+- QR downloaded
+- UTM generated
+- link copied
+- share clicked
+- country
+- device
+- referrer
+- returning user
+Use privacy-conscious analytics.
+
+IMPORTANT:
+Do not collect unnecessary personal information.
+
+INTERNAL LINKING:
+Every major tool page should link naturally to related tools.
+
+Example:
+QR Generator -> URL Shortener
+QR Generator -> UTM Builder
+UTM Builder -> URL Shortener
+UTM Builder -> Link Tracker
+Link Tracker -> URL Shortener
+URL Shortener -> QR Generator
+URL Expander -> URL Shortener
+
+CONTENT:
+Build useful pages around real use cases:
+- small business
+- marketing
+- flyers
+- business cards
+- restaurants
+- real estate
+- events
+- newsletters
+- social media
+- WiFi
+- creators
+
+Each page must be meaningfully different and must help a real user accomplish something.
+
+Do not write filler.
+
+Before changing anything, inspect the existing implementation and tell me:
+- what exists
+- what can be reused
+- what is broken
+- what should be removed
+- what should be added
+- estimated implementation priority
+
+Then implement the highest-impact items."
+
+30-DAY EXECUTION PLAN
+=====================
+
+SEPTEMBER 1–3: FOUNDATION
+--------------------------
+Day 1:
+- Backup code/database
+- Verify every existing short link still works
+- Connect/verify Google Search Console
+- Connect/verify analytics
+- Export last 30 days data
+- Create baseline spreadsheet
+- Record pageviews, visitors, US %, CTR, top pages, top referrers
+
+Day 2:
+- Rewrite homepage
+- Make URL shortener the primary product
+- Add QR CTA
+- Add trust signals
+- Add navigation to tools
+
+Day 3:
+- Improve mobile UX
+- Improve page speed
+- Add SEO metadata
+- Verify sitemap
+- Verify robots.txt
+- Verify canonical tags
+- Submit sitemap
+
+SEPTEMBER 4–7: HIGH-VALUE TOOLS
+-------------------------------
+Build:
+1. QR generator
+2. UTM builder
+3. Link tracker landing page
+4. WiFi QR generator
+
+Each tool gets:
+- dedicated URL
+- unique title/H1
+- clear description
+- FAQ
+- examples
+- related tools
+- share/copy buttons
+- analytics events
+
+SEPTEMBER 8–10: TRUST + SECURITY
+---------------------------------
+Build:
+- URL expander
+- security page
+- abuse reporting
+- privacy page
+- terms
+- contact page
+- About page
+
+Make security claims match reality.
+
+SEPTEMBER 11–14: SEO PAGES
+---------------------------
+Publish 5 strong pages:
+1. Free URL Shortener
+2. Free QR Code Generator
+3. UTM Builder
+4. Link Tracker
+5. WiFi QR Generator
+
+Each page should be a real tool, not an article pretending to be one.
+
+SEPTEMBER 15–18: USE-CASE SEO
+-----------------------------
+Publish:
+- QR code for business cards
+- QR code for flyers
+- QR code for restaurants
+- QR code for real estate
+- track links for marketing
+
+Use US English and real examples.
+
+SEPTEMBER 19–21: DISTRIBUTION
+------------------------------
+Reddit:
+- 3–5 genuinely useful posts/comments
+- answer questions before promoting UL0
+- never spam the same link
+- disclose that you built the tool when relevant
+
+Product communities:
+- Product Hunt launch
+- Indie Hackers
+- relevant founder communities
+- relevant developer communities
+
+Social:
+Create short demonstrations:
+- "Turn any URL into a QR code in 5 seconds"
+- "Track where your links are clicked"
+- "Build a UTM campaign link"
+- "Make a WiFi QR code"
+
+Post short demos to:
+- YouTube Shorts
+- Instagram Reels
+- TikTok
+- X
+
+Do not spam identical posts everywhere.
+
+SEPTEMBER 22–24: SEO ITERATION
+------------------------------
+Use Search Console.
+
+Find:
+- high impressions
+- low CTR
+- positions 5–20
+- rising queries
+- US queries
+
+Update:
+- title
+- H1
+- intro
+- FAQs
+- internal links
+- screenshots
+- tool UX
+
+Do NOT rewrite pages just because they are not ranking after two days.
+
+SEPTEMBER 25–27: BACKLINK / MENTION PUSH
+----------------------------------------
+Create assets people can cite:
+- QR code size guide
+- UTM naming guide
+- link tracking glossary
+- short URL safety guide
+- QR marketing checklist
+
+Submit to:
+- relevant tool directories
+- SaaS directories
+- developer directories
+- startup directories
+- resource pages
+
+Do not buy spammy backlinks.
+
+SEPTEMBER 28–30: FINAL PUSH
+----------------------------
+- Publish only high-confidence improvements
+- Promote the best-performing tool
+- Update titles with real query language
+- Fix pages with high impressions and low CTR
+- Improve internal linking
+- Re-share strongest content
+- Publish a useful case study from UL0's own anonymous aggregate data if enough data exists
+- Compare Sep 1–30 against previous period
+
+DAILY GROWTH LOOP
+=================
+Every day:
+
+09:00
+- Check analytics
+- Check traffic sources
+- Check US traffic
+- Check tool completions
+- Check errors
+
+11:00
+- Search Google Trends
+- Search Reddit
+- Search YouTube autocomplete
+- Look for new demand
+
+13:00
+- Improve one page or tool
+
+16:00
+- Publish/promote one useful asset
+
+20:00
+- Review:
+  visitors
+  pageviews
+  US %
+  engagement
+  top landing page
+  top referrer
+  conversions
+
+THE 10K PAGEVIEW MATH
+======================
+Current:
+~1,300 pageviews / 30 days
+
+Goal:
+10,000 pageviews
+
+Required:
+~8,700 additional pageviews.
+
+Potential traffic mix:
+SEO: 2,500–4,000
+Reddit/community: 1,000–2,000
+Social/video: 1,000–2,000
+Direct/referral/viral: 1,000–2,000
+Existing traffic: ~1,300
+
+These are planning scenarios, NOT promises.
+
+The key is not one viral post.
+Build multiple traffic sources so one failure does not kill the target.
+
+HIGH-CPM TRAFFIC STRATEGY
+=========================
+The website cannot ethically or reliably guarantee that every visitor comes from a high-CPM country.
+
+Instead, prioritize content and distribution where valuable users naturally exist:
+- US
+- Canada
+- UK
+- Australia
+- New Zealand
+- Western Europe
+
+Focus especially on:
+- small business
+- SaaS
+- marketing
+- ecommerce
+- creators
+- agencies
+- real estate
+- restaurants
+- events
+- local businesses
+
+These users have real reasons to use:
+- short links
+- QR codes
+- tracking
+- UTM campaigns
+- link-in-bio
+
+The best monetization strategy is:
+REAL USER + HIGH INTENT + MULTIPLE PAGEVIEWS + GOOD ENGAGEMENT.
+
+Do not optimize for CPM alone.
+
+REVENUE STRATEGY
+================
+Ads should not ruin the tool.
+
+Place ads:
+- below tool result
+- between useful content sections
+- sidebar on desktop where appropriate
+- below articles
+
+Avoid:
+- ads before the redirect
+- aggressive popups
+- fake download buttons
+- accidental-click layouts
+- ads immediately next to primary CTA
+- excessive mobile ads
+
+A user who stays 30–60 seconds and uses 2–3 tools can be more valuable than a user who lands, clicks an ad accidentally, and leaves.
+
+US-CENTRIC CONTENT EXAMPLES
+===========================
+Use real examples such as:
+
+Small business:
+"Create a QR code for your Google review page."
+
+Restaurant:
+"Create a QR code for your digital menu."
+
+Real estate:
+"Put a trackable QR code on property flyers."
+
+Event:
+"Create a QR code for an RSVP page."
+
+Marketing:
+"Build a UTM link for a Facebook campaign."
+
+Newsletter:
+"Create a short trackable link for your email campaign."
+
+Creator:
+"Create a clean link for your YouTube or Instagram bio."
+
+These are much better than generic "What is a URL?" articles.
+
+AI CONTENT RULES
+================
+AI is the assistant, not the publisher.
+
+Use AI to:
+- analyze Search Console exports
+- cluster keywords
+- generate outlines
+- identify missing FAQs
+- improve titles
+- generate code
+- refactor UI
+- write first drafts
+- analyze competitors
+- suggest internal links
+- summarize analytics
+
+Human/product data must add:
+- actual screenshots
+- actual tool behavior
+- real examples
+- original experiments
+- real performance numbers
+- genuine observations
+
+Never use AI to generate 300 nearly identical pages.
+
+GOOGLE SEO SAFETY
+=================
+Google's current spam policies explicitly warn against scaled content abuse, including generating many pages primarily to manipulate search rankings. Doorway pages and keyword-stuffed pages are also risky.
+
+Therefore:
+QUALITY > QUANTITY.
+
+10 great pages can beat 200 garbage pages.
+
+TRACK THESE KPIs
+=================
+Acquisition:
+- total visitors
+- total pageviews
+- US visitors
+- US %
+- Canada/UK/AU/NZ visitors
+- organic clicks
+- organic impressions
+- referral clicks
+- social clicks
+
+Engagement:
+- engaged sessions
+- average engagement time
+- pages/session
+- returning visitors
+- tool completion rate
+
+Product:
+- URLs shortened
+- QR codes generated
+- UTMs generated
+- links copied
+- links shared
+- QR downloads
+- link tracker usage
+
+SEO:
+- impressions
+- clicks
+- CTR
+- average position
+- indexed pages
+- non-branded queries
+- US query performance
+
+Revenue:
+- RPM
+- US RPM
+- revenue/session
+- ad viewability
+- ad CTR
+- page RPM
+- revenue by landing page
+
+THE MOST IMPORTANT FUNNEL
+=========================
+Search/social/referral
+        ↓
+Landing page
+        ↓
+Tool immediately usable
+        ↓
+User creates something
+        ↓
+User copies/shares it
+        ↓
+User discovers another UL0 tool
+        ↓
+Second pageview
+        ↓
+Return visit
+        ↓
+Organic referral
+
+If users are not completing the tool, traffic acquisition is premature.
+
+A/B TESTS
+=========
+Test:
+A:
+"Free URL Shortener"
+
+B:
+"Shorten & Track Any Link Free"
+
+Test:
+A:
+"Shorten URL"
+
+B:
+"Create Free Short Link"
+
+Test:
+A:
+"Create QR Code"
+
+B:
+"Generate QR"
+
+Do not run 10 experiments at once.
+
+Run one meaningful test, measure, keep the winner.
+
+PAGE TITLE TESTS
+================
+Examples to test:
+
+"Free URL Shortener — Shorten Links Instantly | UL0"
+
+"Free URL Shortener & QR Code Generator | UL0"
+
+"Free Link Shortener with QR Codes & Analytics | UL0"
+
+"Shorten & Track Links Free — URL Shortener | UL0"
+
+Only keep titles that accurately describe the page.
+
+INTERNAL LINKING PLAN
+=====================
+Homepage:
+-> URL Shortener
+-> QR Generator
+-> UTM Builder
+-> Link Tracker
+
+URL Shortener:
+-> QR Generator
+-> UTM Builder
+-> Link Tracker
+-> URL Expander
+
+QR Generator:
+-> UTM Builder
+-> Link Tracker
+-> WiFi QR
+
+UTM Builder:
+-> URL Shortener
+-> Link Tracker
+
+Articles:
+-> relevant tool
+-> 2–4 related guides
+-> homepage
+
+SCHEMA
+======
+Implement only truthful structured data:
+- WebSite
+- Organization
+- SoftwareApplication where appropriate
+- BreadcrumbList
+- FAQPage only when the visible page contains those FAQs
+
+Do not create fake reviews or fake ratings.
+
+TECHNICAL SEO CHECKLIST
+=======================
+[ ] HTTPS
+[ ] canonical URLs
+[ ] XML sitemap
+[ ] robots.txt
+[ ] correct status codes
+[ ] no accidental noindex
+[ ] mobile responsive
+[ ] fast loading
+[ ] clean URLs
+[ ] unique titles
+[ ] unique meta descriptions
+[ ] one clear H1
+[ ] logical H2/H3
+[ ] alt text
+[ ] Open Graph
+[ ] Twitter/X metadata
+[ ] structured data
+[ ] internal links
+[ ] 404 page
+[ ] redirect testing
+[ ] short links never accidentally broken
+[ ] no duplicate pages
+[ ] no infinite URL parameters indexed
+
+SECURITY / TRUST CHECKLIST
+==========================
+[ ] abuse reporting
+[ ] destination preview
+[ ] malicious-link checks where actually implemented
+[ ] privacy policy
+[ ] terms
+[ ] contact
+[ ] clear ownership/about page
+[ ] no fake security claims
+[ ] rate limiting
+[ ] anti-abuse controls
+[ ] safe redirect handling
+[ ] no open redirect vulnerability
+[ ] no arbitrary JavaScript execution through URL parameters
+[ ] sanitize user-generated content
+
+VERY IMPORTANT FOR A URL SHORTENER
+==================================
+Security is not optional.
+
+Audit:
+- open redirects
+- XSS
+- SSRF
+- malicious URL schemes
+- javascript: URLs
+- data: URLs where unsafe
+- phishing
+- spam
+- automated link creation
+- brute-force slug enumeration
+- rate limits
+- abuse reporting
+- redirect validation
+
+Do not claim "Google Safe Browsing" or another security service unless the code actually calls it.
+
+COMPETITOR RESEARCH
+===================
+Monitor:
+- Bitly
+- TinyURL
+- Rebrandly
+- Dub
+- Short.io
+- emerging free URL shorteners
+- QR tools
+- UTM tools
+
+Do not copy their pages.
+
+Look for:
+- missing features
+- complaints
+- pricing pain
+- signup friction
+- limits
+- missing QR functionality
+- missing UTM functionality
+- analytics gaps
+
+Then build something better.
+
+COMMUNITY CONTENT STRATEGY
+==========================
+REDdit:
+Never:
+"Hey check out my URL shortener!"
+
+Instead:
+"I built a free UTM + QR workflow for small businesses. Here is the exact workflow and what I learned."
+
+Then provide useful information and disclose UL0 naturally.
+
+Answer questions such as:
+- "How do I track QR scans?"
+- "How do I make a QR code for a flyer?"
+- "How do I build UTM links?"
+- "What free URL shortener has analytics?"
+- "How do I shorten links without signing up?"
+
+YouTube Shorts:
+15–30 second demos.
+Hook examples:
+- "Stop paying for a QR code generator."
+- "Track every link you share."
+- "Turn this ugly URL into this."
+- "Make a WiFi QR code in 5 seconds."
+- "Here's how I track QR scans."
+
+Do not make false claims like "Bitly is useless" or "Google ranks this #1."
+
+BACKLINK STRATEGY
+=================
+Target legitimate:
+- SaaS directories
+- startup directories
+- developer tool directories
+- productivity tool lists
+- QR tool roundups
+- marketing resource pages
+- small-business resource pages
+- open-source/project directories if relevant
+
+Best backlink asset:
+A genuinely useful free tool.
+
+Second best:
+Original data / benchmark.
+
+Third:
+Excellent guide.
+
+Do not buy 1,000 backlinks.
+
+WEEKLY AI ANALYSIS PROMPT
+=========================
+"Analyze UL0's last 7 days versus the previous 7 days.
+
+Return:
+1. traffic change
+2. US traffic change
+3. top landing pages
+4. top referral sources
+5. top search queries
+6. high-impression low-CTR queries
+7. positions 5–20 opportunities
+8. pages losing traffic
+9. pages gaining traffic
+10. tools with highest completion rate
+11. tools with highest abandonment
+12. best next SEO page
+13. best page to update
+14. best distribution channel
+15. three experiments for the next 7 days
+
+Do not invent data.
+Use UNKNOWN when data is missing.
+Prioritize actions by expected impact."
+
+FINAL TARGET SCORECARD — SEP 30
+=================================
+MINIMUM ACCEPTABLE:
+- 5K pageviews
+- meaningful increase in US traffic
+- 2+ strong acquisition channels
+- 5+ functioning high-intent tools/pages
+- Search Console impressions rising
+- no major security/SEO problems
+
+TARGET:
+- 10K+ pageviews
+- 4.5K–6.5K+ US pageviews
+- 55–65% US share
+- materially improved engagement
+- multiple pages generating organic impressions
+- QR + UTM + URL shortener becoming the core funnel
+
+STRETCH:
+- 15K+ pageviews
+- 7K+ US pageviews
+- one tool/content asset breaks out on Reddit/social/search
+- repeat visitors and organic traffic become self-sustaining
+
+THE GOLDEN RULE
+===============
+Do not chase "high CPM traffic."
+
+CHASE HIGH-VALUE USERS.
+
+A US small-business owner who:
+- creates a QR code,
+- shortens a campaign URL,
+- generates a UTM,
+- checks analytics,
+- returns tomorrow,
+
+is worth far more to UL0 than a random US visitor who lands for two seconds.
+
+Build the product so the user naturally wants to use 2–3 tools.
+
+Then acquire more users.
+
+Then optimize monetization.
+
+Then scale.
+
+DO NOT REVERSE THAT ORDER.
+
+SOURCE / RESEARCH NOTES
+=======================
+Google Search Central spam policies:
+https://developers.google.com/search/docs/essentials/spam-policies
+
+Google Search Console Performance report:
+https://support.google.com/webmasters/answer/7576553
+
+Google Search Console dimensions and filtering:
+https://support.google.com/webmasters/answer/17011259
+https://support.google.com/webmasters/answer/17011165
+
+Google Search Console common performance tasks:
+https://support.google.com/webmasters/answer/17010961
+
+UL0 current homepage audit:
+https://ul0.site/
+
+QR adoption research consulted for the strategy:
+Uniqode State of QR Codes 2026
+https://www.uniqode.com/unique-angles/playbooks/state-of-qr-codes-2026/marketer-insights
+
+Bitly UTM feature reference:
+https://bitly.com/pages/features/utm-tracking
+
+FINAL INSTRUCTION TO GEMINI
+===========================
+"Do not blindly implement everything in this document in one shot.
+
+First audit the current UL0 codebase.
+Then produce:
+A. existing architecture
+B. existing tools
+C. existing SEO pages
+D. current analytics hooks
+E. current database/API structure
+F. current security controls
+G. exact files that need modification
+H. implementation order
+
+Then implement the highest-impact work first.
+
+Never break existing short links.
+
+Never fabricate claims.
+
+Never create spam pages.
+
+Every new page must either provide a useful working tool or substantial original information.
+
+After implementation, run:
+- build
+- lint
+- type checks
+- route checks
+- SEO checks
+- mobile checks
+- redirect tests
+- security tests
+
+Return a concise changelog and list of remaining tasks."
+
+END OF MASTER PLAN

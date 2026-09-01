@@ -29,10 +29,10 @@ import {
   LayoutDashboard,
   Menu,
   X,
-  BarChart3,
   Sparkles,
   ShieldCheck,
   Smartphone,
+  Wifi,
 } from "lucide-react"
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs"
 
@@ -55,72 +55,45 @@ export function Header() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
+        <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
           <Link
             href="/"
-            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             Shortener
           </Link>
           <Link
             href="/qr-code-generator"
-            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             QR Generator
           </Link>
           <Link
             href="/utm-builder"
-            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             UTM Builder
           </Link>
           <Link
-            href="/link-tracker"
-            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            href="/wifi-qr-code-generator"
+            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
-            Link Tracker
-          </Link>
-          <Link
-            href="/link-in-bio"
-            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          >
-            Link in Bio
+            WiFi QR
           </Link>
           <Link
             href="/pricing"
-            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             Pricing
           </Link>
 
           {/* More Tools Dropdown */}
           <DropdownMenu>
-            <DropdownMenuTrigger className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1">
+            <DropdownMenuTrigger className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1">
               More Tools
               <ChevronDown className="h-4 w-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Marketing & Growth</DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link href="/wifi-qr-code-generator" className="flex items-center gap-2 cursor-pointer">
-                  <QrCode className="h-4 w-4" />
-                  WiFi QR Generator
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/url-expander" className="flex items-center gap-2 cursor-pointer">
-                  <ShieldCheck className="h-4 w-4 text-emerald-500" />
-                  URL Expander & Safety
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/qr-code-for-business" className="flex items-center gap-2 cursor-pointer">
-                  <Sparkles className="h-4 w-4 text-amber-500" />
-                  QR for Business
-                </Link>
-              </DropdownMenuItem>
-
-              <DropdownMenuSeparator />
+            <DropdownMenuContent align="end" className="w-52">
               <DropdownMenuLabel className="text-xs text-muted-foreground">Productivity & Utilities</DropdownMenuLabel>
               <DropdownMenuItem asChild>
                 <Link href="/split" className="flex items-center gap-2 cursor-pointer">
@@ -190,7 +163,7 @@ export function Header() {
         </nav>
 
         {/* Mobile Right: Auth + Hamburger */}
-        <div className="flex lg:hidden items-center gap-2">
+        <div className="flex md:hidden items-center gap-2">
           <Show when="signed-in">
             <UserButton
               afterSignOutUrl="/"
@@ -213,15 +186,12 @@ export function Header() {
 
       {/* Mobile menu panel */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-border bg-background px-4 py-4 space-y-1 max-h-[85vh] overflow-y-auto">
+        <div className="md:hidden border-t border-border bg-background px-4 py-4 space-y-1 max-h-[85vh] overflow-y-auto">
           {[
             { href: "/", label: "URL Shortener", icon: <Link2 className="h-4 w-4" /> },
             { href: "/qr-code-generator", label: "QR Code Generator", icon: <QrCode className="h-4 w-4" /> },
             { href: "/utm-builder", label: "UTM Campaign Builder", icon: <LinkIcon className="h-4 w-4" /> },
-            { href: "/link-tracker", label: "Link Tracker", icon: <BarChart3 className="h-4 w-4" /> },
-            { href: "/link-in-bio", label: "Link in Bio", icon: <Smartphone className="h-4 w-4" /> },
-            { href: "/url-expander", label: "URL Expander & Safety", icon: <ShieldCheck className="h-4 w-4 text-emerald-500" /> },
-            { href: "/wifi-qr-code-generator", label: "WiFi QR Generator", icon: <QrCode className="h-4 w-4" /> },
+            { href: "/wifi-qr-code-generator", label: "WiFi QR Generator", icon: <Wifi className="h-4 w-4" /> },
             { href: "/pricing", label: "Pricing & Custom Domains", icon: <ShoppingCart className="h-4 w-4" /> },
             { href: "/split", label: "Split Expenses", icon: <Users className="h-4 w-4" /> },
             { href: "/pdf", label: "PDF Scanner Tools", icon: <ScanLine className="h-4 w-4" /> },
