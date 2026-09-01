@@ -34,10 +34,8 @@ export function Footer() {
               <Link href="/free-url-shortener" className="hover:text-foreground transition-colors">Free URL Shortener</Link>
               <Link href="/qr-code-generator" className="hover:text-foreground transition-colors">QR Code Generator</Link>
               <Link href="/utm-builder" className="hover:text-foreground transition-colors">UTM Campaign Builder</Link>
-              <Link href="/link-tracker" className="hover:text-foreground transition-colors">Link Tracker &amp; Stats</Link>
-              <Link href="/link-in-bio" className="hover:text-foreground transition-colors">Link in Bio Creator</Link>
-              <Link href="/url-expander" className="hover:text-foreground transition-colors">URL Expander &amp; Safety</Link>
               <Link href="/wifi-qr-code-generator" className="hover:text-foreground transition-colors">WiFi QR Generator</Link>
+              <Link href="/pricing" className="hover:text-foreground transition-colors">Custom Branded Domains</Link>
             </nav>
           </div>
 
@@ -46,7 +44,6 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-3 text-sm">Marketing &amp; Business</h3>
             <nav className="flex flex-col gap-2 text-sm text-muted-foreground" aria-label="Business tools navigation">
               <Link href="/pricing" className="hover:text-foreground transition-colors">Custom Branded Domains</Link>
-              <Link href="/qr-code-for-business" className="hover:text-foreground transition-colors">QR for Business Cards &amp; Flyers</Link>
               <Link href="/docs" className="hover:text-foreground transition-colors">Developer REST API</Link>
               <Link href="/custom-domain-landing" className="hover:text-foreground transition-colors">Custom Domain Setup</Link>
               <Link href="/blog" className="hover:text-foreground transition-colors">Link Strategy &amp; Guides</Link>
