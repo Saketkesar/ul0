@@ -29,6 +29,10 @@ import {
   LayoutDashboard,
   Menu,
   X,
+  BarChart3,
+  Sparkles,
+  ShieldCheck,
+  Smartphone,
 } from "lucide-react"
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs"
 
@@ -39,7 +43,7 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center" aria-label="ul0 - Free URL Shortener Home">
+        <Link href="/" className="flex items-center gap-2" aria-label="ul0 - Free URL Shortener Home">
           <Image
             src="/ul0.png"
             alt="ul0 - Free URL Shortener Logo"
@@ -51,46 +55,83 @@ export function Header() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+        <nav className="hidden lg:flex items-center gap-1" aria-label="Main navigation">
           <Link
             href="/"
-            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             Shortener
           </Link>
           <Link
-            href="/qr"
-            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            href="/qr-code-generator"
+            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
-            QR Code
+            QR Generator
           </Link>
           <Link
-            href="/split"
-            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            href="/utm-builder"
+            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
-            Split
+            UTM Builder
           </Link>
-
+          <Link
+            href="/link-tracker"
+            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            Link Tracker
+          </Link>
+          <Link
+            href="/link-in-bio"
+            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            Link in Bio
+          </Link>
           <Link
             href="/pricing"
-            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+            className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             Pricing
           </Link>
 
           {/* More Tools Dropdown */}
           <DropdownMenu>
-            <DropdownMenuTrigger className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1">
-              Tools
+            <DropdownMenuTrigger className="rounded-md px-2.5 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1">
+              More Tools
               <ChevronDown className="h-4 w-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Developer Tools</DropdownMenuLabel>
-
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuLabel className="text-xs text-muted-foreground">Marketing & Growth</DropdownMenuLabel>
               <DropdownMenuItem asChild>
-                <Link href="/utm" className="flex items-center gap-2 cursor-pointer">
-                  <LinkIcon className="h-4 w-4" />
-                  UTM Builder
+                <Link href="/wifi-qr-code-generator" className="flex items-center gap-2 cursor-pointer">
+                  <QrCode className="h-4 w-4" />
+                  WiFi QR Generator
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/url-expander" className="flex items-center gap-2 cursor-pointer">
+                  <ShieldCheck className="h-4 w-4 text-emerald-500" />
+                  URL Expander & Safety
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/qr-code-for-business" className="flex items-center gap-2 cursor-pointer">
+                  <Sparkles className="h-4 w-4 text-amber-500" />
+                  QR for Business
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="text-xs text-muted-foreground">Productivity & Utilities</DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link href="/split" className="flex items-center gap-2 cursor-pointer">
+                  <Users className="h-4 w-4" />
+                  Split Expenses
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/pdf" className="flex items-center gap-2 cursor-pointer">
+                  <ScanLine className="h-4 w-4" />
+                  PDF Document Tools
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
@@ -99,8 +140,6 @@ export function Header() {
                   JSON Formatter
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Study & Desk Setup</DropdownMenuLabel>
               <DropdownMenuItem asChild>
                 <Link href="/clock" className="flex items-center gap-2 cursor-pointer">
                   <Clock className="h-4 w-4" />
@@ -108,47 +147,9 @@ export function Header() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/ambient" className="flex items-center gap-2 cursor-pointer">
-                  <Volume2 className="h-4 w-4" />
-                  Ambient Sounds
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/countdown" className="flex items-center gap-2 cursor-pointer">
-                  <Hourglass className="h-4 w-4" />
-                  Countdown Creator
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/quotes" className="flex items-center gap-2 cursor-pointer">
-                  <Quote className="h-4 w-4" />
-                  Motivational Quotes
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/worldclock" className="flex items-center gap-2 cursor-pointer">
-                  <Globe className="h-4 w-4" />
-                  World Clock
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
                 <Link href="/pomodoro" className="flex items-center gap-2 cursor-pointer">
                   <Timer className="h-4 w-4" />
                   Pomodoro Timer
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Other</DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link href="/buy" className="flex items-center gap-2 cursor-pointer">
-                  <ShoppingCart className="h-4 w-4" />
-                  Should I Buy This?
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/wifi" className="flex items-center gap-2 cursor-pointer">
-                  <QrCode className="h-4 w-4" />
-                  WiFi QR Generator
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -189,7 +190,7 @@ export function Header() {
         </nav>
 
         {/* Mobile Right: Auth + Hamburger */}
-        <div className="flex md:hidden items-center gap-2">
+        <div className="flex lg:hidden items-center gap-2">
           <Show when="signed-in">
             <UserButton
               afterSignOutUrl="/"
@@ -212,32 +213,33 @@ export function Header() {
 
       {/* Mobile menu panel */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-background px-4 py-4 space-y-1">
+        <div className="lg:hidden border-t border-border bg-background px-4 py-4 space-y-1 max-h-[85vh] overflow-y-auto">
           {[
-            { href: "/", label: "Shortener", icon: <Link2 className="h-4 w-4" /> },
-            { href: "/qr", label: "QR Code", icon: <QrCode className="h-4 w-4" /> },
+            { href: "/", label: "URL Shortener", icon: <Link2 className="h-4 w-4" /> },
+            { href: "/qr-code-generator", label: "QR Code Generator", icon: <QrCode className="h-4 w-4" /> },
+            { href: "/utm-builder", label: "UTM Campaign Builder", icon: <LinkIcon className="h-4 w-4" /> },
+            { href: "/link-tracker", label: "Link Tracker", icon: <BarChart3 className="h-4 w-4" /> },
+            { href: "/link-in-bio", label: "Link in Bio", icon: <Smartphone className="h-4 w-4" /> },
+            { href: "/url-expander", label: "URL Expander & Safety", icon: <ShieldCheck className="h-4 w-4 text-emerald-500" /> },
+            { href: "/wifi-qr-code-generator", label: "WiFi QR Generator", icon: <QrCode className="h-4 w-4" /> },
+            { href: "/pricing", label: "Pricing & Custom Domains", icon: <ShoppingCart className="h-4 w-4" /> },
             { href: "/split", label: "Split Expenses", icon: <Users className="h-4 w-4" /> },
-            { href: "/pricing", label: "Pricing", icon: <ShoppingCart className="h-4 w-4" /> },
-            { href: "/utm", label: "UTM Builder", icon: <LinkIcon className="h-4 w-4" /> },
+            { href: "/pdf", label: "PDF Scanner Tools", icon: <ScanLine className="h-4 w-4" /> },
             { href: "/json", label: "JSON Formatter", icon: <FileJson className="h-4 w-4" /> },
-            { href: "/clock", label: "Aesthetic Clock", icon: <Clock className="h-4 w-4" /> },
-            { href: "/pomodoro", label: "Pomodoro Timer", icon: <Timer className="h-4 w-4" /> },
-            { href: "/ambient", label: "Ambient Sounds", icon: <Volume2 className="h-4 w-4" /> },
-            { href: "/worldclock", label: "World Clock", icon: <Globe className="h-4 w-4" /> },
-            { href: "/wifi", label: "WiFi QR Generator", icon: <QrCode className="h-4 w-4" /> },
+            { href: "/blog", label: "Guides & Blog", icon: <Quote className="h-4 w-4" /> },
           ].map(({ href, label, icon }) => (
             <Link
               key={href}
               href={href}
               onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+              className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
             >
               {icon}
               {label}
             </Link>
           ))}
 
-          <div className="pt-2 border-t border-border">
+          <div className="pt-3 border-t border-border">
             <Show when="signed-out">
               <div className="flex gap-2">
                 <SignInButton mode="modal">
@@ -262,7 +264,7 @@ export function Header() {
               <Link
                 href="/dashboard"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
+                className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
               >
                 <LayoutDashboard className="h-4 w-4" />
                 Dashboard
