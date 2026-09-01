@@ -462,16 +462,31 @@ export default function HomePage() {
                 </a>
               </div>
               
-              <h1 className="mb-3 text-balance text-2xl font-bold tracking-tight text-foreground sm:mb-5 sm:text-4xl lg:text-5xl">
-                Free URL Shortener Online
+              <h1 className="mb-3 text-balance text-2xl font-bold tracking-tight text-foreground sm:mb-4 sm:text-4xl lg:text-5xl">
+                Free URL Shortener &amp; QR Code Generator
               </h1>
-              <p className="mb-2 text-pretty text-base text-muted-foreground sm:text-xl">
-                Shorten any link instantly. <strong>No signup required.</strong>
-              </p>
-              <p className="mb-5 text-pretty text-sm text-muted-foreground sm:mb-8 sm:text-base">
-                Create short URLs for free • Track clicks • Split expenses with UPI QR codes
+              <p className="mb-4 text-pretty text-base text-muted-foreground sm:text-xl max-w-2xl mx-auto">
+                Create short, shareable links with click tracking and QR codes — <strong>free, fast, and no signup required.</strong>
               </p>
 
+              {/* Trust signals row */}
+              <div className="mb-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs sm:text-sm text-muted-foreground">
+                <span className="flex items-center gap-1 text-foreground font-medium">
+                  <span className="text-emerald-500">✓</span> No signup required
+                </span>
+                <span className="flex items-center gap-1 text-foreground font-medium">
+                  <span className="text-emerald-500">✓</span> 100% Free
+                </span>
+                <span className="flex items-center gap-1 text-foreground font-medium">
+                  <span className="text-emerald-500">✓</span> Fast permanent redirects
+                </span>
+                <span className="flex items-center gap-1 text-foreground font-medium">
+                  <span className="text-emerald-500">✓</span> Security checked
+                </span>
+                <span className="flex items-center gap-1 text-foreground font-medium">
+                  <span className="text-emerald-500">✓</span> Mobile friendly
+                </span>
+              </div>
 
               <LinkShortenerForm />
 
