@@ -55,6 +55,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "wifi-qr-code-business-guide",
     "custom-domain-short-links-guide",
     "pomodoro-technique-productivity-guide",
+    "bitly-alternative-usa",
+    "affiliate-link-shortener-usa",
+    "best-free-url-shortener-canada",
+    "qr-code-generator-canada",
+    "url-kuerzen-kostenlos-deutschland",
+    "qr-code-erstellen-kostenlos-deutsch",
+    "best-free-url-shortener-uk",
+    "qr-code-generator-uk",
+    "best-free-url-shortener-australia",
+    "qr-code-generator-australia",
   ]
 
   // Informational / legal pages
