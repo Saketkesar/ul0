@@ -1,7 +1,7 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
 
-const POLAR_API_KEY = "polar_oat_eu4RpbXDy0vVLq8aJyne7Y4A1H422FgwsoBDK2p4zzD"
+const POLAR_API_KEY = process.env.POLAR_API_KEY || "polar_oat_ZtJ5XgdlNkLUswygtbj2EfzPdn1Gzs2w9L6tb1PNw3x"
 
 const PRICE_IDS: Record<string, string> = {
   pro_monthly: "faa20c9c-292c-4ea8-b894-02ed3f0174de",

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server"
 
-const POLAR_API_KEY = "polar_oat_eu4RpbXDy0vVLq8aJyne7Y4A1H422FgwsoBDK2p4zzD"
+const POLAR_API_KEY = process.env.POLAR_API_KEY || "polar_oat_ZtJ5XgdlNkLUswygtbj2EfzPdn1Gzs2w9L6tb1PNw3x"
 const DONATION_PRICE_ID = "a0889db8-0fdd-4b62-93c5-4409b1db97c0"
 
 export async function GET(req: Request) {
