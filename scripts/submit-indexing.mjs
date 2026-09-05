@@ -3,6 +3,7 @@
 
 const HOST = "ul0.site"
 const KEY = "1b98f244195a4bb896890d3bb639f7ee"
+const KEY_LOCATION = `https://${HOST}/${KEY}.txt`
 
 const BLOG_SLUGS = [
   "link-shortening-best-practices-2026",
@@ -55,13 +56,13 @@ const TOOL_PATHS = [
   "/terms",
   "/es",
   "/pt",
-  "/hi",
-  "/id",
-  "/vi",
-  "/th",
   "/de",
   "/fr",
   "/nl",
+  "/vi",
+  "/id",
+  "/th",
+  "/hi",
   "/ja",
   "/ko",
   "/ar",
@@ -74,44 +75,51 @@ const allUrls = [
 
 console.log(`[Indexing] Total URLs to submit: ${allUrls.length}`)
 
-async function submitUrl(url, endpointBase, retries = 3) {
-  const targetUrl = `${endpointBase}?url=${encodeURIComponent(url)}&key=${KEY}`
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    try {
-      const res = await fetch(targetUrl)
-      if (res.status === 200 || res.status === 202) {
-        return { ok: true, status: res.status }
-      }
-      if (res.status === 403 || res.status === 429) {
-        // Rate limit backoff
-        await new Promise((r) => setTimeout(r, 2000 * attempt))
-      }
-    } catch (err) {
-      await new Promise((r) => setTimeout(r, 1000 * attempt))
-    }
+async function submitBulk(endpoint) {
+  try {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+      },
+      body: JSON.stringify({
+        host: HOST,
+        key: KEY,
+        keyLocation: KEY_LOCATION,
+        urlList: allUrls,
+      }),
+    })
+
+    const text = await res.text()
+    console.log(`[IndexNow] ${endpoint} -> Status: ${res.status} (${res.statusText}) ${text ? text.slice(0, 100) : ""}`)
+    return res.status === 200 || res.status === 202
+  } catch (err) {
+    console.error(`[IndexNow Error] ${endpoint}:`, err.message)
+    return false
   }
-  return { ok: false }
+}
+
+async function pingSitemap(engineUrl) {
+  try {
+    const sitemapUrl = `https://${HOST}/sitemap.xml`
+    const target = `${engineUrl}${encodeURIComponent(sitemapUrl)}`
+    const res = await fetch(target)
+    console.log(`[Sitemap Ping] ${engineUrl} -> ${res.status}`)
+  } catch (err) {
+    console.error(`[Sitemap Ping Error] ${engineUrl}:`, err.message)
+  }
 }
 
 async function main() {
-  console.log("=== Submitting All Site URLs with Rate-Limit Backoff ===")
+  console.log("=== Submitting All Site URLs via IndexNow Bulk API ===")
+  await submitBulk("https://api.indexnow.org/indexnow")
+  await submitBulk("https://www.bing.com/indexnow")
 
-  let success = 0
+  console.log("\n=== Pinging Sitemaps to Search Engines ===")
+  await pingSitemap("https://www.google.com/ping?sitemap=")
+  await pingSitemap("https://www.bing.com/ping?sitemap=")
 
-  for (let i = 0; i < allUrls.length; i++) {
-    const url = allUrls[i]
-    const res = await submitUrl(url, "https://api.indexnow.org/indexnow")
-    if (res.ok) {
-      console.log(`  [OK ${res.status}] (${i + 1}/${allUrls.length}) ${url}`)
-      success++
-    } else {
-      console.warn(`  [WARN] Failed to submit (${i + 1}/${allUrls.length}) ${url}`)
-    }
-    // Respect rate limits with a 800ms gap
-    await new Promise((r) => setTimeout(r, 800))
-  }
-
-  console.log(`\n=== Finished: ${success}/${allUrls.length} URLs Accepted by Search Engines ===`)
+  console.log("\n[Done] All URLs processed.")
 }
 
 main()
