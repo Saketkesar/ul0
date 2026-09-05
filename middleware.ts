@@ -33,6 +33,21 @@ export default clerkMiddleware(async (auth, req) => {
   const hostname = req.headers.get("host") || ""
   const path = url.pathname
 
+  // 301 Redirect legacy/temporary routes to their canonical destinations
+  const LEGACY_REDIRECTS: Record<string, string> = {
+    "/free-url-shortener": "/",
+    "/qr-code-generator": "/qr",
+    "/utm-builder": "/utm",
+    "/wifi-qr-code-generator": "/wifi",
+    "/link-tracker": "/",
+    "/link-in-bio": "/",
+    "/url-expander": "/",
+    "/qr-code-for-business": "/qr",
+  }
+  if (LEGACY_REDIRECTS[path]) {
+    return NextResponse.redirect(new URL(LEGACY_REDIRECTS[path], req.url), 301)
+  }
+
   // Determine if it is a custom domain request (not local or main site)
   const isCustomDomain =
     hostname &&
