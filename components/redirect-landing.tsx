@@ -290,8 +290,17 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
             <span className="truncate">{longUrl}</span>
           </div>
 
-          {/* 4. Center Content Ad (468x60) */}
-          {!isBrandedDomain && <AdBanner slot={4} type="small" />}
+          {/* 4. Center Content Ads (2 Banners - Responsive) */}
+          {!isBrandedDomain && (
+            <div className="w-full flex flex-col items-center justify-center gap-3 my-2">
+              <div className="w-full overflow-hidden flex justify-center">
+                <AdBanner slot={4} type="small" />
+              </div>
+              <div className="w-full overflow-hidden flex justify-center">
+                <AdBanner slot={5} type="medium_skyscraper" />
+              </div>
+            </div>
+          )}
 
           {/* Disclaimer / Support Notice */}
           <div className="mt-2 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center text-xs max-w-md w-full space-y-1">
