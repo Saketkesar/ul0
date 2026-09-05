@@ -3,31 +3,18 @@
 import { useEffect, useRef } from "react"
 import { AlertTriangle, ArrowDown } from "lucide-react"
 
-const PRIMARY_KEY = "25084f2a22060ec74cff3a46dbf2fb73"
-const FALLBACK_KEY = "c675322a5f6d9f2ad9e187be52a5721e"
-
 export function LinkResultAd() {
-  const containerRef1 = useRef<HTMLDivElement>(null)
-  const containerRef2 = useRef<HTMLDivElement>(null)
+  const container300Ref = useRef<HTMLDivElement>(null)
+  const container468Ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    let timer1: ReturnType<typeof setTimeout>
-    let timer2: ReturnType<typeof setTimeout>
-
-    const injectBanner = (
-      container: HTMLDivElement | null,
-      slotId: string,
-      key = PRIMARY_KEY,
-      w = 160,
-      h = 300
-    ) => {
-      if (!container) return
-
-      container.innerHTML = ""
+    // 1. Inject 160x300 Skyscraper Ad (Key: 25084f2a22060ec74cff3a46dbf2fb73)
+    if (container300Ref.current) {
+      container300Ref.current.innerHTML = ""
 
       const wrapper = document.createElement("div")
-      wrapper.style.width = `${w}px`
-      wrapper.style.height = `${h}px`
+      wrapper.style.width = "160px"
+      wrapper.style.height = "300px"
       wrapper.style.margin = "0 auto"
       wrapper.style.overflow = "hidden"
       wrapper.style.display = "flex"
@@ -37,48 +24,64 @@ export function LinkResultAd() {
       const optsScript = document.createElement("script")
       optsScript.type = "text/javascript"
       optsScript.text = `
-        window.atOptions = {
-          'key' : '${key}',
+        atOptions = {
+          'key' : '25084f2a22060ec74cff3a46dbf2fb73',
           'format' : 'iframe',
-          'height' : ${h},
-          'width' : ${w},
+          'height' : 300,
+          'width' : 160,
           'params' : {}
         };
       `
 
       const invokeScript = document.createElement("script")
       invokeScript.type = "text/javascript"
-      invokeScript.src = `https://unsettledradiator.com/${key}/invoke.js?slot=${slotId}&t=${Date.now()}`
+      invokeScript.src = "https://unsettledradiator.com/25084f2a22060ec74cff3a46dbf2fb73/invoke.js"
       invokeScript.async = true
 
       wrapper.appendChild(optsScript)
       wrapper.appendChild(invokeScript)
-      container.appendChild(wrapper)
+      container300Ref.current.appendChild(wrapper)
     }
 
-    // 1. Inject first banner immediately
-    injectBanner(containerRef1.current, "slot1", PRIMARY_KEY)
+    // 2. Inject 468x60 Banner Ad (Key: 1ef074fb53b9c298ba4b329b92f27240)
+    if (container468Ref.current) {
+      container468Ref.current.innerHTML = ""
 
-    // 2. Inject second banner sequentially after 1.2s to prevent window.atOptions race condition
-    timer1 = setTimeout(() => {
-      injectBanner(containerRef2.current, "slot2", PRIMARY_KEY)
-    }, 1200)
+      const wrapper = document.createElement("div")
+      wrapper.style.width = "100%"
+      wrapper.style.maxWidth = "468px"
+      wrapper.style.height = "60px"
+      wrapper.style.margin = "0 auto"
+      wrapper.style.overflow = "hidden"
+      wrapper.style.display = "flex"
+      wrapper.style.justifyContent = "center"
+      wrapper.style.alignItems = "center"
 
-    // 3. Fallback verification: if after 3.8s container 2 has no iframe, load fallback placement
-    timer2 = setTimeout(() => {
-      if (containerRef2.current) {
-        const hasIframe = containerRef2.current.querySelector("iframe")
-        if (!hasIframe) {
-          injectBanner(containerRef2.current, "slot2_fb", FALLBACK_KEY, 160, 300)
-        }
-      }
-    }, 3800)
+      const optsScript = document.createElement("script")
+      optsScript.type = "text/javascript"
+      optsScript.text = `
+        atOptions = {
+          'key' : '1ef074fb53b9c298ba4b329b92f27240',
+          'format' : 'iframe',
+          'height' : 60,
+          'width' : 468,
+          'params' : {}
+        };
+      `
+
+      const invokeScript = document.createElement("script")
+      invokeScript.type = "text/javascript"
+      invokeScript.src = "https://unsettledradiator.com/1ef074fb53b9c298ba4b329b92f27240/invoke.js"
+      invokeScript.async = true
+
+      wrapper.appendChild(optsScript)
+      wrapper.appendChild(invokeScript)
+      container468Ref.current.appendChild(wrapper)
+    }
 
     return () => {
-      clearTimeout(timer1)
-      clearTimeout(timer2)
-      if (containerRef1.current) containerRef1.current.innerHTML = ""
-      if (containerRef2.current) containerRef2.current.innerHTML = ""
+      if (container300Ref.current) container300Ref.current.innerHTML = ""
+      if (container468Ref.current) container468Ref.current.innerHTML = ""
     }
   }, [])
 
@@ -119,14 +122,17 @@ export function LinkResultAd() {
         <ArrowDown className="h-4 w-4" />
       </div>
 
-      {/* 2 Responsive Ad Banners (160x300 each) */}
-      <div className="flex flex-wrap items-center justify-center gap-4 w-full">
+      {/* 2 Distinct Responsive Ad Units */}
+      <div className="flex flex-col items-center justify-center gap-3 w-full">
+        {/* Banner 1: 468x60 Horizontal Banner (Fully Responsive) */}
         <div
-          ref={containerRef1}
-          className="w-[160px] h-[300px] overflow-hidden rounded-xl bg-muted/10 flex items-center justify-center border border-border/60 shadow-inner shrink-0"
+          ref={container468Ref}
+          className="w-full max-w-[468px] h-[60px] overflow-hidden rounded-xl bg-muted/10 flex items-center justify-center border border-border/60 shadow-inner"
         />
+
+        {/* Banner 2: 160x300 Skyscraper Banner */}
         <div
-          ref={containerRef2}
+          ref={container300Ref}
           className="w-[160px] h-[300px] overflow-hidden rounded-xl bg-muted/10 flex items-center justify-center border border-border/60 shadow-inner shrink-0"
         />
       </div>
