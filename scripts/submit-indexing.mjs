@@ -27,15 +27,9 @@ const BLOG_SLUGS = [
 
 const TOOL_PATHS = [
   "",
-  "/free-url-shortener",
-  "/qr-code-generator",
-  "/utm-builder",
-  "/wifi-qr-code-generator",
-  "/security",
-  "/report-abuse",
+  "/qr",
   "/split",
   "/share",
-  "/qr",
   "/wifi",
   "/utm",
   "/json",

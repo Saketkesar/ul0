@@ -28,6 +28,46 @@ const nextConfig = {
         destination: '/blog',
         permanent: true,
       },
+      {
+        source: '/free-url-shortener',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/qr-code-generator',
+        destination: '/qr',
+        permanent: true,
+      },
+      {
+        source: '/utm-builder',
+        destination: '/utm',
+        permanent: true,
+      },
+      {
+        source: '/wifi-qr-code-generator',
+        destination: '/wifi',
+        permanent: true,
+      },
+      {
+        source: '/link-tracker',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/link-in-bio',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/url-expander',
+        destination: '/',
+        permanent: true,
+      },
+      {
+        source: '/qr-code-for-business',
+        destination: '/qr',
+        permanent: true,
+      },
     ]
   },
 }
