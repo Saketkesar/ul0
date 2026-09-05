@@ -9,6 +9,7 @@ import { Copy, Check, ExternalLink, Share2, Loader2, Leaf, Zap, Heart, QrCode } 
 import { isValidUrl } from "@/lib/utils/slug"
 import Link from "next/link"
 import { useAuth } from "@clerk/nextjs"
+import { LinkResultAd } from "@/components/link-result-ad"
 
 // Calculate carbon savings from short links
 // Average URL: ~75 characters, Short URL: ~20 characters
@@ -387,6 +388,9 @@ export function LinkShortenerForm() {
                 </Link>
               </div>
             </div>
+
+            {/* Sponsored Advertisement after link creation */}
+            <LinkResultAd />
 
             {/* Standalone Supporters Progress Widget with matching theme colors */}
             <div className="mt-4 rounded-2xl border border-emerald-500/20 bg-gradient-to-r from-emerald-500/8 via-emerald-500/5 to-transparent p-4 sm:p-5">

@@ -18,25 +18,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Core tool pages — highest value, crawled often
   const toolPages: { path: string; priority: number }[] = [
     { path: "", priority: 1.0 }, // homepage
-    { path: "/free-url-shortener", priority: 1.0 },
-    { path: "/qr-code-generator", priority: 0.98 },
-    { path: "/utm-builder", priority: 0.95 },
-    { path: "/wifi-qr-code-generator", priority: 0.9 },
-    { path: "/split", priority: 0.9 },
-    { path: "/share", priority: 0.85 },
-    { path: "/qr", priority: 0.9 },
-    { path: "/wifi", priority: 0.85 },
-    { path: "/utm", priority: 0.85 },
-    { path: "/json", priority: 0.85 },
-    { path: "/pdf", priority: 0.85 },
-    { path: "/pomodoro", priority: 0.8 },
-    { path: "/clock", priority: 0.8 },
-    { path: "/worldclock", priority: 0.8 },
-    { path: "/ambient", priority: 0.8 },
-    { path: "/countdown", priority: 0.8 },
-    { path: "/quotes", priority: 0.8 },
+    { path: "/split", priority: 0.95 },
+    { path: "/share", priority: 0.95 },
+    { path: "/qr", priority: 0.95 },
+    { path: "/wifi", priority: 0.9 },
+    { path: "/utm", priority: 0.9 },
+    { path: "/json", priority: 0.9 },
+    { path: "/pomodoro", priority: 0.9 },
+    { path: "/clock", priority: 0.85 },
+    { path: "/worldclock", priority: 0.85 },
+    { path: "/ambient", priority: 0.85 },
+    { path: "/countdown", priority: 0.85 },
+    { path: "/quotes", priority: 0.85 },
     { path: "/pricing", priority: 0.9 },
-    { path: "/docs", priority: 0.85 },
+    { path: "/docs", priority: 0.8 },
     { path: "/custom-domain-landing", priority: 0.85 },
   ]
 
@@ -62,16 +57,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "pomodoro-technique-productivity-guide",
   ]
 
-  // Informational / legal / trust pages
+  // Informational / legal pages
   const infoPages: { path: string; priority: number }[] = [
     { path: "/blog", priority: 0.85 },
-    { path: "/security", priority: 0.8 },
-    { path: "/report-abuse", priority: 0.75 },
     { path: "/faq", priority: 0.8 },
     { path: "/about", priority: 0.7 },
     { path: "/buy", priority: 0.6 },
-    { path: "/contact", priority: 0.7 },
-    { path: "/donate", priority: 0.7 },
+    { path: "/contact", priority: 0.6 },
+    { path: "/donate", priority: 0.8 },
     { path: "/supporters", priority: 0.7 },
     { path: "/refund", priority: 0.4 },
     { path: "/privacy", priority: 0.4 },
