@@ -19,8 +19,8 @@ const securityHeaders: Record<string, string> = {
   "X-XSS-Protection": "1; mode=block",
   // Control referrer information
   "Referrer-Policy": "strict-origin-when-cross-origin",
-  // Permissions policy - restrict sensitive features (camera allowed for document scanner)
-  "Permissions-Policy": "camera=(self), microphone=(), geolocation=(), interest-cohort=()",
+  // Permissions policy - allow camera for document scanner
+  "Permissions-Policy": "camera=*, microphone=(), geolocation=(), interest-cohort=()",
 }
 
 export default clerkMiddleware(async (auth, req) => {
