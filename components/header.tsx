@@ -99,6 +99,12 @@ export function Header() {
                   JSON Formatter
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/pdf" className="flex items-center gap-2 cursor-pointer">
+                  <ScanLine className="h-4 w-4" />
+                  PDF Tools
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuLabel className="text-xs text-muted-foreground">Study & Desk Setup</DropdownMenuLabel>
               <DropdownMenuItem asChild>
@@ -220,6 +226,7 @@ export function Header() {
             { href: "/pricing", label: "Pricing", icon: <ShoppingCart className="h-4 w-4" /> },
             { href: "/utm", label: "UTM Builder", icon: <LinkIcon className="h-4 w-4" /> },
             { href: "/json", label: "JSON Formatter", icon: <FileJson className="h-4 w-4" /> },
+            { href: "/pdf", label: "PDF Tools", icon: <ScanLine className="h-4 w-4" /> },
             { href: "/clock", label: "Aesthetic Clock", icon: <Clock className="h-4 w-4" /> },
             { href: "/pomodoro", label: "Pomodoro Timer", icon: <Timer className="h-4 w-4" /> },
             { href: "/ambient", label: "Ambient Sounds", icon: <Volume2 className="h-4 w-4" /> },

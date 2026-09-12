@@ -21,6 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/split", priority: 0.95 },
     { path: "/share", priority: 0.95 },
     { path: "/qr", priority: 0.95 },
+    { path: "/pdf", priority: 0.95 },
     { path: "/wifi", priority: 0.9 },
     { path: "/utm", priority: 0.9 },
     { path: "/json", priority: 0.9 },
@@ -35,50 +36,51 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/custom-domain-landing", priority: 0.85 },
   ]
 
-  // Blog posts (All 18 published articles)
-  const blogPosts = [
-    "link-shortening-best-practices-2026",
-    "qr-code-generator-security-guide",
-    "custom-domain-dns-cname-setup-guide",
-    "free-link-management-for-companies",
-    "cheapest-custom-domain-link-shortener",
-    "best-url-shorteners-2026",
-    "bitly-alternative-free",
-    "tinyurl-alternative",
-    "free-url-shortener-no-signup",
-    "how-to-shorten-url-free",
-    "qr-code-marketing-guide",
-    "split-expenses-friends-app",
-    "short-links-instagram-bio",
-    "url-shortener-seo-impact",
-    "how-to-track-link-clicks-free",
-    "wifi-qr-code-business-guide",
-    "custom-domain-short-links-guide",
-    "pomodoro-technique-productivity-guide",
-    "bitly-alternative-usa",
-    "affiliate-link-shortener-usa",
-    "best-free-url-shortener-canada",
-    "qr-code-generator-canada",
-    "url-kuerzen-kostenlos-deutschland",
-    "qr-code-erstellen-kostenlos-deutsch",
-    "best-free-url-shortener-uk",
-    "qr-code-generator-uk",
-    "best-free-url-shortener-australia",
-    "qr-code-generator-australia",
+  // Blog posts with actual publish dates (prevents Google thinking content changes daily)
+  const blogPosts: { slug: string; published: string }[] = [
+    { slug: "link-shortening-best-practices-2026", published: "2026-07-15" },
+    { slug: "qr-code-generator-security-guide", published: "2026-07-15" },
+    { slug: "custom-domain-dns-cname-setup-guide", published: "2026-08-10" },
+    { slug: "free-link-management-for-companies", published: "2026-07-20" },
+    { slug: "cheapest-custom-domain-link-shortener", published: "2026-07-20" },
+    { slug: "best-url-shorteners-2026", published: "2026-07-20" },
+    { slug: "bitly-alternative-free", published: "2026-07-20" },
+    { slug: "tinyurl-alternative", published: "2026-07-20" },
+    { slug: "free-url-shortener-no-signup", published: "2026-07-20" },
+    { slug: "how-to-shorten-url-free", published: "2026-07-20" },
+    { slug: "qr-code-marketing-guide", published: "2026-07-20" },
+    { slug: "split-expenses-friends-app", published: "2026-07-20" },
+    { slug: "short-links-instagram-bio", published: "2026-07-20" },
+    { slug: "url-shortener-seo-impact", published: "2026-07-20" },
+    { slug: "how-to-track-link-clicks-free", published: "2026-07-20" },
+    { slug: "wifi-qr-code-business-guide", published: "2026-07-20" },
+    { slug: "custom-domain-short-links-guide", published: "2026-07-20" },
+    { slug: "pomodoro-technique-productivity-guide", published: "2026-07-20" },
+    { slug: "bitly-alternative-usa", published: "2026-08-25" },
+    { slug: "affiliate-link-shortener-usa", published: "2026-08-25" },
+    { slug: "best-free-url-shortener-canada", published: "2026-08-25" },
+    { slug: "qr-code-generator-canada", published: "2026-08-25" },
+    { slug: "url-kuerzen-kostenlos-deutschland", published: "2026-08-25" },
+    { slug: "qr-code-erstellen-kostenlos-deutsch", published: "2026-08-25" },
+    { slug: "best-free-url-shortener-uk", published: "2026-08-25" },
+    { slug: "qr-code-generator-uk", published: "2026-08-25" },
+    { slug: "best-free-url-shortener-australia", published: "2026-08-25" },
+    { slug: "qr-code-generator-australia", published: "2026-08-25" },
+    { slug: "pdf-tools-free-online", published: "2026-09-12" },
   ]
 
   // Informational / legal pages
-  const infoPages: { path: string; priority: number }[] = [
-    { path: "/blog", priority: 0.85 },
-    { path: "/faq", priority: 0.8 },
-    { path: "/about", priority: 0.7 },
-    { path: "/buy", priority: 0.6 },
-    { path: "/contact", priority: 0.6 },
-    { path: "/donate", priority: 0.8 },
-    { path: "/supporters", priority: 0.7 },
-    { path: "/refund", priority: 0.4 },
-    { path: "/privacy", priority: 0.4 },
-    { path: "/terms", priority: 0.4 },
+  const infoPages: { path: string; priority: number; freq: "weekly" | "monthly" | "yearly" }[] = [
+    { path: "/blog", priority: 0.85, freq: "weekly" },
+    { path: "/faq", priority: 0.8, freq: "weekly" },
+    { path: "/about", priority: 0.7, freq: "monthly" },
+    { path: "/buy", priority: 0.6, freq: "monthly" },
+    { path: "/contact", priority: 0.6, freq: "monthly" },
+    { path: "/donate", priority: 0.8, freq: "monthly" },
+    { path: "/supporters", priority: 0.7, freq: "monthly" },
+    { path: "/refund", priority: 0.4, freq: "yearly" },
+    { path: "/privacy", priority: 0.4, freq: "yearly" },
+    { path: "/terms", priority: 0.4, freq: "yearly" },
   ]
 
   const entries: MetadataRoute.Sitemap = []
@@ -114,22 +116,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })
   }
 
-  // Blog posts
-  for (const slug of blogPosts) {
+  // Blog posts — use actual publish dates
+  for (const { slug, published } of blogPosts) {
     entries.push({
       url: `${BASE_URL}/blog/${slug}`,
-      lastModified: now,
+      lastModified: new Date(published),
       changeFrequency: "monthly",
       priority: 0.8,
     })
   }
 
   // Info / legal pages
-  for (const { path, priority } of infoPages) {
+  for (const { path, priority, freq } of infoPages) {
     entries.push({
       url: `${BASE_URL}${path}`,
       lastModified: now,
-      changeFrequency: path === "/blog" || path === "/faq" ? "weekly" : "monthly",
+      changeFrequency: freq,
       priority,
     })
   }
