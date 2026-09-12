@@ -11,159 +11,31 @@ export const metadata: Metadata = {
   title: "Free URL Shortener 2026 - Shorten Links Instantly | ul0",
   description: "ul0 is the best free URL shortener of 2026. Shorten links instantly — no signup required. Includes free QR codes, branded custom domain short links, click analytics, UTM campaign tools, and expense splitting.",
   keywords: [
-    // Branded & Custom Domain transactional keywords
-    "custom domain short link free",
-    "free custom domain link shortener",
-    "cheapest custom domain link shortener",
-    "branded url shortener free",
-    "short link with custom domain free",
-    "own domain link shortener cheapest",
-    "personal domain url shortener free",
-    "connect domain link shortener free",
-    "custom domain redirect free",
-    "cheap branded short links",
-    "dub co cheap alternative",
-    "bitly alternative custom domain",
-    
-    // Primary Keywords
     "url shortener",
     "free url shortener",
     "link shortener",
     "shorten url",
     "short link",
-    "short url",
-    "url shortener free",
-    "link shortener free",
-    "shorten link",
-    "shorten url free",
-    
-    // Brand/Competitor Alternatives
-    "bitly alternative",
+    "free url shortener 2026",
+    "best url shortener 2026",
     "bitly alternative free",
     "tinyurl alternative",
-    "tiny url alternative",
-    "bit.ly alternative",
-    "rebrandly alternative",
-    "ow.ly alternative",
-    "short.io alternative",
-    "t.co alternative",
-    "goo.gl alternative",
-    "is.gd alternative",
-    "cutt.ly alternative",
-    
-    // No Signup Keywords
+    "custom domain short link free",
+    "branded url shortener free",
     "url shortener no signup",
-    "link shortener no signup",
-    "shorten url without signup",
-    "url shortener without registration",
-    "link shortener without login",
-    "free url shortener no account",
-    "anonymous url shortener",
-    "url shortener no login",
-    
-    // Year-based Keywords
-    "best url shortener 2026",
-    "free url shortener 2026",
-    "top link shortener 2026",
-    "url shortener 2026",
-    
-    // Feature Keywords
-    "custom short url",
-    "custom url shortener",
-    "branded link shortener",
     "qr code url shortener",
-    "url shortener with qr code",
     "link shortener with analytics",
     "url shortener with tracking",
-    "click tracking url shortener",
-    "url redirect service",
-    "permanent short url",
+    "free custom domain link shortener",
     "short url generator",
-    "link generator",
-    
-    // Use Case Keywords
     "shorten youtube link",
-    "shorten youtube url",
-    "shorten amazon link",
-    "shorten affiliate link",
-    "shorten instagram link",
-    "shorten facebook link",
-    "shorten twitter link",
-    "shorten tiktok link",
-    "shorten spotify link",
     "social media link shortener",
-    
-    // Question Keywords
-    "how to shorten a url",
-    "how to shorten a link",
-    "how to create short url",
-    "how to make url shorter",
-    "how to shorten long url",
-    "where to shorten url",
-    "best way to shorten url",
-    
-    // Long-tail Keywords
     "free online url shortener",
-    "online link shortener free",
-    "instant url shortener",
-    "fast url shortener",
-    "reliable url shortener",
-    "simple url shortener",
-    "easy url shortener",
-    "quick link shortener",
-    "best free link shortener",
-    "top free url shortener",
-    "unlimited url shortener",
-    "url shortener unlimited",
-    
-    // International Keywords - Spanish
-    "acortador de url",
-    "acortador de enlaces",
-    "acortar url gratis",
-    "acortador de links",
-    
-    // International Keywords - Portuguese
-    "encurtador de url",
-    "encurtador de link",
-    "encurtar url gratis",
-    "encurtador de links gratis",
-    
-    // International Keywords - French
-    "raccourcir url",
-    "raccourcisseur de lien",
-    "raccourcisseur url gratuit",
-    
-    // International Keywords - German
-    "url kürzen",
-    "link kürzer",
-    "url verkürzen kostenlos",
-
-    // Country targeting
-    "url shortener canada",
-    "free url shortener canada",
-    "best url shortener canada",
-    "url shortener new zealand",
-    "free url shortener new zealand",
-    "url shortener germany",
-    "free url shortener germany",
-    "best url shortener germany",
-    "url shortener latvia",
-    "free url shortener latvia",
-    
-    // International Keywords - Hindi
-    "url shortener hindi",
-    "free url shortener india",
-    "link shortener india",
-    
-    // Additional Keywords
-    "compress url",
-    "url compressor",
-    "make link shorter",
-    "shrink url",
-    "url shortening service",
+    "image to pdf converter free",
+    "pdf tools online free",
+    "document scanner online",
+    "how to shorten a url",
     "link management",
-    "bulk url shortener",
-    "api url shortener",
   ],
   alternates: {
     canonical: "https://ul0.site",
