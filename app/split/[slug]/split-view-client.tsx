@@ -105,11 +105,12 @@ interface Settlement {
 }
 
 interface SplitSession {
-  id: string
+  id?: string
+  $id?: string
   slug: string
   title: string
-  created_at: string
-  expires_at: string
+  created_at: string | null
+  expires_at: string | null
   members: Member[]
   expenses: Expense[]
   settlements: Settlement[]
@@ -133,7 +134,7 @@ export function SplitViewClient({ session, slug }: Props) {
   const getPaymentId = (member: Member) => member.paymentId || member.upiId || ""
   const getPaymentMethod = (member: Member): PaymentMethod => member.paymentMethod || "upi"
 
-  const expiresAt = new Date(session.expires_at)
+  const expiresAt = session.expires_at ? new Date(session.expires_at) : new Date(Date.now() + 86400000)
   const hoursLeft = Math.max(0, Math.floor((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60)))
   const minutesLeft = Math.max(0, Math.floor(((expiresAt.getTime() - Date.now()) % (1000 * 60 * 60)) / (1000 * 60)))
 

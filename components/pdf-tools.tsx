@@ -379,7 +379,7 @@ function MergePdfs() {
         pages.forEach((page) => merged.addPage(page))
       }
       const pdfBytes = await merged.save()
-      const blob = new Blob([pdfBytes], { type: "application/pdf" })
+      const blob = new Blob([pdfBytes as unknown as BlobPart], { type: "application/pdf" })
       const url = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = url
@@ -502,40 +502,108 @@ function MergePdfs() {
 /* ================================================================== */
 /*  TAB 3: Document Scanner                                            */
 /* ================================================================== */
+type DocRatio = "a4" | "letter" | "id" | "full"
+type DocFilter = "enhanced" | "bw" | "original"
+
+const RATIO_CONFIGS: Record<DocRatio, { label: string; ratio: number; desc: string; widthMm: number; heightMm: number }> = {
+  a4: { label: "A4 Document", ratio: 210 / 297, desc: "1 : 1.41", widthMm: 210, heightMm: 297 },
+  letter: { label: "US Letter", ratio: 8.5 / 11, desc: "1 : 1.29", widthMm: 215.9, heightMm: 279.4 },
+  id: { label: "ID Card / Badge", ratio: 85.6 / 53.98, desc: "1.58 : 1", widthMm: 85.6, heightMm: 53.98 },
+  full: { label: "Full Camera Frame", ratio: 0, desc: "Auto", widthMm: 210, heightMm: 297 },
+}
+
 function DocScanner() {
   const [pages, setPages] = useState<ScannedPage[]>([])
   const [cameraActive, setCameraActive] = useState(false)
-  const [filename, setFilename] = useState("scanned")
+  const [filename, setFilename] = useState("scanned-document")
   const [generating, setGenerating] = useState(false)
   const [cameraError, setCameraError] = useState<string | null>(null)
+  const [docRatio, setDocRatio] = useState<DocRatio>("a4")
+  const [filter, setFilter] = useState<DocFilter>("enhanced")
+  const [autoCrop, setAutoCrop] = useState(true)
+  const [autoCapture, setAutoCapture] = useState(false)
+  const [countdown, setCountdown] = useState<number | null>(null)
+  const [facingMode, setFacingMode] = useState<"environment" | "user">("environment")
+  const [shutterFlash, setShutterFlash] = useState(false)
+
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const autoCaptureTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-  const startCamera = async () => {
+  // Attach stream to video whenever video element or cameraActive changes
+  const attachStream = useCallback((stream: MediaStream) => {
+    if (videoRef.current) {
+      videoRef.current.srcObject = stream
+      videoRef.current.play().catch((e) => console.warn("Video play error:", e))
+    }
+  }, [])
+
+  const startCamera = async (targetFacing: "environment" | "user" = facingMode) => {
     setCameraError(null)
+
+    // Stop existing stream if any
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop())
+      streamRef.current = null
+    }
+
+    if (typeof navigator === "undefined" || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setCameraError("Camera is not supported on this browser or connection. Make sure you are using HTTPS, or upload photos below.")
+      return
+    }
+
+    let stream: MediaStream | null = null
+
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      // 1. Try with ideal constraints
+      stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: "environment",
+          facingMode: { ideal: targetFacing },
           width: { ideal: 1920 },
           height: { ideal: 1080 },
         },
+        audio: false,
       })
-      streamRef.current = stream
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream
-        videoRef.current.play()
+    } catch (err1) {
+      console.warn("First camera constraint failed, falling back to basic camera:", err1)
+      try {
+        // 2. Fallback to basic video: true (works on laptops/macbooks/webcams)
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false,
+        })
+      } catch (err2: any) {
+        console.error("Camera access failed completely:", err2)
+        if (err2.name === "NotAllowedError" || err2.name === "PermissionDeniedError") {
+          setCameraError("Camera permission was blocked. Please tap the camera/lock icon in your browser URL bar to allow camera access, then try again.")
+        } else if (err2.name === "NotFoundError" || err2.name === "DevicesNotFoundError") {
+          setCameraError("No camera found on this device. You can upload photos directly below.")
+        } else {
+          setCameraError(err2.message || "Failed to access camera. Please allow permissions or upload photos.")
+        }
+        return
       }
+    }
+
+    if (stream) {
+      streamRef.current = stream
       setCameraActive(true)
-    } catch (err) {
-      console.error("Camera access denied:", err)
-      setCameraError("Camera access denied. Please allow camera permissions or upload images instead.")
+      // Slight delay to ensure video element is rendered
+      setTimeout(() => {
+        attachStream(stream!)
+      }, 50)
     }
   }
 
   const stopCamera = () => {
+    if (autoCaptureTimerRef.current) {
+      clearInterval(autoCaptureTimerRef.current)
+      autoCaptureTimerRef.current = null
+    }
+    setCountdown(null)
+    setAutoCapture(false)
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop())
       streamRef.current = null
@@ -543,44 +611,131 @@ function DocScanner() {
     setCameraActive(false)
   }
 
+  const toggleCamera = async () => {
+    const nextFacing = facingMode === "environment" ? "user" : "environment"
+    setFacingMode(nextFacing)
+    await startCamera(nextFacing)
+  }
+
   useEffect(() => {
     return () => {
-      // cleanup on unmount
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((t) => t.stop())
+      }
+      if (autoCaptureTimerRef.current) {
+        clearInterval(autoCaptureTimerRef.current)
       }
     }
   }, [])
 
-  const capturePhoto = () => {
+  const capturePhoto = useCallback(() => {
     if (!videoRef.current || !canvasRef.current) return
     const video = videoRef.current
     const canvas = canvasRef.current
-    canvas.width = video.videoWidth
-    canvas.height = video.videoHeight
+
+    const vw = video.videoWidth
+    const vh = video.videoHeight
+    if (!vw || !vh) return
+
+    // Trigger visual shutter flash
+    setShutterFlash(true)
+    setTimeout(() => setShutterFlash(false), 200)
+
+    const cfg = RATIO_CONFIGS[docRatio]
+    let cropX = 0
+    let cropY = 0
+    let cropW = vw
+    let cropH = vh
+
+    // Auto-crop to document guide box if enabled and ratio specified
+    if (autoCrop && cfg.ratio > 0) {
+      const targetRatio = cfg.ratio // width / height
+      // Match document guide box proportion (75% width or 85% height)
+      if (vw / vh > targetRatio) {
+        // Video is wider than target doc
+        cropH = vh * 0.85
+        cropW = cropH * targetRatio
+      } else {
+        // Video is taller than target doc
+        cropW = vw * 0.85
+        cropH = cropW / targetRatio
+      }
+      cropX = Math.max(0, (vw - cropW) / 2)
+      cropY = Math.max(0, (vh - cropH) / 2)
+    }
+
+    canvas.width = Math.round(cropW)
+    canvas.height = Math.round(cropH)
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    ctx.drawImage(video, 0, 0)
+    ctx.drawImage(video, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height)
 
-    // Apply basic document enhancement: increase contrast
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
-    const data = imageData.data
-    const contrast = 1.3
-    const intercept = 128 * (1 - contrast)
-    for (let i = 0; i < data.length; i += 4) {
-      data[i] = Math.min(255, Math.max(0, data[i] * contrast + intercept))
-      data[i + 1] = Math.min(255, Math.max(0, data[i + 1] * contrast + intercept))
-      data[i + 2] = Math.min(255, Math.max(0, data[i + 2] * contrast + intercept))
+    // Apply selected filter
+    if (filter !== "original") {
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      const data = imageData.data
+
+      if (filter === "bw") {
+        // High-contrast clean Black & White text document filter
+        for (let i = 0; i < data.length; i += 4) {
+          const gray = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114
+          // Crisp document thresholding
+          const bw = gray > 135 ? 255 : Math.max(0, gray * 0.4)
+          data[i] = bw
+          data[i + 1] = bw
+          data[i + 2] = bw
+        }
+      } else if (filter === "enhanced") {
+        // Document enhancement: boost contrast & whites
+        const contrast = 1.35
+        const intercept = 128 * (1 - contrast)
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = Math.min(255, Math.max(0, data[i] * contrast + intercept))
+          data[i + 1] = Math.min(255, Math.max(0, data[i + 1] * contrast + intercept))
+          data[i + 2] = Math.min(255, Math.max(0, data[i + 2] * contrast + intercept))
+        }
+      }
+      ctx.putImageData(imageData, 0, 0)
     }
-    ctx.putImageData(imageData, 0, 0)
 
     const dataUrl = canvas.toDataURL("image/jpeg", 0.92)
     setPages((prev) => [
       ...prev,
       { id: uid(), dataUrl, name: `Page ${prev.length + 1}` },
     ])
-  }
+  }, [docRatio, autoCrop, filter])
+
+  // Auto-capture timer
+  useEffect(() => {
+    if (!autoCapture || !cameraActive) {
+      if (autoCaptureTimerRef.current) {
+        clearInterval(autoCaptureTimerRef.current)
+        autoCaptureTimerRef.current = null
+      }
+      setCountdown(null)
+      return
+    }
+
+    let count = 3
+    setCountdown(count)
+
+    autoCaptureTimerRef.current = setInterval(() => {
+      count -= 1
+      if (count <= 0) {
+        capturePhoto()
+        count = 3
+      }
+      setCountdown(count)
+    }, 1000)
+
+    return () => {
+      if (autoCaptureTimerRef.current) {
+        clearInterval(autoCaptureTimerRef.current)
+        autoCaptureTimerRef.current = null
+      }
+    }
+  }, [autoCapture, cameraActive, capturePhoto])
 
   const addFromFiles = (files: FileList | null) => {
     if (!files) return
@@ -609,13 +764,19 @@ function DocScanner() {
     if (pages.length === 0) return
     setGenerating(true)
     try {
-      const pdf = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" })
-      const pageW = 210
-      const pageH = 297
+      const cfg = RATIO_CONFIGS[docRatio]
+      const isLandscape = cfg.ratio > 1
+      const pdf = new jsPDF({
+        orientation: isLandscape ? "landscape" : "portrait",
+        unit: "mm",
+        format: [cfg.widthMm, cfg.heightMm],
+      })
+      const pageW = isLandscape ? cfg.heightMm : cfg.widthMm
+      const pageH = isLandscape ? cfg.widthMm : cfg.heightMm
       const margin = 5
 
       for (let i = 0; i < pages.length; i++) {
-        if (i > 0) pdf.addPage()
+        if (i > 0) pdf.addPage([cfg.widthMm, cfg.heightMm], isLandscape ? "landscape" : "portrait")
         const imgEl = await loadImage(pages[i].dataUrl)
         const maxW = pageW - margin * 2
         const maxH = pageH - margin * 2
@@ -627,7 +788,7 @@ function DocScanner() {
         pdf.addImage(pages[i].dataUrl, "JPEG", x, y, imgW, imgH)
       }
 
-      pdf.save(`${filename || "scanned"}.pdf`)
+      pdf.save(`${(filename || "scanned-document").trim()}.pdf`)
     } catch (err) {
       console.error("Scan PDF generation failed:", err)
     } finally {
@@ -639,26 +800,30 @@ function DocScanner() {
     <div className="space-y-5">
       {/* Camera view or start button */}
       {!cameraActive ? (
-        <div className="space-y-3">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
-              onClick={startCamera}
-              className="flex flex-col items-center gap-3 p-8 border-2 border-dashed border-border/80 rounded-2xl hover:border-primary/60 hover:bg-primary/5 transition-all group"
+              onClick={() => startCamera()}
+              className="flex flex-col items-center gap-3 p-8 border-2 border-dashed border-primary/40 bg-primary/5 rounded-2xl hover:border-primary hover:bg-primary/10 transition-all group"
             >
-              <Camera className="h-10 w-10 text-muted-foreground group-hover:text-primary transition-colors" />
+              <div className="h-14 w-14 rounded-full bg-primary/10 group-hover:bg-primary/20 flex items-center justify-center transition-colors">
+                <Camera className="h-7 w-7 text-primary" />
+              </div>
               <div className="text-center">
-                <p className="text-sm font-medium">Open Camera</p>
-                <p className="text-xs text-muted-foreground">Scan documents with your camera</p>
+                <p className="text-base font-semibold text-foreground">Open Document Scanner</p>
+                <p className="text-xs text-muted-foreground mt-1">Real-time auto-crop, A4 ratio & camera capture</p>
               </div>
             </button>
             <button
               onClick={() => fileInputRef.current?.click()}
-              className="flex flex-col items-center gap-3 p-8 border-2 border-dashed border-border/80 rounded-2xl hover:border-primary/60 hover:bg-primary/5 transition-all group"
+              className="flex flex-col items-center gap-3 p-8 border-2 border-dashed border-border/80 rounded-2xl hover:border-primary/60 hover:bg-muted/30 transition-all group"
             >
-              <Upload className="h-10 w-10 text-muted-foreground group-hover:text-primary transition-colors" />
+              <div className="h-14 w-14 rounded-full bg-muted flex items-center justify-center transition-colors">
+                <Upload className="h-7 w-7 text-muted-foreground group-hover:text-primary" />
+              </div>
               <div className="text-center">
-                <p className="text-sm font-medium">Upload Images</p>
-                <p className="text-xs text-muted-foreground">Select photos of documents</p>
+                <p className="text-base font-semibold text-foreground">Upload Document Photos</p>
+                <p className="text-xs text-muted-foreground mt-1">Select photos from camera roll or files</p>
               </div>
             </button>
           </div>
@@ -670,72 +835,202 @@ function DocScanner() {
             className="hidden"
             onChange={(e) => addFromFiles(e.target.files)}
           />
+
           {cameraError && (
-            <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/30 rounded-xl text-sm text-destructive">
-              <AlertTriangle className="h-4 w-4 shrink-0" />
-              {cameraError}
+            <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-2xl text-sm text-destructive flex flex-col gap-2">
+              <div className="flex items-start gap-2">
+                <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <p className="font-semibold">Camera Access Notice</p>
+                  <p className="text-xs opacity-90 leading-relaxed">{cameraError}</p>
+                </div>
+              </div>
+              <div className="flex gap-2 mt-2 pt-2 border-t border-destructive/20">
+                <button
+                  onClick={() => startCamera()}
+                  className="px-3 py-1.5 bg-destructive text-destructive-foreground rounded-lg text-xs font-semibold hover:opacity-90 transition-opacity"
+                >
+                  Retry Camera
+                </button>
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="px-3 py-1.5 bg-background/80 text-foreground border border-border rounded-lg text-xs font-semibold hover:bg-background transition-colors"
+                >
+                  Upload Photos Instead
+                </button>
+              </div>
             </div>
           )}
         </div>
       ) : (
-        <div className="space-y-3">
-          {/* Camera feed */}
-          <div className="relative rounded-2xl overflow-hidden bg-black border border-border/60">
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-full max-h-[60vh] object-contain"
-            />
-            {/* A4 ratio overlay guide */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div
-                className="border-2 border-primary/50 rounded-lg"
-                style={{
-                  width: "70%",
-                  aspectRatio: "210 / 297",
-                  maxHeight: "85%",
-                }}
-              />
+        <div className="space-y-4">
+          {/* Top Controls: Ratio selection & Auto-Crop */}
+          <div className="flex flex-wrap items-center justify-between gap-2 p-3 bg-muted/30 border border-border/60 rounded-xl text-xs">
+            <div className="flex items-center gap-1.5 overflow-x-auto py-1">
+              <span className="text-muted-foreground font-medium shrink-0 mr-1">Ratio:</span>
+              {(Object.keys(RATIO_CONFIGS) as DocRatio[]).map((r) => {
+                const isSel = docRatio === r
+                return (
+                  <button
+                    key={r}
+                    onClick={() => setDocRatio(r)}
+                    className={`px-2.5 py-1 rounded-md font-medium transition-colors shrink-0 ${
+                      isSel
+                        ? "bg-primary text-primary-foreground shadow-sm"
+                        : "bg-background/80 hover:bg-background text-foreground border border-border/60"
+                    }`}
+                  >
+                    {RATIO_CONFIGS[r].label} <span className="opacity-75 text-[10px]">({RATIO_CONFIGS[r].desc})</span>
+                  </button>
+                )
+              })}
             </div>
-            {/* Quick capture info */}
-            <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-sm px-3 py-1.5 rounded-lg">
-              <p className="text-xs text-white/80 flex items-center gap-1.5">
-                <ZapIcon className="h-3 w-3 text-primary" />
-                Align document within the guide
-              </p>
+
+            <div className="flex items-center gap-3">
+              <label className="flex items-center gap-1.5 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={autoCrop}
+                  onChange={(e) => setAutoCrop(e.target.checked)}
+                  className="rounded border-border text-primary focus:ring-primary h-3.5 w-3.5"
+                />
+                <span className="font-medium text-foreground">Auto-Crop to Guide</span>
+              </label>
+
+              <button
+                onClick={() => setAutoCapture((prev) => !prev)}
+                className={`px-2.5 py-1 rounded-md font-semibold text-xs transition-all flex items-center gap-1 ${
+                  autoCapture
+                    ? "bg-emerald-500 text-white shadow-sm animate-pulse"
+                    : "bg-background border border-border/60 text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <ZapIcon className="h-3 w-3" />
+                {autoCapture ? `Auto-Snap (${countdown ?? 3}s)` : "Auto-Capture"}
+              </button>
             </div>
           </div>
 
-          {/* Camera controls */}
-          <div className="flex items-center justify-center gap-4">
-            <button
-              onClick={stopCamera}
-              className="p-3 rounded-full bg-muted hover:bg-muted/80 transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
-            <button
-              onClick={capturePhoto}
-              className="p-5 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-lg shadow-primary/30 active:scale-95"
-            >
-              <Camera className="h-6 w-6" />
-            </button>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              className="p-3 rounded-full bg-muted hover:bg-muted/80 transition-colors"
-            >
-              <Plus className="h-5 w-5" />
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              multiple
-              className="hidden"
-              onChange={(e) => addFromFiles(e.target.files)}
+          {/* Camera feed viewport */}
+          <div className="relative rounded-2xl overflow-hidden bg-black border border-border/80 shadow-2xl flex items-center justify-center min-h-[360px] max-h-[65vh]">
+            <video
+              ref={(el) => {
+                videoRef.current = el
+                if (el && streamRef.current && !el.srcObject) {
+                  attachStream(streamRef.current)
+                }
+              }}
+              autoPlay
+              playsInline
+              muted
+              className="w-full h-full max-h-[65vh] object-contain"
             />
+
+            {/* Shutter flash animation overlay */}
+            {shutterFlash && (
+              <div className="absolute inset-0 bg-white pointer-events-none transition-opacity duration-200 z-30" />
+            )}
+
+            {/* Document Bounding Box Overlay Guide */}
+            {docRatio !== "full" && (
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none p-4 z-10">
+                <div
+                  className="relative border-2 border-primary/80 rounded-xl shadow-[0_0_0_9999px_rgba(0,0,0,0.45)] transition-all duration-300 flex flex-col justify-between p-2"
+                  style={{
+                    width: docRatio === "id" ? "85%" : "72%",
+                    aspectRatio: `${RATIO_CONFIGS[docRatio].ratio}`,
+                    maxHeight: "85%",
+                  }}
+                >
+                  {/* Corner brackets */}
+                  <div className="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-primary" />
+                  <div className="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-primary" />
+                  <div className="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-primary" />
+                  <div className="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-primary" />
+
+                  {/* Realtime Size Badge */}
+                  <div className="self-center bg-black/70 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-mono text-primary border border-primary/40 flex items-center gap-1.5 shadow-lg">
+                    <span>{RATIO_CONFIGS[docRatio].label}</span>
+                    <span className="opacity-60">•</span>
+                    <span>{RATIO_CONFIGS[docRatio].desc}</span>
+                  </div>
+
+                  {autoCapture && countdown !== null && (
+                    <div className="self-center bg-emerald-600/90 text-white font-bold text-lg px-4 py-1.5 rounded-full shadow-xl animate-bounce">
+                      Auto-snap in {countdown}...
+                    </div>
+                  )}
+
+                  <div className="self-center bg-black/60 backdrop-blur-sm px-2 py-0.5 rounded text-[10px] text-white/75">
+                    Align document edges inside guide
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Top controls over video */}
+            <div className="absolute top-3 right-3 flex items-center gap-2 z-20">
+              <button
+                onClick={toggleCamera}
+                title="Flip Camera"
+                className="p-2.5 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md border border-white/10 transition-colors"
+              >
+                <RotateCcw className="h-4 w-4" />
+              </button>
+              <button
+                onClick={stopCamera}
+                title="Close Camera"
+                className="p-2.5 rounded-full bg-black/60 hover:bg-black/90 text-white backdrop-blur-md border border-white/10 transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Filter Bar & Snap Controls */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-card rounded-2xl border border-border/60">
+            {/* Filter mode */}
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium text-muted-foreground">Filter:</span>
+              {(
+                [
+                  { key: "enhanced", label: "Magic Contrast" },
+                  { key: "bw", label: "B&W Document" },
+                  { key: "original", label: "Color (Original)" },
+                ] as const
+              ).map(({ key, label }) => (
+                <button
+                  key={key}
+                  onClick={() => setFilter(key)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    filter === key
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-muted/50 hover:bg-muted text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Shutter buttons */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                title="Add photo from files"
+                className="p-3 rounded-full bg-muted hover:bg-muted/80 text-foreground transition-colors"
+              >
+                <Plus className="h-5 w-5" />
+              </button>
+
+              <button
+                onClick={capturePhoto}
+                className="px-6 py-3.5 rounded-full bg-primary text-primary-foreground font-semibold text-sm hover:bg-primary/90 transition-all shadow-xl shadow-primary/25 active:scale-95 flex items-center gap-2"
+              >
+                <Camera className="h-5 w-5" />
+                <span>Capture Page</span>
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -743,11 +1038,14 @@ function DocScanner() {
       {/* Hidden canvas for image processing */}
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* Scanned pages */}
+      {/* Scanned pages list & PDF export */}
       {pages.length > 0 && (
-        <>
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-semibold">{pages.length} page{pages.length > 1 ? "s" : ""} scanned</h3>
+        <div className="space-y-4 pt-2">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold flex items-center gap-2">
+              <FileText className="h-4 w-4 text-primary" />
+              {pages.length} Scanned Page{pages.length > 1 ? "s" : ""}
+            </h3>
             <button
               onClick={() => setPages([])}
               className="text-xs text-muted-foreground hover:text-destructive transition-colors"
@@ -755,16 +1053,17 @@ function DocScanner() {
               Clear all
             </button>
           </div>
+
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {pages.map((page, idx) => (
               <div
                 key={page.id}
-                className="relative group rounded-xl overflow-hidden border border-border/60 bg-card hover:border-primary/40 transition-colors"
+                className="relative group rounded-xl overflow-hidden border border-border/60 bg-card hover:border-primary/40 transition-colors shadow-sm"
               >
                 <img
                   src={page.dataUrl}
                   alt={page.name}
-                  className="w-full aspect-[3/4] object-cover"
+                  className="w-full aspect-[3/4] object-contain bg-black/10"
                 />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   {idx > 0 && (
@@ -790,34 +1089,36 @@ function DocScanner() {
                     </button>
                   )}
                 </div>
-                <div className="absolute bottom-1 left-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded">
-                  {idx + 1}
+                <div className="absolute bottom-1.5 left-1.5 bg-black/70 text-white text-[10px] font-mono px-2 py-0.5 rounded">
+                  Page {idx + 1}
                 </div>
               </div>
             ))}
           </div>
 
           {/* Filename + generate */}
-          <div className="p-4 bg-muted/20 rounded-xl border border-border/40">
-            <label className="text-xs font-medium text-muted-foreground mb-1.5 block">PDF Filename</label>
-            <input
-              type="text"
-              value={filename}
-              onChange={(e) => setFilename(e.target.value)}
-              placeholder="scanned-document"
-              className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
-            />
-          </div>
+          <div className="p-4 bg-muted/20 rounded-xl border border-border/40 space-y-3">
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Custom PDF Filename</label>
+              <input
+                type="text"
+                value={filename}
+                onChange={(e) => setFilename(e.target.value)}
+                placeholder="scanned-document"
+                className="w-full px-3 py-2.5 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 font-mono"
+              />
+            </div>
 
-          <button
-            onClick={generatePdf}
-            disabled={generating}
-            className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
-          >
-            <Download className="h-4 w-4" />
-            {generating ? "Generating PDF..." : `Export as PDF (${pages.length} page${pages.length > 1 ? "s" : ""})`}
-          </button>
-        </>
+            <button
+              onClick={generatePdf}
+              disabled={generating}
+              className="w-full py-3.5 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+            >
+              <Download className="h-4 w-4" />
+              {generating ? "Compiling PDF..." : `Download Scanned PDF (${pages.length} Page${pages.length > 1 ? "s" : ""})`}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   )

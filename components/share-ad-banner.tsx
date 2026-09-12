@@ -10,31 +10,34 @@ export function ShareAdBanner() {
 
     containerRef.current.innerHTML = ""
 
-    const wrapper = document.createElement("div")
-    wrapper.style.width = "160px"
-    wrapper.style.height = "300px"
-    wrapper.style.margin = "0 auto"
+    const iframe = document.createElement("iframe")
+    iframe.style.width = "160px"
+    iframe.style.maxWidth = "100%"
+    iframe.style.height = "300px"
+    iframe.style.border = "none"
+    iframe.style.overflow = "hidden"
+    iframe.style.display = "block"
+    iframe.style.margin = "0 auto"
+    iframe.setAttribute("sandbox", "allow-scripts allow-popups allow-same-origin")
+    iframe.setAttribute("scrolling", "no")
 
-    const optsScript = document.createElement("script")
-    optsScript.type = "text/javascript"
-    optsScript.text = `
-      atOptions = {
-        'key' : '25084f2a22060ec74cff3a46dbf2fb73',
-        'format' : 'iframe',
-        'height' : 300,
-        'width' : 160,
-        'params' : {}
-      };
-    `
+    const html = `<!DOCTYPE html>
+<html><head><style>body{margin:0;overflow:hidden;display:flex;align-items:center;justify-content:center;width:160px;height:300px}</style></head>
+<body>
+<script type="text/javascript">
+atOptions = {
+  'key' : '25084f2a22060ec74cff3a46dbf2fb73',
+  'format' : 'iframe',
+  'height' : 300,
+  'width' : 160,
+  'params' : {}
+};
+</script>
+<script type="text/javascript" src="https://unsettledradiator.com/25084f2a22060ec74cff3a46dbf2fb73/invoke.js"></script>
+</body></html>`
 
-    const invokeScript = document.createElement("script")
-    invokeScript.type = "text/javascript"
-    invokeScript.src = "https://unsettledradiator.com/25084f2a22060ec74cff3a46dbf2fb73/invoke.js"
-    invokeScript.async = true
-
-    wrapper.appendChild(optsScript)
-    wrapper.appendChild(invokeScript)
-    containerRef.current.appendChild(wrapper)
+    iframe.srcdoc = html
+    containerRef.current.appendChild(iframe)
   }, [])
 
   return (

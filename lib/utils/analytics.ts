@@ -82,7 +82,7 @@ export async function isUniqueVisitor(linkId: string, ipHash: string): Promise<b
     const key = `unique:${linkId}:${ipHash}`
     // NX: set only if the key doesn't exist. EX: 24h expiration
     const result = await redis.set(key, "1", { nx: true, ex: 60 * 60 * 24 })
-    return result === "OK" || result === 1 || result === true
+    return result === "OK" || (result as any) === 1 || (result as any) === true
   } catch (error) {
     console.error("Redis unique visitor error:", error)
     return true // Fallback to true if Redis fails

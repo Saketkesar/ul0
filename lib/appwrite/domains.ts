@@ -19,6 +19,7 @@ export interface DomainDoc {
   verification_token: string | null
   ssl_status: "pending" | "active" | "failed"
   created_at: string | null
+  brand_logo_url?: string | null
 }
 
 export interface DomainStatus {
