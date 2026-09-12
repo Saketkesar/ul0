@@ -228,7 +228,7 @@ func main() {
                         <TabsTrigger value="go" className="data-[state=active]:bg-background border-0 text-xs px-2.5 py-1">Go</TabsTrigger>
                       </TabsList>
                       <Button
-                        size="xs"
+                        size="sm"
                         variant="ghost"
                         className="h-7 text-xs gap-1"
                         onClick={() => {

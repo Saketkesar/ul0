@@ -8,6 +8,7 @@ export interface AdBannerProps {
   scriptKey?: string
   width?: number
   height?: number
+  scripts?: any
 }
 
 const AD_DOMAIN = "https://unsettledradiator.com"
@@ -46,53 +47,36 @@ export function AdBanner({ slot = 1, type = "large", scriptKey, width, height }:
 
     el.innerHTML = ""
 
-    const wrapper = document.createElement("div")
-    wrapper.style.width = "100%"
-    wrapper.style.maxWidth = `${finalW}px`
-    wrapper.style.height = `${finalH}px`
-    wrapper.style.margin = "0 auto"
-    wrapper.style.overflow = "hidden"
-    wrapper.style.display = "flex"
-    wrapper.style.justifyContent = "center"
-    wrapper.style.alignItems = "center"
+    const iframe = document.createElement("iframe")
+    iframe.style.width = `${finalW}px`
+    iframe.style.maxWidth = "100%"
+    iframe.style.height = `${finalH}px`
+    iframe.style.border = "none"
+    iframe.style.overflow = "hidden"
+    iframe.style.display = "block"
+    iframe.style.margin = "0 auto"
+    iframe.setAttribute("sandbox", "allow-scripts allow-popups allow-same-origin")
+    iframe.setAttribute("scrolling", "no")
 
-    // Observe when Adsterra creates an iframe and enforce sandbox security
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((m) => {
-        m.addedNodes.forEach((node) => {
-          if (node.nodeName === "IFRAME") {
-            const iframe = node as HTMLIFrameElement
-            iframe.setAttribute("sandbox", "allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms")
-          }
-        })
-      })
-    })
+    const html = `<!DOCTYPE html>
+<html><head><style>body{margin:0;overflow:hidden;display:flex;align-items:center;justify-content:center;width:${finalW}px;height:${finalH}px}</style></head>
+<body>
+<script type="text/javascript">
+atOptions = {
+  'key' : '${finalKey}',
+  'format' : 'iframe',
+  'height' : ${finalH},
+  'width' : ${finalW},
+  'params' : {}
+};
+</script>
+<script type="text/javascript" src="${AD_DOMAIN}/${finalKey}/invoke.js"></script>
+</body></html>`
 
-    observer.observe(wrapper, { childList: true, subtree: true })
-
-    const optsScript = document.createElement("script")
-    optsScript.type = "text/javascript"
-    optsScript.text = `
-      atOptions = {
-        'key' : '${finalKey}',
-        'format' : 'iframe',
-        'height' : ${finalH},
-        'width' : ${finalW},
-        'params' : {}
-      };
-    `
-
-    const invokeScript = document.createElement("script")
-    invokeScript.type = "text/javascript"
-    invokeScript.src = `${AD_DOMAIN}/${finalKey}/invoke.js`
-    invokeScript.async = true
-
-    wrapper.appendChild(optsScript)
-    wrapper.appendChild(invokeScript)
-    el.appendChild(wrapper)
+    iframe.srcdoc = html
+    el.appendChild(iframe)
 
     return () => {
-      observer.disconnect()
       if (el) el.innerHTML = ""
     }
   }, [finalKey, finalW, finalH])

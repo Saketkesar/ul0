@@ -56,7 +56,7 @@ export default async function SplitViewPage({ params }: Props) {
 
   return (
     <SplitViewClient
-      session={session}
+      session={session as any}
       slug={sanitizedSlug}
     />
   )

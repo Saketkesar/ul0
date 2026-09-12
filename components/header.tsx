@@ -183,7 +183,6 @@ export function Header() {
                 Dashboard
               </Link>
               <UserButton
-                afterSignOutUrl="/"
                 appearance={{
                   elements: {
                     avatarBox: "h-8 w-8",
@@ -198,7 +197,6 @@ export function Header() {
         <div className="flex md:hidden items-center gap-2">
           <Show when="signed-in">
             <UserButton
-              afterSignOutUrl="/"
               appearance={{
                 elements: {
                   avatarBox: "h-8 w-8",
