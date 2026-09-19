@@ -29,6 +29,7 @@ import {
   LayoutDashboard,
   Menu,
   X,
+  Sparkles,
 } from "lucide-react"
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs"
 
@@ -103,6 +104,12 @@ export function Header() {
                 <Link href="/pdf" className="flex items-center gap-2 cursor-pointer">
                   <ScanLine className="h-4 w-4" />
                   PDF Tools
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/backlinks" className="flex items-center gap-2 cursor-pointer font-medium text-emerald-500">
+                  <Sparkles className="h-4 w-4 text-emerald-500" />
+                  Free Backlinks
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -222,6 +229,7 @@ export function Header() {
             { href: "/qr", label: "QR Code", icon: <QrCode className="h-4 w-4" /> },
             { href: "/split", label: "Split Expenses", icon: <Users className="h-4 w-4" /> },
             { href: "/pricing", label: "Pricing", icon: <ShoppingCart className="h-4 w-4" /> },
+            { href: "/backlinks", label: "Free Backlinks", icon: <Sparkles className="h-4 w-4 text-emerald-500" /> },
             { href: "/utm", label: "UTM Builder", icon: <LinkIcon className="h-4 w-4" /> },
             { href: "/json", label: "JSON Formatter", icon: <FileJson className="h-4 w-4" /> },
             { href: "/pdf", label: "PDF Tools", icon: <ScanLine className="h-4 w-4" /> },
