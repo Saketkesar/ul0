@@ -167,7 +167,7 @@ export default async function ThreatsPage() {
           <ThreatRadarClient
             threats={threats}
             blacklistedDomains={BLOCKED_DOMAINS}
-            basinFormKey="894e4c18a932fbc39c3ed893a8b8d5e7"
+            basinFormUuid="16f38d46e9f3"
           />
         </div>
       </main>
