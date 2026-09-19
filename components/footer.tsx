@@ -46,6 +46,7 @@ export function Footer() {
             <nav className="flex flex-col gap-2 text-sm text-muted-foreground" aria-label="Business tools navigation">
               <Link href="/pricing" className="hover:text-foreground transition-colors">Custom Branded Domains</Link>
               <Link href="/docs" className="hover:text-foreground transition-colors">Developer REST API</Link>
+              <Link href="/backlinks" className="hover:text-foreground transition-colors text-emerald-400 font-medium">Free Backlink Exchange</Link>
               <Link href="/custom-domain-landing" className="hover:text-foreground transition-colors">Custom Domain Setup</Link>
               <Link href="/blog" className="hover:text-foreground transition-colors">Link Strategy &amp; Guides</Link>
               <Link href="/share" className="hover:text-foreground transition-colors">P2P File Transfer</Link>
