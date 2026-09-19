@@ -135,6 +135,14 @@ export function isPhishingAttempt(hostname: string, urlString: string): boolean 
   return false
 }
 
+// Known phishing, scam, and malicious domains permanently blocked platform-wide
+export const BLOCKED_DOMAINS = [
+  'mysecurity-info.click',
+  'byphoccc.com',
+  'bgp52.sbs',
+  'urpose.com',
+]
+
 /**
  * Check if a hostname resolves to a private IP
  */
@@ -151,12 +159,19 @@ function isPrivateIP(hostname: string): boolean {
 /**
  * Check if hostname is blocked
  */
-function isBlockedHostname(hostname: string): boolean {
+export function isBlockedHostname(hostname: string): boolean {
   const normalizedHostname = hostname.toLowerCase().trim()
   
   // Direct match
   if (BLOCKED_HOSTNAMES.includes(normalizedHostname)) {
     return true
+  }
+
+  // Check against permanently blocked phishing domains and subdomains
+  for (const domain of BLOCKED_DOMAINS) {
+    if (normalizedHostname === domain || normalizedHostname.endsWith('.' + domain)) {
+      return true
+    }
   }
   
   // Check if it's a private IP
@@ -226,9 +241,9 @@ export function validateUrl(urlString: string): UrlValidationResult {
     return { valid: false, error: "URL must have a valid hostname" }
   }
   
-  // Block dangerous hostnames (SSRF prevention)
+  // Block dangerous hostnames (SSRF & Phishing prevention)
   if (isBlockedHostname(hostname)) {
-    return { valid: false, error: "This URL cannot be shortened" }
+    return { valid: false, error: "This domain has been flagged for phishing or fraud and is permanently blocked on ul0." }
   }
   
   // Check for URL obfuscation attempts with userinfo
