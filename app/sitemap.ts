@@ -70,14 +70,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ]
 
   // Informational / legal pages
-  const infoPages: { path: string; priority: number; freq: "weekly" | "monthly" | "yearly" }[] = [
+  const infoPages: { path: string; priority: number; freq: "daily" | "weekly" | "monthly" | "yearly" }[] = [
     { path: "/blog", priority: 0.85, freq: "weekly" },
     { path: "/faq", priority: 0.8, freq: "weekly" },
     { path: "/about", priority: 0.7, freq: "monthly" },
     { path: "/buy", priority: 0.6, freq: "monthly" },
     { path: "/contact", priority: 0.6, freq: "monthly" },
     { path: "/donate", priority: 0.8, freq: "monthly" },
-    { path: "/supporters", priority: 0.7, freq: "monthly" },
+    { path: "/security", priority: 0.8, freq: "weekly" },
+    { path: "/threats", priority: 0.85, freq: "daily" },
     { path: "/refund", priority: 0.4, freq: "yearly" },
     { path: "/privacy", priority: 0.4, freq: "yearly" },
     { path: "/terms", priority: 0.4, freq: "yearly" },
