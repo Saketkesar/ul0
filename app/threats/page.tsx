@@ -141,13 +141,6 @@ export default async function ThreatsPage() {
     }
   })
 
-  const stats = {
-    totalBlocked: Math.max(threats.length, 2),
-    blacklistedDomainsCount: BLOCKED_DOMAINS.length,
-    brandsProtected: 15,
-    interceptRate: "100%",
-  }
-
   // Schema markup
   const jsonLd = {
     "@context": "https://schema.org",
@@ -162,76 +155,20 @@ export default async function ThreatsPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background selection:bg-red-500/20">
+    <div className="flex min-h-screen flex-col bg-background">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
 
-      <main className="flex-1 py-10 sm:py-16">
-        <div className="container mx-auto px-4 max-w-5xl space-y-12">
-          {/* Page Hero */}
-          <div className="text-center space-y-4 max-w-3xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-red-500/10 text-red-500 border border-red-500/20">
-              <ShieldAlert className="h-4 w-4" />
-              Public Security Transparency Registry
-            </div>
-
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground">
-              Threat Intelligence Radar
-            </h1>
-
-            <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-              Real-time feed of intercepted phishing scams, brand impersonators, and malicious campaigns neutralized on ul0. All malicious URLs are defanged and permanently blocked from redirecting users.
-            </p>
-          </div>
-
-          {/* Interactive Threat Radar Client Component */}
+      <main className="flex-1 py-8 sm:py-12">
+        <div className="container mx-auto px-4 max-w-4xl">
           <ThreatRadarClient
             threats={threats}
             blacklistedDomains={BLOCKED_DOMAINS}
-            stats={stats}
+            basinFormKey="894e4c18a932fbc39c3ed893a8b8d5e7"
           />
-
-          {/* Educational Security Section */}
-          <section className="mt-16 space-y-6 max-w-4xl mx-auto pt-8 border-t border-border/60">
-            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground text-center">
-              How ul0 Enforces Zero-Tolerance Abuse Protection
-            </h2>
-
-            <div className="grid sm:grid-cols-3 gap-5">
-              <div className="p-5 rounded-2xl bg-card border border-border space-y-2">
-                <div className="h-8 w-8 rounded-lg bg-red-500/10 text-red-500 flex items-center justify-center font-bold font-mono text-sm">
-                  01
-                </div>
-                <h3 className="font-semibold text-sm">Zero Link Juice (Anti-DR)</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Malicious destinations are never rendered as active hyperlinks. They are displayed as defanged plain text to ensure search engines like Google never grant PageRank, traffic, or Domain Rating to scammers.
-                </p>
-              </div>
-
-              <div className="p-5 rounded-2xl bg-card border border-border space-y-2">
-                <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-bold font-mono text-sm">
-                  02
-                </div>
-                <h3 className="font-semibold text-sm">Real-time Redirection Revocation</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  The instant a link is detected or reported as fraudulent, redirection is completely severed. Visitors are shielded by our Security Warning barrier and guided safely back to genuine brand portals.
-                </p>
-              </div>
-
-              <div className="p-5 rounded-2xl bg-card border border-border space-y-2">
-                <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold font-mono text-sm">
-                  03
-                </div>
-                <h3 className="font-semibold text-sm">Wildcard Infrastructure Ban</h3>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Phishing operations rely on rotating disposable subdomains. ul0 enforces wildcard domain matching, permanently preventing malicious actors from registering new short links under blacklisted domains.
-                </p>
-              </div>
-            </div>
-          </section>
         </div>
       </main>
 
