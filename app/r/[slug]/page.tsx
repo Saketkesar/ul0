@@ -2,7 +2,7 @@ import { notFound, redirect } from "next/navigation"
 import { RedirectLanding } from "@/components/redirect-landing"
 import { headers } from "next/headers"
 import { getCachedUrl, setCachedUrl, redis } from "@/lib/redis"
-import { validateUrl } from "@/lib/utils/slug"
+import { validateUrl, isBlockedHostname, isPhishingAttempt } from "@/lib/utils/slug"
 import {
   getLinkByHostSlug,
   logClick,
@@ -130,10 +130,22 @@ export default async function RedirectPage({ params, searchParams }: Props) {
     }
   }
 
-  // 1.5 Phishing warning check
-  if (isSuspicious) {
+  // 1.5 Phishing warning check (flagged in database OR matches blocked phishing domains)
+  let isDomainBlocked = false
+  try {
+    const parsedUrl = new URL(link.long_url)
+    const hostname = parsedUrl.hostname.toLowerCase()
+    isDomainBlocked = isBlockedHostname(hostname) || isPhishingAttempt(hostname, link.long_url)
+  } catch (e) {}
+
+  if (isSuspicious || isDomainBlocked) {
     const report = await getPhishingDomainReport(link.long_url)
-    return renderPhishingPage(link.long_url, suspiciousOriginalUrl || "https://www.google.com", report)
+    const genuineSite =
+      suspiciousOriginalUrl ||
+      (link.long_url.toLowerCase().includes("libero")
+        ? "https://libero.it"
+        : "https://telegram.org")
+    return renderPhishingPage(link.long_url, genuineSite, report)
   }
 
   // 2. Check clicks limit
