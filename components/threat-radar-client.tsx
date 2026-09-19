@@ -7,14 +7,13 @@ import {
   Copy,
   Check,
   Search,
-  ExternalLink,
   UploadCloud,
   FileText,
-  AlertCircle,
-  PlusCircle,
   Shield,
+  Plus,
   ArrowRight,
   Loader2,
+  X,
 } from "lucide-react"
 
 export interface BlockedThreatItem {
@@ -34,10 +33,14 @@ export interface BlockedThreatItem {
 interface Props {
   threats: BlockedThreatItem[]
   blacklistedDomains: string[]
-  basinFormKey?: string
+  basinFormUuid?: string
 }
 
-export function ThreatRadarClient({ threats, blacklistedDomains, basinFormKey = "894e4c18a932fbc39c3ed893a8b8d5e7" }: Props) {
+export function ThreatRadarClient({
+  threats,
+  blacklistedDomains,
+  basinFormUuid = "16f38d46e9f3",
+}: Props) {
   const [activeTab, setActiveTab] = useState<"directory" | "submit">("directory")
   const [searchQuery, setSearchQuery] = useState("")
   const [copiedId, setCopiedId] = useState<string | null>(null)
@@ -79,10 +82,10 @@ export function ThreatRadarClient({ threats, blacklistedDomains, basinFormKey = 
 
     try {
       const formData = new FormData()
-      formData.append("phishing_url", phishingUrl)
-      formData.append("target_brand", targetBrand)
-      formData.append("reporter_contact", reporterEmail)
-      formData.append("notes", notes)
+      formData.append("phishing_url", phishingUrl.trim())
+      formData.append("target_brand", targetBrand.trim())
+      formData.append("reporter_contact", reporterEmail.trim())
+      formData.append("notes", notes.trim())
       formData.append("submitted_at", new Date().toISOString())
       formData.append("source", "ul0.site/threats")
 
@@ -90,15 +93,22 @@ export function ThreatRadarClient({ threats, blacklistedDomains, basinFormKey = 
         formData.append("proof_image", proofFile)
       }
 
-      const res = await fetch(`https://usebasin.com/f/${basinFormKey}`, {
+      // First try internal API route, fallback to direct UseBasin POST
+      let response = await fetch("/api/report-phishing", {
         method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
         body: formData,
       })
 
-      if (res.ok) {
+      if (!response.ok) {
+        // Fallback directly to UseBasin endpoint
+        response = await fetch(`https://usebasin.com/f/${basinFormUuid}`, {
+          method: "POST",
+          headers: { Accept: "application/json" },
+          body: formData,
+        })
+      }
+
+      if (response.ok) {
         setSubmitStatus("success")
         setPhishingUrl("")
         setTargetBrand("")
@@ -106,12 +116,12 @@ export function ThreatRadarClient({ threats, blacklistedDomains, basinFormKey = 
         setNotes("")
         setProofFile(null)
       } else {
-        const data = await res.json().catch(() => ({}))
+        const data = await response.json().catch(() => ({}))
         setErrorMessage(data.error || "Submission failed. Please try again.")
         setSubmitStatus("error")
       }
     } catch (err: any) {
-      console.error("Basin submit error:", err)
+      console.error("Phishing submission error:", err)
       setErrorMessage(err.message || "Network error. Please try again.")
       setSubmitStatus("error")
     } finally {
@@ -120,155 +130,161 @@ export function ThreatRadarClient({ threats, blacklistedDomains, basinFormKey = 
   }
 
   return (
-    <div className="space-y-8 font-sans">
-      {/* Notion-style Page Header with Logo & Icon */}
-      <div className="space-y-4 border-b border-border pb-6">
+    <div className="space-y-6 font-sans text-neutral-900 dark:text-neutral-100">
+      {/* Notion Header */}
+      <div className="space-y-3 border-b border-neutral-200 dark:border-neutral-800 pb-5">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="text-3xl select-none" role="img" aria-label="shield">
+            <span className="text-3xl select-none leading-none" role="img" aria-label="shield">
               🛡️
             </span>
             <Image
               src="/ul0.png"
               alt="ul0"
-              width={64}
-              height={22}
-              className="h-5 w-auto object-contain opacity-80 dark:invert"
+              width={70}
+              height={24}
+              className="h-5 w-auto object-contain dark:invert"
             />
           </div>
 
-          <div className="flex items-center gap-1 p-0.5 bg-muted/50 rounded-lg border border-border/60 text-xs">
+          {/* Notion View Switcher */}
+          <div className="flex items-center gap-1 p-0.5 bg-neutral-100 dark:bg-neutral-800/60 rounded-md border border-neutral-200 dark:border-neutral-700 text-xs">
             <button
               onClick={() => setActiveTab("directory")}
-              className={`px-3 py-1.5 rounded-md font-medium transition-colors ${
+              className={`px-2.5 py-1 rounded transition-colors font-medium ${
                 activeTab === "directory"
-                  ? "bg-background text-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 shadow-xs"
+                  : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
               }`}
             >
-              Blocked Links ({threats.length})
+              Banned Links ({threats.length})
             </button>
             <button
               onClick={() => setActiveTab("submit")}
-              className={`px-3 py-1.5 rounded-md font-medium transition-colors flex items-center gap-1.5 ${
+              className={`px-2.5 py-1 rounded transition-colors font-medium flex items-center gap-1 ${
                 activeTab === "submit"
-                  ? "bg-background text-foreground shadow-xs"
-                  : "text-muted-foreground hover:text-foreground"
+                  ? "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 shadow-xs"
+                  : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
               }`}
             >
-              <PlusCircle className="h-3.5 w-3.5 text-muted-foreground" />
-              Report Phishing (+ Karma)
+              <Plus className="h-3 w-3" />
+              <span>Submit Phishing (+ Karma)</span>
             </button>
           </div>
         </div>
 
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-            Blocked Phishing Links &amp; Scam Domains
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
+            Blocked Phishing Links &amp; Scam Directory
           </h1>
-          <p className="text-sm text-muted-foreground mt-1.5 max-w-2xl leading-relaxed">
-            Public directory of deceptive links intercepted and disabled by ul0. All destinations are defanged and blocked from redirecting users.
+          <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+            Registry of malicious links intercepted and neutralized by ul0. Zero traffic, zero redirects, and zero backlink equity passed to scammers.
           </p>
         </div>
 
         {/* Notion Callout Box */}
-        <div className="flex items-start gap-3 p-3.5 rounded-lg bg-muted/40 border border-border/80 text-xs text-muted-foreground">
-          <span className="text-base select-none mt-0.5">ℹ️</span>
+        <div className="flex items-start gap-2.5 p-3 rounded-md bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-xs text-neutral-600 dark:text-neutral-300">
+          <span className="text-sm select-none">ℹ️</span>
           <div className="space-y-0.5">
-            <p className="font-semibold text-foreground">Zero Backlink Protection</p>
-            <p className="leading-relaxed">
-              Scam URLs are displayed as defanged plain text with no active hyperlinks. Search engines do not pass Domain Rating (DR) or link equity to attackers.
+            <p className="font-semibold text-neutral-900 dark:text-neutral-100">
+              Zero Backlink Protection
+            </p>
+            <p className="text-neutral-500 dark:text-neutral-400 leading-relaxed">
+              Target URLs are defanged text without clickable hyperlinks. Search bots do not pass PageRank or Domain Rating (DR) to attackers.
             </p>
           </div>
         </div>
       </div>
 
-      {/* TAB 1: NOTION-STYLE DIRECTORY */}
+      {/* TAB 1: NOTION DATABASE TABLE */}
       {activeTab === "directory" && (
-        <div className="space-y-6">
+        <div className="space-y-5">
           {/* Permanently Blocked Root Domains */}
-          <div className="space-y-2">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className="space-y-1.5">
+            <p className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
               Permanently Banned Root Domains ({blacklistedDomains.length})
             </p>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-1.5">
               {blacklistedDomains.map((domain) => (
                 <div
                   key={domain}
-                  className="px-2.5 py-1 rounded bg-muted/60 border border-border/70 text-xs font-mono text-foreground flex items-center gap-2"
+                  className="px-2 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-xs font-mono text-neutral-800 dark:text-neutral-200 flex items-center gap-1.5"
                 >
                   <span>*.{domain.replace(".", "[.]")}</span>
-                  <span className="text-[10px] text-muted-foreground uppercase font-sans">banned</span>
+                  <span className="text-[10px] text-neutral-500 uppercase">banned</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Search bar */}
-          <div className="flex items-center justify-between gap-4 pt-2">
+          <div className="flex items-center justify-between gap-3 pt-1">
             <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Filter by slug, brand or domain..."
-                className="w-full pl-8 pr-3 py-1.5 bg-background border border-border rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-foreground"
+                placeholder="Search slug, brand or domain..."
+                className="w-full pl-8 pr-3 py-1.5 bg-transparent border border-neutral-200 dark:border-neutral-700 rounded-md text-xs focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500"
               />
             </div>
 
-            <span className="text-xs text-muted-foreground font-mono">
+            <span className="text-xs text-neutral-400 font-mono">
               {filteredThreats.length} item{filteredThreats.length === 1 ? "" : "s"}
             </span>
           </div>
 
-          {/* Notion Database Table View */}
-          <div className="border border-border rounded-lg overflow-hidden bg-background shadow-xs">
+          {/* Clean Notion Table */}
+          <div className="border border-neutral-200 dark:border-neutral-800 rounded-md overflow-hidden bg-white dark:bg-neutral-900/50">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-border bg-muted/30 text-muted-foreground font-medium">
-                    <th className="py-2.5 px-3.5 w-36">Short Link</th>
-                    <th className="py-2.5 px-3.5">Defanged Malicious Destination</th>
-                    <th className="py-2.5 px-3.5 w-32">Spoofed Brand</th>
-                    <th className="py-2.5 px-3.5 w-24">Status</th>
-                    <th className="py-2.5 px-3.5 w-28 text-right">Date</th>
+                  <tr className="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/75 dark:bg-neutral-800/40 text-neutral-500 dark:text-neutral-400 font-medium">
+                    <th className="py-2 px-3 w-36">Short Link</th>
+                    <th className="py-2 px-3">Defanged Destination (No Backlink)</th>
+                    <th className="py-2 px-3 w-32">Spoofed Brand</th>
+                    <th className="py-2 px-3 w-24">Status</th>
+                    <th className="py-2 px-3 w-28 text-right">Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
                   {filteredThreats.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="py-8 text-center text-muted-foreground text-xs">
-                        No blocked links match your filter.
+                      <td colSpan={5} className="py-6 text-center text-neutral-400 text-xs">
+                        No blocked links match your search.
                       </td>
                     </tr>
                   ) : (
                     filteredThreats.map((threat) => (
-                      <tr key={threat.id} className="hover:bg-muted/20 transition-colors">
+                      <tr
+                        key={threat.id}
+                        className="hover:bg-neutral-50/50 dark:hover:bg-neutral-800/30 transition-colors"
+                      >
                         {/* Short Link */}
-                        <td className="py-2.5 px-3.5 font-mono font-medium text-foreground">
+                        <td className="py-2.5 px-3 font-mono font-medium text-neutral-900 dark:text-neutral-100">
                           <Link
                             href={`/r/${threat.slug}`}
                             target="_blank"
-                            className="hover:underline text-foreground"
+                            className="hover:underline"
                           >
                             ul0.site/{threat.slug}
                           </Link>
                         </td>
 
-                        {/* Defanged Destination (Pure text - NO <a> tag, zero backlink) */}
-                        <td className="py-2.5 px-3.5 font-mono text-muted-foreground max-w-md">
+                        {/* Defanged Target URL: NO <a> tag, zero backlink */}
+                        <td className="py-2.5 px-3 font-mono text-neutral-600 dark:text-neutral-300 max-w-md">
                           <div className="flex items-center justify-between gap-2">
                             <span className="truncate select-all" title={threat.defangedUrl}>
                               {threat.defangedUrl}
                             </span>
                             <button
                               onClick={() => copyText(threat.id, threat.defangedUrl)}
-                              className="shrink-0 p-1 hover:bg-muted rounded text-muted-foreground hover:text-foreground transition-colors"
+                              className="shrink-0 p-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
                               title="Copy defanged text"
                             >
                               {copiedId === threat.id ? (
-                                <Check className="h-3 w-3 text-foreground" />
+                                <Check className="h-3 w-3 text-neutral-900 dark:text-neutral-100" />
                               ) : (
                                 <Copy className="h-3 w-3" />
                               )}
@@ -277,21 +293,21 @@ export function ThreatRadarClient({ threats, blacklistedDomains, basinFormKey = 
                         </td>
 
                         {/* Spoofed Brand */}
-                        <td className="py-2.5 px-3.5 text-foreground">
-                          <span className="px-2 py-0.5 rounded bg-muted/60 text-[11px] font-medium border border-border/50">
+                        <td className="py-2.5 px-3 text-neutral-800 dark:text-neutral-200">
+                          <span className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-[11px]">
                             {threat.spoofedBrand}
                           </span>
                         </td>
 
-                        {/* Status */}
-                        <td className="py-2.5 px-3.5 font-mono">
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-neutral-200 dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200">
+                        {/* Status: pure neutral gray badge */}
+                        <td className="py-2.5 px-3">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">
                             BLOCKED
                           </span>
                         </td>
 
                         {/* Date */}
-                        <td className="py-2.5 px-3.5 text-right text-muted-foreground font-mono text-[11px]">
+                        <td className="py-2.5 px-3 text-right text-neutral-400 font-mono text-[11px]">
                           {threat.dateBlocked}
                         </td>
                       </tr>
@@ -304,79 +320,82 @@ export function ThreatRadarClient({ threats, blacklistedDomains, basinFormKey = 
         </div>
       )}
 
-      {/* TAB 2: NOTION-STYLE REPORT FORM (UseBasin) */}
+      {/* TAB 2: NOTION REPORT FORM (UseBasin) */}
       {activeTab === "submit" && (
-        <div className="space-y-6 max-w-2xl">
-          <div className="p-4 rounded-lg bg-muted/30 border border-border space-y-1">
-            <h2 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-              <span>✨</span> Submit a Phishing Link &amp; Earn Good Karma
+        <div className="space-y-4 max-w-xl">
+          {/* Notion Callout Box */}
+          <div className="p-3.5 rounded-md bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 space-y-1">
+            <h2 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
+              <span>🌟</span> Submit a Phishing Link &amp; Earn Good Karma
             </h2>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Found a deceptive link targeting innocent users? Submit it below with a screenshot. All submissions go directly to our security review inbox for immediate blacklisting.
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
+              Found a scam or fake login page? Submit it with proof to protect others. Reports are sent directly to our private review team via Basin and will not be displayed on the public list until verified and blocked.
             </p>
           </div>
 
           {submitStatus === "success" && (
-            <div className="p-4 rounded-lg bg-neutral-100 dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 text-xs space-y-1">
-              <p className="font-semibold text-foreground flex items-center gap-1.5">
-                <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-                Report Received! Good Karma Earned 🌟
+            <div className="p-3.5 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs space-y-1">
+              <p className="font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5" />
+                Report Submitted! Good Karma Earned 🌟
               </p>
-              <p className="text-muted-foreground">
-                Thank you for helping keep the internet safe. Our security team will review and block this domain across the platform.
+              <p className="text-neutral-500 dark:text-neutral-400">
+                Thank you for keeping the web safe. Our security review team will inspect the proof and disable the scam.
               </p>
             </div>
           )}
 
           {submitStatus === "error" && (
-            <div className="p-3.5 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-xs text-red-600 dark:text-red-400">
+            <div className="p-3.5 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs text-neutral-800 dark:text-neutral-200">
               <p className="font-semibold">Submission failed</p>
-              <p>{errorMessage}</p>
+              <p className="text-neutral-500 dark:text-neutral-400">{errorMessage}</p>
             </div>
           )}
 
-          <form onSubmit={handleFormSubmit} className="space-y-4 text-xs">
-            {/* Phishing URL */}
-            <div className="space-y-1.5">
-              <label className="font-medium text-foreground block">
-                Phishing / Scam Link <span className="text-red-500">*</span>
+          <form onSubmit={handleFormSubmit} className="space-y-3.5 text-xs">
+            {/* Phishing Link */}
+            <div className="space-y-1">
+              <label className="font-medium text-neutral-800 dark:text-neutral-200 block">
+                Phishing / Scam Link <span className="text-neutral-400">*</span>
               </label>
               <input
                 type="text"
                 required
                 value={phishingUrl}
                 onChange={(e) => setPhishingUrl(e.target.value)}
-                placeholder="https://scam-site.click/login or short link"
-                className="w-full px-3 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-1 focus:ring-foreground font-mono"
+                placeholder="https://scam-domain.com/login or short link"
+                className="w-full px-3 py-1.5 bg-transparent border border-neutral-200 dark:border-neutral-700 rounded-md focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 font-mono text-xs"
               />
-              <p className="text-[11px] text-muted-foreground">
-                Enter the short link or destination phishing URL you encountered.
+              <p className="text-[11px] text-neutral-400">
+                The fake login, scam website, or suspicious short link.
               </p>
             </div>
 
             {/* Target Brand */}
-            <div className="space-y-1.5">
-              <label className="font-medium text-foreground block">
-                Brand Being Spoofed / Targeted
+            <div className="space-y-1">
+              <label className="font-medium text-neutral-800 dark:text-neutral-200 block">
+                Brand Being Spoofed
               </label>
               <input
                 type="text"
                 value={targetBrand}
                 onChange={(e) => setTargetBrand(e.target.value)}
-                placeholder="e.g. Telegram, Libero Mail, PayPal, Google, Bank"
-                className="w-full px-3 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-1 focus:ring-foreground"
+                placeholder="e.g. Telegram, Libero Mail, PayPal, Bank"
+                className="w-full px-3 py-1.5 bg-transparent border border-neutral-200 dark:border-neutral-700 rounded-md focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 text-xs"
               />
             </div>
 
-            {/* Proof Image Upload */}
-            <div className="space-y-1.5">
-              <label className="font-medium text-foreground block">
+            {/* Proof Screenshot Upload */}
+            <div className="space-y-1">
+              <label className="font-medium text-neutral-800 dark:text-neutral-200 block">
                 Proof Screenshot / Image
               </label>
-              <div className="flex items-center gap-3">
-                <label className="cursor-pointer px-3 py-2 bg-muted/50 hover:bg-muted border border-border rounded-lg font-medium text-foreground flex items-center gap-2 transition-colors">
-                  <UploadCloud className="h-4 w-4 text-muted-foreground" />
-                  <span>{proofFile ? proofFile.name : "Attach Screenshot"}</span>
+              <div className="flex items-center gap-2.5">
+                <label className="cursor-pointer px-3 py-1.5 bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700 rounded-md font-medium text-neutral-700 dark:text-neutral-300 flex items-center gap-1.5 transition-colors text-xs">
+                  <UploadCloud className="h-3.5 w-3.5 text-neutral-400" />
+                  <span className="truncate max-w-[200px]">
+                    {proofFile ? proofFile.name : "Attach Screenshot"}
+                  </span>
                   <input
                     type="file"
                     accept="image/*"
@@ -392,62 +411,63 @@ export function ThreatRadarClient({ threats, blacklistedDomains, basinFormKey = 
                   <button
                     type="button"
                     onClick={() => setProofFile(null)}
-                    className="text-xs text-muted-foreground hover:text-foreground"
+                    className="p-1 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
+                    title="Remove file"
                   >
-                    Remove
+                    <X className="h-3.5 w-3.5" />
                   </button>
                 )}
               </div>
-              <p className="text-[11px] text-muted-foreground">
-                Upload a screenshot showing the fake login, message, or redirect.
+              <p className="text-[11px] text-neutral-400">
+                Upload screenshot showing fake login, phishing message, or impersonation.
               </p>
             </div>
 
-            {/* Reporter Contact / Email (Optional) */}
-            <div className="space-y-1.5">
-              <label className="font-medium text-foreground block">
-                Your Contact / Handle (Optional)
+            {/* Reporter Contact */}
+            <div className="space-y-1">
+              <label className="font-medium text-neutral-800 dark:text-neutral-200 block">
+                Your Contact (Optional)
               </label>
               <input
                 type="text"
                 value={reporterEmail}
                 onChange={(e) => setReporterEmail(e.target.value)}
-                placeholder="email@example.com or @telegram_handle"
-                className="w-full px-3 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-1 focus:ring-foreground"
+                placeholder="email@example.com or @telegram"
+                className="w-full px-3 py-1.5 bg-transparent border border-neutral-200 dark:border-neutral-700 rounded-md focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 text-xs"
               />
-              <p className="text-[11px] text-muted-foreground">
-                Optional. If you want updates when the scam is neutralized.
+              <p className="text-[11px] text-neutral-400">
+                Optional. We will notify you once the link is neutralized.
               </p>
             </div>
 
             {/* Notes */}
-            <div className="space-y-1.5">
-              <label className="font-medium text-foreground block">
-                Additional Notes / Context
+            <div className="space-y-1">
+              <label className="font-medium text-neutral-800 dark:text-neutral-200 block">
+                Additional Notes
               </label>
               <textarea
-                rows={3}
+                rows={2}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Where did you find this link? (Telegram group, SMS, email phishing...)"
-                className="w-full px-3 py-2 bg-background border border-border rounded-lg focus:outline-none focus:ring-1 focus:ring-foreground resize-none"
+                placeholder="Where did you receive this link? (Telegram group, SMS, email phishing...)"
+                className="w-full px-3 py-1.5 bg-transparent border border-neutral-200 dark:border-neutral-700 rounded-md focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 resize-none text-xs"
               />
             </div>
 
             <button
               type="submit"
               disabled={submitting}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-foreground text-background font-medium hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-2"
+              className="px-4 py-2 rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 font-medium hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-1.5 text-xs"
             >
               {submitting ? (
                 <>
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  <span>Submitting to Basin...</span>
+                  <span>Submitting...</span>
                 </>
               ) : (
                 <>
                   <span>Submit Phishing Report (+ Karma 🌟)</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <ArrowRight className="h-3 w-3" />
                 </>
               )}
             </button>
@@ -455,8 +475,8 @@ export function ThreatRadarClient({ threats, blacklistedDomains, basinFormKey = 
         </div>
       )}
 
-      {/* Clean Notion footer notes */}
-      <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-muted-foreground">
+      {/* Notion Footer */}
+      <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-neutral-400">
         <div className="flex items-center gap-2">
           <span>ul0 Trust &amp; Safety</span>
           <span>•</span>
@@ -468,7 +488,7 @@ export function ThreatRadarClient({ threats, blacklistedDomains, basinFormKey = 
             Report Abuse
           </Link>
         </div>
-        <p className="font-mono text-[11px]">Powered by ul0 Anti-Phishing Guard</p>
+        <p className="font-mono text-[11px]">ul0 Security Radar</p>
       </div>
     </div>
   )
