@@ -327,3 +327,29 @@ export async function deleteLink(linkId: string, ownerId: string): Promise<void>
   }
   await db().deleteDocument(DB, LINKS, linkId)
 }
+
+/**
+ * Fetch links flagged as suspicious or matching phishing blacklists.
+ * Used by the public Threat Intelligence Radar (/threats).
+ */
+export async function getFlaggedPhishingLinks(limit: number = 100): Promise<LinkDoc[]> {
+  try {
+    const { documents } = await db().listDocuments(DB, LINKS, [
+      Query.orderDesc("$createdAt"),
+      Query.limit(limit),
+    ])
+
+    return (documents as unknown as LinkDoc[]).filter((doc) => {
+      if (doc.targeting_json) {
+        try {
+          const parsed = JSON.parse(doc.targeting_json)
+          if (parsed.is_suspicious) return true
+        } catch {}
+      }
+      return false
+    })
+  } catch (err) {
+    console.error("Error fetching flagged links:", err)
+    return []
+  }
+}

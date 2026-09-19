@@ -111,6 +111,8 @@ export default clerkMiddleware(async (auth, req) => {
       "/faq",
       "/blog",
       "/api",
+      "/security",
+      "/threats",
     ]
 
     // 3. Check if it's a reserved path

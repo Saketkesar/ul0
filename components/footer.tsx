@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Heart, ShieldCheck, Flag } from "lucide-react"
+import { Heart, ShieldCheck, Flag, ShieldAlert } from "lucide-react"
 
 export function Footer() {
   return (
@@ -73,6 +73,10 @@ export function Footer() {
               <Link href="/about" className="hover:text-foreground transition-colors">About Us</Link>
               <Link href="/contact" className="hover:text-foreground transition-colors">Contact Support</Link>
               <Link href="/security" className="hover:text-foreground transition-colors text-emerald-500 font-medium">Security &amp; Safety</Link>
+              <Link href="/threats" className="hover:text-foreground transition-colors text-red-500 font-medium flex items-center gap-1">
+                <ShieldAlert className="h-3.5 w-3.5" />
+                Threat Radar
+              </Link>
               <Link href="/report-abuse" className="hover:text-foreground transition-colors text-rose-500 font-medium flex items-center gap-1">
                 <Flag className="h-3.5 w-3.5" />
                 Report Abuse

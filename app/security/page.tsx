@@ -4,6 +4,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import {
   ShieldCheck,
+  ShieldAlert,
   Lock,
   Server,
   EyeOff,
@@ -84,6 +85,28 @@ export default function SecurityPage() {
                 Click analytics use anonymized telemetry (aggregate country codes and device categories). We never sell user data, record personal PII, or install third-party advertising tracking pixels on redirects.
               </p>
             </div>
+          </div>
+
+          {/* Live Threat Radar Banner */}
+          <div className="p-6 sm:p-8 rounded-2xl border border-red-500/30 bg-gradient-to-r from-red-950/20 via-red-900/10 to-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-sm">
+            <div className="space-y-1">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-red-500/10 text-red-500 border border-red-500/20 uppercase mb-1">
+                Live Transparency Feed
+              </div>
+              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <ShieldAlert className="h-5 w-5 text-red-500" />
+                Threat Intelligence Radar
+              </h3>
+              <p className="text-xs text-muted-foreground max-w-xl leading-relaxed">
+                Explore our public transparency database of intercepted phishing campaigns, brand impersonators, and banned scam domains. Zero redirects and zero search engine backlinks are passed to attackers.
+              </p>
+            </div>
+            <Link
+              href="/threats"
+              className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors shrink-0 shadow-md shadow-red-600/20"
+            >
+              View Threat Radar &rarr;
+            </Link>
           </div>
 
           {/* Abuse Takedown Box */}
