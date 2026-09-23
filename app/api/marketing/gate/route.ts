@@ -9,7 +9,8 @@ const GATE_SESSION_COOKIE = "ul0_gate_token"
 export async function POST(req: NextRequest) {
   try {
     const cookieStore = await cookies()
-    const token = cookieStore.get(GATE_SESSION_COOKIE)?.value
+    const body = await req.json().catch(() => ({}))
+    const token = body?.token || cookieStore.get(GATE_SESSION_COOKIE)?.value
 
     if (!token) {
       return NextResponse.json(

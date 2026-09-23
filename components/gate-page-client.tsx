@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 
 interface GatePageClientProps {
   alias: string
+  sessionToken: string
   currentStep: number // 0-indexed
   totalSteps: number
   gateTimerSeconds?: number
@@ -18,6 +19,7 @@ interface GatePageClientProps {
 
 export function GatePageClient({
   alias,
+  sessionToken,
   currentStep,
   totalSteps,
   gateTimerSeconds = 15,
@@ -29,6 +31,13 @@ export function GatePageClient({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const actionSectionRef = useRef<HTMLDivElement>(null)
+
+  // Ensure cookie is synced on the client
+  useEffect(() => {
+    if (sessionToken && typeof document !== "undefined") {
+      document.cookie = `ul0_gate_token=${encodeURIComponent(sessionToken)}; path=/; max-age=1800; SameSite=Lax`
+    }
+  }, [sessionToken])
 
   // Countdown timer
   useEffect(() => {
@@ -69,6 +78,7 @@ export function GatePageClient({
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ token: sessionToken }),
       })
 
       const data = await res.json()
