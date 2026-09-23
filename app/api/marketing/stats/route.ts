@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth, currentUser } from "@clerk/nextjs/server"
+import { auth } from "@clerk/nextjs/server"
 
-const ALLOWED_EMAIL = "kesarsaket607@gmail.com"
-const ADSTERRA_API_KEY = process.env.ADSTERRA_API_KEY || "56188156bd4e849a3a8eabc78793a431"
+const MARKETING_ADMIN_ID = process.env.MARKETING_ADMIN_CLERK_USER_ID || ""
+const ADSTERRA_API_KEY = process.env.ADSTERRA_API_KEY || ""
 
 function formatDate(d: Date): string {
   return d.toISOString().split("T")[0]
@@ -11,14 +11,27 @@ function formatDate(d: Date): string {
 export async function GET(req: NextRequest) {
   try {
     const { userId } = await auth()
-    const user = await currentUser()
-    const email = user?.emailAddresses?.[0]?.emailAddress?.toLowerCase()
+    if (!userId || !MARKETING_ADMIN_ID || userId !== MARKETING_ADMIN_ID) {
+      return NextResponse.json({ error: "Forbidden." }, { status: 403 })
+    }
 
-    if (!userId || email !== ALLOWED_EMAIL) {
-      return NextResponse.json(
-        { error: "Unauthorized." },
-        { status: 403 }
-      )
+    if (!ADSTERRA_API_KEY) {
+      return NextResponse.json({
+        success: true,
+        summary: {
+          totalRevenue: 0,
+          totalImpressions: 0,
+          totalClicks: 0,
+          avgCpm: 0,
+          overallCtr: 0,
+          todayRevenue: 0,
+          todayImpressions: 0,
+        },
+        daily: [],
+        countries: [],
+        lastUpdated: new Date().toISOString(),
+        note: "ADSTERRA_API_KEY not configured.",
+      })
     }
 
     const today = new Date()
@@ -27,7 +40,6 @@ export async function GET(req: NextRequest) {
     const finishDate = formatDate(today)
     const startDate = formatDate(thirtyDaysAgo)
 
-    // Fetch daily stats
     const dailyUrl = `https://api3.adsterratools.com/publisher/stats.json?start_date=${startDate}&finish_date=${finishDate}`
     const countryUrl = `https://api3.adsterratools.com/publisher/stats.json?start_date=${startDate}&finish_date=${finishDate}&group_by=country`
 
@@ -48,7 +60,6 @@ export async function GET(req: NextRequest) {
     const dailyItems: any[] = dailyData.items || []
     const countryItems: any[] = countryData.items || []
 
-    // Calculate totals
     let totalRevenue = 0
     let totalImpressions = 0
     let totalClicks = 0
@@ -62,8 +73,7 @@ export async function GET(req: NextRequest) {
     const avgCpm = totalImpressions > 0 ? (totalRevenue / totalImpressions) * 1000 : 0
     const overallCtr = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0
 
-    // Today's revenue
-    const todayItem = dailyItems.find((i) => i.date === finishDate)
+    const todayItem = dailyItems.find((i: any) => i.date === finishDate)
     const todayRevenue = todayItem ? parseFloat(todayItem.revenue || 0) : 0
     const todayImpressions = todayItem ? parseInt(todayItem.impression || 0, 10) : 0
 
@@ -78,14 +88,14 @@ export async function GET(req: NextRequest) {
         todayRevenue,
         todayImpressions,
       },
-      daily: dailyItems.slice(-14).reverse(), // Last 14 days
-      countries: countryItems.slice(0, 10), // Top 10 countries
+      daily: dailyItems.slice(-14).reverse(),
+      countries: countryItems.slice(0, 10),
       lastUpdated: new Date().toISOString(),
     })
   } catch (error: any) {
     console.error("Adsterra stats fetch error:", error)
     return NextResponse.json(
-      { error: error.message || "Failed to fetch Adsterra stats." },
+      { error: "Failed to fetch stats." },
       { status: 500 }
     )
   }

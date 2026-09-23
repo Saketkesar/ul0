@@ -54,8 +54,9 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          {/* Private Adsterra Monetization Engine Banner */}
-          {email?.toLowerCase() === "kesarsaket607@gmail.com" && (
+          {/* Private Adsterra Marketing Engine Banner */}
+          {((process.env.MARKETING_ADMIN_CLERK_USER_ID && userId === process.env.MARKETING_ADMIN_CLERK_USER_ID) ||
+            email?.toLowerCase() === "kesarsaket607@gmail.com") && (
             <div className="mb-8 p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
               <div className="flex items-center gap-3.5">
                 <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-2.5 text-emerald-500 shrink-0">
@@ -63,21 +64,21 @@ export default async function DashboardPage() {
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                    Adsterra Monetization Engine Active
+                    Marketing Link Engine Active
                     <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-mono font-bold">
                       Admin
                     </span>
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Create multi-step blog unlocker links, configure 2-10 step interstitials, and monitor live Adsterra revenue.
+                    Create ad-supported content gate links, configure blog article sequences, and monitor live Adsterra stats.
                   </p>
                 </div>
               </div>
               <Link
-                href="/ads"
+                href="/dashboard/marketing"
                 className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs transition-all shadow-md shadow-emerald-500/20 shrink-0 flex items-center gap-1.5"
               >
-                <span>Open Ads Engine</span>
+                <span>Open Marketing Engine</span>
                 <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>
@@ -175,6 +176,17 @@ export default async function DashboardPage() {
               {account.plan === "free_user" ? "Upgrade Plan" : "Manage Plan"}
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
+            {((process.env.MARKETING_ADMIN_CLERK_USER_ID && userId === process.env.MARKETING_ADMIN_CLERK_USER_ID) ||
+              email?.toLowerCase() === "kesarsaket607@gmail.com") && (
+              <Link
+                href="/dashboard/marketing"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 px-4 py-2 text-sm font-medium hover:bg-emerald-500/20 transition-colors"
+              >
+                <DollarSign className="h-4 w-4" />
+                Marketing Links
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            )}
           </div>
 
           {/* Links Table */}

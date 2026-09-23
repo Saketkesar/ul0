@@ -16,7 +16,7 @@ export const COLLECTIONS = {
   subscriptions: "subscriptions",
   split_sessions: "split_sessions",
   backlinks: "backlinks",
-  monetized_links: "monetized_links",
+  marketing_links: "marketing_links",
 } as const
 
 export type CollectionId = (typeof COLLECTIONS)[keyof typeof COLLECTIONS]
