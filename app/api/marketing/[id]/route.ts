@@ -5,8 +5,7 @@ import {
   toggleMarketingLinkActive,
 } from "@/lib/appwrite/marketing-links"
 import { checkRateLimit } from "@/lib/redis"
-
-const MARKETING_ADMIN_ID = process.env.MARKETING_ADMIN_CLERK_USER_ID || ""
+import { isMarketingAdmin } from "@/lib/marketing-auth"
 
 export async function PATCH(
   req: NextRequest,
@@ -14,7 +13,8 @@ export async function PATCH(
 ) {
   try {
     const { userId } = await auth()
-    if (!userId || !MARKETING_ADMIN_ID || userId !== MARKETING_ADMIN_ID) {
+    const authorized = await isMarketingAdmin(userId)
+    if (!authorized) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 })
     }
 
@@ -43,7 +43,8 @@ export async function DELETE(
 ) {
   try {
     const { userId } = await auth()
-    if (!userId || !MARKETING_ADMIN_ID || userId !== MARKETING_ADMIN_ID) {
+    const authorized = await isMarketingAdmin(userId)
+    if (!authorized) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 })
     }
 

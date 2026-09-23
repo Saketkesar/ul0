@@ -4,8 +4,8 @@ import { createMarketingLink, getMarketingLinkByAlias } from "@/lib/appwrite/mar
 import { selectRandomBlogs, getTotalBlogCount } from "@/lib/blog-discovery"
 import { validateUrl } from "@/lib/utils/slug"
 import { checkRateLimit } from "@/lib/redis"
+import { isMarketingAdmin } from "@/lib/marketing-auth"
 
-const MARKETING_ADMIN_ID = process.env.MARKETING_ADMIN_CLERK_USER_ID || ""
 const MAX_GATE_BLOGS = parseInt(process.env.MAX_GATE_BLOGS || "10", 10)
 
 // Reserved route prefixes that cannot be used as aliases
@@ -40,7 +40,8 @@ export async function POST(req: NextRequest) {
   try {
     const { userId } = await auth()
 
-    if (!userId || !MARKETING_ADMIN_ID || userId !== MARKETING_ADMIN_ID) {
+    const authorized = await isMarketingAdmin(userId)
+    if (!authorized) {
       return NextResponse.json(
         { error: "Forbidden." },
         { status: 403 }
