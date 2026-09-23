@@ -43,9 +43,17 @@ export default clerkMiddleware(async (auth, req) => {
     "/link-in-bio": "/",
     "/url-expander": "/",
     "/qr-code-for-business": "/qr",
+    "/ads": "/dashboard/marketing",
+    "/dashboard/ads": "/dashboard/marketing",
   }
   if (LEGACY_REDIRECTS[path]) {
     return NextResponse.redirect(new URL(LEGACY_REDIRECTS[path], req.url), 301)
+  }
+
+  // Redirect legacy /m/:slug to /go/:slug
+  if (path.startsWith("/m/")) {
+    const slug = path.replace("/m/", "")
+    return NextResponse.redirect(new URL(`/go/${slug}`, req.url), 301)
   }
 
   // Determine if it is a custom domain request (not local or main site)
