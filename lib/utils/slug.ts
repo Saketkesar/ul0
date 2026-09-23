@@ -295,6 +295,7 @@ const RESERVED_SLUGS = [
   'about', 'pricing', 'support', 'status', 'legal',
   'assets', 'images', 'css', 'js', 'fonts', 'media',
   'qr', 'wifi', 'split', 'r', 'es', 'hi', 'id', 'pt', 'th', 'vi',
+  'go', 'marketing', 'ads', 'm',
 ]
 
 // Slug constraints

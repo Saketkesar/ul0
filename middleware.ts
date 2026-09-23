@@ -114,8 +114,8 @@ export default clerkMiddleware(async (auth, req) => {
       "/security",
       "/threats",
       "/backlinks",
-      "/ads",
-      "/m",
+      "/go",
+      "/marketing",
     ]
 
     // 3. Check if it's a reserved path
