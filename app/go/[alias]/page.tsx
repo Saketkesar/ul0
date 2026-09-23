@@ -75,7 +75,10 @@ export default async function GatePage({ params }: PageProps) {
   // If token is invalid or belongs to a different alias, generate a fresh session
   if (!session || session.alias !== link.alias) {
     token = generateSessionToken()
-    const selectedSlugs = selectRandomBlogs(link.blog_count || 3)
+    let selectedSlugs = selectRandomBlogs(link.blog_count || 3)
+    if (!selectedSlugs || selectedSlugs.length === 0) {
+      selectedSlugs = ["link-shortening-best-practices-2026"]
+    }
 
     session = await createGateSession(token, {
       marketing_link_id: link.$id,
@@ -86,15 +89,6 @@ export default async function GatePage({ params }: PageProps) {
 
     // Track open
     incrementGateOpens(link.$id).catch(console.error)
-
-    // Set cookie
-    cookieStore.set(GATE_SESSION_COOKIE, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 30 * 60, // 30 minutes
-      path: "/",
-    })
   }
 
   // 3. Completion Check
@@ -106,7 +100,7 @@ export default async function GatePage({ params }: PageProps) {
   await markStepStarted(token!, session.current_step)
 
   // 5. Load the current step's blog article
-  const currentSlug = session.blog_slugs[session.current_step]
+  const currentSlug = session.blog_slugs[session.current_step] || session.blog_slugs[0]
   const BlogComponent = await getBlogComponent(currentSlug)
 
   // Parse destination hostname for preview
@@ -120,6 +114,7 @@ export default async function GatePage({ params }: PageProps) {
   return (
     <GatePageClient
       alias={link.alias}
+      sessionToken={token!}
       currentStep={session.current_step}
       totalSteps={session.blog_slugs.length}
       gateTimerSeconds={GATE_TIMER_SECONDS}
