@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
     const urlValidation = validateUrl(destUrl)
     if (!urlValidation.valid) {
       return NextResponse.json(
-        { error: urlValidation.reason || "Invalid destination URL." },
+        { error: urlValidation.error || "Invalid destination URL." },
         { status: 400 }
       )
     }
@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
     const doc = await createMarketingLink({
       alias,
       destination_url: destUrl,
-      owner_clerk_user_id: userId,
+      owner_clerk_user_id: userId!,
       blog_count: blogCount,
     })
 

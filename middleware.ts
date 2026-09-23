@@ -26,12 +26,10 @@ const securityHeaders: Record<string, string> = {
 export default clerkMiddleware(async (auth, req) => {
   // Protect dashboard and settings routes
   if (isProtectedRoute(req)) {
-    await auth.protect({
-      unauthenticatedUrl: new URL(
-        `/sign-in?redirect_url=${encodeURIComponent(req.nextUrl.pathname)}`,
-        req.url
-      ).toString(),
-    })
+    const { userId } = await auth()
+    if (!userId) {
+      return (await auth()).redirectToSignIn({ returnBackUrl: req.url })
+    }
   }
 
   const url = req.nextUrl.clone()
