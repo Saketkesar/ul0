@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
+import { isMarketingAdmin } from "@/lib/marketing-auth"
 
-const MARKETING_ADMIN_ID = process.env.MARKETING_ADMIN_CLERK_USER_ID || ""
 const ADSTERRA_API_KEY = process.env.ADSTERRA_API_KEY || ""
 
 function formatDate(d: Date): string {
@@ -11,7 +11,8 @@ function formatDate(d: Date): string {
 export async function GET(req: NextRequest) {
   try {
     const { userId } = await auth()
-    if (!userId || !MARKETING_ADMIN_ID || userId !== MARKETING_ADMIN_ID) {
+    const authorized = await isMarketingAdmin(userId)
+    if (!authorized) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 })
     }
 

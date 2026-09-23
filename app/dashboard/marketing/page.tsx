@@ -6,6 +6,7 @@ import { Footer } from "@/components/footer"
 import { MarketingDashboardClient } from "@/components/marketing-dashboard-client"
 import { listMarketingLinksByOwner } from "@/lib/appwrite/marketing-links"
 import { getTotalBlogCount } from "@/lib/blog-discovery"
+import { isMarketingAdmin } from "@/lib/marketing-auth"
 import { Lock } from "lucide-react"
 
 export const dynamic = "force-dynamic"
@@ -15,7 +16,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-const MARKETING_ADMIN_ID = process.env.MARKETING_ADMIN_CLERK_USER_ID || ""
 const MAX_GATE_BLOGS = parseInt(process.env.MAX_GATE_BLOGS || "10", 10)
 
 export default async function MarketingDashboardPage() {
@@ -24,8 +24,9 @@ export default async function MarketingDashboardPage() {
     redirect("/sign-in?redirect_url=/dashboard/marketing")
   }
 
-  // Server-side authorization: Clerk user ID check
-  if (!MARKETING_ADMIN_ID || userId !== MARKETING_ADMIN_ID) {
+  // Server-side authorization check
+  const authorized = await isMarketingAdmin(userId)
+  if (!authorized) {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <Header />
