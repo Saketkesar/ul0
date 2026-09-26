@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import {
@@ -161,6 +162,18 @@ export default function ToolsIndexPage() {
             <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
               Fast, privacy-conscious tools for webmasters, digital marketers, and software engineers. No paywalls, no mandatory signups, and zero data selling.
             </p>
+          </div>
+
+          {/* Ecosystem Visual Banner */}
+          <div className="mb-16 overflow-hidden rounded-2xl sm:rounded-3xl border border-border shadow-lg bg-card/50">
+            <Image
+              src="/githubbanner.png"
+              alt="UL0 Tools Ecosystem — A collection of free tools for everyone"
+              width={1600}
+              height={500}
+              className="w-full h-auto object-cover"
+              priority
+            />
           </div>
 
           {/* Categories */}

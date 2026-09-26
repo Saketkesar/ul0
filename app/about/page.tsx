@@ -3,6 +3,7 @@ import { Footer } from "@/components/footer"
 import { Metadata } from "next"
 import { Link2, Globe, ShieldCheck, Zap, BarChart3, Code2, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
@@ -67,6 +68,18 @@ export default function AboutPage() {
             <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               UL0 was created to solve a fundamental problem on the modern web: legacy link shorteners had become bloated, prohibitively expensive, and cluttered with intrusive interstitials. We set out to build a clean, blazing-fast, and developer-friendly alternative.
             </p>
+
+            {/* Banner Showcase */}
+            <div className="mt-12 overflow-hidden rounded-2xl sm:rounded-3xl border border-border shadow-xl bg-card">
+              <Image
+                src="/githubbanner.png"
+                alt="UL0 Ecosystem — Link Shortener & Free Tools Suite"
+                width={1600}
+                height={500}
+                className="w-full h-auto object-cover"
+                priority
+              />
+            </div>
           </div>
         </section>
 

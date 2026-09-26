@@ -1,9 +1,13 @@
 <div align="center">
-  <img src="https://ul0.site/ul0.png" alt="ul0 logo" width="380" style="border-radius: 12px;" />
+  <a href="https://ul0.site">
+    <img src="./public/githubbanner.png" alt="UL0 — More than a URL Shortener" width="100%" style="border-radius: 14px;" />
+  </a>
 
-  <h1>ul0 — Branded Custom Domain Link Shortener</h1>
+  <br/><br/>
 
-  <p>A free URL shortener, branded link management platform, and multi-tool utility suite built for startups, creators, and digital marketers.</p>
+  <h1>UL0 — Link Management, Branded Short Links &amp; Analytics</h1>
+
+  <p>An enterprise-grade URL shortener, branded domain management platform, and high-performance developer tool suite built for startups, marketing agencies, and creators.</p>
 
   <p>
     <a href="https://www.nxgntools.com/tools/ul0?utm_source=ul0" target="_blank">
