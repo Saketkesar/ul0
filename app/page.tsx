@@ -8,58 +8,48 @@ import { hreflangAlternates } from "@/lib/i18n"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
-  title: "Free URL Shortener 2026 - Shorten Links Instantly | ul0",
-  description: "ul0 is the best free URL shortener of 2026. Shorten links instantly — no signup required. Includes free QR codes, branded custom domain short links, click analytics, UTM campaign tools, and expense splitting.",
+  title: "UL0 — Link Management, Short Links & Link Analytics",
+  description: "UL0 is a high-performance link management platform. Shorten links, connect custom branded domains, generate dynamic QR codes, and track real-time click analytics. Free with no signup required.",
   keywords: [
-    "url shortener",
-    "free url shortener",
-    "link shortener",
-    "shorten url",
-    "short link",
-    "free url shortener 2026",
-    "best url shortener 2026",
-    "bitly alternative free",
-    "tinyurl alternative",
-    "custom domain short link free",
-    "branded url shortener free",
-    "url shortener no signup",
-    "qr code url shortener",
-    "link shortener with analytics",
-    "url shortener with tracking",
-    "free custom domain link shortener",
-    "short url generator",
-    "shorten youtube link",
-    "social media link shortener",
-    "free online url shortener",
-    "image to pdf converter free",
-    "pdf tools online free",
-    "document scanner online",
-    "how to shorten a url",
     "link management",
+    "url shortener",
+    "short links",
+    "link analytics",
+    "branded short links",
+    "custom domain link shortener",
+    "qr code generator",
+    "track link clicks",
+    "utm campaign builder",
+    "bitly alternative",
+    "free url shortener",
+    "link tracking software",
+    "shorten url",
+    "small business link tracking",
+    "marketing link shortener",
   ],
   alternates: {
     canonical: "https://ul0.site",
     languages: hreflangAlternates,
   },
   openGraph: {
-    title: "Free URL Shortener Online - Shorten Links Instantly | ul0",
-    description: "ul0 is a free URL shortener with QR codes, click tracking, UTM tools, and expense splitting. Shorten links instantly with no signup required.",
+    title: "UL0 — Link Management, Short Links & Link Analytics",
+    description: "Shorten links, generate trackable QR codes, connect custom domains, and track click analytics in real-time. Free & no signup required.",
     url: "https://ul0.site",
     type: "website",
-    siteName: "ul0 - Free URL Shortener",
+    siteName: "UL0 - Link Management Platform",
     locale: "en_US",
     images: [{
       url: "https://ul0.site/ul0.png",
       width: 1200,
       height: 630,
-      alt: "ul0 - Best Free URL Shortener 2026",
+      alt: "UL0 — Link Management, Short Links & Link Analytics",
       type: "image/webp",
     }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free URL Shortener - Shorten Links Instantly | ul0",
-    description: "ul0 is a free URL shortener with QR codes, click tracking, UTM tools, and expense splitting.",
+    title: "UL0 — Link Management, Short Links & Link Analytics",
+    description: "Shorten links, generate trackable QR codes, connect custom domains, and track click analytics in real-time.",
     images: ["https://ul0.site/ul0.webp"],
   },
   robots: {
@@ -335,13 +325,13 @@ export default function HomePage() {
               </div>
               
               <h1 className="mb-3 text-balance text-2xl font-bold tracking-tight text-foreground sm:mb-5 sm:text-4xl lg:text-5xl">
-                Free URL Shortener Online
+                Link Management, Short Links & Real-Time Analytics
               </h1>
               <p className="mb-2 text-pretty text-base text-muted-foreground sm:text-xl">
-                Shorten any link instantly. <strong>No signup required.</strong>
+                Shorten links, generate trackable QR codes, and connect custom branded domains. <strong>No signup required to start.</strong>
               </p>
               <p className="mb-5 text-pretty text-sm text-muted-foreground sm:mb-8 sm:text-base">
-                Create short URLs for free • Track clicks • Split expenses with UPI QR codes
+                Permanent 301 Redirects • Dynamic QR Codes • Real-Time Click Attribution • Custom Domain Support
               </p>
 
               <LinkShortenerForm />
@@ -349,31 +339,37 @@ export default function HomePage() {
               {/* SEO-rich content below form */}
               <div className="mt-8 text-left text-sm text-muted-foreground space-y-6">
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Why Use ul0 URL Shortener?</h3>
+                  <h3 className="text-lg font-semibold text-foreground mb-2">Why Modern Teams Choose UL0</h3>
                   <ul className="space-y-1.5 list-disc list-inside">
-                    <li><strong>100% Free</strong> - No hidden costs, no premium plans needed</li>
-                    <li><strong>No Signup</strong> - Start shortening URLs instantly without registration</li>
-                    <li><strong>Permanent Links</strong> - Your short URLs never expire</li>
-                    <li><strong>Fast Redirects</strong> - Lightning-fast URL redirection</li>
-                    <li><strong>Mobile Friendly</strong> - Works perfectly on all devices</li>
+                    <li><strong>Permanent 301 Redirects</strong> - Maximum link equity and SEO authority pass-through</li>
+                    <li><strong>Branded Custom Domains</strong> - Up to 34% higher CTR with branded links like yourbrand.link</li>
+                    <li><strong>Privacy-Conscious Analytics</strong> - Track clicks, country, device, and referrer without invasive tracking</li>
+                    <li><strong>High-Resolution QR Codes</strong> - Auto-generated vector QR codes ready for print and digital marketing</li>
+                    <li><strong>Instant Access</strong> - Shorten links immediately with zero mandatory registration</li>
                   </ul>
                 </div>
 
                 <div className="space-y-3 leading-relaxed text-sm">
-                  <h3 className="text-lg font-semibold text-foreground">Advanced Link Management & QR Codes</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Infrastructure Built for Creators, Agencies & Businesses</h3>
                   <p>
-                    ul0 is a state-of-the-art URL shortener and link compressor designed to streamline your online sharing experience. Whether you are a social media influencer, an ecommerce brand, or a digital marketer, clean links are critical to maximizing CTR (Click-Through Rates). By transforming long, unwieldy, tracking-heavy web addresses into short, elegant redirect aliases, ul0 ensures your links look trustworthy and professional across platforms like Instagram, YouTube, Twitter, and TikTok.
+                    UL0 transforms unwieldy, tracking-heavy URLs into clean, secure, and professional branded links. Whether you are running multichannel marketing campaigns across LinkedIn, Instagram, and YouTube, or printing flyers with QR codes, UL0 ensures your links look trustworthy and load with sub-millisecond redirect latency.
                   </p>
                   <p>
-                    Unlike generic SaaS templates, our platform runs entirely on high-performance servers to guarantee lightning-fast redirections. We automatically generate a secure QR code for every shortened link, allowing you to bridge the gap between offline print materials and your online presence instantly. All shortened addresses are permanent and monitored for safety, shielding your audience from malicious redirects.
+                    Every shortened link is continuously screened against malware and phishing databases to protect both your brand reputation and your visitors. With built-in UTM campaign tagging, device attribution, and custom domain CNAME routing, UL0 delivers full enterprise-grade link management without the high subscription costs of legacy tools.
                   </p>
                 </div>
 
-                <div className="space-y-3 leading-relaxed text-sm">
-                  <h3 className="text-lg font-semibold text-foreground">Integrated Expense Splitting & Document Tools</h3>
-                  <p>
-                    Beyond link compression, ul0 offers built-in tools to support your daily productivity. Our UPI-powered Bill Splitter allows friends, housemates, and travel groups to calculate shared tabs and generate scan-and-pay payment codes on-the-fly. Additionally, our new <strong>PDF Scanner & Tools</strong> lets you scan documents with your camera, auto-crop them like a professional scanner, convert images into multi-page PDFs, and merge, reorder, or rename files entirely in your browser.
+                <div className="rounded-xl border border-border/60 bg-muted/20 p-4">
+                  <h4 className="font-semibold text-foreground text-sm mb-1">Looking for Developer & Web Utilities?</h4>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    Explore our free online tools including UTM Builder, QR Generator, HTTP Redirect Tracer, URL Expander, and OpenGraph Previewer.
                   </p>
+                  <Link
+                    href="/tools"
+                    className="inline-flex items-center text-xs font-semibold text-primary hover:underline"
+                  >
+                    Browse all free developer tools →
+                  </Link>
                 </div>
               </div>
             </div>

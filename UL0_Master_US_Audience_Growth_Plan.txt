@@ -1,0 +1,649 @@
+UL0 — MASTER US AUDIENCE GROWTH PLAN
+=====================================
+
+GOAL
+----
+Build real US traffic for UL0 through useful products, search intent, developer distribution, US-relevant use cases, and product-led growth.
+
+PRIMARY OBJECTIVE
+-----------------
+Do NOT chase US traffic by buying visitors or manipulating geolocation.
+
+Target:
+- Real US users
+- Organic search traffic
+- Product-led traffic
+- Developer traffic
+- Small-business traffic
+- Creator/marketing traffic
+- Potential paying customers
+
+The goal is qualified US traffic, not merely a higher US percentage in analytics.
+
+
+PHASE 0 — STOP THE BLEEDING
+===========================
+
+[ ] Do not buy traffic.
+[ ] Do not buy "10,000 US visitors".
+[ ] Do not use traffic exchanges.
+[ ] Do not use bots.
+[ ] Do not use VPN/proxy traffic to manufacture US users.
+[ ] Do not buy cheap backlinks.
+[ ] Do not mass-produce AI SEO pages.
+[ ] Do not buy more domains yet.
+[ ] Keep infrastructure spending minimal.
+
+Priority:
+PRODUCT -> SEARCH VISIBILITY -> DISTRIBUTION -> MONETIZATION
+
+
+PHASE 1 — FIX UL0'S POSITIONING
+===============================
+
+Main positioning:
+
+"UL0 — Link Management, Short Links & Link Analytics"
+
+Core product:
+[ ] URL shortener
+[ ] Link analytics
+[ ] QR codes
+[ ] Branded links
+[ ] Custom domains
+[ ] Smart redirects
+[ ] Password-protected links
+[ ] Expiring links
+[ ] Developer API
+[ ] Webhooks
+
+Move unrelated tools under /tools/.
+
+Recommended structure:
+
+/
+ /features
+ /analytics
+ /qr-codes
+ /custom-domains
+ /smart-redirects
+ /password-protected-links
+ /expiring-links
+ /api
+ /docs
+ /pricing
+ /tools
+ /blog
+ /about
+ /contact
+ /security
+ /status
+ /changelog
+
+
+PHASE 2 — US-RELEVANT USE CASES
+===============================
+
+Do NOT create fake city/state landing pages.
+
+Create genuine use-case pages:
+
+[ ] /use-cases/small-business
+[ ] /use-cases/marketing-agencies
+[ ] /use-cases/real-estate
+[ ] /use-cases/restaurants
+[ ] /use-cases/events
+[ ] /use-cases/creators
+[ ] /use-cases/ecommerce
+[ ] /use-cases/startups
+
+Every page:
+[ ] Real problem
+[ ] Real workflow
+[ ] Screenshots
+[ ] Concrete examples
+[ ] Product explanation
+[ ] FAQ
+[ ] Internal links
+[ ] CTA to try UL0
+[ ] No fake statistics
+[ ] No keyword stuffing
+
+
+PHASE 3 — HIGH-VALUE US CONTENT
+================================
+
+Do NOT publish dozens of generic "best URL shortener" articles.
+
+First 20 articles:
+
+1. How to Track QR Code Scans for a Restaurant
+2. How Small Businesses Can Track Marketing Links
+3. How to Track Instagram Link Clicks
+4. How to Track YouTube Campaign Links
+5. How to Track Links in Email Marketing
+6. QR Code Tracking for Real Estate Marketing
+7. Link Tracking for Open Houses and Property Flyers
+8. How Marketing Agencies Track Client Campaign Links
+9. How to Create Branded Short Links for a Business
+10. What Are UTM Parameters? A Practical Guide
+11. How to Build a Trackable QR Code
+12. How Link Analytics Works
+13. How to Track QR Codes on Printed Flyers
+14. How to Track Links Across Multiple Marketing Channels
+15. How to Use Custom Domains for Branded Links
+16. Password-Protected Links: When Should You Use Them?
+17. How Expiring Links Work
+18. How to Track Campaigns Without Spreadsheets
+19. URL Shortener API Guide for Developers
+20. How to Build a Link Analytics Dashboard
+
+Every article should include:
+[ ] Original writing
+[ ] Original screenshots
+[ ] Examples
+[ ] Tables where useful
+[ ] Code where useful
+[ ] Internal links
+[ ] A useful UL0 tool or feature
+[ ] Author information
+[ ] Last updated date
+[ ] Sources when claims require them
+
+Never invent statistics.
+
+
+PHASE 4 — FREE TOOLS FOR SEARCH
+===============================
+
+Launch:
+[ ] QR Code Generator
+[ ] UTM Builder
+[ ] Redirect Checker
+[ ] URL Expander
+[ ] Open Graph Preview
+[ ] Meta Tag Generator
+[ ] Link Preview Generator
+
+Suggested URLs:
+
+/tools/qr-code-generator
+/tools/utm-builder
+/tools/redirect-checker
+/tools/url-expander
+/tools/og-preview
+/tools/meta-tag-generator
+/tools/link-preview
+
+Each tool page:
+[ ] Working tool
+[ ] Explanation
+[ ] Examples
+[ ] FAQ
+[ ] Related guides
+[ ] UL0 CTA
+
+
+PHASE 5 — TARGET US SEARCH INTENT
+=================================
+
+Focus on intent, not nationality.
+
+Good targets:
+- QR code tracking for restaurants
+- link tracking for real estate
+- branded links for small businesses
+- track Instagram campaign links
+- QR code analytics
+- link analytics for marketing agencies
+- URL shortener API
+
+Avoid mass-producing:
+- New York URL shortener
+- California URL shortener
+- Texas URL shortener
+- City-by-city duplicate pages
+
+Do not create doorway pages.
+
+
+PHASE 6 — GOOGLE SEARCH CONSOLE SYSTEM
+======================================
+
+Every week check:
+[ ] Impressions
+[ ] Clicks
+[ ] CTR
+[ ] Average position
+[ ] Queries
+[ ] Pages
+[ ] Countries
+[ ] Indexing
+[ ] Core Web Vitals
+
+Maintain:
+
+PAGE | QUERY | IMPRESSIONS | CLICKS | CTR | POSITION | ACTION
+
+Rules:
+High impressions + low CTR -> improve title/meta description.
+High impressions + position 20–50 -> improve content depth/internal links.
+Position 50+ -> rework search intent/content.
+High clicks -> create related content.
+
+
+PHASE 7 — INTERNAL LINKING
+==========================
+
+Every article should link to:
+[ ] One product feature
+[ ] One free tool
+[ ] Two related articles
+[ ] Pricing
+[ ] Relevant use case
+
+Example:
+
+Restaurant QR article
+    -> QR Generator
+    -> QR Analytics
+    -> Restaurant Use Case
+    -> Pricing
+
+
+PHASE 8 — US DISTRIBUTION
+=========================
+
+Developer:
+[ ] GitHub
+[ ] Hacker News
+[ ] Dev.to
+[ ] Hashnode
+[ ] Relevant Reddit communities where self-promotion is permitted
+
+Startup:
+[ ] Product Hunt
+[ ] Indie Hackers
+[ ] X
+[ ] LinkedIn
+
+Marketing:
+[ ] LinkedIn
+[ ] Relevant marketing communities
+[ ] YouTube
+[ ] Short-form video
+
+RULE:
+Never spam. Give communities something useful first.
+
+
+PHASE 9 — GITHUB GROWTH
+=======================
+
+Improve README:
+[ ] Clear one-line description
+[ ] Demo
+[ ] Screenshots
+[ ] Features
+[ ] Tech stack
+[ ] Self-hosting instructions
+[ ] Docker instructions
+[ ] API documentation
+[ ] Contribution guide
+[ ] License
+[ ] Roadmap
+
+Build:
+[ ] GitHub template
+[ ] Docker image
+[ ] One-command deployment
+[ ] API examples
+[ ] SDK examples
+
+Developer positioning:
+[ ] Self-hosted URL shortener
+[ ] Open-source link analytics
+[ ] Privacy-focused link tracking
+[ ] Developer URL shortener API
+
+
+PHASE 10 — PRODUCT-LED GROWTH
+=============================
+
+Add:
+[ ] Optional "Powered by UL0"
+[ ] Shareable analytics reports
+[ ] Public campaign reports
+[ ] QR codes
+[ ] Referral program
+[ ] Developer API
+[ ] Embeddable widgets
+
+Referral example:
+Invite 3 users -> 1 month Pro
+Invite 10 users -> 3 months Pro
+
+Keep rewards sustainable.
+
+
+PHASE 11 — MAKE UL0 WORTH PAYING FOR
+====================================
+
+FREE
+----
+[ ] Limited links
+[ ] Basic analytics
+[ ] QR codes
+
+PRO — approximately $3–5/month
+------------------------------
+[ ] Unlimited links
+[ ] Advanced analytics
+[ ] Country
+[ ] Region
+[ ] City where appropriate
+[ ] Device
+[ ] Browser
+[ ] Referrer
+[ ] UTM tracking
+[ ] Password-protected links
+[ ] Expiring links
+[ ] Click limits
+[ ] Custom aliases
+[ ] CSV export
+[ ] Custom domains
+
+BUSINESS — approximately $10–20/month
+-------------------------------------
+[ ] Teams
+[ ] Workspaces
+[ ] API
+[ ] Webhooks
+[ ] White-label
+[ ] Scheduled reports
+[ ] Advanced permissions
+[ ] AI insights
+
+
+PHASE 12 — LINK ANALYTICS
+=========================
+
+Track:
+[ ] Country
+[ ] Region
+[ ] City where legally and technically appropriate
+[ ] Device
+[ ] Browser
+[ ] OS
+[ ] Referrer
+[ ] UTM parameters
+[ ] Language
+[ ] Timezone
+[ ] Bot traffic
+[ ] Unique visitors
+[ ] Returning visitors
+
+Dashboard:
+Clicks
+Unique visitors
+Countries
+Devices
+Referrers
+UTM campaigns
+Top links
+Peak hours
+
+AI insights:
+- "US traffic increased 27% this week."
+- "Mobile users generated 71% of clicks."
+- "Your highest traffic period was 7–9 PM Eastern Time."
+
+Do not expose unnecessary personal data.
+
+
+PHASE 13 — PERFORMANCE
+======================
+
+[ ] Fast homepage
+[ ] Fast tool pages
+[ ] Fast blog pages
+[ ] Minimal JavaScript
+[ ] Optimized images
+[ ] WebP/AVIF where appropriate
+[ ] Lazy loading
+[ ] CDN
+[ ] Caching
+[ ] Good Core Web Vitals
+
+Do not add heavy ad scripts before you have meaningful traffic.
+
+
+PHASE 14 — TRUST
+================
+
+Add:
+[ ] About page
+[ ] Founder information
+[ ] Contact
+[ ] Privacy Policy
+[ ] Terms
+[ ] Cookie Policy
+[ ] Refund Policy if applicable
+[ ] Security page
+[ ] Responsible disclosure
+[ ] Status page
+[ ] Changelog
+[ ] GitHub
+[ ] Documentation
+
+Remove questionable marketing claims.
+Do not advertise backlink metrics such as "DR 86 dofollow" as a trust signal.
+Do not publish unsupported CTR or performance statistics.
+
+
+PHASE 15 — ADSENSE
+==================
+
+Do NOT make AdSense the primary growth strategy.
+
+Before reapplying:
+[ ] Resolve duplicate-account issue.
+[ ] Keep only one AdSense account belonging to you.
+[ ] Do not use someone else's account to bypass the issue.
+[ ] Ensure public pages are crawlable.
+[ ] Ensure original content is substantial.
+[ ] Ensure navigation is clear.
+[ ] Ensure no pages are under construction.
+[ ] Ensure traffic sources are legitimate.
+[ ] Ensure policies are followed.
+[ ] Ensure ads are not placed on thin pages.
+
+Apply only after meaningful improvements.
+
+
+PHASE 16 — MONEY MANAGEMENT
+===========================
+
+With a limited budget:
+
+Spend $0 on:
+[ ] Fake traffic
+[ ] Traffic exchanges
+[ ] Fake backlinks
+[ ] SEO guarantees
+[ ] Unnecessary domains
+
+Prioritize:
+[ ] Hosting
+[ ] Domain renewal
+[ ] Essential infrastructure
+[ ] Product development
+
+Do not buy additional TLDs until UL0 has meaningful revenue or traffic.
+
+
+30-DAY EXECUTION PLAN
+=====================
+
+DAYS 1–3
+--------
+[ ] Fix homepage positioning.
+[ ] Remove unrelated products from primary messaging.
+[ ] Remove questionable SEO/backlink claims.
+[ ] Fix titles/meta descriptions.
+[ ] Check robots.txt.
+[ ] Check sitemap.xml.
+[ ] Check canonical URLs.
+[ ] Check indexing.
+[ ] Verify Search Console.
+
+DAYS 4–7
+--------
+[ ] Build feature pages.
+[ ] Build use-case pages.
+[ ] Improve pricing.
+[ ] Add trust pages.
+[ ] Improve README.
+
+WEEK 2
+------
+[ ] Launch QR Generator.
+[ ] Launch UTM Builder.
+[ ] Launch Redirect Checker.
+[ ] Publish 5 high-quality US-relevant guides.
+
+WEEK 3
+------
+[ ] Publish 5 more guides.
+[ ] Improve internal linking.
+[ ] Prepare Product Hunt/Indie Hackers launch.
+[ ] Post useful content on developer communities.
+[ ] Create 3–5 LinkedIn posts.
+[ ] Create 3–5 X posts.
+
+WEEK 4
+------
+[ ] Publish 5 more guides.
+[ ] Review Search Console.
+[ ] Identify pages gaining impressions.
+[ ] Improve pages ranking positions 10–50.
+[ ] Improve CTR on pages with impressions.
+[ ] Launch referral system.
+[ ] Start converting free users into Pro users.
+
+
+WEEKLY SCORECARD
+================
+
+Record every Sunday:
+
+Organic impressions:
+Organic clicks:
+Organic CTR:
+Average position:
+US impressions:
+US clicks:
+US visitors:
+Total visitors:
+New users:
+Returning users:
+Signups:
+Activated users:
+Pro users:
+MRR:
+Top landing page:
+Top US query:
+Top US page:
+Top referral source:
+
+
+MILESTONES
+==========
+
+First:
+[ ] 100 genuine organic clicks/month
+[ ] 10 genuine US users/day
+[ ] First paying customer
+
+Second:
+[ ] 500 organic clicks/month
+[ ] 25+ US users/day
+[ ] 10 paying customers
+
+Third:
+[ ] 2,000+ organic clicks/month
+[ ] 100+ US users/day
+[ ] $100+ MRR
+
+Fourth:
+[ ] 10,000+ organic clicks/month
+[ ] Strong US search visibility
+[ ] $500+ MRR
+
+These are targets, not guarantees.
+
+
+THE CORE GROWTH LOOP
+====================
+
+Useful free tool
+    ↓
+Google / social / GitHub discovery
+    ↓
+User solves a problem
+    ↓
+User discovers UL0
+    ↓
+Creates a link
+    ↓
+Uses analytics
+    ↓
+Needs advanced feature
+    ↓
+Upgrades to Pro
+    ↓
+Invites team / shares UL0
+    ↓
+More users
+    ↓
+More feedback
+    ↓
+Better product
+
+
+FINAL RULES
+===========
+
+1. Real users only.
+2. No fake US traffic.
+3. No spam.
+4. No mass AI SEO pages.
+5. No fake testimonials.
+6. No fake statistics.
+7. No purchased low-quality backlinks.
+8. No doorway pages.
+9. Do not buy more domains yet.
+10. Do not depend on AdSense.
+11. Focus UL0 around link management.
+12. Build genuinely useful free tools.
+13. Create original US-relevant use cases.
+14. Convert traffic into SaaS revenue.
+15. Use Search Console data to decide what to improve.
+
+MONEY-FIRST PRIORITY
+====================
+
+1. Keep UL0 online.
+2. Fix product positioning.
+3. Launch Pro features.
+4. Get first paying customer.
+5. Build high-value free tools.
+6. Build organic search traffic.
+7. Grow US traffic.
+8. Revisit AdSense.
+9. Scale only after revenue exists.
+
+Do NOT burn your remaining budget trying to manufacture US traffic.
+
+Best path:
+PRODUCT -> ORGANIC SEARCH -> US USE CASES -> FREE TOOL -> SIGNUP -> PRO CONVERSION
