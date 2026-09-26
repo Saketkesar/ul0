@@ -15,28 +15,52 @@ const homeLanguageAlternates = hreflangAlternates
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date()
 
-  // Core tool pages — highest value, crawled often
-  const toolPages: { path: string; priority: number }[] = [
-    { path: "", priority: 1.0 }, // homepage
-    { path: "/split", priority: 0.95 },
-    { path: "/share", priority: 0.95 },
-    { path: "/qr", priority: 0.95 },
-    { path: "/pdf", priority: 0.95 },
-    { path: "/wifi", priority: 0.9 },
-    { path: "/utm", priority: 0.9 },
-    { path: "/json", priority: 0.9 },
-    { path: "/pomodoro", priority: 0.9 },
-    { path: "/clock", priority: 0.85 },
-    { path: "/worldclock", priority: 0.85 },
-    { path: "/ambient", priority: 0.85 },
-    { path: "/countdown", priority: 0.85 },
-    { path: "/quotes", priority: 0.85 },
-    { path: "/pricing", priority: 0.9 },
-    { path: "/docs", priority: 0.8 },
-    { path: "/custom-domain-landing", priority: 0.85 },
+  // Core product & platform pages
+  const corePages: { path: string; priority: number; freq: "daily" | "weekly" | "monthly" }[] = [
+    { path: "", priority: 1.0, freq: "daily" }, // homepage
+    { path: "/features", priority: 0.95, freq: "weekly" },
+    { path: "/pricing", priority: 0.95, freq: "weekly" },
+    { path: "/changelog", priority: 0.85, freq: "weekly" },
+    { path: "/qr", priority: 0.95, freq: "weekly" },
+    { path: "/utm", priority: 0.9, freq: "weekly" },
+    { path: "/docs", priority: 0.85, freq: "weekly" },
+    { path: "/custom-domain-landing", priority: 0.85, freq: "weekly" },
   ]
 
-  // Blog posts with actual publish dates (prevents Google thinking content changes daily)
+  // Use Case Landing Pages
+  const useCasePages: { path: string; priority: number }[] = [
+    { path: "/use-cases", priority: 0.95 },
+    { path: "/use-cases/small-business", priority: 0.9 },
+    { path: "/use-cases/marketing-agencies", priority: 0.9 },
+    { path: "/use-cases/real-estate", priority: 0.9 },
+    { path: "/use-cases/restaurants", priority: 0.9 },
+    { path: "/use-cases/creators", priority: 0.9 },
+    { path: "/use-cases/ecommerce", priority: 0.9 },
+    { path: "/use-cases/startups", priority: 0.9 },
+    { path: "/use-cases/events", priority: 0.9 },
+  ]
+
+  // Free SEO & Web Developer Tools
+  const toolPages: { path: string; priority: number }[] = [
+    { path: "/tools", priority: 0.95 },
+    { path: "/tools/redirect-checker", priority: 0.95 },
+    { path: "/tools/url-expander", priority: 0.95 },
+    { path: "/tools/og-preview", priority: 0.95 },
+    { path: "/tools/meta-tag-generator", priority: 0.95 },
+    { path: "/split", priority: 0.85 },
+    { path: "/share", priority: 0.85 },
+    { path: "/pdf", priority: 0.85 },
+    { path: "/wifi", priority: 0.85 },
+    { path: "/json", priority: 0.85 },
+    { path: "/pomodoro", priority: 0.8 },
+    { path: "/clock", priority: 0.8 },
+    { path: "/worldclock", priority: 0.8 },
+    { path: "/ambient", priority: 0.8 },
+    { path: "/countdown", priority: 0.8 },
+    { path: "/quotes", priority: 0.8 },
+  ]
+
+  // Blog posts with actual publish dates
   const blogPosts: { slug: string; published: string }[] = [
     { slug: "link-shortening-best-practices-2026", published: "2026-07-15" },
     { slug: "qr-code-generator-security-guide", published: "2026-07-15" },
@@ -69,16 +93,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { slug: "pdf-tools-free-online", published: "2026-09-12" },
   ]
 
-  // Informational / legal pages
+  // Informational / trust / legal pages
   const infoPages: { path: string; priority: number; freq: "daily" | "weekly" | "monthly" | "yearly" }[] = [
     { path: "/blog", priority: 0.85, freq: "weekly" },
     { path: "/faq", priority: 0.8, freq: "weekly" },
-    { path: "/about", priority: 0.7, freq: "monthly" },
-    { path: "/buy", priority: 0.6, freq: "monthly" },
-    { path: "/contact", priority: 0.6, freq: "monthly" },
-    { path: "/donate", priority: 0.8, freq: "monthly" },
-    { path: "/security", priority: 0.8, freq: "weekly" },
+    { path: "/about", priority: 0.8, freq: "monthly" },
+    { path: "/contact", priority: 0.7, freq: "monthly" },
+    { path: "/security", priority: 0.85, freq: "weekly" },
     { path: "/threats", priority: 0.85, freq: "daily" },
+    { path: "/report-abuse", priority: 0.7, freq: "monthly" },
     { path: "/refund", priority: 0.4, freq: "yearly" },
     { path: "/privacy", priority: 0.4, freq: "yearly" },
     { path: "/terms", priority: 0.4, freq: "yearly" },
@@ -86,18 +109,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const entries: MetadataRoute.Sitemap = []
 
-  // Homepage with hreflang alternates
-  entries.push({
-    url: BASE_URL,
-    lastModified: now,
-    changeFrequency: "daily",
-    priority: 1.0,
-    alternates: { languages: homeLanguageAlternates },
-  })
+  // Core pages
+  for (const { path, priority, freq } of corePages) {
+    entries.push({
+      url: `${BASE_URL}${path}`,
+      lastModified: now,
+      changeFrequency: freq,
+      priority,
+      ...(path === "" ? { alternates: { languages: homeLanguageAlternates } } : {}),
+    })
+  }
 
-  // Tool pages (skip homepage which was added above)
+  // Use case pages
+  for (const { path, priority } of useCasePages) {
+    entries.push({
+      url: `${BASE_URL}${path}`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority,
+    })
+  }
+
+  // Tool pages
   for (const { path, priority } of toolPages) {
-    if (path === "") continue
     entries.push({
       url: `${BASE_URL}${path}`,
       lastModified: now,

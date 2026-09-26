@@ -15,21 +15,29 @@ import {
   ChevronDown,
   Link2,
   QrCode,
-  Users,
-  Timer,
-  FileJson,
-  LinkIcon,
-  Clock,
-  Volume2,
-  Hourglass,
-  Quote,
   Globe,
-  ShoppingCart,
+  BarChart3,
+  Building2,
+  Briefcase,
+  Home,
+  UtensilsCrossed,
+  Video,
+  ShoppingBag,
+  Rocket,
+  Calendar,
+  Compass,
+  ArrowRightLeft,
+  Maximize2,
+  Share2,
+  Code,
+  LinkIcon,
+  FileJson,
   ScanLine,
   LayoutDashboard,
   Menu,
   X,
   Sparkles,
+  Zap,
 } from "lucide-react"
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs"
 
@@ -40,10 +48,10 @@ export function Header() {
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-14 items-center justify-between px-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center" aria-label="ul0 - Free URL Shortener Home">
+        <Link href="/" className="flex items-center gap-2" aria-label="UL0 Link Management Home">
           <Image
             src="/ul0.png"
-            alt="ul0 - Free URL Shortener Logo"
+            alt="UL0 Logo"
             width={80}
             height={30}
             className="h-8 w-auto object-contain"
@@ -59,17 +67,156 @@ export function Header() {
           >
             Shortener
           </Link>
+
+          <Link
+            href="/features"
+            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            Features
+          </Link>
+
+          {/* Use Cases Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1">
+              Use Cases
+              <ChevronDown className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-64">
+              <DropdownMenuItem asChild>
+                <Link href="/use-cases" className="flex items-center gap-2 font-semibold text-primary cursor-pointer">
+                  <Compass className="h-4 w-4" />
+                  View All Solutions
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/use-cases/marketing-agencies" className="flex items-center gap-2 cursor-pointer">
+                  <Briefcase className="h-4 w-4 text-purple-500" />
+                  Marketing Agencies
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/use-cases/small-business" className="flex items-center gap-2 cursor-pointer">
+                  <Building2 className="h-4 w-4 text-blue-500" />
+                  Small Businesses
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/use-cases/ecommerce" className="flex items-center gap-2 cursor-pointer">
+                  <ShoppingBag className="h-4 w-4 text-emerald-500" />
+                  E-Commerce &amp; SMS
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/use-cases/creators" className="flex items-center gap-2 cursor-pointer">
+                  <Video className="h-4 w-4 text-pink-500" />
+                  Creators &amp; Influencers
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/use-cases/real-estate" className="flex items-center gap-2 cursor-pointer">
+                  <Home className="h-4 w-4 text-amber-500" />
+                  Real Estate Agents
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/use-cases/restaurants" className="flex items-center gap-2 cursor-pointer">
+                  <UtensilsCrossed className="h-4 w-4 text-red-500" />
+                  Restaurants &amp; Hospitality
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/use-cases/startups" className="flex items-center gap-2 cursor-pointer">
+                  <Rocket className="h-4 w-4 text-indigo-500" />
+                  Startups &amp; Developers
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/use-cases/events" className="flex items-center gap-2 cursor-pointer">
+                  <Calendar className="h-4 w-4 text-cyan-500" />
+                  Events &amp; Conferences
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* Free Web & Dev Tools Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1">
+              Tools
+              <ChevronDown className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-64">
+              <DropdownMenuItem asChild>
+                <Link href="/tools" className="flex items-center gap-2 font-semibold text-primary cursor-pointer">
+                  <Sparkles className="h-4 w-4" />
+                  Free Tools Directory
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+                Link &amp; SEO Tools
+              </DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link href="/tools/redirect-checker" className="flex items-center gap-2 cursor-pointer">
+                  <ArrowRightLeft className="h-4 w-4 text-blue-500" />
+                  Redirect Checker (301/302)
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/tools/url-expander" className="flex items-center gap-2 cursor-pointer">
+                  <Maximize2 className="h-4 w-4 text-emerald-500" />
+                  URL Expander &amp; Safety
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/tools/og-preview" className="flex items-center gap-2 cursor-pointer">
+                  <Share2 className="h-4 w-4 text-purple-500" />
+                  Social Card Previewer
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/tools/meta-tag-generator" className="flex items-center gap-2 cursor-pointer">
+                  <Code className="h-4 w-4 text-indigo-500" />
+                  Meta Tag Generator
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/utm" className="flex items-center gap-2 cursor-pointer">
+                  <LinkIcon className="h-4 w-4 text-cyan-500" />
+                  UTM Campaign Builder
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="text-[11px] uppercase tracking-wider text-muted-foreground font-semibold">
+                Developer Utilities
+              </DropdownMenuLabel>
+              <DropdownMenuItem asChild>
+                <Link href="/qr" className="flex items-center gap-2 cursor-pointer">
+                  <QrCode className="h-4 w-4 text-foreground" />
+                  Vector QR Generator
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/json" className="flex items-center gap-2 cursor-pointer">
+                  <FileJson className="h-4 w-4 text-amber-500" />
+                  JSON Formatter
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/pdf" className="flex items-center gap-2 cursor-pointer">
+                  <ScanLine className="h-4 w-4 text-red-500" />
+                  PDF Tools
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
           <Link
             href="/qr"
             className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           >
             QR Code
-          </Link>
-          <Link
-            href="/split"
-            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-          >
-            Split
           </Link>
 
           <Link
@@ -79,93 +226,12 @@ export function Header() {
             Pricing
           </Link>
 
-          {/* More Tools Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1">
-              Tools
-              <ChevronDown className="h-4 w-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Developer Tools</DropdownMenuLabel>
-
-              <DropdownMenuItem asChild>
-                <Link href="/utm" className="flex items-center gap-2 cursor-pointer">
-                  <LinkIcon className="h-4 w-4" />
-                  UTM Builder
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/json" className="flex items-center gap-2 cursor-pointer">
-                  <FileJson className="h-4 w-4" />
-                  JSON Formatter
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/pdf" className="flex items-center gap-2 cursor-pointer">
-                  <ScanLine className="h-4 w-4" />
-                  PDF Tools
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/backlinks" className="flex items-center gap-2 cursor-pointer font-medium text-emerald-500">
-                  <Sparkles className="h-4 w-4 text-emerald-500" />
-                  Free Backlinks
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Study & Desk Setup</DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link href="/clock" className="flex items-center gap-2 cursor-pointer">
-                  <Clock className="h-4 w-4" />
-                  Aesthetic Clock
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/ambient" className="flex items-center gap-2 cursor-pointer">
-                  <Volume2 className="h-4 w-4" />
-                  Ambient Sounds
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/countdown" className="flex items-center gap-2 cursor-pointer">
-                  <Hourglass className="h-4 w-4" />
-                  Countdown Creator
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/quotes" className="flex items-center gap-2 cursor-pointer">
-                  <Quote className="h-4 w-4" />
-                  Motivational Quotes
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/worldclock" className="flex items-center gap-2 cursor-pointer">
-                  <Globe className="h-4 w-4" />
-                  World Clock
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/pomodoro" className="flex items-center gap-2 cursor-pointer">
-                  <Timer className="h-4 w-4" />
-                  Pomodoro Timer
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuLabel className="text-xs text-muted-foreground">Other</DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link href="/buy" className="flex items-center gap-2 cursor-pointer">
-                  <ShoppingCart className="h-4 w-4" />
-                  Should I Buy This?
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/wifi" className="flex items-center gap-2 cursor-pointer">
-                  <QrCode className="h-4 w-4" />
-                  WiFi QR Generator
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Link
+            href="/changelog"
+            className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          >
+            Changelog
+          </Link>
 
           {/* Auth Controls */}
           <div className="flex items-center gap-2 ml-2 border-l border-border pl-3">
@@ -223,34 +289,118 @@ export function Header() {
 
       {/* Mobile menu panel */}
       {mobileOpen && (
-        <div className="md:hidden border-t border-border bg-background px-4 py-4 space-y-1">
-          {[
-            { href: "/", label: "Shortener", icon: <Link2 className="h-4 w-4" /> },
-            { href: "/qr", label: "QR Code", icon: <QrCode className="h-4 w-4" /> },
-            { href: "/split", label: "Split Expenses", icon: <Users className="h-4 w-4" /> },
-            { href: "/pricing", label: "Pricing", icon: <ShoppingCart className="h-4 w-4" /> },
-            { href: "/backlinks", label: "Free Backlinks", icon: <Sparkles className="h-4 w-4 text-emerald-500" /> },
-            { href: "/utm", label: "UTM Builder", icon: <LinkIcon className="h-4 w-4" /> },
-            { href: "/json", label: "JSON Formatter", icon: <FileJson className="h-4 w-4" /> },
-            { href: "/pdf", label: "PDF Tools", icon: <ScanLine className="h-4 w-4" /> },
-            { href: "/clock", label: "Aesthetic Clock", icon: <Clock className="h-4 w-4" /> },
-            { href: "/pomodoro", label: "Pomodoro Timer", icon: <Timer className="h-4 w-4" /> },
-            { href: "/ambient", label: "Ambient Sounds", icon: <Volume2 className="h-4 w-4" /> },
-            { href: "/worldclock", label: "World Clock", icon: <Globe className="h-4 w-4" /> },
-            { href: "/wifi", label: "WiFi QR Generator", icon: <QrCode className="h-4 w-4" /> },
-          ].map(({ href, label, icon }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={() => setMobileOpen(false)}
-              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors"
-            >
-              {icon}
-              {label}
-            </Link>
-          ))}
+        <div className="md:hidden border-t border-border bg-background px-4 py-4 space-y-2 max-h-[85vh] overflow-y-auto">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-3 pt-1">
+            Product
+          </div>
+          <Link
+            href="/"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <Link2 className="h-4 w-4" /> Shortener
+          </Link>
+          <Link
+            href="/features"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <Zap className="h-4 w-4" /> Features
+          </Link>
+          <Link
+            href="/pricing"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <BarChart3 className="h-4 w-4" /> Pricing &amp; Plans
+          </Link>
+          <Link
+            href="/qr"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <QrCode className="h-4 w-4" /> Vector QR Generator
+          </Link>
 
-          <div className="pt-2 border-t border-border">
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-3 pt-3">
+            Solutions &amp; Use Cases
+          </div>
+          <Link
+            href="/use-cases"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-primary hover:bg-accent"
+          >
+            <Compass className="h-4 w-4" /> All Use Cases Hub
+          </Link>
+          <Link
+            href="/use-cases/marketing-agencies"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <Briefcase className="h-4 w-4" /> Marketing Agencies
+          </Link>
+          <Link
+            href="/use-cases/small-business"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <Building2 className="h-4 w-4" /> Small Business
+          </Link>
+          <Link
+            href="/use-cases/ecommerce"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <ShoppingBag className="h-4 w-4" /> E-Commerce &amp; SMS
+          </Link>
+          <Link
+            href="/use-cases/creators"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <Video className="h-4 w-4" /> Creators &amp; Influencers
+          </Link>
+
+          <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-3 pt-3">
+            Free Web &amp; SEO Tools
+          </div>
+          <Link
+            href="/tools"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-primary hover:bg-accent"
+          >
+            <Sparkles className="h-4 w-4" /> Free Tools Directory
+          </Link>
+          <Link
+            href="/tools/redirect-checker"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <ArrowRightLeft className="h-4 w-4" /> Redirect Checker
+          </Link>
+          <Link
+            href="/tools/url-expander"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <Maximize2 className="h-4 w-4" /> URL Expander
+          </Link>
+          <Link
+            href="/tools/og-preview"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <Share2 className="h-4 w-4" /> Social Card Previewer
+          </Link>
+          <Link
+            href="/tools/meta-tag-generator"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
+          >
+            <Code className="h-4 w-4" /> Meta Tag Generator
+          </Link>
+
+          <div className="pt-3 border-t border-border">
             <Show when="signed-out">
               <div className="flex gap-2">
                 <SignInButton mode="modal">

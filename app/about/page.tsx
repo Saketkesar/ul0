@@ -1,196 +1,151 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Metadata } from "next"
-import { Link2, Users, QrCode, Zap, Shield, Globe } from "lucide-react"
-import Image from "next/image"
+import { Link2, Globe, ShieldCheck, Zap, BarChart3, Code2, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "About ul0 - Digital Infrastructure & Free Link Management 2026",
-  description: "ul0 is a digital infrastructure platform and publication for link management, custom domain short links, QR code security, and UTM campaign analytics.",
-  keywords: [
-    // Primary Keywords
-    "about ul0",
-    "ul0 url shortener",
-    "ul0 review",
-    "what is ul0",
-    
-    // Company/Service Keywords
-    "url shortener company",
-    "link shortener service",
-    "expense splitter app",
-    "free url shortener service",
-    
-    // Comparison Keywords
-    "bitly alternative",
-    "bitly alternative free",
-    "tinyurl alternative",
-    "splitwise alternative",
-    "splitwise alternative free",
-    
-    // Feature Keywords
-    "url shortener with qr code",
-    "url shortener with analytics",
-    "expense splitter with upi",
-    "bill splitter with paypal",
-    "bill splitter with venmo",
-    
-    // Trust Keywords
-    "best url shortener",
-    "best link shortener",
-    "top url shortener",
-    "reliable url shortener",
-    "trusted url shortener",
-    
-    // Free Keywords
-    "free link shortener",
-    "free url shortener no signup",
-    "free bill splitter",
-    "free expense splitter",
-    
-    // Region Keywords
-    "url shortener india",
-    "bill splitter india",
-    "upi payment splitter",
-    "split expenses app india",
-    "url shortener usa",
-    "bill splitter usa",
-    
-    // Long-tail Keywords
-    "best free url shortener 2025",
-    "best bitly alternative 2025",
-    "best splitwise alternative 2025",
-  ],
+  title: "About UL0 — The Modern Link Management & Analytics Platform",
+  description:
+    "Learn about UL0's mission to build fast, secure, and privacy-respecting link infrastructure, custom branded domains, and dynamic QR codes for businesses and developers.",
   alternates: {
     canonical: "https://ul0.site/about",
   },
   openGraph: {
-    title: "About ul0 - Best Free URL Shortener & Bill Splitter",
-    description: "ul0 is the best free URL shortener 2025. Bitly & Splitwise alternative - no signup required!",
+    title: "About UL0 — Next-Generation Link Infrastructure",
+    description:
+      "UL0 empowers marketing teams, developers, and businesses with fast 301 redirects, real-time analytics, and custom domain delegation.",
     url: "https://ul0.site/about",
     type: "website",
-    siteName: "ul0 - About Us",
-    images: [{
-      url: "https://ul0.site/ul0.png",
-      width: 1200,
-      height: 630,
-      alt: "ul0 - Best Free URL Shortener",
-    }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "About ul0 - Free URL Shortener & Bill Splitter",
-    description: "Best free URL shortener 2025. Bitly & Splitwise alternative!",
-    images: ["https://ul0.site/ul0.png"],
-  },
-  robots: {
-    index: true,
-    follow: true,
   },
 }
 
 export default function AboutPage() {
-  const features = [
-    {
-      icon: Link2,
-      title: "Free URL Shortening",
-      description: "Create short, memorable links from long URLs instantly. No signup required. 100% free forever."
-    },
-    {
-      icon: Users,
-      title: "Bill Splitting Made Easy",
-      description: "Split expenses with friends and groups. Calculate who owes whom automatically with smart algorithms."
-    },
-    {
-      icon: QrCode,
-      title: "UPI QR Code Generator",
-      description: "Auto-generate QR codes for UPI payments. Scan with any UPI app - GPay, PhonePe, Paytm."
-    },
+  const values = [
     {
       icon: Zap,
-      title: "Smart App Detection",
-      description: "Automatically detect YouTube, Instagram, Twitter and other apps for seamless opening."
+      title: "Edge-Level Speed",
+      description:
+        "Every millisecond matters when routing a user to your offer. UL0's edge distribution network executes 301 redirects in under 15ms globally with zero intermediary interstitial ads.",
     },
     {
-      icon: Shield,
-      title: "Secure & Private",
-      description: "All shortened links are scanned for malware. Your data is protected with HTTPS encryption."
+      icon: ShieldCheck,
+      title: "Integrity & Anti-Abuse",
+      description:
+        "We actively police our link network using automated malware filters and domain reputation feeds to ensure bad actors never abuse our infrastructure for phishing.",
+    },
+    {
+      icon: BarChart3,
+      title: "Privacy-Respecting Analytics",
+      description:
+        "Our analytics deliver deep geographic and device insights without invading consumer privacy, avoiding invasive tracking cookies while maintaining 100% GDPR and CCPA compliance.",
     },
     {
       icon: Globe,
-      title: "Works Everywhere",
-      description: "Lightning fast redirects. Works perfectly on any device, any browser, anywhere in the world."
-    }
+      title: "Brand Ownership",
+      description:
+        "We believe businesses should never be forced to share third-party short domains. UL0 enables easy, multi-tenant custom domain delegation for all organizations.",
+    },
   ]
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
-      
+
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="py-12 sm:py-16 bg-gradient-to-b from-primary/5 to-background">
-          <div className="container mx-auto px-4 text-center">
-            <div className="flex justify-center mb-6">
-              <Image
-                src="/ul0.png"
-                alt="ul0 Logo - Free URL Shortener"
-                width={80}
-                height={80}
-                className="rounded-xl"
-              />
+        <section className="py-16 sm:py-24 bg-gradient-to-b from-primary/5 via-background to-background">
+          <div className="container mx-auto px-4 text-center max-w-4xl">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-6">
+              <Link2 className="h-3.5 w-3.5" />
+              <span>Building the Future of Digital Attribution</span>
             </div>
-            <h1 className="text-3xl font-bold mb-4 sm:text-4xl lg:text-5xl">About ul0</h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              We're on a mission to make link sharing and expense splitting simple, fast, and free for everyone.
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground mb-6">
+              Empowering Teams to Own and Measure Every Click
+            </h1>
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              UL0 was created to solve a fundamental problem on the modern web: legacy link shorteners had become bloated, prohibitively expensive, and cluttered with intrusive interstitials. We set out to build a clean, blazing-fast, and developer-friendly alternative.
             </p>
           </div>
         </section>
 
-        {/* Story Section */}
+        {/* Narrative Section */}
         <section className="py-12 sm:py-16">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-2xl font-bold mb-6 sm:text-3xl">Our Story</h2>
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
+          <div className="container mx-auto px-4 max-w-3xl">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-6">Our Mission</h2>
+            <div className="space-y-4 text-sm sm:text-base text-muted-foreground leading-relaxed">
               <p>
-                ul0 was born out of a simple frustration: long, ugly URLs that break in messages and the hassle of manually calculating who owes what after group dinners.
+                Links are the connective tissue of the internet. Whether you are an indie founder launching on Product Hunt, an e-commerce brand dispatching SMS order notifications, or a digital agency managing campaigns for Fortune 500 clients, you need link infrastructure you can trust.
               </p>
               <p>
-                We built ul0 to solve both problems in one place. Our URL shortener creates clean, shareable links in seconds. Our expense splitter calculates settlements automatically and generates UPI payment links - so you can settle up without awkward Venmo requests.
+                Too often, businesses are trapped with legacy shorteners that paywall basic custom domain features behind expensive $35+/month plans, throttle analytics queries, or inject slow interstitial redirect delays.
               </p>
               <p>
-                We believe in keeping things simple. No accounts, no subscriptions, no complicated features. Just paste a link, hit shorten, and share. Add your friends, enter expenses, and get instant payment links with QR codes.
-              </p>
-              <p>
-                ul0 is and will always be free. We support ourselves through non-intrusive advertising, so you get a clean experience while we keep the lights on.
+                At UL0, our mission is to deliver enterprise-grade link management, custom domain routing, dynamic vector QR codes, and free developer tools accessible to anyone, anywhere in the world.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Features Section */}
-        <section className="py-12 sm:py-16 bg-muted/30">
-          <div className="container mx-auto px-4">
-            <h2 className="text-2xl font-bold mb-8 text-center sm:text-3xl">What We Offer</h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-              {features.map((feature, index) => (
-                <div key={index} className="bg-card rounded-xl p-6 border border-border">
-                  <feature.icon className="h-10 w-10 text-primary mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm">{feature.description}</p>
-                </div>
-              ))}
+        {/* Core Principles */}
+        <section className="py-12 sm:py-16 bg-muted/20 border-y border-border">
+          <div className="container mx-auto px-4 max-w-5xl">
+            <div className="text-center mb-12">
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-3">Our Core Principles</h2>
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-xl mx-auto">
+                The foundational values that guide our architecture, product development, and customer commitments.
+              </p>
+            </div>
+
+            <div className="grid gap-6 sm:grid-cols-2">
+              {values.map((val, idx) => {
+                const Icon = val.icon
+                return (
+                  <div key={idx} className="rounded-2xl border border-border bg-card p-6 shadow-xs">
+                    <div className="p-3 rounded-xl bg-primary/10 text-primary w-fit mb-4">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <h3 className="text-base font-bold text-foreground mb-2">{val.title}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{val.description}</p>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </section>
 
-        {/* Mission Section */}
-        <section className="py-12 sm:py-16 bg-primary/5">
-          <div className="container mx-auto px-4 max-w-4xl text-center">
-            <h2 className="text-2xl font-bold mb-6 sm:text-3xl">Our Mission</h2>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              To simplify digital sharing and financial settlements for everyone. We believe technology should make life easier, not more complicated. That's why ul0 is built to be fast, free, and frustration-free.
+        {/* Platform Overview CTA */}
+        <section className="py-16 sm:py-20">
+          <div className="container mx-auto px-4 max-w-4xl text-center space-y-6">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
+              Explore the UL0 Ecosystem
+            </h2>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+              Check out our feature matrix, try our free developer tools, or read about how companies in your industry leverage UL0.
             </p>
+            <div className="flex flex-wrap justify-center gap-3 pt-2">
+              <Link href="/features">
+                <Button className="rounded-xl px-5 py-2.5 text-xs sm:text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
+                  Platform Features
+                </Button>
+              </Link>
+              <Link href="/use-cases">
+                <Button variant="outline" className="rounded-xl px-5 py-2.5 text-xs sm:text-sm font-semibold">
+                  Industry Use Cases
+                </Button>
+              </Link>
+              <Link href="/tools">
+                <Button variant="outline" className="rounded-xl px-5 py-2.5 text-xs sm:text-sm font-semibold">
+                  Free Web Tools
+                </Button>
+              </Link>
+              <Link href="/changelog">
+                <Button variant="ghost" className="rounded-xl px-5 py-2.5 text-xs sm:text-sm font-semibold">
+                  Changelog &amp; Roadmap
+                </Button>
+              </Link>
+            </div>
           </div>
         </section>
       </main>

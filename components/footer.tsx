@@ -1,80 +1,89 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Heart, ShieldCheck, Flag, ShieldAlert } from "lucide-react"
+import { ShieldCheck, Flag, ShieldAlert, Sparkles, ArrowRight } from "lucide-react"
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-muted/30 py-10" role="contentinfo">
+    <footer className="border-t border-border bg-muted/30 py-12" role="contentinfo">
       <div className="container mx-auto px-4">
         <div className="grid gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
           {/* Brand & Description */}
           <div className="space-y-4 sm:col-span-2 md:col-span-3 lg:col-span-1">
-            <Link href="/" aria-label="ul0 Home">
+            <Link href="/" aria-label="UL0 Home">
               <Image
                 src="/ul0.png"
-                alt="ul0 - Free URL Shortener Logo"
+                alt="UL0 Link Management Logo"
                 width={80}
                 height={28}
                 className="h-7 w-auto object-contain"
               />
             </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Free link management, QR code generator, and expense splitting. Fast permanent redirects, click analytics, and custom domain short links.
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              Enterprise-grade link management, custom domain routing, real-time attribution analytics, and dynamic vector QR codes. Fast edge 301 redirects with zero interstitial ads.
             </p>
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
-              <ShieldCheck className="h-4 w-4 text-emerald-500" />
-              <span>HTTPS Encrypted • Anti-Phishing Filtered</span>
+            <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+              <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0" />
+              <span>Edge 301 Redirects • Anti-Phishing Screened</span>
             </div>
           </div>
 
-          {/* Core Tools */}
+          {/* Product & Platform */}
           <div>
-            <h3 className="font-semibold text-foreground mb-3 text-sm">Core Tools</h3>
-            <nav className="flex flex-col gap-2 text-sm text-muted-foreground" aria-label="Core tools navigation">
-              <Link href="/" className="hover:text-foreground transition-colors">Free URL Shortener</Link>
-              <Link href="/qr" className="hover:text-foreground transition-colors">QR Code Generator</Link>
-              <Link href="/utm" className="hover:text-foreground transition-colors">UTM Campaign Builder</Link>
-              <Link href="/wifi" className="hover:text-foreground transition-colors">WiFi QR Generator</Link>
-              <Link href="/split" className="hover:text-foreground transition-colors">Split Expenses &amp; Bills</Link>
+            <h3 className="font-semibold text-foreground mb-3 text-sm">Product</h3>
+            <nav className="flex flex-col gap-2 text-xs sm:text-sm text-muted-foreground" aria-label="Product navigation">
+              <Link href="/features" className="hover:text-foreground transition-colors">Platform Features</Link>
+              <Link href="/" className="hover:text-foreground transition-colors">URL Shortener</Link>
+              <Link href="/qr" className="hover:text-foreground transition-colors">Vector QR Generator</Link>
               <Link href="/pricing" className="hover:text-foreground transition-colors">Branded Custom Domains</Link>
-            </nav>
-          </div>
-
-          {/* Marketing & Business */}
-          <div>
-            <h3 className="font-semibold text-foreground mb-3 text-sm">Business &amp; Dev</h3>
-            <nav className="flex flex-col gap-2 text-sm text-muted-foreground" aria-label="Business tools navigation">
-              <Link href="/pricing" className="hover:text-foreground transition-colors">Custom Branded Domains</Link>
+              <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing &amp; Plans</Link>
+              <Link href="/changelog" className="hover:text-foreground transition-colors flex items-center gap-1.5">
+                <span>Changelog</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-primary/10 text-primary">v2.4</span>
+              </Link>
               <Link href="/docs" className="hover:text-foreground transition-colors">Developer REST API</Link>
-              <Link href="/backlinks" className="hover:text-foreground transition-colors text-emerald-400 font-medium">Free Backlink Exchange</Link>
-              <Link href="/custom-domain-landing" className="hover:text-foreground transition-colors">Custom Domain Setup</Link>
-              <Link href="/blog" className="hover:text-foreground transition-colors">Link Strategy &amp; Guides</Link>
-              <Link href="/share" className="hover:text-foreground transition-colors">P2P File Transfer</Link>
             </nav>
           </div>
 
-          {/* Productivity & Utilities */}
+          {/* Industry Solutions / Use Cases */}
           <div>
-            <h3 className="font-semibold text-foreground mb-3 text-sm">Utilities</h3>
-            <nav className="flex flex-col gap-2 text-sm text-muted-foreground" aria-label="Utility navigation">
-              <Link href="/split" className="hover:text-foreground transition-colors">Split Expenses</Link>
-              <Link href="/pdf" className="hover:text-foreground transition-colors">PDF Document Scanner</Link>
+            <h3 className="font-semibold text-foreground mb-3 text-sm">Solutions</h3>
+            <nav className="flex flex-col gap-2 text-xs sm:text-sm text-muted-foreground" aria-label="Solutions navigation">
+              <Link href="/use-cases" className="hover:text-foreground transition-colors font-medium text-primary">All Solutions Hub</Link>
+              <Link href="/use-cases/marketing-agencies" className="hover:text-foreground transition-colors">Marketing Agencies</Link>
+              <Link href="/use-cases/small-business" className="hover:text-foreground transition-colors">Small Businesses</Link>
+              <Link href="/use-cases/ecommerce" className="hover:text-foreground transition-colors">E-Commerce &amp; SMS</Link>
+              <Link href="/use-cases/creators" className="hover:text-foreground transition-colors">Creators &amp; Bio Links</Link>
+              <Link href="/use-cases/real-estate" className="hover:text-foreground transition-colors">Real Estate Signs</Link>
+              <Link href="/use-cases/restaurants" className="hover:text-foreground transition-colors">Restaurant Menus</Link>
+              <Link href="/use-cases/startups" className="hover:text-foreground transition-colors">Startups &amp; SaaS</Link>
+              <Link href="/use-cases/events" className="hover:text-foreground transition-colors">Events &amp; Badges</Link>
+            </nav>
+          </div>
+
+          {/* Free Web & SEO Tools */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-3 text-sm">Free Tools</h3>
+            <nav className="flex flex-col gap-2 text-xs sm:text-sm text-muted-foreground" aria-label="Tools navigation">
+              <Link href="/tools" className="hover:text-foreground transition-colors font-medium text-primary">Free Tools Directory</Link>
+              <Link href="/tools/redirect-checker" className="hover:text-foreground transition-colors">HTTP Redirect Checker</Link>
+              <Link href="/tools/url-expander" className="hover:text-foreground transition-colors">URL Expander &amp; Safety</Link>
+              <Link href="/tools/og-preview" className="hover:text-foreground transition-colors">OpenGraph Previewer</Link>
+              <Link href="/tools/meta-tag-generator" className="hover:text-foreground transition-colors">Meta Tag Generator</Link>
+              <Link href="/utm" className="hover:text-foreground transition-colors">UTM Campaign Builder</Link>
               <Link href="/json" className="hover:text-foreground transition-colors">JSON Formatter</Link>
-              <Link href="/pomodoro" className="hover:text-foreground transition-colors">Pomodoro Timer</Link>
-              <Link href="/clock" className="hover:text-foreground transition-colors">Aesthetic Clock</Link>
-              <Link href="/ambient" className="hover:text-foreground transition-colors">Ambient Sounds</Link>
-              <Link href="/worldclock" className="hover:text-foreground transition-colors">World Clock</Link>
+              <Link href="/pdf" className="hover:text-foreground transition-colors">PDF Document Tools</Link>
+              <Link href="/wifi" className="hover:text-foreground transition-colors">WiFi QR Code Maker</Link>
             </nav>
           </div>
 
-          {/* Company, Trust & Legal */}
+          {/* Trust, Security & Legal */}
           <div>
-            <h3 className="font-semibold text-foreground mb-3 text-sm">Company &amp; Legal</h3>
-            <nav className="flex flex-col gap-2 text-sm text-muted-foreground" aria-label="Company navigation">
-              <Link href="/about" className="hover:text-foreground transition-colors">About Us</Link>
+            <h3 className="font-semibold text-foreground mb-3 text-sm">Trust &amp; Legal</h3>
+            <nav className="flex flex-col gap-2 text-xs sm:text-sm text-muted-foreground" aria-label="Company navigation">
+              <Link href="/about" className="hover:text-foreground transition-colors">About UL0</Link>
               <Link href="/contact" className="hover:text-foreground transition-colors">Contact Support</Link>
               <Link href="/security" className="hover:text-foreground transition-colors text-emerald-500 font-medium">Security &amp; Safety</Link>
-              <Link href="/threats" className="hover:text-foreground transition-colors text-red-500 font-medium flex items-center gap-1">
+              <Link href="/threats" className="hover:text-foreground transition-colors text-rose-500 font-medium flex items-center gap-1">
                 <ShieldAlert className="h-3.5 w-3.5" />
                 Threat Radar
               </Link>
@@ -82,7 +91,6 @@ export function Footer() {
                 <Flag className="h-3.5 w-3.5" />
                 Report Abuse
               </Link>
-              <Link href="/faq" className="hover:text-foreground transition-colors">FAQ</Link>
               <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
               <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
               <Link href="/refund" className="hover:text-foreground transition-colors">Refund Policy</Link>
@@ -93,7 +101,7 @@ export function Footer() {
         {/* Global Languages */}
         <div className="mt-8 pt-6 border-t border-border/60">
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            <span className="font-medium text-foreground mr-1">Languages:</span>
+            <span className="font-medium text-foreground mr-1">Global Languages:</span>
             <Link href="/es" className="hover:text-foreground transition-colors">Español 🇪🇸</Link> •
             <Link href="/pt" className="hover:text-foreground transition-colors">Português 🇧🇷</Link> •
             <Link href="/de" className="hover:text-foreground transition-colors">Deutsch 🇩🇪</Link> •
@@ -111,9 +119,10 @@ export function Footer() {
 
         {/* Copyright & Badges */}
         <div className="mt-6 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <p>© {new Date().getFullYear()} ul0.site. All rights reserved. Free URL Shortener &amp; Expense Splitter.</p>
+          <p>© {new Date().getFullYear()} UL0. All rights reserved. Link Management &amp; Analytics Platform.</p>
           <div className="flex flex-wrap items-center gap-4">
             <a href="https://frogdr.com/ul0.site?utm_source=ul0.site" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="https://frogdr.com/ul0.site/badge-dark.svg?round=1" alt="Monitor your Domain Rating with FrogDR" width="130" className="h-7 w-auto" />
             </a>
             <a 
@@ -128,6 +137,7 @@ export function Footer() {
                   srcSet="https://simpleanalyticsbadges.com/ul0.site?mode=dark" 
                   media="(prefers-color-scheme: dark)" 
                 />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src="https://simpleanalyticsbadges.com/ul0.site?mode=light" 
                   alt="Simple Analytics"
@@ -138,9 +148,6 @@ export function Footer() {
                 />
               </picture>
             </a>
-            <p className="flex items-center gap-1">
-              Made with <Heart className="h-3 w-3 fill-red-500 text-red-500" aria-label="love" /> for creators &amp; small businesses
-            </p>
           </div>
         </div>
       </div>
