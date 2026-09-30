@@ -132,7 +132,9 @@ export function PdfSplitterClient() {
     }
 
     try {
-      const loadingTask = pdfjsLib.getDocument({ data: buffer })
+      // CRITICAL: Clone the buffer so PDF.js worker transfer does NOT detach our master buffer
+      const workerBuffer = buffer.slice(0)
+      const loadingTask = pdfjsLib.getDocument({ data: new Uint8Array(workerBuffer) })
       const pdf = await loadingTask.promise
 
       for (let i = 1; i <= total; i++) {
@@ -221,12 +223,22 @@ export function PdfSplitterClient() {
     setTimeout(() => URL.revokeObjectURL(url), 1500)
   }
 
+  // Helper to reliably get an active, non-detached PDFDocument instance
+  const getPdfDoc = async (): Promise<PDFDocument> => {
+    if (file) {
+      const freshBuffer = await file.arrayBuffer()
+      return await PDFDocument.load(freshBuffer, { ignoreEncryption: true })
+    }
+    if (fileBuffer) {
+      return await PDFDocument.load(fileBuffer.slice(0), { ignoreEncryption: true })
+    }
+    throw new Error("No PDF file loaded in memory.")
+  }
+
   // Download a single page as a standalone PDF
   const downloadSinglePage = async (pageNumber: number, customName: string) => {
-    if (!fileBuffer) return
-
     try {
-      const srcDoc = await PDFDocument.load(fileBuffer, { ignoreEncryption: true })
+      const srcDoc = await getPdfDoc()
       const newDoc = await PDFDocument.create()
 
       // pageNumber is 1-indexed, pdf-lib is 0-indexed
@@ -246,14 +258,14 @@ export function PdfSplitterClient() {
   // Download selected pages as a single merged PDF
   const mergeSelectedPages = async () => {
     const selected = pages.filter((p) => p.selected)
-    if (selected.length === 0 || !fileBuffer) {
+    if (selected.length === 0) {
       alert("Please select at least 1 page to merge.")
       return
     }
 
     try {
       setIsMergingSelected(true)
-      const srcDoc = await PDFDocument.load(fileBuffer, { ignoreEncryption: true })
+      const srcDoc = await getPdfDoc()
       const mergedDoc = await PDFDocument.create()
 
       const indices = selected.map((p) => p.pageNumber - 1)
@@ -281,8 +293,6 @@ export function PdfSplitterClient() {
 
   // Download selected pages (or all pages) as a ZIP file containing individual PDFs
   const downloadAsZip = async (onlySelected: boolean) => {
-    if (!fileBuffer) return
-
     const targetPages = onlySelected ? pages.filter((p) => p.selected) : pages
     if (targetPages.length === 0) {
       alert("No pages selected for download.")
@@ -291,7 +301,7 @@ export function PdfSplitterClient() {
 
     try {
       setIsProcessingZip(true)
-      const srcDoc = await PDFDocument.load(fileBuffer, { ignoreEncryption: true })
+      const srcDoc = await getPdfDoc()
       const zip = new JSZip()
 
       for (const p of targetPages) {
