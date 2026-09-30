@@ -18,6 +18,7 @@ import {
   ArrowRight,
   TrendingUp,
   Eye,
+  Scissors,
 } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -122,6 +123,14 @@ const TOOL_CATEGORIES = [
         icon: <FileJson className="h-5 w-5 text-indigo-500" />,
         badge: "Client-Side",
         description: "Prettify, minify, and validate JSON payloads with syntax error detection and copyable formatting.",
+      },
+      {
+        title: "PDF Page Splitter & Extractor",
+        slug: "pdf-splitter",
+        href: "/tools/pdf-splitter",
+        icon: <Scissors className="h-5 w-5 text-indigo-500" />,
+        badge: "New",
+        description: "Upload multi-page PDFs, preview every page line-by-line, rename files, and download pages separately or as ZIP.",
       },
       {
         title: "PDF Tools & Scanner",

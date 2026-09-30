@@ -43,6 +43,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Free SEO & Web Developer Tools
   const toolPages: { path: string; priority: number }[] = [
     { path: "/tools", priority: 0.95 },
+    { path: "/tools/pdf-splitter", priority: 0.95 },
     { path: "/tools/redirect-checker", priority: 0.95 },
     { path: "/tools/url-expander", priority: 0.95 },
     { path: "/tools/og-preview", priority: 0.95 },
