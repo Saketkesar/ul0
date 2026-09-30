@@ -65,6 +65,7 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-3 text-sm">Free Tools</h3>
             <nav className="flex flex-col gap-2 text-xs sm:text-sm text-muted-foreground" aria-label="Tools navigation">
               <Link href="/tools" className="hover:text-foreground transition-colors font-medium text-primary">Free Tools Directory</Link>
+              <Link href="/tools/pdf-splitter" className="hover:text-foreground transition-colors font-medium text-emerald-400">PDF Page Splitter</Link>
               <Link href="/tools/redirect-checker" className="hover:text-foreground transition-colors">HTTP Redirect Checker</Link>
               <Link href="/tools/url-expander" className="hover:text-foreground transition-colors">URL Expander &amp; Safety</Link>
               <Link href="/tools/og-preview" className="hover:text-foreground transition-colors">OpenGraph Previewer</Link>

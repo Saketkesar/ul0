@@ -38,6 +38,7 @@ import {
   X,
   Sparkles,
   Zap,
+  Scissors,
 } from "lucide-react"
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs"
 
@@ -201,6 +202,12 @@ export function Header() {
                 <Link href="/json" className="flex items-center gap-2 cursor-pointer">
                   <FileJson className="h-4 w-4 text-amber-500" />
                   JSON Formatter
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/tools/pdf-splitter" className="flex items-center gap-2 cursor-pointer font-medium text-primary">
+                  <Scissors className="h-4 w-4" />
+                  PDF Page Splitter
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
@@ -398,6 +405,13 @@ export function Header() {
             className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-foreground"
           >
             <Code className="h-4 w-4" /> Meta Tag Generator
+          </Link>
+          <Link
+            href="/tools/pdf-splitter"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-primary hover:bg-accent"
+          >
+            <Scissors className="h-4 w-4" /> PDF Page Splitter
           </Link>
 
           <div className="pt-3 border-t border-border">

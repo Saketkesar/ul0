@@ -20,8 +20,10 @@ import {
   X,
   ZapIcon,
   AlertTriangle,
+  Scissors,
 } from "lucide-react"
 import { PdfAdBanner } from "./pdf-ad-banner"
+import { PdfSplitterClient } from "@/app/tools/pdf-splitter/pdf-splitter-client"
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -46,7 +48,7 @@ interface ScannedPage {
   name: string
 }
 
-type ActiveTab = "image-to-pdf" | "merge-pdf" | "scanner"
+type ActiveTab = "split-pdf" | "image-to-pdf" | "merge-pdf" | "scanner"
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -65,7 +67,7 @@ function moveItem<T>(arr: T[], from: number, to: number): T[] {
 /*  Main Component                                                     */
 /* ------------------------------------------------------------------ */
 export function PdfTools() {
-  const [tab, setTab] = useState<ActiveTab>("image-to-pdf")
+  const [tab, setTab] = useState<ActiveTab>("split-pdf")
   const { bannerRef, sideRef } = PdfAdBanner()
 
   return (
@@ -84,6 +86,7 @@ export function PdfTools() {
           {/* Tab bar */}
           <div className="flex gap-1 p-1 bg-muted/30 rounded-xl mb-6 border border-border/50">
             {([
+              { key: "split-pdf" as ActiveTab, label: "Split Pages", icon: Scissors },
               { key: "image-to-pdf" as ActiveTab, label: "Image to PDF", icon: ImageIcon },
               { key: "merge-pdf" as ActiveTab, label: "Merge PDFs", icon: FileStack },
               { key: "scanner" as ActiveTab, label: "Document Scanner", icon: ScanLine },
@@ -91,7 +94,7 @@ export function PdfTools() {
               <button
                 key={key}
                 onClick={() => setTab(key)}
-                className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
                   tab === key
                     ? "bg-primary text-primary-foreground shadow-md"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -104,6 +107,7 @@ export function PdfTools() {
           </div>
 
           {/* Tab content */}
+          {tab === "split-pdf" && <PdfSplitterClient />}
           {tab === "image-to-pdf" && <ImageToPdf />}
           {tab === "merge-pdf" && <MergePdfs />}
           {tab === "scanner" && <DocScanner />}
