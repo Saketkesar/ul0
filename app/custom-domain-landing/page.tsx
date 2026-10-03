@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { headers } from "next/headers"
 import Image from "next/image"
 import Link from "next/link"
-import { Logo } from "@/components/logo"
 import { Link2, ArrowRight } from "lucide-react"
 import { getDomainByName } from "@/lib/appwrite/domains"
 
@@ -56,7 +55,14 @@ export default async function CustomDomainLandingPage() {
       <header className="relative z-10 border-b border-gray-100 bg-white/80 backdrop-blur-md px-6 py-4">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
           <Link href="https://ul0.site" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-            <Logo iconSize={26} />
+            <Image
+              src="/ul0.png"
+              alt="ul0"
+              width={72}
+              height={26}
+              className="h-6 w-auto object-contain"
+              priority
+            />
           </Link>
           <Link
             href="https://ul0.site/sign-up"
@@ -121,8 +127,14 @@ export default async function CustomDomainLandingPage() {
       {/* Footer */}
       <footer className="relative z-10 border-t border-gray-100 bg-white px-6 py-6">
         <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
-          <Link href="https://ul0.site" target="_blank" rel="noopener noreferrer" className="opacity-60 hover:opacity-100 transition-opacity">
-            <Logo iconSize={20} />
+          <Link href="https://ul0.site" target="_blank" rel="noopener noreferrer">
+            <Image
+              src="/ul0.png"
+              alt="ul0"
+              width={55}
+              height={20}
+              className="h-5 w-auto object-contain opacity-40 hover:opacity-80 transition-opacity"
+            />
           </Link>
           <p className="text-xs text-gray-400 font-mono">
             Powered by{" "}

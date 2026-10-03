@@ -4,7 +4,6 @@ import type React from "react"
 
 import { useEffect, useState, useCallback } from "react"
 import Image from "next/image"
-import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import {
   ExternalLink,
@@ -341,8 +340,14 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
                 <span className="text-xs font-medium text-muted-foreground font-mono">{customHost}</span>
               )}
               <XIcon className="h-3 w-3 text-muted-foreground/50 shrink-0" />
-              <a href="https://ul0.site" target="_blank" rel="noopener noreferrer" className="opacity-70 hover:opacity-100 transition-opacity">
-                <Logo iconSize={20} />
+              <a href="https://ul0.site" target="_blank" rel="noopener noreferrer">
+                <Image
+                  src="/ul0.png"
+                  alt="ul0"
+                  width={50}
+                  height={18}
+                  className="h-5 w-auto object-contain opacity-70 hover:opacity-100 transition-opacity"
+                />
               </a>
             </div>
           ) : (

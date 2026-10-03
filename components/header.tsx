@@ -3,7 +3,6 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useState, useMemo } from "react"
-import { Logo } from "@/components/logo"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +17,6 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-  SheetClose,
 } from "@/components/ui/sheet"
 import {
   ChevronDown,
@@ -29,12 +27,9 @@ import {
   Building2,
   Briefcase,
   Home,
-  UtensilsCrossed,
   Video,
   ShoppingBag,
   Rocket,
-  Calendar,
-  Compass,
   ArrowRightLeft,
   Maximize2,
   Share2,
@@ -42,17 +37,15 @@ import {
   LinkIcon,
   FileJson,
   ScanLine,
-  LayoutDashboard,
   Menu,
-  X,
   Sparkles,
-  Zap,
   Scissors,
   BookOpen,
   Search,
-  ExternalLink,
+  Users,
   ShieldCheck,
   Tag,
+  Wifi,
 } from "lucide-react"
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs"
 
@@ -62,27 +55,26 @@ export function Header() {
 
   const allNavLinks = useMemo(
     () => [
-      { name: "URL Shortener", href: "/", category: "Products", icon: Link2, desc: "Fast 301 link shortening" },
-      { name: "Branded Custom Domains", href: "/pricing", category: "Products", icon: Globe, desc: "Connect your custom domain" },
-      { name: "Vector QR Generator", href: "/qr", category: "Products", icon: QrCode, desc: "Custom colors & vector SVG" },
-      { name: "Click Analytics", href: "/features", category: "Products", icon: BarChart3, desc: "Real-time geolocation & devices" },
-      { name: "UTM Campaign Builder", href: "/utm", category: "Products", icon: LinkIcon, desc: "Google Analytics attribution" },
-      { name: "PDF Page Splitter", href: "/tools/pdf-splitter", category: "Tools", icon: Scissors, badge: "New", desc: "Extract & download single PDF pages" },
-      { name: "301 Redirect Checker", href: "/tools/redirect-checker", category: "Tools", icon: ArrowRightLeft, desc: "Audit redirect chains & headers" },
-      { name: "URL Expander & Safety", href: "/tools/url-expander", category: "Tools", icon: Maximize2, desc: "Inspect hidden destinations safely" },
-      { name: "Social Card Previewer", href: "/tools/og-preview", category: "Tools", icon: Share2, desc: "Test OpenGraph & Twitter cards" },
-      { name: "Meta Tag Generator", href: "/tools/meta-tag-generator", category: "Tools", icon: Code, desc: "Generate SEO & social metadata" },
-      { name: "JSON Formatter", href: "/json", category: "Tools", icon: FileJson, desc: "Validate & beautify JSON" },
-      { name: "Startups & SaaS", href: "/use-cases/startups", category: "Solutions", icon: Rocket, desc: "Developer API & branded links" },
-      { name: "Marketing Agencies", href: "/use-cases/marketing-agencies", category: "Solutions", icon: Briefcase, desc: "Client attribution & campaigns" },
-      { name: "Creators & Influencers", href: "/use-cases/creators", category: "Solutions", icon: Video, desc: "Bio links & social tracking" },
-      { name: "Small Businesses", href: "/use-cases/small-business", category: "Solutions", icon: Building2, desc: "Simple SMS & print marketing" },
-      { name: "E-Commerce & Retail", href: "/use-cases/ecommerce", category: "Solutions", icon: ShoppingBag, desc: "Product link attribution" },
-      { name: "Real Estate Agents", href: "/use-cases/real-estate", category: "Solutions", icon: Home, desc: "Yard sign QR codes & flyers" },
-      { name: "US Growth Blog & Guides", href: "/blog", category: "Resources", icon: BookOpen, desc: "Bitly alternatives & SEO guides" },
-      { name: "Backlinks & Partner Directory", href: "/backlinks", category: "Resources", icon: Link2, badge: "Notion", desc: "Aesthetic badge exchange" },
-      { name: "Changelog & Updates", href: "/changelog", category: "Resources", icon: Zap, desc: "Latest releases and features" },
-      { name: "Pricing & Plans", href: "/pricing", category: "Resources", icon: Tag, desc: "Free & Pro tier options" },
+      { name: "URL Shortener", href: "/", category: "Link Tools", icon: Link2, desc: "Fast 301 link shortening with no signup" },
+      { name: "Split Expenses & UPI", href: "/split", category: "Utilities", icon: Users, badge: "Popular", desc: "Split bills and calculate group dues with UPI QR" },
+      { name: "PDF Page Splitter", href: "/tools/pdf-splitter", category: "PDF Tools", icon: Scissors, badge: "New", desc: "Extract & download single PDF pages line-by-line" },
+      { name: "PDF Scanner & Document Tools", href: "/pdf", category: "PDF Tools", icon: ScanLine, desc: "Scan, crop, merge and manage PDFs" },
+      { name: "Vector QR Code Generator", href: "/qr", category: "Link Tools", icon: QrCode, desc: "Create high-res trackable QR codes" },
+      { name: "WiFi QR Code Maker", href: "/wifi", category: "Link Tools", icon: Wifi, desc: "Generate instant connect WiFi QR codes" },
+      { name: "Branded Custom Domains", href: "/pricing", category: "Link Tools", icon: Globe, desc: "Connect your own custom root or sub-domain" },
+      { name: "Real-Time Click Analytics", href: "/features", category: "Link Tools", icon: BarChart3, desc: "Track country, device, browser, and referrers" },
+      { name: "UTM Campaign Builder", href: "/utm", category: "Marketing", icon: LinkIcon, desc: "Google Analytics & Meta Ads campaign builder" },
+      { name: "301 Redirect Checker", href: "/tools/redirect-checker", category: "Utilities", icon: ArrowRightLeft, desc: "Audit redirect chains, status codes & hops" },
+      { name: "URL Expander & Safety", href: "/tools/url-expander", category: "Utilities", icon: Maximize2, desc: "Inspect hidden destination URLs safely" },
+      { name: "Social Card Previewer", href: "/tools/og-preview", category: "Marketing", icon: Share2, desc: "Preview OpenGraph & Twitter card images" },
+      { name: "Meta Tag Generator", href: "/tools/meta-tag-generator", category: "Marketing", icon: Code, desc: "Generate search & social meta tags" },
+      { name: "JSON Formatter", href: "/json", category: "Utilities", icon: FileJson, desc: "Validate, prettify, and inspect JSON" },
+      { name: "Free Backlinks & Badges", href: "/backlinks", category: "Growth", icon: Link2, desc: "Aesthetic badge exchange and dofollow backlinks" },
+      { name: "SEO & Growth Blog", href: "/blog", category: "Resources", icon: BookOpen, desc: "Link shortening guides, Bitly alternatives, and QR marketing" },
+      { name: "Startups & Developers", href: "/use-cases/startups", category: "Solutions", icon: Rocket, desc: "API access, webhook relays, and custom links" },
+      { name: "Marketing Agencies", href: "/use-cases/marketing-agencies", category: "Solutions", icon: Briefcase, desc: "Multi-client campaigns and link tracking" },
+      { name: "Creators & Influencers", href: "/use-cases/creators", category: "Solutions", icon: Video, desc: "Social bio links and video attribution" },
+      { name: "Pricing & Custom Domains", href: "/pricing", category: "Pricing", icon: Tag, desc: "Free tier and custom domain plans" },
     ],
     []
   )
@@ -101,145 +93,88 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
       <div className="container mx-auto flex h-14 items-center justify-between px-4 sm:px-6">
-        {/* Left: Brand Logo + Version Badge */}
+        {/* Left: Original Brand Logo (Preserved as requested) */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 group" aria-label="UL0 Link Management Home">
-            <Logo iconSize={30} />
+            <Image
+              src="/ul0.png"
+              alt="UL0 Logo"
+              width={76}
+              height={28}
+              className="h-7 w-auto object-contain"
+              priority
+            />
           </Link>
-          <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-700">
-            v2.5
-          </span>
         </div>
 
-        {/* Center: Desktop Navigation Bar */}
-        <nav className="hidden lg:flex items-center gap-1 text-sm font-medium text-muted-foreground" aria-label="Main navigation">
-          {/* 1. Products Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring">
-              <span>Product</span>
-              <ChevronDown className="h-3.5 w-3.5 opacity-60" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-80 p-2 shadow-lg">
-              <DropdownMenuLabel className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-2 py-1">
-                Link Platform
-              </DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link href="/" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <Link2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">URL Shortener</div>
-                    <div className="text-[11px] text-muted-foreground">High-performance 301 redirects with zero ads</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/pricing" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <Globe className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">Branded Custom Domains</div>
-                    <div className="text-[11px] text-muted-foreground">Connect your own custom root or sub-domain</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/qr" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <QrCode className="h-4 w-4 text-foreground mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">Vector QR Codes</div>
-                    <div className="text-[11px] text-muted-foreground">Custom colors, precision SVGs, and tracking</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/features" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <BarChart3 className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">Real-Time Analytics</div>
-                    <div className="text-[11px] text-muted-foreground">Device, country, browser, and referrer stats</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/utm" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <LinkIcon className="h-4 w-4 text-purple-500 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">UTM Campaign Builder</div>
-                    <div className="text-[11px] text-muted-foreground">Google Analytics and Meta Ads attribution</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+        {/* Center: Desktop Navigation Bar with Prominent Tools */}
+        <nav className="hidden xl:flex items-center gap-1 text-sm font-medium text-muted-foreground" aria-label="Main navigation">
+          {/* 1. URL Shortener */}
+          <Link
+            href="/"
+            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5"
+          >
+            <Link2 className="h-4 w-4 text-primary" />
+            <span>Shorten</span>
+          </Link>
 
-          {/* 2. Solutions Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring">
-              <span>Solutions</span>
-              <ChevronDown className="h-3.5 w-3.5 opacity-60" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-80 p-2 shadow-lg">
-              <DropdownMenuItem asChild>
-                <Link href="/use-cases" className="flex items-center gap-2 p-2 rounded-lg font-semibold text-primary cursor-pointer">
-                  <Compass className="h-4 w-4" />
-                  <span>All Use Cases &amp; Solutions</span>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/use-cases/startups" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <Rocket className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">Startups &amp; Developers</div>
-                    <div className="text-[11px] text-muted-foreground">REST API, webhook relays, and branded links</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/use-cases/marketing-agencies" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <Briefcase className="h-4 w-4 text-purple-500 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">Marketing Agencies</div>
-                    <div className="text-[11px] text-muted-foreground">Multi-client campaign tracking &amp; clean reporting</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/use-cases/creators" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <Video className="h-4 w-4 text-pink-500 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">Creators &amp; Influencers</div>
-                    <div className="text-[11px] text-muted-foreground">Bio links, YouTube &amp; TikTok attribution</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/use-cases/ecommerce" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <ShoppingBag className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">E-Commerce &amp; SMS</div>
-                    <div className="text-[11px] text-muted-foreground">Short SMS links, discounts, and checkout tracking</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/use-cases/real-estate" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <Home className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">Real Estate Agents</div>
-                    <div className="text-[11px] text-muted-foreground">Yard signs, flyers, and property QR codes</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* 2. Split Expenses (Prominently visible!) */}
+          <Link
+            href="/split"
+            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5 text-foreground font-medium"
+          >
+            <Users className="h-4 w-4 text-emerald-500" />
+            <span>Split Expenses</span>
+          </Link>
 
-          {/* 3. Free Web & SEO Tools Dropdown */}
+          {/* 3. PDF Tools */}
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring">
-              <span>Free Tools</span>
-              <span className="ml-0.5 px-1.5 py-0.2 rounded-full text-[9px] font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-                Free
+            <DropdownMenuTrigger className="flex items-center gap-1 rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground outline-none">
+              <Scissors className="h-4 w-4 text-primary" />
+              <span>PDF Tools</span>
+              <span className="ml-0.5 px-1 py-0.2 rounded text-[9px] font-bold bg-primary/10 text-primary">
+                NEW
               </span>
+              <ChevronDown className="h-3.5 w-3.5 opacity-60" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-72 p-2 shadow-lg">
+              <DropdownMenuItem asChild>
+                <Link href="/tools/pdf-splitter" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
+                  <Scissors className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <span>PDF Page Splitter</span>
+                      <span className="text-[9px] px-1 py-0.2 rounded bg-primary/10 text-primary font-bold">NEW</span>
+                    </div>
+                    <div className="text-[11px] text-muted-foreground">Extract &amp; download single pages line-by-line</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/pdf" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
+                  <ScanLine className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-xs font-semibold text-foreground">PDF Scanner &amp; Tools</div>
+                    <div className="text-[11px] text-muted-foreground">Scan with camera, merge &amp; rename documents</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* 4. Vector QR Generator */}
+          <Link
+            href="/qr"
+            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5"
+          >
+            <QrCode className="h-4 w-4 text-muted-foreground" />
+            <span>QR Codes</span>
+          </Link>
+
+          {/* 5. More Web & SEO Tools Dropdown */}
+          <DropdownMenu>
+            <DropdownMenuTrigger className="flex items-center gap-1 rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground outline-none">
+              <span>All Tools</span>
               <ChevronDown className="h-3.5 w-3.5 opacity-60" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-80 p-2 shadow-lg">
@@ -250,27 +185,12 @@ export function Header() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuLabel className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground px-2 py-1">
-                Popular Utilities
-              </DropdownMenuLabel>
-              <DropdownMenuItem asChild>
-                <Link href="/tools/pdf-splitter" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <Scissors className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                      <span>PDF Page Splitter</span>
-                      <span className="text-[9px] px-1 py-0.2 rounded bg-primary/10 text-primary font-bold">NEW</span>
-                    </div>
-                    <div className="text-[11px] text-muted-foreground">Extract &amp; download single PDF pages line-by-line</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/tools/redirect-checker" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
                   <ArrowRightLeft className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" />
                   <div>
                     <div className="text-xs font-semibold text-foreground">301 Redirect Checker</div>
-                    <div className="text-[11px] text-muted-foreground">Inspect HTTP status codes &amp; redirect hops</div>
+                    <div className="text-[11px] text-muted-foreground">Audit HTTP status codes &amp; redirect hops</div>
                   </div>
                 </Link>
               </DropdownMenuItem>
@@ -279,65 +199,80 @@ export function Header() {
                   <Maximize2 className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
                   <div>
                     <div className="text-xs font-semibold text-foreground">URL Expander &amp; Safety</div>
-                    <div className="text-[11px] text-muted-foreground">Reveal destination behind shortened links safely</div>
+                    <div className="text-[11px] text-muted-foreground">Inspect destination behind short links</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/utm" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
+                  <LinkIcon className="h-4 w-4 text-purple-500 mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-xs font-semibold text-foreground">UTM Campaign Builder</div>
+                    <div className="text-[11px] text-muted-foreground">Google Analytics &amp; Meta Ads attribution</div>
                   </div>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/tools/og-preview" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <Share2 className="h-4 w-4 text-purple-500 mt-0.5 shrink-0" />
+                  <Share2 className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" />
                   <div>
                     <div className="text-xs font-semibold text-foreground">Social Card Previewer</div>
-                    <div className="text-[11px] text-muted-foreground">Test OpenGraph &amp; Twitter card images</div>
+                    <div className="text-[11px] text-muted-foreground">Test OpenGraph &amp; Twitter card previews</div>
                   </div>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/tools/meta-tag-generator" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <Code className="h-4 w-4 text-indigo-500 mt-0.5 shrink-0" />
+                  <Code className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
                   <div>
                     <div className="text-xs font-semibold text-foreground">Meta Tag Generator</div>
-                    <div className="text-[11px] text-muted-foreground">Generate copy-paste SEO meta tags</div>
+                    <div className="text-[11px] text-muted-foreground">Generate SEO &amp; social metadata</div>
                   </div>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/json" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <FileJson className="h-4 w-4 text-amber-500 mt-0.5 shrink-0" />
+                  <FileJson className="h-4 w-4 text-sky-500 mt-0.5 shrink-0" />
                   <div>
                     <div className="text-xs font-semibold text-foreground">JSON Formatter</div>
-                    <div className="text-[11px] text-muted-foreground">Validate, prettify, and inspect JSON payloads</div>
+                    <div className="text-[11px] text-muted-foreground">Validate, prettify &amp; minify JSON</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/wifi" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
+                  <Wifi className="h-4 w-4 text-rose-500 mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-xs font-semibold text-foreground">WiFi QR Code Maker</div>
+                    <div className="text-[11px] text-muted-foreground">Generate 1-scan WiFi access codes</div>
                   </div>
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* 4. Blog & Growth Guides */}
+          {/* 6. Custom Domains & Pricing */}
+          <Link
+            href="/pricing"
+            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
+          >
+            Custom Domains
+          </Link>
+
+          {/* 7. Free Backlinks (Clean title without "Notion" as requested) */}
+          <Link
+            href="/backlinks"
+            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
+          >
+            Backlinks
+          </Link>
+
+          {/* 8. Blog */}
           <Link
             href="/blog"
             className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
           >
             Blog
-          </Link>
-
-          {/* 5. Backlinks Directory */}
-          <Link
-            href="/backlinks"
-            className="flex items-center gap-1 rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
-          >
-            <span>Backlinks</span>
-            <span className="text-[9px] px-1 py-0.2 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 font-mono">
-              Notion
-            </span>
-          </Link>
-
-          {/* 6. Pricing */}
-          <Link
-            href="/pricing"
-            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
-          >
-            Pricing
           </Link>
         </nav>
 
@@ -352,17 +287,18 @@ export function Header() {
                 </button>
               </SignInButton>
               <SignUpButton mode="modal">
-                <button className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90 shadow-xs cursor-pointer">
+                <button className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs transition-colors hover:bg-primary/90 cursor-pointer">
                   Get Started Free
                 </button>
               </SignUpButton>
             </Show>
+
             <Show when="signed-in">
               <Link
                 href="/dashboard"
-                className="flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-accent"
+                className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent transition-colors"
               >
-                <LayoutDashboard className="h-3.5 w-3.5 text-primary" />
+                <BarChart3 className="h-3.5 w-3.5" />
                 <span>Dashboard</span>
               </Link>
               <UserButton
@@ -376,7 +312,7 @@ export function Header() {
           </div>
 
           {/* Mobile Menu Trigger via Sheet */}
-          <div className="lg:hidden flex items-center gap-1.5">
+          <div className="xl:hidden flex items-center gap-1.5">
             <Show when="signed-in">
               <UserButton
                 appearance={{
@@ -397,18 +333,21 @@ export function Header() {
                   <Menu className="h-5 w-5" />
                 </button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[85vw] max-w-sm p-0 flex flex-col justify-between">
+              <SheetContent side="right" className="w-[88vw] max-w-sm p-0 flex flex-col justify-between">
                 <SheetHeader className="p-4 border-b border-border flex flex-row items-center justify-between space-y-0">
                   <SheetTitle className="text-left flex items-center gap-2">
-                    <Logo iconSize={26} />
-                    <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-muted-foreground">
-                      Navigation
-                    </span>
+                    <Image
+                      src="/ul0.png"
+                      alt="UL0 Logo"
+                      width={64}
+                      height={24}
+                      className="h-6 w-auto object-contain"
+                    />
                   </SheetTitle>
                 </SheetHeader>
 
                 {/* Mobile Scrollable Area */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-5">
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
                   {/* Instant Search in Menu */}
                   <div className="relative">
                     <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
@@ -416,8 +355,8 @@ export function Header() {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Search tools, use cases, guides..."
-                      className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-border bg-muted/40 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                      placeholder="Search tools, split, pdf, qr..."
+                      className="w-full pl-8 pr-3 py-2 rounded-lg border border-border bg-muted/40 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
                     />
                     {searchQuery && (
                       <button
@@ -436,86 +375,207 @@ export function Header() {
                         Matching Results ({filteredLinks.length})
                       </div>
                       {filteredLinks.length === 0 ? (
-                        <p className="text-xs text-muted-foreground py-2">No matching links found.</p>
+                        <div className="text-xs text-muted-foreground py-4 text-center">
+                          No tools found matching &quot;{searchQuery}&quot;
+                        </div>
                       ) : (
-                        filteredLinks.map((item) => {
-                          const Icon = item.icon
-                          return (
-                            <Link
-                              key={item.href}
-                              href={item.href}
-                              onClick={() => {
-                                setMobileOpen(false)
-                                setSearchQuery("")
-                              }}
-                              className="flex items-center justify-between p-2 rounded-lg hover:bg-accent text-xs font-medium text-foreground transition-colors"
-                            >
-                              <div className="flex items-center gap-2">
-                                <Icon className="h-4 w-4 text-primary shrink-0" />
-                                <div>
-                                  <div className="font-semibold">{item.name}</div>
-                                  <div className="text-[10px] text-muted-foreground">{item.desc}</div>
-                                </div>
+                        filteredLinks.map((item) => (
+                          <Link
+                            key={item.href + item.name}
+                            href={item.href}
+                            onClick={() => {
+                              setSearchQuery("")
+                              setMobileOpen(false)
+                            }}
+                            className="flex items-start gap-2.5 p-2 rounded-lg text-xs hover:bg-accent text-foreground transition-colors"
+                          >
+                            <item.icon className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+                            <div>
+                              <div className="font-semibold flex items-center gap-1.5">
+                                <span>{item.name}</span>
+                                {item.badge && (
+                                  <span className="text-[9px] px-1 py-0.2 rounded bg-primary/10 text-primary font-bold">
+                                    {item.badge}
+                                  </span>
+                                )}
                               </div>
-                              {item.badge && (
-                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-primary/10 text-primary font-bold">
-                                  {item.badge}
-                                </span>
-                              )}
-                            </Link>
-                          )
-                        })
+                              <div className="text-[10px] text-muted-foreground line-clamp-1">{item.desc}</div>
+                            </div>
+                          </Link>
+                        ))
                       )}
                     </div>
                   ) : (
                     /* Default Grouped Mobile Sections */
                     <>
-                      {/* Quick Action Shortcuts */}
-                      <div className="grid grid-cols-2 gap-2 pb-2">
+                      {/* Prominent Quick Shortcuts: 4 Essential Tools */}
+                      <div className="space-y-1.5">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
+                          Quick Launch Tools
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <Link
+                            href="/"
+                            onClick={() => setMobileOpen(false)}
+                            className="flex flex-col gap-1 p-3 rounded-xl border border-border bg-card hover:border-primary/50 transition-colors shadow-2xs"
+                          >
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                              <Link2 className="h-4 w-4 text-primary shrink-0" />
+                              <span>Shorten URL</span>
+                            </div>
+                            <span className="text-[10px] text-muted-foreground">301 Redirects</span>
+                          </Link>
+
+                          <Link
+                            href="/split"
+                            onClick={() => setMobileOpen(false)}
+                            className="flex flex-col gap-1 p-3 rounded-xl border border-emerald-500/30 bg-emerald-500/5 hover:border-emerald-500 transition-colors shadow-2xs"
+                          >
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                              <Users className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                              <span>Split Expenses</span>
+                            </div>
+                            <span className="text-[10px] text-muted-foreground">UPI QR &amp; Groups</span>
+                          </Link>
+
+                          <Link
+                            href="/tools/pdf-splitter"
+                            onClick={() => setMobileOpen(false)}
+                            className="flex flex-col gap-1 p-3 rounded-xl border border-primary/30 bg-primary/5 hover:border-primary transition-colors shadow-2xs"
+                          >
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                              <Scissors className="h-4 w-4 text-primary shrink-0" />
+                              <span>PDF Splitter</span>
+                            </div>
+                            <span className="text-[10px] text-muted-foreground">Single Page Extract</span>
+                          </Link>
+
+                          <Link
+                            href="/qr"
+                            onClick={() => setMobileOpen(false)}
+                            className="flex flex-col gap-1 p-3 rounded-xl border border-border bg-card hover:border-primary/50 transition-colors shadow-2xs"
+                          >
+                            <div className="flex items-center gap-1.5 text-xs font-bold text-foreground">
+                              <QrCode className="h-4 w-4 text-foreground shrink-0" />
+                              <span>QR Codes</span>
+                            </div>
+                            <span className="text-[10px] text-muted-foreground">Vector QR Maker</span>
+                          </Link>
+                        </div>
+                      </div>
+
+                      {/* Section 1: All Free Web & Developer Tools */}
+                      <div className="space-y-1 pt-2 border-t border-border">
+                        <div className="flex items-center justify-between px-1">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                            All Developer &amp; Web Tools
+                          </span>
+                          <Link
+                            href="/tools"
+                            onClick={() => setMobileOpen(false)}
+                            className="text-[10px] font-semibold text-primary hover:underline"
+                          >
+                            View Directory →
+                          </Link>
+                        </div>
+
                         <Link
-                          href="/"
+                          href="/split"
                           onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-2 p-2.5 rounded-xl border border-border bg-card text-xs font-semibold text-foreground hover:border-primary/50 transition-colors shadow-2xs"
+                          className="flex items-center justify-between p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
                         >
-                          <Link2 className="h-4 w-4 text-primary" />
-                          <span>Shorten URL</span>
+                          <div className="flex items-center gap-2">
+                            <Users className="h-4 w-4 text-emerald-500" />
+                            <span className="font-semibold">Split Expenses &amp; UPI QR</span>
+                          </div>
+                          <span className="text-[9px] px-1 py-0.2 rounded bg-emerald-500/10 text-emerald-600 font-bold">
+                            POPULAR
+                          </span>
                         </Link>
+
                         <Link
                           href="/tools/pdf-splitter"
                           onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-2 p-2.5 rounded-xl border border-border bg-card text-xs font-semibold text-foreground hover:border-primary/50 transition-colors shadow-2xs"
+                          className="flex items-center justify-between p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
                         >
-                          <Scissors className="h-4 w-4 text-primary" />
-                          <span>PDF Splitter</span>
+                          <div className="flex items-center gap-2">
+                            <Scissors className="h-4 w-4 text-primary" />
+                            <span>PDF Page Splitter</span>
+                          </div>
+                          <span className="text-[9px] px-1 py-0.2 rounded bg-primary/10 text-primary font-bold">
+                            NEW
+                          </span>
+                        </Link>
+
+                        <Link
+                          href="/pdf"
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
+                        >
+                          <ScanLine className="h-4 w-4 text-emerald-500" />
+                          <span>PDF Scanner &amp; Document Tools</span>
+                        </Link>
+
+                        <Link
+                          href="/tools/redirect-checker"
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
+                        >
+                          <ArrowRightLeft className="h-4 w-4 text-blue-500" />
+                          <span>301 HTTP Redirect Checker</span>
+                        </Link>
+
+                        <Link
+                          href="/tools/url-expander"
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
+                        >
+                          <Maximize2 className="h-4 w-4 text-emerald-500" />
+                          <span>URL Expander &amp; Safety Inspector</span>
+                        </Link>
+
+                        <Link
+                          href="/utm"
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
+                        >
+                          <LinkIcon className="h-4 w-4 text-purple-500" />
+                          <span>UTM Campaign Builder</span>
+                        </Link>
+
+                        <Link
+                          href="/tools/og-preview"
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
+                        >
+                          <Share2 className="h-4 w-4 text-indigo-500" />
+                          <span>Social Card Previewer</span>
+                        </Link>
+
+                        <Link
+                          href="/json"
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
+                        >
+                          <FileJson className="h-4 w-4 text-sky-500" />
+                          <span>JSON Formatter &amp; Validator</span>
+                        </Link>
+
+                        <Link
+                          href="/wifi"
+                          onClick={() => setMobileOpen(false)}
+                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
+                        >
+                          <Wifi className="h-4 w-4 text-rose-500" />
+                          <span>WiFi QR Code Maker</span>
                         </Link>
                       </div>
 
-                      {/* Section 1: Core Platform */}
-                      <div className="space-y-1">
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-2">
-                          Core Platform
+                      {/* Section 2: Platform & Resources */}
+                      <div className="space-y-1 pt-2 border-t border-border">
+                        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-1">
+                          Platform &amp; Growth
                         </div>
-                        <Link
-                          href="/"
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center justify-between p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
-                        >
-                          <div className="flex items-center gap-2">
-                            <Link2 className="h-4 w-4 text-muted-foreground" />
-                            <span>URL Shortener</span>
-                          </div>
-                          <span className="text-[10px] text-muted-foreground">301 Redirects</span>
-                        </Link>
-                        <Link
-                          href="/features"
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center justify-between p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
-                        >
-                          <div className="flex items-center gap-2">
-                            <BarChart3 className="h-4 w-4 text-muted-foreground" />
-                            <span>Features &amp; Analytics</span>
-                          </div>
-                        </Link>
                         <Link
                           href="/pricing"
                           onClick={() => setMobileOpen(false)}
@@ -523,98 +583,9 @@ export function Header() {
                         >
                           <div className="flex items-center gap-2">
                             <Globe className="h-4 w-4 text-blue-500" />
-                            <span>Custom Domains &amp; Pricing</span>
+                            <span>Branded Custom Domains</span>
                           </div>
                           <span className="text-[10px] font-mono text-emerald-600 font-bold">$0 Free</span>
-                        </Link>
-                        <Link
-                          href="/qr"
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center justify-between p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
-                        >
-                          <div className="flex items-center gap-2">
-                            <QrCode className="h-4 w-4 text-muted-foreground" />
-                            <span>Vector QR Generator</span>
-                          </div>
-                        </Link>
-                      </div>
-
-                      {/* Section 2: Free SEO & Web Tools */}
-                      <div className="space-y-1 pt-2 border-t border-border">
-                        <div className="flex items-center justify-between px-2">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                            Free Tools &amp; PDF
-                          </span>
-                          <Link
-                            href="/tools"
-                            onClick={() => setMobileOpen(false)}
-                            className="text-[10px] font-semibold text-primary hover:underline"
-                          >
-                            View All →
-                          </Link>
-                        </div>
-                        <Link
-                          href="/tools/pdf-splitter"
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center justify-between p-2 rounded-lg text-xs font-medium bg-primary/5 hover:bg-primary/10 text-foreground"
-                        >
-                          <div className="flex items-center gap-2">
-                            <Scissors className="h-4 w-4 text-primary" />
-                            <span className="font-semibold">PDF Page Splitter</span>
-                          </div>
-                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-primary/10 text-primary font-bold">
-                            NEW
-                          </span>
-                        </Link>
-                        <Link
-                          href="/tools/redirect-checker"
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
-                        >
-                          <ArrowRightLeft className="h-4 w-4 text-blue-500" />
-                          <span>301 Redirect Checker</span>
-                        </Link>
-                        <Link
-                          href="/tools/url-expander"
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
-                        >
-                          <Maximize2 className="h-4 w-4 text-emerald-500" />
-                          <span>URL Expander &amp; Safety</span>
-                        </Link>
-                        <Link
-                          href="/tools/og-preview"
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
-                        >
-                          <Share2 className="h-4 w-4 text-purple-500" />
-                          <span>Social Card Previewer</span>
-                        </Link>
-                        <Link
-                          href="/utm"
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
-                        >
-                          <LinkIcon className="h-4 w-4 text-cyan-500" />
-                          <span>UTM Campaign Builder</span>
-                        </Link>
-                      </div>
-
-                      {/* Section 3: Solutions & Resources */}
-                      <div className="space-y-1 pt-2 border-t border-border">
-                        <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground px-2">
-                          Resources &amp; Growth
-                        </div>
-                        <Link
-                          href="/blog"
-                          onClick={() => setMobileOpen(false)}
-                          className="flex items-center justify-between p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
-                        >
-                          <div className="flex items-center gap-2">
-                            <BookOpen className="h-4 w-4 text-indigo-500" />
-                            <span>US Growth Blog &amp; Guides</span>
-                          </div>
-                          <span className="text-[10px] text-muted-foreground">SEO</span>
                         </Link>
                         <Link
                           href="/backlinks"
@@ -623,63 +594,62 @@ export function Header() {
                         >
                           <div className="flex items-center gap-2">
                             <Link2 className="h-4 w-4 text-muted-foreground" />
-                            <span>Notion Backlinks Directory</span>
+                            <span>Free Dofollow Backlinks</span>
                           </div>
-                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 font-mono">
-                            Dofollow
-                          </span>
                         </Link>
                         <Link
-                          href="/use-cases"
+                          href="/blog"
                           onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
+                          className="flex items-center justify-between p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
                         >
-                          <Compass className="h-4 w-4 text-muted-foreground" />
-                          <span>All Solutions Hub</span>
+                          <div className="flex items-center gap-2">
+                            <BookOpen className="h-4 w-4 text-muted-foreground" />
+                            <span>SEO &amp; Growth Blog</span>
+                          </div>
                         </Link>
                         <Link
-                          href="/changelog"
+                          href="/features"
                           onClick={() => setMobileOpen(false)}
-                          className="flex items-center gap-2 p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
+                          className="flex items-center justify-between p-2 rounded-lg text-xs font-medium hover:bg-accent text-foreground"
                         >
-                          <Zap className="h-4 w-4 text-muted-foreground" />
-                          <span>Changelog</span>
+                          <div className="flex items-center gap-2">
+                            <BarChart3 className="h-4 w-4 text-muted-foreground" />
+                            <span>Click Analytics &amp; Tracking</span>
+                          </div>
                         </Link>
                       </div>
                     </>
                   )}
                 </div>
 
-                {/* Bottom Dock: Auth Buttons */}
-                <div className="p-4 border-t border-border bg-muted/20">
+                {/* Mobile Drawer Bottom Auth */}
+                <div className="p-4 border-t border-border bg-muted/20 space-y-2">
                   <Show when="signed-out">
-                    <div className="grid grid-cols-2 gap-2">
-                      <SignInButton mode="modal">
-                        <button
-                          onClick={() => setMobileOpen(false)}
-                          className="w-full py-2 px-3 text-xs font-semibold rounded-lg border border-border hover:bg-accent text-foreground transition-colors cursor-pointer"
-                        >
-                          Sign In
-                        </button>
-                      </SignInButton>
-                      <SignUpButton mode="modal">
-                        <button
-                          onClick={() => setMobileOpen(false)}
-                          className="w-full py-2 px-3 text-xs font-semibold rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-colors shadow-xs cursor-pointer"
-                        >
-                          Get Started
-                        </button>
-                      </SignUpButton>
-                    </div>
+                    <SignInButton mode="modal">
+                      <button
+                        onClick={() => setMobileOpen(false)}
+                        className="w-full py-2.5 rounded-xl border border-border bg-background text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                      >
+                        Sign In
+                      </button>
+                    </SignInButton>
+                    <SignUpButton mode="modal">
+                      <button
+                        onClick={() => setMobileOpen(false)}
+                        className="w-full py-2.5 rounded-xl bg-primary text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-xs"
+                      >
+                        Get Started Free
+                      </button>
+                    </SignUpButton>
                   </Show>
                   <Show when="signed-in">
                     <Link
                       href="/dashboard"
                       onClick={() => setMobileOpen(false)}
-                      className="w-full flex items-center justify-center gap-2 py-2 px-3 text-xs font-semibold rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground transition-colors shadow-xs"
+                      className="w-full py-2.5 rounded-xl bg-primary text-xs font-semibold text-primary-foreground flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
                     >
-                      <LayoutDashboard className="h-4 w-4" />
-                      <span>Go to Dashboard</span>
+                      <BarChart3 className="h-4 w-4" />
+                      <span>Open Dashboard</span>
                     </Link>
                   </Show>
                 </div>

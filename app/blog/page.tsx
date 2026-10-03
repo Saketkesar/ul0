@@ -95,6 +95,33 @@ export const metadata: Metadata = {
 
 const blogPosts = [
   {
+    slug: "acortar-link-gratis-guia-completa",
+    title: "Cómo Acortar Links Gratis en 2026: Guía Completa Sin Registro (Bitly vs ul0)",
+    description: "Aprende cómo acortar un link gratis en 2026 paso a paso sin registro. Compara ul0, Bitly y TinyURL. Mejora tu CTR en WhatsApp, Instagram y TikTok.",
+    category: "Español",
+    readTime: "6 min read",
+    date: "2026-10-03",
+    featured: true,
+  },
+  {
+    slug: "how-to-split-expenses-group-bills-online",
+    title: "How to Split Expenses & Group Bills Online Free (No App Required in 2026)",
+    description: "Learn how to split group expenses and roommate bills online without downloading an app. Compare ul0 Split vs Splitwise with UPI QR support.",
+    category: "Utilities",
+    readTime: "7 min read",
+    date: "2026-10-03",
+    featured: true,
+  },
+  {
+    slug: "link-kuerzen-ohne-anmeldung-kostenlos",
+    title: "Link kürzen ohne Anmeldung 2026: Die besten kostenlosen URL-Shortener",
+    description: "Erfahren Sie, wie Sie lange Links ohne Registrierung kostenlos kürzen. DSGVO-konform, permanent und blitzschnell mit ul0.site.",
+    category: "Deutsch",
+    readTime: "5 min read",
+    date: "2026-10-03",
+    featured: true,
+  },
+  {
     slug: "link-shortening-best-practices-2026",
     title: "10 Link Shortening Best Practices Every Marketer Must Know in 2026",
     description: "Master link shortening in 2026 with 10 expert best practices to boost CTR, protect link equity, brand your URLs, and prevent spam blocks.",
