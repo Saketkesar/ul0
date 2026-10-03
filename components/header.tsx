@@ -3,6 +3,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { useState, useMemo } from "react"
+import { Logo } from "@/components/logo"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -102,15 +103,8 @@ export function Header() {
       <div className="container mx-auto flex h-14 items-center justify-between px-4 sm:px-6">
         {/* Left: Brand Logo + Version Badge */}
         <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2" aria-label="UL0 Link Management Home">
-            <Image
-              src="/ul0.png"
-              alt="UL0 Logo"
-              width={76}
-              height={28}
-              className="h-7 w-auto object-contain"
-              priority
-            />
+          <Link href="/" className="flex items-center gap-2 group" aria-label="UL0 Link Management Home">
+            <Logo iconSize={30} />
           </Link>
           <span className="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-700">
             v2.5
@@ -398,7 +392,7 @@ export function Header() {
                 <button
                   type="button"
                   aria-label="Open Navigation Menu"
-                  className="rounded-lg p-2 text-muted-foreground hover:bg-accent hover:text-foreground transition-colors border border-border/60"
+                  className="rounded-lg h-10 w-10 flex items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground transition-colors border border-border/60"
                 >
                   <Menu className="h-5 w-5" />
                 </button>
@@ -406,13 +400,7 @@ export function Header() {
               <SheetContent side="right" className="w-[85vw] max-w-sm p-0 flex flex-col justify-between">
                 <SheetHeader className="p-4 border-b border-border flex flex-row items-center justify-between space-y-0">
                   <SheetTitle className="text-left flex items-center gap-2">
-                    <Image
-                      src="/ul0.png"
-                      alt="UL0"
-                      width={64}
-                      height={24}
-                      className="h-6 w-auto object-contain"
-                    />
+                    <Logo iconSize={26} />
                     <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-muted-foreground">
                       Navigation
                     </span>

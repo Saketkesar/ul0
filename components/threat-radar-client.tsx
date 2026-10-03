@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { Logo } from "@/components/logo"
 import {
   Copy,
   Check,
@@ -138,13 +139,9 @@ export function ThreatRadarClient({
             <span className="text-3xl select-none leading-none" role="img" aria-label="shield">
               🛡️
             </span>
-            <Image
-              src="/ul0.png"
-              alt="ul0"
-              width={70}
-              height={24}
-              className="h-5 w-auto object-contain dark:invert"
-            />
+            <Link href="/" className="inline-block">
+              <Logo iconSize={26} />
+            </Link>
           </div>
 
           {/* Notion View Switcher */}

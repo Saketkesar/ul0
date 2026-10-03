@@ -6,6 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Autotag } from "@/components/autotag"
 import { hreflangAlternates } from "@/lib/i18n"
 import { headers } from "next/headers"
+import Script from "next/script"
 import "./globals.css"
 
 const _geist = Geist({ subsets: ["latin"] })
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s — UL0"
   },
   description:
-    "UL0 is a free modern link management platform for creators, startups, and marketers. Shorten links, connect branded custom domains, generate vector QR codes, and track real-time click attribution. 100% free with zero ads.",
+    "Free modern link management platform. Shorten URLs, connect custom domains, generate vector QR codes, and track real-time clicks with zero ads.",
   keywords: [
     // Branded & Custom Domain transactional keywords
     "custom domain short link free",
@@ -216,13 +217,13 @@ export const metadata: Metadata = {
   referrer: "origin-when-cross-origin",
   icons: {
     icon: [
-      { url: "/ul0.png", type: "image/png" },
-      { url: "/icon-light-32x32.png", media: "(prefers-color-scheme: light)" },
-      { url: "/icon-dark-32x32.png", media: "(prefers-color-scheme: dark)" },
       { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-dark-32x32.png", media: "(prefers-color-scheme: dark)" },
+      { url: "/icon-light-32x32.png", media: "(prefers-color-scheme: light)" },
+      { url: "/ul0.png", type: "image/png" },
     ],
-    apple: "/ul0.png",
-    shortcut: "/ul0.png",
+    apple: "/apple-icon.png",
+    shortcut: "/icon.svg",
   },
 }
 
@@ -284,7 +285,14 @@ export default async function RootLayout({
         },
         image: { "@id": "https://ul0.site/#logo" },
         sameAs: [
-          "https://twitter.com/ul0site"
+          "https://x.com/ul0site",
+          "https://twitter.com/ul0site",
+          "https://github.com/Saketkesar/ul0",
+          "https://www.linkedin.com/company/ul0",
+          "https://www.youtube.com/@ul0site",
+          "https://www.instagram.com/ul0site",
+          "https://www.facebook.com/ul0site",
+          "https://www.producthunt.com/products/ul0"
         ],
         contactPoint: {
           "@type": "ContactPoint",
@@ -388,24 +396,11 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {/* Simple Analytics - Privacy-friendly analytics */}
-        <script 
-          data-collect-dnt="true" 
-          async 
-          src="https://scripts.simpleanalyticscdn.com/latest.js"
-        />
-
         {/* Google Search Console verification */}
         <meta name="google-site-verification" content="Apib7-x98H0j5cPqHWwSMm6dNU4GmODRoqxLiDzdx9I" />
 
         {/* Google AdSense account verification */}
         <meta name="google-adsense-account" content="ca-pub-8018312015732327" />
-        {/* Google AdSense - Auto Ads tag */}
-        <script 
-          async 
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8018312015732327"
-          crossOrigin="anonymous"
-        />
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <ClerkProvider dynamic>
@@ -414,14 +409,26 @@ export default async function RootLayout({
           </div>
           <Analytics />
           <Autotag />
-          {/* Simple Analytics noscript fallback */}
-          <noscript>
-          <img 
-          src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" 
-          alt="" 
-          referrerPolicy="no-referrer-when-downgrade"
+          {/* Simple Analytics - Privacy-friendly analytics */}
+          <Script 
+            src="https://scripts.simpleanalyticscdn.com/latest.js"
+            strategy="afterInteractive"
+            data-collect-dnt="true"
           />
+          {/* Simple Analytics noscript fallback with descriptive alt */}
+          <noscript>
+            <img 
+              src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" 
+              alt="Simple Analytics Privacy-Friendly Visitor Tracking Pixel" 
+              referrerPolicy="no-referrer-when-downgrade"
+            />
           </noscript>
+          {/* Google AdSense - LazyOnload to prevent INP blocking */}
+          <Script 
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8018312015732327"
+            crossOrigin="anonymous"
+            strategy="lazyOnload"
+          />
         </ClerkProvider>
       </body>
     </html>
