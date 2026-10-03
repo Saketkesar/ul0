@@ -72,7 +72,8 @@ export async function POST(req: NextRequest) {
     const lowerHtml = pageHtml.toLowerCase()
     const tokenFound =
       pageHtml.includes(token) ||
-      pageHtml.includes("ul0-verified.svg") ||
+      pageHtml.includes("ul0-verified") ||
+      pageHtml.includes("ul0-anime") ||
       (lowerHtml.includes("ul0.site") &&
         (lowerHtml.includes("backlink") || lowerHtml.includes("badge") || lowerHtml.includes("verified")))
 

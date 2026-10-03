@@ -1,15 +1,69 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="140" height="32" viewBox="0 0 140 32" fill="none">
-  <rect width="140" height="32" rx="6" fill="#18181B"/>
-  <rect x="0.5" y="0.5" width="139" height="31" rx="5.5" stroke="#3F3F46" stroke-opacity="0.5"/>
-  <!-- Checkmark circle -->
-  <circle cx="18" cy="16" r="7" fill="#27272A"/>
-  <circle cx="18" cy="16" r="7" stroke="#52525B" stroke-width="0.5"/>
-  <path d="M14.5 16L17 18.5L21.5 13.5" stroke="#A1A1AA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  <!-- "Verified by" text -->
-  <text x="32" y="14" fill="#A1A1AA" font-family="system-ui, -apple-system, sans-serif" font-size="9" font-weight="500">Verified by</text>
-  <!-- "ul0" text -->
-  <text x="32" y="25" fill="#FAFAFA" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" letter-spacing="-0.5">ul0</text>
-  <!-- Small shield icon -->
-  <path d="M100 10L100 17C100 20 103 22 105 23C107 22 110 20 110 17L110 10L105 8L100 10Z" fill="#27272A" stroke="#52525B" stroke-width="0.5"/>
-  <path d="M103 15.5L104.5 17L107 14" stroke="#A1A1AA" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="154" height="34" viewBox="0 0 154 34" fill="none">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#064e3b"/>
+    </linearGradient>
+
+    <!-- Border Gradient -->
+    <linearGradient id="borderGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#34d399" stop-opacity="0.8"/>
+      <stop offset="50%" stop-color="#a7f3d0" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <!-- Cat Mascot Gradient -->
+    <linearGradient id="mascotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#059669"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Pill Background -->
+  <rect x="0.5" y="0.5" width="153" height="33" rx="16.5" fill="url(#bgGrad)"/>
+  <rect x="0.5" y="0.5" width="153" height="33" rx="16.5" stroke="url(#borderGrad)" stroke-width="1"/>
+
+  <!-- Left Cute Anime Cat Chibi Icon Circle -->
+  <circle cx="18" cy="17" r="11" fill="#042f2e" stroke="#10b981" stroke-width="0.8"/>
+
+  <!-- Anime Cat Ears -->
+  <path d="M10.5 13L13 9L15 13Z" fill="#34d399"/>
+  <path d="M12 12.5L13.2 10.5L14.2 12.5Z" fill="#fda4af"/> <!-- inner ear pink -->
+  <path d="M21 13L23 9L25.5 13Z" fill="#34d399"/>
+  <path d="M21.8 12.5L22.8 10.5L24 12.5Z" fill="#fda4af"/> <!-- inner ear pink -->
+
+  <!-- Cat Head -->
+  <ellipse cx="18" cy="18" rx="7.5" ry="6.5" fill="#ecfdf5"/>
+
+  <!-- Happy Anime Eyes (^ . ^) -->
+  <path d="M13.5 17.5C14.2 16.3 15.3 16.3 16 17.5" stroke="#065f46" stroke-width="1" stroke-linecap="round"/>
+  <path d="M20 17.5C20.7 16.3 21.8 16.3 22.5 17.5" stroke="#065f46" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- Cute Rosy Blush Cheeks -->
+  <circle cx="13" cy="19.5" r="1.2" fill="#fb7185" opacity="0.85"/>
+  <circle cx="23" cy="19.5" r="1.2" fill="#fb7185" opacity="0.85"/>
+
+  <!-- Cute Cat Mouth :3 -->
+  <path d="M17 19.5C17.5 20.2 18 20.2 18.5 19.5C19 20.2 19.5 20.2 20 19.5" stroke="#065f46" stroke-width="0.8" stroke-linecap="round"/>
+
+  <!-- Floating Cute Sparkles near mascot -->
+  <path d="M31 10L31.8 11.8L33.6 12.6L31.8 13.4L31 15.2L30.2 13.4L28.4 12.6L30.2 11.8Z" fill="#fef08a" opacity="0.9"/>
+
+  <!-- Typography: "verified by" with mini star -->
+  <text x="38" y="14" fill="#a7f3d0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Outfit', 'Inter', sans-serif" font-size="8.5" font-weight="600" letter-spacing="0.3">verified by</text>
+  <text x="82" y="13.5" fill="#fef08a" font-size="7">✦</text>
+
+  <!-- Typography: "ul0" logo -->
+  <text x="38" y="26.5" fill="#ffffff" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Outfit', 'Inter', sans-serif" font-size="13" font-weight="800" letter-spacing="-0.3">ul0</text>
+
+  <!-- Link/Site Dot -->
+  <circle cx="61" cy="23.5" r="1.5" fill="#34d399"/>
+  <text x="65" y="25" fill="#94a3b8" font-family="monospace" font-size="8.5" font-weight="500">site</text>
+
+  <!-- Right Pill: "★ safe" -->
+  <rect x="99" y="8" width="46" height="18" rx="9" fill="#064e3b" fill-opacity="0.8" stroke="#34d399" stroke-width="0.7"/>
+  <text x="106" y="19.5" fill="#34d399" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="8" font-weight="700">★</text>
+  <text x="115" y="20" fill="#e2e8f0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" font-weight="600" letter-spacing="0.2">safe</text>
 </svg>
