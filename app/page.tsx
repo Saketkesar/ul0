@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
   title: "UL0 — Link Management, Short Links & Link Analytics",
-  description: "Free modern link management platform. Shorten URLs, connect custom branded domains, generate vector QR codes, and track real-time click analytics with zero ads.",
+  description: "Free modern link management platform. Shorten URLs, connect custom domains, generate vector QR codes, and track real-time clicks with zero ads.",
   keywords: [
     "link management",
     "url shortener",
@@ -84,6 +84,13 @@ const homePageSchema = {
       foundingDate: "2024",
       email: "getul0site@gmail.com",
       sameAs: [
+        "https://x.com/ul0site",
+        "https://twitter.com/ul0site",
+        "https://github.com/Saketkesar/ul0",
+        "https://www.linkedin.com/company/ul0",
+        "https://www.youtube.com/@ul0site",
+        "https://www.instagram.com/ul0site",
+        "https://www.facebook.com/ul0site",
         "https://www.producthunt.com/products/ul0"
       ],
       contactPoint: {
@@ -166,47 +173,6 @@ const homePageSchema = {
           url: "https://ul0.site/#step3"
         },
       ],
-    },
-    {
-      "@type": "SoftwareApplication",
-      "@id": "https://ul0.site/#app",
-      name: "ul0 URL Shortener",
-      description: "ul0 is a free URL shortener with QR codes, click tracking, UTM tools, and expense splitting.",
-      applicationCategory: "UtilityApplication",
-      applicationSubCategory: "URL Shortener",
-      operatingSystem: "Web, Windows, macOS, Linux, iOS, Android",
-      browserRequirements: "Requires JavaScript",
-      softwareVersion: "2.0",
-      releaseNotes: "https://ul0.site/blog",
-      screenshot: "https://ul0.site/ul0.png",
-      featureList: [
-        "Instant URL Shortening",
-        "No Signup Required",
-        "Custom Short Links",
-        "QR Code Generation",
-        "Click Analytics",
-        "Permanent Links",
-        "Mobile Friendly",
-        "API Access"
-      ],
-      offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "USD",
-        availability: "https://schema.org/InStock",
-        priceValidUntil: "2030-12-31"
-      },
-      areaServed: [
-        { "@type": "Country", name: "Canada" },
-        { "@type": "Country", name: "New Zealand" },
-        { "@type": "Country", name: "Germany" },
-        { "@type": "Country", name: "Latvia" },
-        { "@type": "Country", name: "United States" },
-        { "@type": "Country", name: "United Kingdom" },
-        { "@type": "Country", name: "Australia" },
-        { "@type": "Country", name: "India" }
-      ],
-
     },
     {
       "@type": "FAQPage",
@@ -456,27 +422,18 @@ export default function HomePage() {
                   />
                 </a>
 
-                <div className="flex items-center justify-center rounded-2xl border bg-background p-4 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md col-span-full lg:col-span-1">
-                  <a
-                    href="https://strategic-flow-audit.replit.app/directory"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{
-                      display: "inline-block",
-                      fontFamily: "monospace",
-                      fontSize: "12px",
-                      fontWeight: 700,
-                      padding: "6px 14px",
-                      background: "#0a1628",
-                      color: "#00d4c8",
-                      border: "1px solid rgba(0,212,200,0.6)",
-                      borderRadius: "6px",
-                      textDecoration: "none",
-                    }}
-                  >
-                    🔗 Listed on ToolIndex · DR 86 dofollow
-                  </a>
-                </div>
+                <a
+                  href="https://strategic-flow-audit.replit.app/directory"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Visit ToolIndex DR 86 dofollow directory listing"
+                  className="flex items-center justify-center rounded-2xl border bg-background p-4 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md col-span-full lg:col-span-1"
+                >
+                  <span className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-foreground">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    ToolIndex · DR 86 Dofollow
+                  </span>
+                </a>
               </div>
             </div>
           </div>

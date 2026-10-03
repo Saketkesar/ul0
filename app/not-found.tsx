@@ -1,5 +1,5 @@
 import Link from "next/link"
-import Image from "next/image"
+import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { Home, Link2, ArrowLeft } from "lucide-react"
 
@@ -8,13 +8,9 @@ export default function NotFound() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
       <div className="text-center space-y-6">
         <div className="flex justify-center">
-          <Image
-            src="/ul0.png"
-            alt="ul0 logo"
-            width={120}
-            height={40}
-            className="h-10 w-auto object-contain"
-          />
+          <Link href="/">
+            <Logo iconSize={40} />
+          </Link>
         </div>
         
         <div className="space-y-2">
