@@ -183,10 +183,10 @@ export const metadata: Metadata = {
     siteName: "UL0 — Link Management Platform",
     images: [
       {
-        url: "https://ul0.site/ul0.png",
-        width: 1200,
-        height: 630,
-        alt: "UL0 — Free Link Management, Custom Domains & Analytics",
+        url: "https://ul0.site/social-card.png",
+        width: 1376,
+        height: 768,
+        alt: "ul0.site — Free URL Shortener, Bill Splitter & QR Codes",
         type: "image/png",
       },
     ],
@@ -195,7 +195,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "UL0 — Free Link Management, Custom Domains & Analytics [Zero Ads]",
     description: "Free modern link management platform. Shorten links, connect custom domains, generate vector QR codes, and track real-time click attribution.",
-    images: ["https://ul0.site/ul0.png"],
+    images: ["https://ul0.site/social-card.png"],
   },
   robots: {
     index: true,
