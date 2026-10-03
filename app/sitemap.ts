@@ -49,7 +49,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/tools/url-expander", priority: 0.95 },
     { path: "/tools/og-preview", priority: 0.95 },
     { path: "/tools/meta-tag-generator", priority: 0.95 },
-    { path: "/split", priority: 0.85 },
+    { path: "/split", priority: 0.95 },
     { path: "/share", priority: 0.85 },
     { path: "/pdf", priority: 0.85 },
     { path: "/wifi", priority: 0.85 },
@@ -64,6 +64,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Blog posts with actual publish dates
   const blogPosts: { slug: string; published: string }[] = [
+    { slug: "acortar-link-gratis-guia-completa", published: "2026-10-03" },
+    { slug: "how-to-split-expenses-group-bills-online", published: "2026-10-03" },
+    { slug: "link-kuerzen-ohne-anmeldung-kostenlos", published: "2026-10-03" },
     { slug: "link-shortening-best-practices-2026", published: "2026-07-15" },
     { slug: "qr-code-generator-security-guide", published: "2026-07-15" },
     { slug: "custom-domain-dns-cname-setup-guide", published: "2026-08-10" },

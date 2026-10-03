@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { Logo } from "@/components/logo"
+import Image from "next/image"
 import { ShieldCheck, Flag, ShieldAlert } from "lucide-react"
 
 export function Footer() {
@@ -10,7 +10,14 @@ export function Footer() {
           {/* Brand & Description & Social Profiles */}
           <div className="space-y-4 sm:col-span-2 md:col-span-3 lg:col-span-1">
             <Link href="/" aria-label="UL0 Home" className="inline-block">
-              <Logo iconSize={32} />
+              <Image
+                src="/ul0.png"
+                alt="UL0 Logo"
+                width={80}
+                height={28}
+                className="h-7 w-auto object-contain"
+                priority
+              />
             </Link>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
               Enterprise-grade link management, custom domain routing, real-time attribution analytics, and dynamic vector QR codes. Fast edge 301 redirects with zero interstitial ads.
@@ -122,10 +129,7 @@ export function Footer() {
               <Link href="/qr" className="hover:text-foreground transition-colors">Vector QR Generator</Link>
               <Link href="/pricing" className="hover:text-foreground transition-colors">Branded Custom Domains</Link>
               <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing &amp; Plans</Link>
-              <Link href="/changelog" className="hover:text-foreground transition-colors flex items-center gap-1.5">
-                <span>Changelog</span>
-                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-primary/10 text-primary">v2.5</span>
-              </Link>
+              <Link href="/changelog" className="hover:text-foreground transition-colors">Changelog &amp; Updates</Link>
               <Link href="/docs" className="hover:text-foreground transition-colors">Developer REST API</Link>
             </nav>
           </div>
@@ -168,7 +172,7 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-3 text-sm">Trust &amp; Legal</h3>
             <nav className="flex flex-col gap-2 text-xs sm:text-sm text-muted-foreground" aria-label="Company navigation">
               <Link href="/about" className="hover:text-foreground transition-colors">About UL0</Link>
-              <Link href="/backlinks" className="hover:text-foreground transition-colors font-medium text-primary">Notion Backlinks Exchange</Link>
+              <Link href="/backlinks" className="hover:text-foreground transition-colors font-medium text-primary">Backlinks &amp; Badges</Link>
               <Link href="/contact" className="hover:text-foreground transition-colors">Contact Support</Link>
               <Link href="/security" className="hover:text-foreground transition-colors text-emerald-500 font-medium">Security &amp; Safety</Link>
               <Link href="/threats" className="hover:text-foreground transition-colors text-rose-500 font-medium flex items-center gap-1">
