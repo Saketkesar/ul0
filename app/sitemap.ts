@@ -23,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/changelog", priority: 0.85, freq: "weekly" },
     { path: "/qr", priority: 0.95, freq: "weekly" },
     { path: "/utm", priority: 0.9, freq: "weekly" },
+    { path: "/backlinks", priority: 0.95, freq: "daily" },
     { path: "/docs", priority: 0.85, freq: "weekly" },
     { path: "/custom-domain-landing", priority: 0.85, freq: "weekly" },
   ]
