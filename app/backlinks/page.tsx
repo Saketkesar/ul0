@@ -7,24 +7,24 @@ import { listVerifiedBacklinks } from "@/lib/appwrite/backlinks"
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: "Free High-Authority Backlink Exchange & Showcase Directory | ul0",
+  title: "Cute Anime Badges & Free Dofollow Backlink Exchange | UL0",
   description:
-    "Get a 100% free, permanent high-DR dofollow backlink from ul0.site. Add our lightweight verified badge to your website and get instant showcase in our webmaster index.",
+    "Add an aesthetic, unobtrusive anime-style verification badge to your website and earn an immediate, permanent dofollow backlink from ul0.site. Lightweight SVG (<2KB), 100% free.",
   alternates: {
     canonical: "https://ul0.site/backlinks",
   },
   openGraph: {
-    title: "Free High-Authority Backlink Exchange | ul0",
+    title: "Cute Anime Badges & Free Dofollow Backlink Exchange | UL0",
     description:
-      "Boost your SEO domain rating for free. Embed our verified badge to earn an immediate dofollow backlink and directory feature.",
+      "Boost your SEO with an aesthetic, cute anime verification badge. Get a permanent dofollow backlink and showcase in our indie directory.",
     url: "https://ul0.site/backlinks",
     siteName: "ul0",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free Backlink Exchange & Showcase Directory | ul0",
-    description: "Get a verified dofollow backlink by embedding the ul0 badge.",
+    title: "Cute Anime Badges & Free Backlink Exchange | UL0",
+    description: "Get a verified dofollow backlink by embedding our cute anime partner badge.",
   },
   robots: {
     index: true,
@@ -71,7 +71,7 @@ export default async function BacklinksPage() {
       />
       <Header />
       <main className="flex-1 py-8 sm:py-12">
-        <div className="container mx-auto px-4 max-w-4xl">
+        <div className="container mx-auto px-4 max-w-5xl">
           <BacklinkPageClient verifiedSites={verifiedSites} />
         </div>
       </main>
