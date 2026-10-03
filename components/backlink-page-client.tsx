@@ -13,14 +13,12 @@ import {
   ShieldCheck,
   Globe,
   Code2,
-  Sparkles,
-  Heart,
-  Eye,
   CheckCircle2,
-  Layers,
-  Palette,
-  Laptop,
-  CheckCheck,
+  Table as TableIcon,
+  LayoutGrid,
+  FileText,
+  CornerDownRight,
+  Sparkles,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -38,58 +36,80 @@ interface Props {
 }
 
 type FormStep = "form" | "badge" | "verifying" | "verified" | "failed"
+type SnippetTab = "html" | "markdown"
+type DirectoryView = "table" | "gallery"
 
 interface BadgeTheme {
   id: string
   name: string
-  emoji: string
+  badgeLabel: string
   tagline: string
   file: string
   width: number
   height: number
-  bgClass: string
+  description: string
 }
 
 const BADGE_THEMES: BadgeTheme[] = [
   {
-    id: "midnight",
-    name: "Midnight Chibi",
-    emoji: "🌙",
-    tagline: "Dark lo-fi anime cat with emerald border",
+    id: "notion-paper",
+    name: "Notion Paper",
+    badgeLabel: "Default",
+    tagline: "Warm paper tone with ink line cat doodle & subtle 1px border",
     file: "/badge/ul0-verified.svg",
-    width: 154,
-    height: 34,
-    bgClass: "bg-slate-900 border-emerald-500/40",
+    width: 144,
+    height: 30,
+    description: "Designed to match Notion documents, personal blogs, and clean white/cream portfolios.",
   },
   {
-    id: "sakura",
-    name: "Sakura Kawaii",
-    emoji: "🌸",
-    tagline: "Pastel pink & sweet chibi blush",
+    id: "notion-dark",
+    name: "Notion Dark",
+    badgeLabel: "Dark Canvas",
+    tagline: "Understated charcoal dark mode for dark-themed websites",
+    file: "/badge/ul0-verified-dark.svg",
+    width: 144,
+    height: 30,
+    description: "Matte charcoal background with silver-gray ink typography. Perfect for developer portfolios.",
+  },
+  {
+    id: "notion-outline",
+    name: "Transparent Outline",
+    badgeLabel: "Universal",
+    tagline: "Transparent backdrop with fine line border that adapts to any footer",
+    file: "/badge/ul0-verified-outline.svg",
+    width: 144,
+    height: 30,
+    description: "Zero background fill. Seamlessly melts into any website footer color without clashing.",
+  },
+  {
+    id: "notion-warm",
+    name: "Warm Sepia",
+    badgeLabel: "Editorial",
+    tagline: "Warm oatmeal book paper aesthetic for writers & documentation",
     file: "/badge/ul0-verified-sakura.svg",
-    width: 154,
-    height: 34,
-    bgClass: "bg-pink-50 dark:bg-pink-950/40 border-pink-400/40",
-  },
-  {
-    id: "light",
-    name: "Frosted Glass",
-    emoji: "☁️",
-    tagline: "Minimalist aesthetic for light sites",
-    file: "/badge/ul0-verified-light.svg",
-    width: 154,
-    height: 34,
-    bgClass: "bg-white border-slate-300",
+    width: 144,
+    height: 30,
+    description: "Gentle sepia-toned canvas with soft brown ink. Highly legible and calm.",
   },
   {
     id: "retro88",
-    name: "Retro 88x31",
-    emoji: "👾",
-    tagline: "Iconic indie web pixel button",
+    name: "Indie Web 88x31",
+    badgeLabel: "Micro Button",
+    tagline: "Monochrome retro 88x31 button in clean Notion ink line art",
     file: "/badge/ul0-anime-88x31.svg",
     width: 88,
     height: 31,
-    bgClass: "bg-neutral-950 border-emerald-400",
+    description: "Traditional indie web micro-button dimension, reimagined with minimalist line art.",
+  },
+  {
+    id: "minimal-light",
+    name: "Frosted Pill",
+    badgeLabel: "Modern Pill",
+    tagline: "Crisp white curved pill with neutral gray accents",
+    file: "/badge/ul0-verified-light.svg",
+    width: 144,
+    height: 30,
+    description: "Rounded capsule shape for modern SaaS footers and landing pages.",
   },
 ]
 
@@ -99,7 +119,9 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
   const [searchQuery, setSearchQuery] = useState("")
   const [copied, setCopied] = useState(false)
   const [selectedTheme, setSelectedTheme] = useState<BadgeTheme>(BADGE_THEMES[0])
-  const [previewBg, setPreviewBg] = useState<"dark" | "light" | "slate">("dark")
+  const [snippetTab, setSnippetTab] = useState<SnippetTab>("html")
+  const [footerPreviewMode, setFooterPreviewMode] = useState<"light" | "dark">("light")
+  const [dirView, setDirView] = useState<DirectoryView>("table")
 
   // Form fields
   const [websiteUrl, setWebsiteUrl] = useState("")
@@ -108,18 +130,21 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
   const [logoUrl, setLogoUrl] = useState("")
   const [email, setEmail] = useState("")
 
-  // Response state
+  // Verification state
   const [verificationToken, setVerificationToken] = useState("")
   const [submitting, setSubmitting] = useState(false)
   const [verifyMessage, setVerifyMessage] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
 
   // Generate dynamic snippet based on chosen theme and token
-  const currentToken = verificationToken || "sample_token"
-  const currentBadgeCode = `<a href="https://ul0.site/backlinks?ref=badge&v=${currentToken}" target="_blank" rel="noopener">\n  <img src="https://ul0.site${selectedTheme.file}" alt="Verified by ul0" width="${selectedTheme.width}" height="${selectedTheme.height}" style="border:0;display:inline-block;vertical-align:middle" />\n</a>`
+  const currentToken = verificationToken || "token_id"
+  const htmlSnippet = `<a href="https://ul0.site/backlinks?ref=badge&v=${currentToken}" target="_blank" rel="noopener">\n  <img src="https://ul0.site${selectedTheme.file}" alt="Verified by ul0" width="${selectedTheme.width}" height="${selectedTheme.height}" style="border:0;display:inline-block;vertical-align:middle" />\n</a>`
+  const markdownSnippet = `[![Verified by ul0](https://ul0.site${selectedTheme.file})](https://ul0.site/backlinks?ref=badge&v=${currentToken})`
 
-  const copyBadge = () => {
-    navigator.clipboard.writeText(currentBadgeCode)
+  const currentSnippet = snippetTab === "html" ? htmlSnippet : markdownSnippet
+
+  const copyCode = () => {
+    navigator.clipboard.writeText(currentSnippet)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
@@ -162,10 +187,10 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
           setStep("badge")
         }
       } else {
-        setErrorMessage(data.error || "Registration failed.")
+        setErrorMessage(data.error || "Registration could not be completed.")
       }
     } catch (err: any) {
-      setErrorMessage(err.message || "Network error.")
+      setErrorMessage(err.message || "Network connection error.")
     } finally {
       setSubmitting(false)
     }
@@ -212,127 +237,166 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
   }
 
   return (
-    <div className="w-full space-y-12">
-      {/* ──────────────── HERO SECTION ──────────────── */}
-      <div className="relative text-center max-w-3xl mx-auto space-y-4 pt-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold shadow-xs">
-          <Sparkles className="h-3.5 w-3.5 animate-pulse" />
-          <span>Indie Web &amp; Aesthetic Backlink Exchange</span>
-          <span className="text-pink-500">🌸</span>
+    <div className="w-full space-y-10 font-sans text-neutral-800 dark:text-neutral-200">
+      {/* ──────────────── NOTION PAGE COVER & HEADER ──────────────── */}
+      <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-[#FFFFFF] dark:bg-[#191919] overflow-hidden shadow-xs">
+        {/* Cover Banner Illustration */}
+        <div className="relative w-full h-44 sm:h-64 bg-[#F7F6F3] dark:bg-[#202020] border-b border-neutral-200 dark:border-neutral-800 overflow-hidden">
+          <Image
+            src="/notion-backlink.png"
+            alt="Notion Backlink & Partner Community"
+            fill
+            className="object-cover object-center opacity-95 dark:opacity-85"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#FFFFFF] dark:from-[#191919] via-transparent to-transparent opacity-80" />
         </div>
 
-        <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground">
-          Cute Anime Badges &amp; Free Dofollow Backlinks
-        </h1>
+        {/* Notion Document Content */}
+        <div className="p-6 sm:p-10 -mt-10 relative">
+          {/* Notion Page Icon */}
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#FFFFFF] dark:bg-[#222222] border border-neutral-200 dark:border-neutral-700 shadow-sm text-2xl mb-4 select-none">
+            🔗
+          </div>
 
-        <p className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-2xl mx-auto">
-          Add an ultra-cute, unobtrusive anime-style verification badge to your website. It blends naturally into your footer or sidebar without annoying visitors — and in return, you get an immediate, permanent dofollow backlink from <strong>ul0.site</strong>!
-        </p>
+          {/* Breadcrumb Path */}
+          <div className="flex items-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400 mb-2">
+            <span>Workspace</span>
+            <span className="text-neutral-300 dark:text-neutral-600">/</span>
+            <span>SEO &amp; Growth</span>
+            <span className="text-neutral-300 dark:text-neutral-600">/</span>
+            <span className="text-neutral-700 dark:text-neutral-300 font-medium">Backlink Directory</span>
+          </div>
 
-        {/* Feature Pills */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2 text-xs">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-card border border-border shadow-xs text-foreground">
-            <Check className="h-3.5 w-3.5 text-emerald-500" />
-            100% Free Forever
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-card border border-border shadow-xs text-foreground">
-            <Heart className="h-3.5 w-3.5 text-pink-500 fill-pink-500" />
-            Cute &amp; Non-Intrusive
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-card border border-border shadow-xs text-foreground">
-            <Code2 className="h-3.5 w-3.5 text-blue-500" />
-            Clean Lightweight SVG (&lt;2KB)
-          </span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-card border border-border shadow-xs text-foreground">
-            <Globe className="h-3.5 w-3.5 text-purple-500" />
-            Permanent Dofollow Link
-          </span>
+          {/* Title */}
+          <h1 className="text-2xl sm:text-4xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
+            Aesthetic Notion Badges &amp; Free Dofollow Backlinks
+          </h1>
+
+          <p className="mt-2 text-sm sm:text-base text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-2xl">
+            A quiet, collaborative backlink exchange for indie builders, designers, and creators.
+            Add an unobtrusive Notion-styled verification mark to your footer, and receive a permanent dofollow backlink on <strong>ul0.site</strong>.
+          </p>
+
+          {/* Notion Properties Grid */}
+          <div className="mt-6 pt-5 border-t border-neutral-200 dark:border-neutral-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="space-y-1">
+              <span className="text-neutral-400 dark:text-neutral-500 block text-[11px]">Exchange Status</span>
+              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-[#EDF3EC] text-[#2E7444] border border-[#D3E5D2] dark:bg-[#1B2A1E] dark:text-[#88D49E] dark:border-[#27452E] font-medium text-[11px]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#2E7444] dark:bg-[#88D49E]" />
+                Active &amp; Open
+              </span>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-neutral-400 dark:text-neutral-500 block text-[11px]">Badge Weight</span>
+              <span className="text-neutral-700 dark:text-neutral-300 font-mono font-medium">
+                &lt; 2.5 KB (Zero JS)
+              </span>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-neutral-400 dark:text-neutral-500 block text-[11px]">Backlink Type</span>
+              <span className="text-neutral-700 dark:text-neutral-300 font-medium">
+                Permanent Dofollow
+              </span>
+            </div>
+
+            <div className="space-y-1">
+              <span className="text-neutral-400 dark:text-neutral-500 block text-[11px]">Verification</span>
+              <span className="text-neutral-700 dark:text-neutral-300 font-medium">
+                Instant Automated Scan
+              </span>
+            </div>
+          </div>
+
+          {/* Notion Callout Box */}
+          <div className="mt-6 p-4 rounded-xl border border-[#E9E9E7] dark:border-[#2E2E2E] bg-[#F7F6F3] dark:bg-[#202020] flex items-start gap-3 text-xs leading-relaxed text-neutral-700 dark:text-neutral-300">
+            <span className="text-base shrink-0 select-none">💡</span>
+            <div>
+              <strong className="font-semibold text-neutral-900 dark:text-neutral-100 block mb-0.5">
+                Zero spam. Zero obnoxious neon widgets.
+              </strong>
+              Most verification badges scream for attention with high-contrast neon glows and annoying popups. Our Notion badges are designed with paper tones, delicate 1px borders, and hand-drawn ink doodles. They look like a tasteful craftsmanship seal on any footer or documentation page.
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* ──────────────── BADGE CUSTOMIZER & SHOWCASE ──────────────── */}
-      <div className="rounded-3xl border border-border bg-card/80 p-6 sm:p-8 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-4">
+      {/* ──────────────── BADGE PALETTE & LIVE FOOTER SIMULATOR ──────────────── */}
+      <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-[#FFFFFF] dark:bg-[#191919] p-6 sm:p-8 space-y-6 shadow-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-200 dark:border-neutral-800 pb-4">
           <div>
-            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
-              <Palette className="h-5 w-5 text-primary" />
-              <span>Choose Your Aesthetic Badge Theme</span>
+            <h2 className="text-base font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+              <span>Aesthetic Badge Collection</span>
+              <span className="text-[11px] font-normal text-neutral-400">({BADGE_THEMES.length} variations)</span>
             </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Pick the badge that best matches your website&apos;s vibe. All versions pass verification instantly!
+            <p className="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
+              Choose the aesthetic style that best fits your design system. Every version verifies instantly.
             </p>
           </div>
 
-          {/* Background Tester */}
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground self-start sm:self-auto">
-            <span>Preview on:</span>
-            <div className="flex rounded-lg border border-border p-0.5 bg-muted">
+          <div className="flex items-center gap-1 text-xs text-neutral-500 dark:text-neutral-400">
+            <span>Canvas:</span>
+            <div className="flex rounded-md border border-neutral-200 dark:border-neutral-700 p-0.5 bg-neutral-100 dark:bg-neutral-800">
               <button
                 type="button"
-                onClick={() => setPreviewBg("dark")}
+                onClick={() => setFooterPreviewMode("light")}
                 className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                  previewBg === "dark" ? "bg-slate-900 text-white shadow-xs" : "hover:text-foreground"
-                }`}
-              >
-                Dark
-              </button>
-              <button
-                type="button"
-                onClick={() => setPreviewBg("slate")}
-                className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                  previewBg === "slate" ? "bg-slate-700 text-white shadow-xs" : "hover:text-foreground"
-                }`}
-              >
-                Slate
-              </button>
-              <button
-                type="button"
-                onClick={() => setPreviewBg("light")}
-                className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
-                  previewBg === "light" ? "bg-white text-slate-900 shadow-xs" : "hover:text-foreground"
+                  footerPreviewMode === "light"
+                    ? "bg-[#FFFFFF] dark:bg-[#2A2A2A] text-neutral-900 dark:text-neutral-100 shadow-xs"
+                    : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
                 }`}
               >
                 Light
+              </button>
+              <button
+                type="button"
+                onClick={() => setFooterPreviewMode("dark")}
+                className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                  footerPreviewMode === "dark"
+                    ? "bg-[#FFFFFF] dark:bg-[#2A2A2A] text-neutral-900 dark:text-neutral-100 shadow-xs"
+                    : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
+                }`}
+              >
+                Dark
               </button>
             </div>
           </div>
         </div>
 
-        {/* Theme Cards Grid */}
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {/* Badge Grid */}
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {BADGE_THEMES.map((theme) => {
             const isSelected = selectedTheme.id === theme.id
             return (
               <div
                 key={theme.id}
                 onClick={() => setSelectedTheme(theme)}
-                className={`cursor-pointer rounded-2xl border p-4 transition-all flex flex-col justify-between ${
+                className={`cursor-pointer rounded-xl border p-4 transition-all flex flex-col justify-between ${
                   isSelected
-                    ? "border-primary bg-primary/5 ring-2 ring-primary/40 shadow-sm"
-                    : "border-border bg-background/50 hover:border-border/80 hover:bg-background"
+                    ? "border-neutral-900 dark:border-neutral-100 bg-[#FBFBFA] dark:bg-[#222222] ring-1 ring-neutral-900 dark:ring-neutral-100 shadow-xs"
+                    : "border-neutral-200 dark:border-neutral-800 bg-[#FFFFFF] dark:bg-[#1B1B1B] hover:border-neutral-300 dark:hover:border-neutral-700"
                 }`}
               >
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-base">{theme.emoji}</span>
-                    {isSelected && (
-                      <span className="inline-flex items-center gap-1 text-[10px] font-bold text-primary px-1.5 py-0.5 rounded-full bg-primary/10">
-                        <Check className="h-3 w-3" /> Selected
-                      </span>
-                    )}
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[11px] font-semibold text-neutral-700 dark:text-neutral-300">
+                      {theme.name}
+                    </span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 font-medium">
+                      {theme.badgeLabel}
+                    </span>
                   </div>
-                  <h3 className="text-sm font-bold text-foreground">{theme.name}</h3>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">{theme.tagline}</p>
+                  <p className="text-[11px] text-neutral-500 dark:text-neutral-400 line-clamp-2">
+                    {theme.tagline}
+                  </p>
                 </div>
 
                 {/* Badge Render Box */}
                 <div
-                  className={`mt-4 p-3 rounded-xl flex items-center justify-center min-h-[50px] transition-colors ${
-                    previewBg === "dark"
-                      ? "bg-neutral-950"
-                      : previewBg === "slate"
-                      ? "bg-slate-800"
-                      : "bg-slate-100"
+                  className={`mt-4 p-3 rounded-lg flex items-center justify-center min-h-[52px] border border-neutral-100 dark:border-neutral-800/80 transition-colors ${
+                    footerPreviewMode === "light" ? "bg-[#F7F6F3]" : "bg-[#141414]"
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -341,7 +405,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                     alt={theme.name}
                     width={theme.width}
                     height={theme.height}
-                    className="max-h-9 w-auto object-contain drop-shadow-xs"
+                    className="max-h-8 w-auto object-contain"
                   />
                 </div>
               </div>
@@ -350,43 +414,45 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
         </div>
 
         {/* Simulated Website Footer Preview */}
-        <div className="rounded-2xl border border-border bg-muted/40 p-5 space-y-3">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <span className="flex items-center gap-1.5 font-semibold text-foreground">
-              <Laptop className="h-3.5 w-3.5 text-primary" />
-              How It Looks On A Real Website Footer:
+        <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-[#F7F6F3] dark:bg-[#202020] p-4 sm:p-5 space-y-3">
+          <div className="flex items-center justify-between text-xs text-neutral-600 dark:text-neutral-400">
+            <span className="font-medium text-neutral-800 dark:text-neutral-200 flex items-center gap-1.5">
+              <span>Preview:</span>
+              <span className="text-neutral-500 font-normal">How {selectedTheme.name} settles naturally into a real website footer</span>
             </span>
-            <span className="text-[11px] text-emerald-500 font-medium">✓ Clean &amp; Unobtrusive</span>
+            <span className="text-[11px] text-neutral-500 font-mono">144 × 30 px</span>
           </div>
 
           <div
-            className={`p-5 rounded-xl border border-border/80 flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
-              previewBg === "dark"
-                ? "bg-slate-950 text-slate-400"
-                : previewBg === "slate"
-                ? "bg-slate-900 text-slate-300"
-                : "bg-white text-slate-500"
+            className={`p-5 rounded-lg border flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors ${
+              footerPreviewMode === "light"
+                ? "bg-[#FFFFFF] border-neutral-200 text-neutral-600"
+                : "bg-[#191919] border-neutral-800 text-neutral-400"
             }`}
           >
-            <div className="space-y-1 text-center sm:text-left">
-              <p className="text-xs font-medium text-foreground">
-                © {new Date().getFullYear()} Your Website. All rights reserved.
+            <div className="space-y-0.5 text-center sm:text-left">
+              <p className="text-xs font-medium text-neutral-800 dark:text-neutral-200">
+                © {new Date().getFullYear()} Your Website, Inc. All rights reserved.
               </p>
-              <p className="text-[11px] text-muted-foreground">
-                Privacy • Terms • Built with care for creators.
+              <p className="text-[11px] text-neutral-400 dark:text-neutral-500">
+                Privacy Policy · Terms of Service · Documentation · Status
               </p>
             </div>
 
             <div className="shrink-0 flex items-center gap-2">
-              <span className="text-[10px] text-muted-foreground hidden md:inline">partner badge:</span>
-              <a href="https://ul0.site/backlinks" target="_blank" rel="noopener" className="inline-block hover:opacity-90 transition-opacity">
+              <a
+                href="https://ul0.site/backlinks"
+                target="_blank"
+                rel="noopener"
+                className="inline-block hover:opacity-85 transition-opacity"
+              >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={selectedTheme.file}
                   alt="Verified by ul0"
                   width={selectedTheme.width}
                   height={selectedTheme.height}
-                  className="h-8 w-auto object-contain"
+                  className="h-7 w-auto object-contain"
                 />
               </a>
             </div>
@@ -394,70 +460,68 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
         </div>
       </div>
 
-      {/* ──────────────── STEP-BY-STEP EXCHANGE WORKSPACE ──────────────── */}
+      {/* ──────────────── STEP-BY-STEP WORKSPACE: REGISTER & VERIFY ──────────────── */}
       <div className="grid gap-8 lg:grid-cols-12 items-start">
-        {/* Left: How It Works & Perks */}
+        {/* Left: How It Works & Transparency */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="rounded-3xl border border-border bg-card p-6 shadow-sm space-y-4">
-            <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span>How The Exchange Works</span>
+          <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-[#FFFFFF] dark:bg-[#191919] p-6 space-y-4 shadow-xs">
+            <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100 flex items-center gap-2">
+              <span>The 3-Step Exchange Process</span>
             </h3>
 
-            <div className="space-y-3.5 text-xs text-muted-foreground">
+            <div className="space-y-3.5 text-xs text-neutral-600 dark:text-neutral-400">
               <div className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xs">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-mono text-[11px] font-bold">
                   1
                 </span>
                 <div>
-                  <strong className="text-foreground block text-xs">Register your site</strong>
-                  Submit your URL, website name, and a short description of what you do.
+                  <strong className="text-neutral-800 dark:text-neutral-200 block text-xs">Register your URL</strong>
+                  Provide your website URL, project title, and what your project does.
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xs">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-mono text-[11px] font-bold">
                   2
                 </span>
                 <div>
-                  <strong className="text-foreground block text-xs">Copy your cute badge code</strong>
-                  Paste the 1-line HTML snippet into your footer, sidebar, or credits page.
+                  <strong className="text-neutral-800 dark:text-neutral-200 block text-xs">Embed the badge snippet</strong>
+                  Add the clean 1-line HTML snippet or Markdown into your footer, credits, or README.
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-xs">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 font-mono text-[11px] font-bold">
                   3
                 </span>
                 <div>
-                  <strong className="text-foreground block text-xs">Instant verification &amp; dofollow link</strong>
-                  Click verify. Our bot instantly confirms badge placement, and your site is published below with a permanent dofollow backlink!
+                  <strong className="text-neutral-800 dark:text-neutral-200 block text-xs">Instant verification &amp; publication</strong>
+                  Click verify. Our bot scans your page HTML and immediately lists your project with a permanent dofollow link.
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Why ul0 backlinks? */}
-          <div className="rounded-3xl border border-border bg-card p-6 shadow-sm space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+          <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-[#FFFFFF] dark:bg-[#191919] p-6 space-y-3 shadow-xs text-xs">
+            <h4 className="font-bold text-neutral-800 dark:text-neutral-200">
               Why Partner With UL0?
             </h4>
-            <ul className="space-y-2 text-xs text-muted-foreground">
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                <span>Real dofollow link without redirect wrappers or nofollow tags.</span>
+            <ul className="space-y-2 text-neutral-600 dark:text-neutral-400">
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300 mt-0.5 shrink-0" />
+                <span>Genuine editorial dofollow link with no redirection hurdles.</span>
               </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                <span>Indexed daily by Googlebot, Bingbot, and IndexNow.</span>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300 mt-0.5 shrink-0" />
+                <span>Zero intrusive scripts: Pure SVG vector graphic (&lt;2KB).</span>
               </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                <span>Zero spam guarantee — every submission is screened.</span>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300 mt-0.5 shrink-0" />
+                <span>Crawled continuously by Googlebot, Bingbot, and IndexNow.</span>
               </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
-                <span>Loved by indie hackers, anime fans, and creative bloggers.</span>
+              <li className="flex items-start gap-2">
+                <CheckCircle2 className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300 mt-0.5 shrink-0" />
+                <span>Spam-free: Every site is verified live before publication.</span>
               </li>
             </ul>
           </div>
@@ -465,91 +529,93 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
 
         {/* Right: Registration / Verification Card */}
         <div className="lg:col-span-7">
-          <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 shadow-sm space-y-6">
+          <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-[#FFFFFF] dark:bg-[#191919] p-6 sm:p-8 space-y-6 shadow-xs">
             {step === "form" && (
               <form onSubmit={handleRegister} className="space-y-4 text-xs">
-                <div className="border-b border-border pb-3">
-                  <h3 className="text-base font-bold text-foreground">Step 1: Your Website Details</h3>
-                  <p className="text-muted-foreground text-xs">
-                    Tell us where to send your permanent dofollow backlink.
+                <div className="border-b border-neutral-200 dark:border-neutral-800 pb-3">
+                  <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
+                    Step 1: Website Details
+                  </h3>
+                  <p className="text-neutral-500 dark:text-neutral-400 text-xs">
+                    Specify the website where you will place the badge and receive your dofollow backlink.
                   </p>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-foreground block">
-                    Website URL <span className="text-destructive">*</span>
+                  <label className="font-medium text-neutral-700 dark:text-neutral-300 block">
+                    Website URL <span className="text-red-500">*</span>
                   </label>
                   <input
                     type="url"
                     required
                     value={websiteUrl}
                     onChange={(e) => setWebsiteUrl(e.target.value)}
-                    placeholder="https://yourwebsite.com"
-                    className="w-full px-3.5 py-2.5 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary font-mono text-xs text-foreground"
+                    placeholder="https://yourdomain.com"
+                    className="w-full px-3.5 py-2 bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-100 font-mono text-xs text-neutral-900 dark:text-neutral-100"
                   />
                 </div>
 
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-foreground block">
-                      Website Name <span className="text-destructive">*</span>
+                    <label className="font-medium text-neutral-700 dark:text-neutral-300 block">
+                      Website Name <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
                       required
                       value={websiteName}
                       onChange={(e) => setWebsiteName(e.target.value)}
-                      placeholder="e.g. Pixel Forge Studio"
-                      className="w-full px-3.5 py-2.5 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-xs text-foreground"
+                      placeholder="e.g. Minimalist Tools"
+                      className="w-full px-3.5 py-2 bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-100 text-xs text-neutral-900 dark:text-neutral-100"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-foreground block">
-                      Your Email <span className="text-muted-foreground font-normal">(Optional)</span>
+                    <label className="font-medium text-neutral-700 dark:text-neutral-300 block">
+                      Contact Email <span className="text-neutral-400 font-normal">(Optional)</span>
                     </label>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="hello@yourwebsite.com"
-                      className="w-full px-3.5 py-2.5 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-xs text-foreground"
+                      placeholder="founder@yourdomain.com"
+                      className="w-full px-3.5 py-2 bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-100 text-xs text-neutral-900 dark:text-neutral-100"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-foreground block">
-                    Website Description <span className="text-destructive">*</span>
+                  <label className="font-medium text-neutral-700 dark:text-neutral-300 block">
+                    Website Description <span className="text-red-500">*</span>
                   </label>
                   <textarea
                     required
                     rows={3}
                     value={websiteDesc}
                     onChange={(e) => setWebsiteDesc(e.target.value)}
-                    placeholder="Briefly describe what your site does (e.g. Free developer tools, tech blog, SaaS app, creative portfolio)..."
-                    className="w-full px-3.5 py-2 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-xs text-foreground resize-none leading-relaxed"
+                    placeholder="Brief 1-2 sentence description of what your website or product provides..."
+                    className="w-full px-3.5 py-2 bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-100 text-xs text-neutral-900 dark:text-neutral-100 resize-none leading-relaxed"
                   />
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-foreground block">
-                    Logo or Favicon URL <span className="text-muted-foreground font-normal">(Optional)</span>
+                  <label className="font-medium text-neutral-700 dark:text-neutral-300 block">
+                    Favicon or Logo URL <span className="text-neutral-400 font-normal">(Optional)</span>
                   </label>
                   <input
                     type="url"
                     value={logoUrl}
                     onChange={(e) => setLogoUrl(e.target.value)}
-                    placeholder="https://yourwebsite.com/logo.png"
-                    className="w-full px-3.5 py-2.5 bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary font-mono text-xs text-foreground"
+                    placeholder="https://yourdomain.com/favicon.png"
+                    className="w-full px-3.5 py-2 bg-neutral-50 dark:bg-neutral-800/50 border border-neutral-200 dark:border-neutral-700 rounded-lg focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-100 font-mono text-xs text-neutral-900 dark:text-neutral-100"
                   />
-                  <p className="text-[11px] text-muted-foreground">
-                    Leave blank to automatically use your domain&apos;s standard favicon.
+                  <p className="text-[11px] text-neutral-400 dark:text-neutral-500">
+                    If omitted, we automatically pull your domain favicon.
                   </p>
                 </div>
 
                 {errorMessage && (
-                  <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs">
+                  <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs">
                     {errorMessage}
                   </div>
                 )}
@@ -557,16 +623,16 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                 <Button
                   type="submit"
                   disabled={submitting}
-                  className="w-full h-11 text-xs font-semibold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+                  className="w-full h-10 text-xs font-semibold rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-neutral-100 dark:hover:bg-neutral-200 dark:text-neutral-900 shadow-xs"
                 >
                   {submitting ? (
                     <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Registering Website...
+                      <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                      Registering Property...
                     </>
                   ) : (
                     <>
-                      <span>Get Cute Badge &amp; Free Backlink</span>
+                      <span>Get Badge Snippet &amp; Continue</span>
                       <ArrowRight className="ml-2 h-3.5 w-3.5" />
                     </>
                   )}
@@ -576,64 +642,87 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
 
             {/* Badge Code & Verification Step */}
             {(step === "badge" || step === "verifying" || step === "failed") && (
-              <div className="space-y-5 animate-in fade-in-50 duration-200">
-                <div className="border-b border-border pb-3">
-                  <h3 className="text-base font-bold text-foreground">Step 2: Copy &amp; Verify Your Badge</h3>
-                  <p className="text-muted-foreground text-xs">
-                    Paste this snippet into your website footer or sidebar, then click Verify below!
+              <div className="space-y-5">
+                <div className="border-b border-neutral-200 dark:border-neutral-800 pb-3">
+                  <h3 className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
+                    Step 2: Copy Snippet &amp; Run Verification
+                  </h3>
+                  <p className="text-neutral-500 dark:text-neutral-400 text-xs">
+                    Paste this snippet into your website footer or credits, then press Verify.
                   </p>
                 </div>
 
-                {/* Snippet Box */}
+                {/* Snippet Format Selector */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-semibold text-foreground flex items-center gap-1.5">
-                      <Code2 className="h-3.5 w-3.5 text-primary" />
-                      HTML Embed Snippet ({selectedTheme.name}):
-                    </span>
+                    <div className="flex rounded-md border border-neutral-200 dark:border-neutral-700 p-0.5 bg-neutral-100 dark:bg-neutral-800">
+                      <button
+                        type="button"
+                        onClick={() => setSnippetTab("html")}
+                        className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                          snippetTab === "html"
+                            ? "bg-[#FFFFFF] dark:bg-[#2A2A2A] text-neutral-900 dark:text-neutral-100 shadow-xs"
+                            : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
+                        }`}
+                      >
+                        HTML Code
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSnippetTab("markdown")}
+                        className={`px-2 py-0.5 rounded text-[11px] font-medium transition-colors ${
+                          snippetTab === "markdown"
+                            ? "bg-[#FFFFFF] dark:bg-[#2A2A2A] text-neutral-900 dark:text-neutral-100 shadow-xs"
+                            : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
+                        }`}
+                      >
+                        Markdown (README)
+                      </button>
+                    </div>
+
                     <button
                       type="button"
-                      onClick={copyBadge}
-                      className="text-primary hover:underline font-semibold flex items-center gap-1"
+                      onClick={copyCode}
+                      className="text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 font-medium flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-md border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100"
                     >
-                      {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
-                      {copied ? "Copied!" : "Copy Code"}
+                      {copied ? <Check className="h-3 w-3 text-green-600" /> : <Copy className="h-3 w-3" />}
+                      <span>{copied ? "Copied" : "Copy"}</span>
                     </button>
                   </div>
 
                   <div className="relative">
-                    <pre className="p-4 rounded-2xl bg-muted/60 text-foreground font-mono text-[11px] overflow-x-auto leading-relaxed border border-border select-all whitespace-pre-wrap break-all">
-                      <code>{currentBadgeCode}</code>
+                    <pre className="p-4 rounded-xl bg-neutral-50 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 font-mono text-[11px] overflow-x-auto leading-relaxed border border-neutral-200 dark:border-neutral-800 select-all whitespace-pre-wrap break-all">
+                      <code>{currentSnippet}</code>
                     </pre>
                   </div>
                 </div>
 
-                {/* Selected Preview Box */}
-                <div className="p-4 rounded-2xl border border-border bg-background flex items-center justify-between gap-4">
-                  <div className="space-y-0.5">
-                    <p className="text-xs font-semibold text-foreground">Your Selected Badge</p>
-                    <p className="text-[11px] text-muted-foreground">
-                      Theme: {selectedTheme.name} ({selectedTheme.emoji})
+                {/* Badge Preview Box */}
+                <div className="p-3.5 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-850 flex items-center justify-between gap-4">
+                  <div className="space-y-0.5 text-xs">
+                    <p className="font-medium text-neutral-800 dark:text-neutral-200">Selected: {selectedTheme.name}</p>
+                    <p className="text-[11px] text-neutral-500">
+                      Token embedded: <span className="font-mono">{verificationToken.slice(0, 10)}...</span>
                     </p>
                   </div>
-                  <div className="p-2 rounded-xl bg-muted/40 flex items-center justify-center">
+                  <div className="p-1.5 rounded-md bg-[#FFFFFF] dark:bg-[#1A1A1A] border border-neutral-200 dark:border-neutral-800 flex items-center justify-center">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={selectedTheme.file}
                       alt={selectedTheme.name}
                       width={selectedTheme.width}
                       height={selectedTheme.height}
-                      className="h-8 w-auto object-contain"
+                      className="h-6 w-auto object-contain"
                     />
                   </div>
                 </div>
 
                 {step === "failed" && verifyMessage && (
-                  <div className="p-3.5 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs space-y-1">
-                    <p className="font-bold">Verification Incomplete</p>
+                  <div className="p-3.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs space-y-1">
+                    <p className="font-bold">Badge verification not detected</p>
                     <p>{verifyMessage}</p>
                     <p className="text-[11px] opacity-80 pt-1">
-                      Tip: Make sure the badge is live in your HTML source and accessible without a login or Cloudflare block page.
+                      Check that the badge HTML is deployed to your live site and accessible without authentication or Cloudflare captcha.
                     </p>
                   </div>
                 )}
@@ -642,17 +731,17 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                   <Button
                     onClick={handleVerify}
                     disabled={step === "verifying"}
-                    className="flex-1 h-11 text-xs font-semibold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+                    className="flex-1 h-10 text-xs font-semibold rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-neutral-100 dark:hover:bg-neutral-200 dark:text-neutral-900 shadow-xs"
                   >
                     {step === "verifying" ? (
                       <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
                         Scanning Your Website...
                       </>
                     ) : (
                       <>
-                        <ShieldCheck className="mr-2 h-4 w-4" />
-                        {step === "failed" ? "Retry Verification" : "Verify Badge Placement"}
+                        <ShieldCheck className="mr-2 h-3.5 w-3.5" />
+                        {step === "failed" ? "Retry Verification" : "Verify Live Badge"}
                       </>
                     )}
                   </Button>
@@ -660,7 +749,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                   <Button
                     variant="outline"
                     onClick={() => setStep("form")}
-                    className="h-11 px-4 text-xs rounded-xl"
+                    className="h-10 px-3 text-xs rounded-lg border-neutral-200 dark:border-neutral-800"
                   >
                     Edit Info
                   </Button>
@@ -670,16 +759,16 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
 
             {/* Verified Celebration */}
             {step === "verified" && (
-              <div className="p-6 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 space-y-3 text-center animate-in zoom-in-95 duration-200">
-                <div className="mx-auto w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center text-emerald-500 text-2xl">
-                  🎉
+              <div className="p-6 rounded-xl bg-[#EDF3EC] dark:bg-[#1B2A1E] border border-[#D3E5D2] dark:border-[#27452E] text-neutral-800 dark:text-neutral-200 space-y-3 text-center animate-in zoom-in-95 duration-200">
+                <div className="mx-auto w-10 h-10 rounded-full bg-[#D3E5D2] dark:bg-[#27452E] flex items-center justify-center text-lg">
+                  ✓
                 </div>
-                <h4 className="text-base font-bold text-foreground">
-                  Verification Successful! Your Backlink Is Live
+                <h4 className="text-sm font-bold text-neutral-900 dark:text-neutral-100">
+                  Verification Confirmed! Dofollow Link Published
                 </h4>
-                <p className="text-xs text-muted-foreground max-w-md mx-auto leading-relaxed">
+                <p className="text-xs text-neutral-600 dark:text-neutral-300 max-w-md mx-auto leading-relaxed">
                   {verifyMessage ||
-                    "Thank you for being part of our indie web partnership! Your website is now permanently listed in our verified showcase below with a genuine dofollow backlink."}
+                    "Thank you for being part of our backlink directory. Your website is now permanently listed in our verified showcase below with an editorial dofollow backlink."}
                 </p>
                 <div className="pt-2">
                   <Button
@@ -691,7 +780,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                       setWebsiteName("")
                       setWebsiteDesc("")
                     }}
-                    className="text-xs rounded-xl"
+                    className="text-xs rounded-lg border-neutral-300 dark:border-neutral-700"
                   >
                     Register Another Website
                   </Button>
@@ -702,112 +791,219 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
         </div>
       </div>
 
-      {/* ──────────────── VERIFIED DIRECTORY SHOWCASE ──────────────── */}
-      <div className="space-y-6 border-t border-border pt-12">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-              <Globe className="h-5 w-5 text-primary" />
-              <span>Verified Partner Directory ({sitesList.length})</span>
-            </h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Curated showcase of verified webmasters, indie hackers, and creative blogs.
+      {/* ──────────────── NOTION DATABASE DIRECTORY ──────────────── */}
+      <div className="rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-[#FFFFFF] dark:bg-[#191919] overflow-hidden shadow-xs space-y-0">
+        {/* Database Header Bar */}
+        <div className="p-4 sm:p-6 border-b border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-0.5">
+            <div className="flex items-center gap-2">
+              <span className="text-sm">🗂️</span>
+              <h2 className="text-base font-bold text-neutral-900 dark:text-neutral-100">
+                Verified Backlink Partners
+              </h2>
+              <span className="text-[11px] px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400 font-mono">
+                {sitesList.length}
+              </span>
+            </div>
+            <p className="text-xs text-neutral-500 dark:text-neutral-400">
+              Curated directory of verified webmasters, indie creators, and open-source projects.
             </p>
           </div>
 
-          {sitesList.length > 2 && (
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          {/* View Toggles & Search */}
+          <div className="flex items-center gap-2">
+            <div className="flex rounded-md border border-neutral-200 dark:border-neutral-700 p-0.5 bg-neutral-100 dark:bg-neutral-800">
+              <button
+                type="button"
+                onClick={() => setDirView("table")}
+                className={`p-1 rounded text-xs transition-colors ${
+                  dirView === "table"
+                    ? "bg-[#FFFFFF] dark:bg-[#2A2A2A] text-neutral-900 dark:text-neutral-100 shadow-xs"
+                    : "text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200"
+                }`}
+                title="Table View"
+              >
+                <TableIcon className="h-3.5 w-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setDirView("gallery")}
+                className={`p-1 rounded text-xs transition-colors ${
+                  dirView === "gallery"
+                    ? "bg-[#FFFFFF] dark:bg-[#2A2A2A] text-neutral-900 dark:text-neutral-100 shadow-xs"
+                    : "text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-200"
+                }`}
+                title="Gallery View"
+              >
+                <LayoutGrid className="h-3.5 w-3.5" />
+              </button>
+            </div>
+
+            <div className="relative w-full sm:w-56">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search verified sites..."
-                className="w-full pl-9 pr-3 py-2 bg-card border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Filter partners..."
+                className="w-full pl-8 pr-3 py-1.5 bg-neutral-50 dark:bg-neutral-800/60 border border-neutral-200 dark:border-neutral-700 rounded-md text-xs text-neutral-900 dark:text-neutral-100 focus:outline-none focus:border-neutral-900 dark:focus:border-neutral-100"
               />
             </div>
-          )}
+          </div>
         </div>
 
+        {/* Directory Content */}
         {filteredSites.length === 0 ? (
-          <div className="p-12 text-center rounded-3xl bg-card border border-border space-y-3">
-            <Globe className="h-10 w-10 mx-auto text-muted-foreground/40" />
-            <h4 className="text-sm font-bold text-foreground">
-              {sitesList.length === 0 ? "No verified partners yet!" : "No websites found"}
+          <div className="p-12 text-center space-y-3">
+            <div className="text-3xl text-neutral-300 dark:text-neutral-600 select-none">📂</div>
+            <h4 className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
+              {sitesList.length === 0 ? "No verified partners yet" : "No matching partners found"}
             </h4>
-            <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+            <p className="text-xs text-neutral-400 dark:text-neutral-500 max-w-sm mx-auto">
               {sitesList.length === 0
-                ? "Be the very first indie creator to add a cute badge and claim a free permanent dofollow backlink!"
-                : "No verified websites match your search query."}
+                ? "Be the first creator to embed a Notion badge and claim your free permanent dofollow backlink above."
+                : "Try a different search query to find partners."}
             </p>
           </div>
+        ) : dirView === "table" ? (
+          /* Table View (Notion Database Table) */
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-neutral-200 dark:border-neutral-800 text-neutral-400 dark:text-neutral-500 font-medium text-[11px] bg-neutral-50/50 dark:bg-neutral-850/50">
+                  <th className="py-2.5 px-4 font-normal">Name &amp; Backlink</th>
+                  <th className="py-2.5 px-4 font-normal">Description</th>
+                  <th className="py-2.5 px-4 font-normal">Domain</th>
+                  <th className="py-2.5 px-4 font-normal">Status</th>
+                  <th className="py-2.5 px-4 font-normal text-right">Listed</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
+                {filteredSites.map((site) => (
+                  <tr
+                    key={site.id}
+                    className="hover:bg-neutral-50 dark:hover:bg-neutral-800/40 transition-colors group"
+                  >
+                    {/* Name & Backlink */}
+                    <td className="py-3 px-4 font-medium">
+                      <div className="flex items-center gap-2.5">
+                        <div className="h-6 w-6 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center overflow-hidden shrink-0 p-0.5">
+                          {/* Favicon */}
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={
+                              site.logo_url ||
+                              `https://www.google.com/s2/favicons?domain=${getDomain(site.website_url)}&sz=64`
+                            }
+                            alt={site.website_name}
+                            className="h-full w-full object-contain"
+                            onError={(e) => {
+                              ;(e.target as HTMLElement).style.display = "none"
+                            }}
+                          />
+                        </div>
+                        <a
+                          href={site.website_url}
+                          target="_blank"
+                          rel="dofollow noopener"
+                          className="font-medium text-neutral-900 dark:text-neutral-100 hover:underline flex items-center gap-1"
+                        >
+                          <span className="truncate max-w-[180px] sm:max-w-[240px]">
+                            {site.website_name}
+                          </span>
+                          <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-neutral-400" />
+                        </a>
+                      </div>
+                    </td>
+
+                    {/* Description */}
+                    <td className="py-3 px-4 text-neutral-500 dark:text-neutral-400 max-w-xs truncate">
+                      {site.website_description}
+                    </td>
+
+                    {/* Domain */}
+                    <td className="py-3 px-4 font-mono text-[11px] text-neutral-500 dark:text-neutral-400">
+                      <span className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700">
+                        {getDomain(site.website_url)}
+                      </span>
+                    </td>
+
+                    {/* Status */}
+                    <td className="py-3 px-4">
+                      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#EDF3EC] text-[#2E7444] border border-[#D3E5D2] dark:bg-[#1B2A1E] dark:text-[#88D49E] dark:border-[#27452E]">
+                        ✓ Verified
+                      </span>
+                    </td>
+
+                    {/* Date */}
+                    <td className="py-3 px-4 text-right text-[11px] font-mono text-neutral-400 dark:text-neutral-500">
+                      {site.verified_at
+                        ? new Date(site.verified_at).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })
+                        : "Active"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          /* Gallery View */
+          <div className="p-4 sm:p-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredSites.map((site) => (
               <div
                 key={site.id}
-                className="group rounded-2xl border border-border bg-card p-5 hover:border-primary/50 hover:shadow-md transition-all flex flex-col justify-between"
+                className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-[#FFFFFF] dark:bg-[#1C1C1C] p-4 flex flex-col justify-between hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors group"
               >
                 <div>
-                  <div className="flex items-start gap-3 mb-3">
-                    {/* Logo / Favicon */}
-                    <div className="shrink-0 h-10 w-10 rounded-xl bg-muted border border-border/80 flex items-center justify-center overflow-hidden p-1">
-                      {site.logo_url ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={site.logo_url}
-                          alt={site.website_name}
-                          className="h-full w-full object-contain"
-                          onError={(e) => {
-                            ;(e.target as HTMLElement).style.display = "none"
-                          }}
-                        />
-                      ) : (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img
-                          src={`https://www.google.com/s2/favicons?domain=${getDomain(site.website_url)}&sz=64`}
-                          alt={site.website_name}
-                          className="h-full w-full object-contain"
-                          onError={(e) => {
-                            ;(e.target as HTMLElement).style.display = "none"
-                          }}
-                        />
-                      )}
+                  <div className="flex items-start gap-2.5 mb-2.5">
+                    <div className="h-7 w-7 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex items-center justify-center overflow-hidden shrink-0 p-0.5">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={
+                          site.logo_url ||
+                          `https://www.google.com/s2/favicons?domain=${getDomain(site.website_url)}&sz=64`
+                        }
+                        alt={site.website_name}
+                        className="h-full w-full object-contain"
+                        onError={(e) => {
+                          ;(e.target as HTMLElement).style.display = "none"
+                        }}
+                      />
                     </div>
-
-                    <div className="flex-1 min-w-0">
-                      {/* Dofollow Backlink */}
+                    <div className="min-w-0 flex-1">
                       <a
                         href={site.website_url}
                         target="_blank"
                         rel="dofollow noopener"
-                        className="text-sm font-bold text-foreground hover:text-primary transition-colors flex items-center gap-1.5"
+                        className="font-semibold text-xs text-neutral-900 dark:text-neutral-100 hover:underline flex items-center gap-1"
                       >
                         <span className="truncate">{site.website_name}</span>
-                        <ExternalLink className="h-3 w-3 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-neutral-400" />
                       </a>
-                      <p className="text-[11px] text-muted-foreground font-mono truncate">
+                      <p className="text-[11px] font-mono text-neutral-400 truncate">
                         {getDomain(site.website_url)}
                       </p>
                     </div>
                   </div>
 
-                  <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                  <p className="text-xs text-neutral-600 dark:text-neutral-400 line-clamp-3 leading-relaxed">
                     {site.website_description}
                   </p>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs">
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
-                    Verified Partner
+                <div className="mt-4 pt-2.5 border-t border-neutral-100 dark:border-neutral-800 flex items-center justify-between text-[11px]">
+                  <span className="inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded bg-[#EDF3EC] text-[#2E7444] border border-[#D3E5D2] dark:bg-[#1B2A1E] dark:text-[#88D49E] dark:border-[#27452E]">
+                    ✓ Verified
                   </span>
                   {site.verified_at && (
-                    <span className="text-[10px] text-muted-foreground font-mono">
+                    <span className="text-neutral-400 dark:text-neutral-500 font-mono text-[10px]">
                       {new Date(site.verified_at).toLocaleDateString("en-US", {
                         month: "short",
                         day: "numeric",
-                        year: "numeric",
                       })}
                     </span>
                   )}
@@ -818,19 +1014,15 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
         )}
       </div>
 
-      {/* ──────────────── FOOTER SUB-CALLOUT ──────────────── */}
-      <div className="rounded-3xl border border-primary/20 bg-gradient-to-r from-primary/10 via-background to-pink-500/5 p-6 sm:p-8 text-center space-y-3">
-        <h3 className="text-lg font-bold text-foreground flex items-center justify-center gap-2">
-          <span>Spread The Love Across The Indie Web</span>
-          <span className="text-pink-500">🌸</span>
-        </h3>
-        <p className="text-xs text-muted-foreground max-w-lg mx-auto leading-relaxed">
-          Questions or need help verifying your badge? Reach out anytime via our{" "}
-          <Link href="/contact" className="text-primary hover:underline font-medium">
-            Contact Support
+      {/* ──────────────── QUIET NOTION FOOTER NOTE ──────────────── */}
+      <div className="p-4 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-[#FBFBFA] dark:bg-[#181818] text-center text-xs text-neutral-500 dark:text-neutral-400 space-y-1">
+        <p>
+          Need assistance or custom embed guidance? Feel free to reach out via our{" "}
+          <Link href="/contact" className="text-neutral-800 dark:text-neutral-200 hover:underline font-medium">
+            Contact Page
           </Link>{" "}
-          or inspect links on the{" "}
-          <Link href="/threats" className="text-primary hover:underline font-medium">
+          or verify domains on our{" "}
+          <Link href="/threats" className="text-neutral-800 dark:text-neutral-200 hover:underline font-medium">
             Threat Radar
           </Link>.
         </p>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="30" viewBox="0 0 144 30" fill="none">
+  <!-- Notion Dark Canvas Background -->
+  <rect x="0.5" y="0.5" width="143" height="29" rx="6" fill="#191919"/>
+  <rect x="0.5" y="0.5" width="143" height="29" rx="6" stroke="#2F2F2F" stroke-width="1"/>
+
+  <!-- Minimalist Ink Cat Line Doodle -->
+  <path d="M9 13.5L11 8.5L13.5 12" stroke="#E3E2E0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M18.5 12L21 8.5L23 13.5" stroke="#E3E2E0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M10 13C10 17.5 12.5 20.5 16 20.5C19.5 20.5 22 17.5 22 13" stroke="#E3E2E0" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M12.5 14.5C13 13.8 14 13.8 14.5 14.5" stroke="#E3E2E0" stroke-width="1" stroke-linecap="round"/>
+  <path d="M17.5 14.5C18 13.8 19 13.8 19.5 14.5" stroke="#E3E2E0" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="16" cy="16.5" r="0.75" fill="#E3E2E0"/>
+
+  <!-- Divider -->
+  <line x1="29.5" y1="7" x2="29.5" y2="23" stroke="#2F2F2F" stroke-width="1"/>
+
+  <!-- Text: verified by -->
+  <text x="36" y="13.5" fill="#9B9A97" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif" font-size="8" font-weight="500" letter-spacing="0.2">verified by</text>
+
+  <!-- Text: ul0 -->
+  <text x="36" y="24" fill="#EDEDED" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif" font-size="11.5" font-weight="700" letter-spacing="-0.3">ul0</text>
+
+  <!-- Suffix: .site -->
+  <text x="57" y="24" fill="#6B6B6B" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif" font-size="9" font-weight="400">.site</text>
+
+  <!-- Right: Minimalist Dark Pill -->
+  <rect x="98.5" y="6.5" width="39" height="17" rx="4" fill="#252525"/>
+  <path d="M104.5 15L107 17.5L112.5 12" stroke="#E3E2E0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="115.5" y="18.5" fill="#E3E2E0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif" font-size="8" font-weight="600">safe</text>
+</svg>
