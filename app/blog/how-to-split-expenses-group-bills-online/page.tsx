@@ -5,7 +5,7 @@ import Link from "next/link"
 import { ArrowLeft, Check, Users, QrCode, ShieldCheck, Zap, Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "How to Split Expenses & Group Bills Online Free (No App Required in 2026)",
+  title: "How to Split Group Expenses & Bills Online Free",
   description: "Learn how to split group expenses and roommate bills online without downloading an app. Compare ul0 Split vs Splitwise. Generate UPI QR codes instantly.",
   keywords: [
     "split expenses online free",

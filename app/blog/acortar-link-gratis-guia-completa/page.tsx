@@ -5,7 +5,7 @@ import Link from "next/link"
 import { ArrowLeft, Check, ShieldCheck, Zap, Globe, QrCode, Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Cómo Acortar Links Gratis en 2026: Guía Completa Sin Registro (Bitly vs ul0)",
+  title: "Cómo Acortar Links Gratis en 2026: Guía Sin Registro",
   description: "Aprende cómo acortar un link gratis en 2026 paso a paso sin registro. Compara ul0, Bitly y TinyURL. Mejora tu CTR en WhatsApp, Instagram y TikTok.",
   keywords: [
     "acortar link gratis",

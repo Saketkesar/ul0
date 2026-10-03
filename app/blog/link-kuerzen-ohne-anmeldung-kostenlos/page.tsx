@@ -5,7 +5,7 @@ import Link from "next/link"
 import { ArrowLeft, Check, ShieldCheck, Zap, Globe, Sparkles } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Link kürzen ohne Anmeldung 2026: Die besten kostenlosen URL-Shortener",
+  title: "Link kürzen ohne Anmeldung: Beste URL-Shortener 2026",
   description: "Erfahren Sie, wie Sie lange Links ohne Registrierung kostenlos kürzen. DSGVO-konform, permanent und blitzschnell mit ul0.site.",
   keywords: [
     "link kürzen ohne anmeldung",
