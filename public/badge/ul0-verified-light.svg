@@ -1,62 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="154" height="34" viewBox="0 0 154 34" fill="none">
-  <defs>
-    <!-- Light Gradient -->
-    <linearGradient id="lightBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="100%" stop-color="#f8fafc"/>
-    </linearGradient>
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="30" viewBox="0 0 144 30" fill="none">
+  <!-- Minimal White Pill -->
+  <rect x="0.5" y="0.5" width="143" height="29" rx="15" fill="#FFFFFF"/>
+  <rect x="0.5" y="0.5" width="143" height="29" rx="15" stroke="#E5E5E5" stroke-width="1"/>
 
-    <!-- Border Gradient -->
-    <linearGradient id="lightBorder" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#cbd5e1"/>
-      <stop offset="50%" stop-color="#10b981"/>
-      <stop offset="100%" stop-color="#e2e8f0"/>
-    </linearGradient>
-  </defs>
+  <!-- Minimalist Ink Cat Line Doodle -->
+  <path d="M11 13.5L13 8.5L15.5 12" stroke="#262626" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M20.5 12L23 8.5L25 13.5" stroke="#262626" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M12 13C12 17.5 14.5 20.5 18 20.5C21.5 20.5 24 17.5 24 13" stroke="#262626" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M14.5 14.5C15 13.8 16 13.8 16.5 14.5" stroke="#262626" stroke-width="1" stroke-linecap="round"/>
+  <path d="M19.5 14.5C20 13.8 21 13.8 21.5 14.5" stroke="#262626" stroke-width="1" stroke-linecap="round"/>
+  <circle cx="18" cy="16.5" r="0.75" fill="#262626"/>
 
-  <!-- Outer Pill Background -->
-  <rect x="0.5" y="0.5" width="153" height="33" rx="16.5" fill="url(#lightBg)"/>
-  <rect x="0.5" y="0.5" width="153" height="33" rx="16.5" stroke="url(#lightBorder)" stroke-width="1"/>
+  <!-- Text: verified by -->
+  <text x="35" y="13.5" fill="#737373" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif" font-size="8" font-weight="500" letter-spacing="0.2">verified by</text>
 
-  <!-- Left Cute Anime Cat Chibi Icon Circle -->
-  <circle cx="18" cy="17" r="11" fill="#ecfdf5" stroke="#10b981" stroke-width="0.8"/>
+  <!-- Text: ul0 -->
+  <text x="35" y="24" fill="#171717" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif" font-size="11.5" font-weight="700" letter-spacing="-0.3">ul0</text>
 
-  <!-- Anime Cat Ears -->
-  <path d="M10.5 13L13 9L15 13Z" fill="#10b981"/>
-  <path d="M12 12.5L13.2 10.5L14.2 12.5Z" fill="#fbcfe8"/>
-  <path d="M21 13L23 9L25.5 13Z" fill="#10b981"/>
-  <path d="M21.8 12.5L22.8 10.5L24 12.5Z" fill="#fbcfe8"/>
+  <!-- Suffix: .site -->
+  <text x="56" y="24" fill="#a3a3a3" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif" font-size="9" font-weight="400">.site</text>
 
-  <!-- Cat Head -->
-  <ellipse cx="18" cy="18" rx="7.5" ry="6.5" fill="#ffffff"/>
-
-  <!-- Happy Anime Eyes (^ . ^) -->
-  <path d="M13.5 17.5C14.2 16.3 15.3 16.3 16 17.5" stroke="#047857" stroke-width="1" stroke-linecap="round"/>
-  <path d="M20 17.5C20.7 16.3 21.8 16.3 22.5 17.5" stroke="#047857" stroke-width="1" stroke-linecap="round"/>
-
-  <!-- Cute Rosy Blush Cheeks -->
-  <circle cx="13" cy="19.5" r="1.2" fill="#fb7185" opacity="0.85"/>
-  <circle cx="23" cy="19.5" r="1.2" fill="#fb7185" opacity="0.85"/>
-
-  <!-- Cute Cat Mouth :3 -->
-  <path d="M17 19.5C17.5 20.2 18 20.2 18.5 19.5C19 20.2 19.5 20.2 20 19.5" stroke="#047857" stroke-width="0.8" stroke-linecap="round"/>
-
-  <!-- Sparkle -->
-  <path d="M31 10L31.8 11.8L33.6 12.6L31.8 13.4L31 15.2L30.2 13.4L28.4 12.6L30.2 11.8Z" fill="#10b981" opacity="0.8"/>
-
-  <!-- Typography: "verified by" with mini star -->
-  <text x="38" y="14" fill="#059669" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Outfit', 'Inter', sans-serif" font-size="8.5" font-weight="600" letter-spacing="0.3">verified by</text>
-  <text x="82" y="13.5" fill="#10b981" font-size="7">✦</text>
-
-  <!-- Typography: "ul0" logo -->
-  <text x="38" y="26.5" fill="#0f172a" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Outfit', 'Inter', sans-serif" font-size="13" font-weight="800" letter-spacing="-0.3">ul0</text>
-
-  <!-- Link/Site Dot -->
-  <circle cx="61" cy="23.5" r="1.5" fill="#10b981"/>
-  <text x="65" y="25" fill="#64748b" font-family="monospace" font-size="8.5" font-weight="500">site</text>
-
-  <!-- Right Pill: "★ safe" -->
-  <rect x="99" y="8" width="46" height="18" rx="9" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="0.8"/>
-  <text x="105" y="19.5" fill="#10b981" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="8" font-weight="700">★</text>
-  <text x="114" y="20" fill="#334155" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" font-weight="600" letter-spacing="0.2">safe</text>
+  <!-- Right: Minimalist check pill -->
+  <rect x="98.5" y="6.5" width="39" height="17" rx="8.5" fill="#F5F5F5"/>
+  <path d="M104.5 15L107 17.5L112.5 12" stroke="#171717" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="115.5" y="18.5" fill="#171717" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif" font-size="8" font-weight="600">safe</text>
 </svg>

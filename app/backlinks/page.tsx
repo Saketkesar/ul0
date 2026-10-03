@@ -7,24 +7,24 @@ import { listVerifiedBacklinks } from "@/lib/appwrite/backlinks"
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: "Cute Anime Badges & Free Dofollow Backlink Exchange | UL0",
+  title: "Aesthetic Notion Badges & Free Dofollow Backlink Directory | UL0",
   description:
-    "Add an aesthetic, unobtrusive anime-style verification badge to your website and earn an immediate, permanent dofollow backlink from ul0.site. Lightweight SVG (<2KB), 100% free.",
+    "Add an aesthetic, unobtrusive Notion-styled verification badge to your website and earn an immediate, permanent dofollow backlink from ul0.site. Lightweight SVG (<2KB), zero neon, 100% free.",
   alternates: {
     canonical: "https://ul0.site/backlinks",
   },
   openGraph: {
-    title: "Cute Anime Badges & Free Dofollow Backlink Exchange | UL0",
+    title: "Aesthetic Notion Badges & Free Dofollow Backlink Directory | UL0",
     description:
-      "Boost your SEO with an aesthetic, cute anime verification badge. Get a permanent dofollow backlink and showcase in our indie directory.",
+      "Boost your SEO with an aesthetic, Notion-styled verification badge. Get a permanent dofollow backlink and showcase your project in our indie directory.",
     url: "https://ul0.site/backlinks",
     siteName: "ul0",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Cute Anime Badges & Free Backlink Exchange | UL0",
-    description: "Get a verified dofollow backlink by embedding our cute anime partner badge.",
+    title: "Aesthetic Notion Badges & Free Backlink Directory | UL0",
+    description: "Get a verified dofollow backlink by embedding our aesthetic Notion partner badge.",
   },
   robots: {
     index: true,
@@ -64,7 +64,7 @@ export default async function BacklinksPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background selection:bg-primary/20 selection:text-primary">
+    <div className="flex min-h-screen flex-col bg-[#F7F6F3]/60 dark:bg-[#121212] selection:bg-neutral-200 selection:text-neutral-900">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
