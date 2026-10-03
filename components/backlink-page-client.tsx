@@ -138,8 +138,8 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
 
   // Generate dynamic snippet based on chosen theme and token
   const currentToken = verificationToken || "token_id"
-  const htmlSnippet = `<a href="https://ul0.site/backlinks?ref=badge&v=${currentToken}" target="_blank" rel="noopener">\n  <img src="https://ul0.site${selectedTheme.file}" alt="Verified by ul0" width="${selectedTheme.width}" height="${selectedTheme.height}" style="border:0;display:inline-block;vertical-align:middle" />\n</a>`
-  const markdownSnippet = `[![Verified by ul0](https://ul0.site${selectedTheme.file})](https://ul0.site/backlinks?ref=badge&v=${currentToken})`
+  const htmlSnippet = `<a href="https://ul0.site?ref=badge&v=${currentToken}" target="_blank" rel="noopener" title="UL0 — Free URL Shortener & Link Management">\n  <img src="https://ul0.site${selectedTheme.file}" alt="Free URL Shortener & Link Management by ul0" width="${selectedTheme.width}" height="${selectedTheme.height}" style="border:0;display:inline-block;vertical-align:middle" />\n</a>`
+  const markdownSnippet = `[![Free URL Shortener & Link Management by ul0](https://ul0.site${selectedTheme.file})](https://ul0.site?ref=badge&v=${currentToken})`
 
   const currentSnippet = snippetTab === "html" ? htmlSnippet : markdownSnippet
 

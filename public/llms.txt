@@ -17,8 +17,10 @@ Founded in 2024, ul0's mission is to make branded link management accessible to 
 - **UTM Campaign Builder**: Generate tracking-tagged links for Google Analytics and marketing campaigns.
 - **Developer API**: REST API for programmatic link shortening with authentication and rate limiting.
 - **Expense Splitter**: Split group bills and generate UPI QR payment codes.
+- **PDF Page Splitter**: Free client-side tool to extract, split, and download individual pages from any PDF document.
 - **PDF Scanner**: Browser-based document scanning with filters, cropping, and multi-page PDF export.
 - **WiFi QR Generator**: Share WiFi credentials via scannable QR codes.
+- **Free Backlink Exchange**: Aesthetic Notion verification badge exchange with dofollow backlinks for indie builders.
 
 ## Pricing
 
@@ -31,10 +33,12 @@ Founded in 2024, ul0's mission is to make branded link management accessible to 
 - Homepage: https://ul0.site
 - Pricing: https://ul0.site/pricing
 - API Documentation: https://ul0.site/docs
+- Expense Splitter: https://ul0.site/split
+- PDF Page Splitter: https://ul0.site/tools/pdf-splitter
 - QR Code Generator: https://ul0.site/qr
+- Backlinks & Badges Directory: https://ul0.site/backlinks
 - PDF Scanner: https://ul0.site/pdf
 - UTM Builder: https://ul0.site/utm
-- Expense Splitter: https://ul0.site/split
 - WiFi QR Generator: https://ul0.site/wifi
 - Blog: https://ul0.site/blog
 - FAQ: https://ul0.site/faq
@@ -51,9 +55,12 @@ Founded in 2024, ul0's mission is to make branded link management accessible to 
 - **Permanent links**: Short URLs never expire
 - **Privacy-first**: No personal data tracking, PDF processing and expense calculations happen client-side
 
-## Blog Topics
+## Blog Topics & International Guides
 
 - Best URL Shorteners 2026
+- Cómo Acortar Links Gratis en 2026 (Spanish Guide)
+- Link kürzen ohne Anmeldung kostenlos (German Guide)
+- How to Split Expenses & Group Bills Online (Split Guide)
 - Bitly Alternative Free
 - Cheapest Custom Domain Link Shortener
 - How to Shorten URL Free

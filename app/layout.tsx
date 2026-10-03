@@ -320,6 +320,12 @@ export default async function RootLayout({
           },
           {
             "@type": "WebPage",
+            name: "Split Expenses Online",
+            description: "Free group expense splitter with instant UPI QR code settlement",
+            url: "https://ul0.site/split"
+          },
+          {
+            "@type": "WebPage",
             name: "PDF Page Splitter",
             description: "Extract and download individual pages from any PDF",
             url: "https://ul0.site/tools/pdf-splitter"

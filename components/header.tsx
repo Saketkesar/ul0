@@ -278,9 +278,8 @@ export function Header() {
 
         {/* Right: Auth Controls & Mobile Menu Trigger */}
         <div className="flex items-center gap-2">
-          {/* Desktop Auth */}
-          <div className="hidden sm:flex items-center gap-2">
-            <Show when="signed-out">
+          <Show when="signed-out">
+            <div className="hidden sm:flex items-center gap-2">
               <SignInButton mode="modal">
                 <button className="rounded-md px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground cursor-pointer">
                   Sign In
@@ -291,15 +290,17 @@ export function Header() {
                   Get Started Free
                 </button>
               </SignUpButton>
-            </Show>
+            </div>
+          </Show>
 
-            <Show when="signed-in">
+          <Show when="signed-in">
+            <div className="flex items-center gap-2">
               <Link
                 href="/dashboard"
                 className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent transition-colors"
               >
                 <BarChart3 className="h-3.5 w-3.5" />
-                <span>Dashboard</span>
+                <span className="hidden sm:inline">Dashboard</span>
               </Link>
               <UserButton
                 appearance={{
@@ -308,27 +309,17 @@ export function Header() {
                   },
                 }}
               />
-            </Show>
-          </div>
+            </div>
+          </Show>
 
           {/* Mobile Menu Trigger via Sheet */}
-          <div className="xl:hidden flex items-center gap-1.5">
-            <Show when="signed-in">
-              <UserButton
-                appearance={{
-                  elements: {
-                    avatarBox: "h-7 w-7",
-                  },
-                }}
-              />
-            </Show>
-
+          <div className="xl:hidden flex items-center">
             <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
               <SheetTrigger asChild>
                 <button
                   type="button"
                   aria-label="Open Navigation Menu"
-                  className="rounded-lg h-10 w-10 flex items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground transition-colors border border-border/60"
+                  className="rounded-lg h-9 w-9 flex items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground transition-colors border border-border/60"
                 >
                   <Menu className="h-5 w-5" />
                 </button>
