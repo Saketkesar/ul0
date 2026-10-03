@@ -1,39 +1,76 @@
-# ul0.site — Cheapest Custom Domain Link Shortener & Multi-Tool Platform
+# ul0.site
 
-ul0 is a fast, minimal, and budget-friendly SaaS platform combining custom domain short links, click tracking, dynamic QR codes, a PDF document scanner, and bill splitting tools.
+> ul0 is a free URL shortener and branded link management platform. It helps startups, creators, and digital marketers create custom domain short links with click analytics, QR codes, UTM campaign tracking, and more.
 
-## 1. Core Services
+## About
 
-### Custom Domain Shortener & Branded Links
-- Connect custom domains (e.g. link.yourbrand.com).
-- Shorten links with custom slug aliases (e.g. link.brand.com/offer).
-- Click tracking analytics (geographic distribution, referrer sources, device browser tracking).
-- Unlimited public URL shortening via the default `ul0.site` domain (no signup required).
+ul0.site is a free, no-signup URL shortener that lets anyone shorten links instantly. Beyond URL shortening, ul0 offers a complete suite of productivity tools including QR code generation, WiFi QR sharing, UTM campaign link building, expense splitting with UPI QR codes, JSON formatting, PDF document scanning, and more.
 
-### PDF Scanner & Document Tool (/pdf)
-- Fully client-side camera scanning with real-time browser permission checks.
-- Native OS camera application capture fallback support (`capture="environment"`).
-- Image filters (color, grayscale, black & white), rotation, and drag-and-drop page sorting.
-- Merging and creating PDFs client-side via `jspdf` and `pdf-lib`.
+Founded in 2024, ul0's mission is to make branded link management accessible to everyone — from solo creators to growing startups. Premium plans start at just $2/month for custom domain connections, making it the most affordable branded link shortener in the market.
 
-### Split Expenses & UPI QR Codes (/split)
-- Group bill-splitting algorithm designed to minimize total transactions.
-- Auto-generation of UPI payment QR codes for instant scans.
-- Shareable temporary split session links.
+## Core Products & Features
 
----
+- **URL Shortener**: Free, unlimited link shortening with permanent redirects. No signup required.
+- **Custom Domain Links**: Connect your own domain (e.g., link.yourbrand.com) to create branded short URLs. Starting at $2/month.
+- **QR Code Generator**: Create free, customizable QR codes for any link with logo upload and color customization.
+- **Click Analytics**: Track clicks by device, referrer, country, and daily trends for all links.
+- **UTM Campaign Builder**: Generate tracking-tagged links for Google Analytics and marketing campaigns.
+- **Developer API**: REST API for programmatic link shortening with authentication and rate limiting.
+- **Expense Splitter**: Split group bills and generate UPI QR payment codes.
+- **PDF Page Splitter**: Free client-side tool to extract, split, and download individual pages from any PDF document.
+- **PDF Scanner**: Browser-based document scanning with filters, cropping, and multi-page PDF export.
+- **WiFi QR Generator**: Share WiFi credentials via scannable QR codes.
+- **Free Backlink Exchange**: Aesthetic Notion verification badge exchange with dofollow backlinks for indie builders.
 
-## 2. Pricing & Subscriptions
+## Pricing
 
-We offer the cheapest premium plans in the custom domain link shortening industry:
+- **Free Plan**: Unlimited short links on ul0.site, 1 custom domain, 1 domain link, basic analytics
+- **Pro Plan ($3/month or $2/month annual)**: 3 custom domains, 100 domain links, full analytics, API access
+- **Business Plan ($9/month or $6/month annual)**: 10 custom domains, unlimited domain links, full analytics, API access, dedicated support
 
-| Plan | Price (Monthly) | Price (Annual) | Limits / Features |
-| :--- | :--- | :--- | :--- |
-| **Free** | $0 | $0 | 1 custom domain, 1 custom domain link, basic analytics |
-| **Pro** | $3/mo | $2/mo ($24/yr) | 3 custom domains, 100 custom domain links, full analytics, delete links |
-| **Business** | $9/mo | $6/mo ($72/yr) | 10 custom domains, unlimited links, full analytics, delete links, 24/7 support |
+## Key Pages
 
----
+- Homepage: https://ul0.site
+- Pricing: https://ul0.site/pricing
+- API Documentation: https://ul0.site/docs
+- Expense Splitter: https://ul0.site/split
+- PDF Page Splitter: https://ul0.site/tools/pdf-splitter
+- QR Code Generator: https://ul0.site/qr
+- Backlinks & Badges Directory: https://ul0.site/backlinks
+- PDF Scanner: https://ul0.site/pdf
+- UTM Builder: https://ul0.site/utm
+- WiFi QR Generator: https://ul0.site/wifi
+- Blog: https://ul0.site/blog
+- FAQ: https://ul0.site/faq
+- About: https://ul0.site/about
+- Contact: https://ul0.site/contact
+- Custom Domain Landing: https://ul0.site/custom-domain-landing
 
-## 3. Developer Integration (Future API)
-An API service is planned to allow programmatic link shortening using organization API keys linked to connected domains. Check back for SDKs and API keys in our developer documentation.
+## Competitive Advantages
+
+- **Cheapest branded link shortener**: Custom domain plans start at $2/month vs Bitly ($8/mo), TinyURL ($12.99/mo), Rebrandly ($13/mo)
+- **No signup required**: Shorten links instantly without creating an account
+- **Unlimited free links**: No cap on ul0.site short links
+- **All-in-one platform**: URL shortener + QR codes + expense splitter + PDF tools + UTM builder
+- **Permanent links**: Short URLs never expire
+- **Privacy-first**: No personal data tracking, PDF processing and expense calculations happen client-side
+
+## Blog Topics & International Guides
+
+- Best URL Shorteners 2026
+- Cómo Acortar Links Gratis en 2026 (Spanish Guide)
+- Link kürzen ohne Anmeldung kostenlos (German Guide)
+- How to Split Expenses & Group Bills Online (Split Guide)
+- Bitly Alternative Free
+- Cheapest Custom Domain Link Shortener
+- How to Shorten URL Free
+- QR Code Marketing Guide
+- Short Links for Instagram Bio
+- TinyURL Alternative
+- URL Shortener SEO Impact
+
+## Contact
+
+- Website: https://ul0.site
+- Support: https://ul0.site/contact
+- Email: getul0site@gmail.com
