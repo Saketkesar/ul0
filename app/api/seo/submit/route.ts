@@ -9,6 +9,7 @@ const CORE_PATHS = [
   "/pricing",
   "/backlinks",
   "/qr",
+  "/split",
   "/utm",
   "/tools",
   "/tools/pdf-splitter",
@@ -35,6 +36,9 @@ const CORE_PATHS = [
 ]
 
 const BLOG_SLUGS = [
+  "acortar-link-gratis-guia-completa",
+  "how-to-split-expenses-group-bills-online",
+  "link-kuerzen-ohne-anmeldung-kostenlos",
   "link-shortening-best-practices-2026",
   "qr-code-generator-security-guide",
   "custom-domain-dns-cname-setup-guide",
