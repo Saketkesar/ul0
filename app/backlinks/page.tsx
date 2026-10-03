@@ -7,24 +7,33 @@ import { listVerifiedBacklinks } from "@/lib/appwrite/backlinks"
 export const revalidate = 60
 
 export const metadata: Metadata = {
-  title: "Aesthetic Notion Badges & Free Dofollow Backlink Directory | UL0",
+  title: "Aesthetic Notion Badges & Free Backlinks",
   description:
-    "Add an aesthetic, unobtrusive Notion-styled verification badge to your website and earn an immediate, permanent dofollow backlink from ul0.site. Lightweight SVG (<2KB), zero neon, 100% free.",
+    "Add an aesthetic Notion-styled verification badge to your website and earn an immediate, permanent dofollow backlink from ul0.site. Lightweight SVG (<2KB).",
   alternates: {
     canonical: "https://ul0.site/backlinks",
   },
   openGraph: {
-    title: "Aesthetic Notion Badges & Free Dofollow Backlink Directory | UL0",
+    title: "Aesthetic Notion Badges & Free Backlinks",
     description:
       "Boost your SEO with an aesthetic, Notion-styled verification badge. Get a permanent dofollow backlink and showcase your project in our indie directory.",
     url: "https://ul0.site/backlinks",
     siteName: "ul0",
     type: "website",
+    images: [
+      {
+        url: "https://ul0.site/notion-backlink.png",
+        width: 1376,
+        height: 768,
+        alt: "Aesthetic Notion Badges & Free Backlinks",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Aesthetic Notion Badges & Free Backlink Directory | UL0",
+    title: "Aesthetic Notion Badges & Free Backlinks",
     description: "Get a verified dofollow backlink by embedding our aesthetic Notion partner badge.",
+    images: ["https://ul0.site/notion-backlink.png"],
   },
   robots: {
     index: true,
