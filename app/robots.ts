@@ -19,6 +19,10 @@ export default function robots(): MetadataRoute.Robots {
           "/split/*/",
         ],
       },
+      {
+        userAgent: ["Googlebot", "Bingbot", "Applebot"],
+        allow: "/",
+      },
       // Explicitly allow AI search crawlers for GEO/AEO
       {
         userAgent: "ClaudeBot",

@@ -7,7 +7,7 @@ import { upsertAccount } from "@/lib/appwrite/accounts"
 import { listLinksByOwner } from "@/lib/appwrite/links"
 import { getDomainsByOwner } from "@/lib/appwrite/domains"
 import { getPlanLimits } from "@/lib/plans"
-import { Link2, ExternalLink, MousePointerClick, Plus, BarChart3, Globe, ArrowRight, Key, QrCode, Megaphone, DollarSign } from "lucide-react"
+import { Link2, ExternalLink, MousePointerClick, Plus, BarChart3, Globe, ArrowRight, Key, QrCode, Megaphone, DollarSign, Sparkles } from "lucide-react"
 import { CreateLinkButton } from "./create-link-button"
 import { DeleteLinkButton } from "./delete-link-button"
 
@@ -158,6 +158,14 @@ export default async function DashboardPage() {
             >
               <QrCode className="h-4 w-4" />
               QR Generator
+              <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+            <Link
+              href="/dashboard/seo"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors"
+            >
+              <Sparkles className="h-4 w-4" />
+              SEO &amp; Search Console
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
             <Link

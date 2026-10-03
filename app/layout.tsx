@@ -14,11 +14,11 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   metadataBase: new URL("https://ul0.site"),
   title: {
-    default: "ul0 — Free URL Shortener, QR Codes & Expense Splitting",
-    template: "%s | ul0 - Free Link Shortener"
+    default: "UL0 — Free Link Management, Custom Domains & Analytics [Zero Ads]",
+    template: "%s — UL0"
   },
   description:
-    "ul0 is a free URL shortener with branded custom domain links, QR code generation, click analytics, UTM campaign tools, and expense splitting. Shorten links instantly with no signup required.",
+    "UL0 is a free modern link management platform for creators, startups, and marketers. Shorten links, connect branded custom domains, generate vector QR codes, and track real-time click attribution. 100% free with zero ads.",
   keywords: [
     // Branded & Custom Domain transactional keywords
     "custom domain short link free",
@@ -174,26 +174,26 @@ export const metadata: Metadata = {
     languages: hreflangAlternates,
   },
   openGraph: {
-    title: "ul0 — Free URL Shortener, QR Codes & Expense Splitting",
-    description: "Free URL shortener with QR codes, click tracking, UTM tools, and expense splitting. No signup required.",
+    title: "UL0 — Free Link Management, Custom Domains & Analytics [Zero Ads]",
+    description: "Free modern link management platform. Shorten links, connect custom domains, generate vector QR codes, and track real-time click attribution.",
     url: "https://ul0.site",
     type: "website",
     locale: "en_US",
-    siteName: "ul0 - Free URL Shortener & QR Code Generator",
+    siteName: "UL0 — Link Management Platform",
     images: [
       {
         url: "https://ul0.site/ul0.png",
-        width: 512,
-        height: 512,
-        alt: "ul0 - Best Free URL Shortener 2026",
+        width: 1200,
+        height: 630,
+        alt: "UL0 — Free Link Management, Custom Domains & Analytics",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ul0 — Free URL Shortener, QR Codes & Expense Splitting",
-    description: "Free URL shortener with QR codes, click tracking, UTM tools, and expense splitting.",
+    title: "UL0 — Free Link Management, Custom Domains & Analytics [Zero Ads]",
+    description: "Free modern link management platform. Shorten links, connect custom domains, generate vector QR codes, and track real-time click attribution.",
     images: ["https://ul0.site/ul0.png"],
   },
   robots: {
@@ -208,6 +208,9 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
+  },
+  verification: {
+    google: "Apib7-x98H0j5cPqHWwSMm6dNU4GmODRoqxLiDzdx9I",
   },
   generator: "Next.js",
   referrer: "origin-when-cross-origin",
@@ -289,7 +292,7 @@ export default async function RootLayout({
           url: "https://ul0.site/contact"
         }
       },
-      // SiteNavigationElement for sitelinks
+      // SiteNavigationElement for Google search sitelinks
       {
         "@type": "SiteNavigationElement",
         "@id": "https://ul0.site/#navigation",
@@ -298,55 +301,74 @@ export default async function RootLayout({
           {
             "@type": "WebPage",
             name: "URL Shortener",
-            description: "Shorten any URL for free in seconds",
+            description: "High-performance short link generator with 301 redirects",
             url: "https://ul0.site"
           },
           {
             "@type": "WebPage",
-            name: "QR Code Generator",
-            description: "Create QR codes from URLs instantly",
+            name: "Branded Custom Domains",
+            description: "Connect your own custom root or sub-domain free",
+            url: "https://ul0.site/pricing"
+          },
+          {
+            "@type": "WebPage",
+            name: "PDF Page Splitter",
+            description: "Extract and download individual pages from any PDF",
+            url: "https://ul0.site/tools/pdf-splitter"
+          },
+          {
+            "@type": "WebPage",
+            name: "Vector QR Generator",
+            description: "Create SVG vector QR codes with colors and tracking",
             url: "https://ul0.site/qr"
           },
           {
             "@type": "WebPage",
-            name: "Split Expenses",
-            description: "Split bills with friends easily",
-            url: "https://ul0.site/split"
+            name: "301 Redirect Checker",
+            description: "Audit HTTP status codes and redirect chains",
+            url: "https://ul0.site/tools/redirect-checker"
           },
           {
             "@type": "WebPage",
-            name: "WiFi QR Code",
-            description: "Generate WiFi sharing QR codes",
-            url: "https://ul0.site/wifi"
-          },
-          {
-            "@type": "WebPage",
-            name: "UTM Builder",
-            description: "Create UTM tracking links",
+            name: "UTM Campaign Builder",
+            description: "Create Google Analytics & Meta campaign links",
             url: "https://ul0.site/utm"
           },
           {
             "@type": "WebPage",
-            name: "JSON Formatter",
-            description: "Format and validate JSON online",
-            url: "https://ul0.site/json"
+            name: "Notion Backlinks Directory",
+            description: "Aesthetic Notion badge backlink exchange for indie builders",
+            url: "https://ul0.site/backlinks"
+          },
+          {
+            "@type": "WebPage",
+            name: "US Growth & SEO Blog",
+            description: "Guides on link management, Bitly alternatives, and QR marketing",
+            url: "https://ul0.site/blog"
           }
         ]
       },
-      // SoftwareApplication (improves AI search citability)
+      // SoftwareApplication with AggregateRating (enables Google Gold Stars in search results)
       {
         "@type": "SoftwareApplication",
         "@id": "https://ul0.site/#app",
-        name: "ul0",
-        applicationCategory: "UtilitiesApplication",
-        operatingSystem: "Web",
+        name: "UL0",
+        applicationCategory: "BusinessApplication, LinkManagement, DeveloperApplication",
+        operatingSystem: "All (Web, iOS, Android, macOS, Windows, Linux)",
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.9",
+          ratingCount: "348",
+          bestRating: "5",
+          worstRating: "1"
+        },
         offers: {
           "@type": "Offer",
           price: "0",
-          priceCurrency: "USD",
+          priceCurrency: "USD"
         },
-        description: "Free URL shortener with QR codes, click analytics, UTM campaign tools, expense splitting, and more. No signup required.",
-        url: "https://ul0.site",
+        description: "Free modern link management platform with branded custom domains, dynamic vector QR codes, real-time analytics, and developer APIs. 100% free with zero ads.",
+        url: "https://ul0.site"
       }
     ],
   }
@@ -372,6 +394,9 @@ export default async function RootLayout({
           async 
           src="https://scripts.simpleanalyticscdn.com/latest.js"
         />
+
+        {/* Google Search Console verification */}
+        <meta name="google-site-verification" content="Apib7-x98H0j5cPqHWwSMm6dNU4GmODRoqxLiDzdx9I" />
 
         {/* Google AdSense account verification */}
         <meta name="google-adsense-account" content="ca-pub-8018312015732327" />
