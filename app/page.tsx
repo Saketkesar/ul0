@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
   title: "UL0 — Link Management, Short Links & Link Analytics",
-  description: "UL0 is a high-performance link management platform. Shorten links, connect custom branded domains, generate dynamic QR codes, and track real-time click analytics. Free with no signup required.",
+  description: "Free modern link management platform. Shorten URLs, connect custom branded domains, generate vector QR codes, and track real-time click analytics with zero ads.",
   keywords: [
     "link management",
     "url shortener",
