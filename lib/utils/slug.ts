@@ -141,6 +141,7 @@ export const BLOCKED_DOMAINS = [
   'byphoccc.com',
   'bgp52.sbs',
   'urpose.com',
+  'sjcsvbl.com',
 ]
 
 /**
