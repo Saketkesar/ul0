@@ -16,6 +16,19 @@ import { Lock, AlertCircle, AlertTriangle, ExternalLink } from "lucide-react"
 import Link from "next/link"
 import dns from "dns"
 
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  robots: {
+    index: false,
+    follow: false,
+    googleBot: {
+      index: false,
+      follow: false,
+    },
+  },
+}
+
 interface Props {
   params: Promise<{ slug: string }>
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>

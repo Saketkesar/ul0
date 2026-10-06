@@ -20,7 +20,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              Enterprise-grade link management, custom domain routing, real-time attribution analytics, and dynamic vector QR codes. Fast edge 301 redirects with zero interstitial ads.
+              Enterprise-grade link management, custom domain routing, real-time attribution analytics, and dynamic vector QR codes. Fast edge 301 redirects with instant routing and automated security screening.
             </p>
             <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
               <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0" />
@@ -127,7 +127,7 @@ export function Footer() {
               <Link href="/features" className="hover:text-foreground transition-colors">Platform Features</Link>
               <Link href="/" className="hover:text-foreground transition-colors">URL Shortener</Link>
               <Link href="/qr" className="hover:text-foreground transition-colors">Vector QR Generator</Link>
-              <Link href="/pricing" className="hover:text-foreground transition-colors">Branded Custom Domains</Link>
+              <Link href="/custom-domain-landing" className="hover:text-foreground transition-colors">Branded Custom Domains</Link>
               <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing &amp; Plans</Link>
               <Link href="/changelog" className="hover:text-foreground transition-colors">Changelog &amp; Updates</Link>
               <Link href="/docs" className="hover:text-foreground transition-colors">Developer REST API</Link>
@@ -226,27 +226,11 @@ export function Footer() {
         <div className="mt-8 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} UL0. All rights reserved. Link Management &amp; Analytics Platform.</p>
           <div className="flex flex-wrap items-center gap-4">
-            <a
-              href="https://frogdr.com/ul0.site?utm_source=ul0.site"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="FrogDR Domain Rating Monitor"
-              className="opacity-70 hover:opacity-100 transition-opacity"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://frogdr.com/ul0.site/badge-dark.svg?round=1"
-                alt="Monitor your Domain Rating with FrogDR"
-                width="130"
-                height="28"
-                className="h-7 w-auto"
-              />
-            </a>
             <a 
               href="https://dashboard.simpleanalytics.com/ul0.site?utm_source=ul0.site&utm_content=badge&affiliate=wobab" 
               referrerPolicy="origin" 
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               aria-label="Simple Analytics Privacy Badge"
               className="opacity-70 hover:opacity-100 transition-opacity"
             >

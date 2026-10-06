@@ -61,7 +61,7 @@ export function Header() {
       { name: "PDF Scanner & Document Tools", href: "/pdf", category: "PDF Tools", icon: ScanLine, desc: "Scan, crop, merge and manage PDFs" },
       { name: "Vector QR Code Generator", href: "/qr", category: "Link Tools", icon: QrCode, desc: "Create high-res trackable QR codes" },
       { name: "WiFi QR Code Maker", href: "/wifi", category: "Link Tools", icon: Wifi, desc: "Generate instant connect WiFi QR codes" },
-      { name: "Branded Custom Domains", href: "/pricing", category: "Link Tools", icon: Globe, desc: "Connect your own custom root or sub-domain" },
+      { name: "Branded Custom Domains", href: "/custom-domain-landing", category: "Link Tools", icon: Globe, desc: "Connect your own custom root or sub-domain" },
       { name: "Real-Time Click Analytics", href: "/features", category: "Link Tools", icon: BarChart3, desc: "Track country, device, browser, and referrers" },
       { name: "UTM Campaign Builder", href: "/utm", category: "Marketing", icon: LinkIcon, desc: "Google Analytics & Meta Ads campaign builder" },
       { name: "301 Redirect Checker", href: "/tools/redirect-checker", category: "Utilities", icon: ArrowRightLeft, desc: "Audit redirect chains, status codes & hops" },
@@ -118,26 +118,60 @@ export function Header() {
             <span>Shorten</span>
           </Link>
 
-          {/* 2. Split Expenses (Prominently visible!) */}
+          {/* 2. Custom Domains (Direct to money page) */}
           <Link
-            href="/split"
-            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5 text-foreground font-medium"
+            href="/custom-domain-landing"
+            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5"
           >
-            <Users className="h-4 w-4 text-emerald-500" />
-            <span>Split Expenses</span>
+            <Globe className="h-4 w-4 text-primary" />
+            <span>Custom Domains</span>
           </Link>
 
-          {/* 3. PDF Tools */}
+          {/* 3. Vector QR Generator */}
+          <Link
+            href="/qr"
+            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5"
+          >
+            <QrCode className="h-4 w-4 text-muted-foreground" />
+            <span>QR Codes</span>
+          </Link>
+
+          {/* 4. Use Cases Solutions */}
+          <Link
+            href="/use-cases"
+            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5"
+          >
+            <Briefcase className="h-4 w-4 text-muted-foreground" />
+            <span>Use Cases</span>
+          </Link>
+
+          {/* 5. Free Tools Dropdown (Includes Split, PDF, UTM, WiFi, etc.) */}
           <DropdownMenu>
             <DropdownMenuTrigger className="flex items-center gap-1 rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground outline-none">
-              <Scissors className="h-4 w-4 text-primary" />
-              <span>PDF Tools</span>
-              <span className="ml-0.5 px-1 py-0.2 rounded text-[9px] font-bold bg-primary/10 text-primary">
-                NEW
-              </span>
+              <Sparkles className="h-4 w-4 text-muted-foreground" />
+              <span>Free Tools</span>
               <ChevronDown className="h-3.5 w-3.5 opacity-60" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-72 p-2 shadow-lg">
+            <DropdownMenuContent align="start" className="w-80 p-2 shadow-lg max-h-[85vh] overflow-y-auto">
+              <DropdownMenuItem asChild>
+                <Link href="/tools" className="flex items-center gap-2 p-2 rounded-lg font-semibold text-primary cursor-pointer">
+                  <Sparkles className="h-4 w-4" />
+                  <span>Free Tools Directory</span>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/split" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
+                  <Users className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <span>Split Expenses &amp; UPI</span>
+                      <span className="text-[9px] px-1 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">Popular</span>
+                    </div>
+                    <div className="text-[11px] text-muted-foreground">Split bills &amp; calculate dues with UPI QR</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/tools/pdf-splitter" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
                   <Scissors className="h-4 w-4 text-primary mt-0.5 shrink-0" />
@@ -146,7 +180,7 @@ export function Header() {
                       <span>PDF Page Splitter</span>
                       <span className="text-[9px] px-1 py-0.2 rounded bg-primary/10 text-primary font-bold">NEW</span>
                     </div>
-                    <div className="text-[11px] text-muted-foreground">Extract &amp; download single pages line-by-line</div>
+                    <div className="text-[11px] text-muted-foreground">Extract single pages line-by-line</div>
                   </div>
                 </Link>
               </DropdownMenuItem>
@@ -159,32 +193,15 @@ export function Header() {
                   </div>
                 </Link>
               </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* 4. Vector QR Generator */}
-          <Link
-            href="/qr"
-            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5"
-          >
-            <QrCode className="h-4 w-4 text-muted-foreground" />
-            <span>QR Codes</span>
-          </Link>
-
-          {/* 5. More Web & SEO Tools Dropdown */}
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground outline-none">
-              <span>All Tools</span>
-              <ChevronDown className="h-3.5 w-3.5 opacity-60" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="start" className="w-80 p-2 shadow-lg">
               <DropdownMenuItem asChild>
-                <Link href="/tools" className="flex items-center gap-2 p-2 rounded-lg font-semibold text-primary cursor-pointer">
-                  <Sparkles className="h-4 w-4" />
-                  <span>Free Tools Directory</span>
+                <Link href="/utm" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
+                  <LinkIcon className="h-4 w-4 text-purple-500 mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-xs font-semibold text-foreground">UTM Campaign Builder</div>
+                    <div className="text-[11px] text-muted-foreground">Google Analytics &amp; Meta Ads attribution</div>
+                  </div>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link href="/tools/redirect-checker" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
                   <ArrowRightLeft className="h-4 w-4 text-blue-500 mt-0.5 shrink-0" />
@@ -204,11 +221,20 @@ export function Header() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
-                <Link href="/utm" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <LinkIcon className="h-4 w-4 text-purple-500 mt-0.5 shrink-0" />
+                <Link href="/wifi" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
+                  <Wifi className="h-4 w-4 text-rose-500 mt-0.5 shrink-0" />
                   <div>
-                    <div className="text-xs font-semibold text-foreground">UTM Campaign Builder</div>
-                    <div className="text-[11px] text-muted-foreground">Google Analytics &amp; Meta Ads attribution</div>
+                    <div className="text-xs font-semibold text-foreground">WiFi QR Code Maker</div>
+                    <div className="text-[11px] text-muted-foreground">Generate 1-scan WiFi access codes</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/json" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
+                  <FileJson className="h-4 w-4 text-sky-500 mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-xs font-semibold text-foreground">JSON Formatter</div>
+                    <div className="text-[11px] text-muted-foreground">Validate, prettify &amp; minify JSON</div>
                   </div>
                 </Link>
               </DropdownMenuItem>
@@ -230,44 +256,18 @@ export function Header() {
                   </div>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/json" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <FileJson className="h-4 w-4 text-sky-500 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">JSON Formatter</div>
-                    <div className="text-[11px] text-muted-foreground">Validate, prettify &amp; minify JSON</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/wifi" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
-                  <Wifi className="h-4 w-4 text-rose-500 mt-0.5 shrink-0" />
-                  <div>
-                    <div className="text-xs font-semibold text-foreground">WiFi QR Code Maker</div>
-                    <div className="text-[11px] text-muted-foreground">Generate 1-scan WiFi access codes</div>
-                  </div>
-                </Link>
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* 6. Custom Domains & Pricing */}
+          {/* 6. Pricing */}
           <Link
             href="/pricing"
             className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
           >
-            Custom Domains
+            Pricing
           </Link>
 
-          {/* 7. Free Backlinks (Clean title without "Notion" as requested) */}
-          <Link
-            href="/backlinks"
-            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
-          >
-            Backlinks
-          </Link>
-
-          {/* 8. Blog */}
+          {/* 7. Blog */}
           <Link
             href="/blog"
             className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground"

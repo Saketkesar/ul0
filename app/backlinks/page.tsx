@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     images: ["https://ul0.site/notion-backlink.png"],
   },
   robots: {
-    index: true,
+    index: false,
     follow: true,
   },
 }

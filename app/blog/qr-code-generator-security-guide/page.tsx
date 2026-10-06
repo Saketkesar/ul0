@@ -38,7 +38,9 @@ export default function QrCodeSecurityGuidePage() {
     author: {
       "@type": "Person",
       name: "Saket Kesar",
-      jobTitle: "Senior Performance Engineer",
+      jobTitle: "Founder & Developer",
+      url: "https://ul0.site/about",
+      sameAs: "https://github.com/Saketkesar",
     },
     publisher: {
       "@type": "Organization",
@@ -134,9 +136,11 @@ export default function QrCodeSecurityGuidePage() {
               SK
             </div>
             <div>
-              <h3 className="font-bold text-foreground">Written by Saket Kesar</h3>
+              <h3 className="font-bold text-foreground">
+                Written by <Link href="/about" className="hover:underline text-primary">Saket Kesar</Link>
+              </h3>
               <p className="text-sm text-muted-foreground mt-0.5">
-                Senior Performance Engineer at ul0.site specializing in web security, QR matrix standards, and edge data safety.
+                Founder &amp; Developer at ul0. Focused on web security standards, dynamic QR generation, and link integrity. Connect on <a href="https://github.com/Saketkesar" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GitHub</a>.
               </p>
             </div>
           </div>

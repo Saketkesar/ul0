@@ -8,48 +8,34 @@ import { hreflangAlternates } from "@/lib/i18n"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
-  title: "UL0 — Link Management, Short Links & Link Analytics",
-  description: "Free modern link management platform. Shorten URLs, connect custom domains, generate vector QR codes, and track real-time clicks with zero ads.",
-  keywords: [
-    "link management",
-    "url shortener",
-    "short links",
-    "link analytics",
-    "branded short links",
-    "custom domain link shortener",
-    "qr code generator",
-    "track link clicks",
-    "utm campaign builder",
-    "bitly alternative",
-    "free url shortener",
-    "link tracking software",
-    "shorten url",
-    "small business link tracking",
-    "marketing link shortener",
-  ],
+  title: "Free URL Shortener, QR Codes & Custom Domains | UL0",
+  description:
+    "Shorten links free, connect your own custom domain, make QR codes and track clicks. No signup. Branded links without paid plans.",
   alternates: {
     canonical: "https://ul0.site",
     languages: hreflangAlternates,
   },
   openGraph: {
-    title: "UL0 — Link Management, Short Links & Link Analytics",
-    description: "Shorten links, generate trackable QR codes, connect custom domains, and track click analytics in real-time. Free & no signup required.",
+    title: "Free URL Shortener, QR Codes & Custom Domains | UL0",
+    description:
+      "Shorten links free, connect your own custom domain, make QR codes and track clicks. No signup. Branded links without paid plans.",
     url: "https://ul0.site",
     type: "website",
-    siteName: "UL0 - Link Management Platform",
+    siteName: "UL0",
     locale: "en_US",
     images: [{
       url: "https://ul0.site/social-card.png",
       width: 1376,
       height: 768,
-      alt: "UL0 — Free Link Shortener, Split Expenses & QR Tools",
+      alt: "UL0 — Free URL Shortener, Custom Domains & QR Code Generator",
       type: "image/png",
     }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "UL0 — Link Management, Short Links & Link Analytics",
-    description: "Shorten links, generate trackable QR codes, connect custom domains, and track click analytics in real-time.",
+    title: "Free URL Shortener, QR Codes & Custom Domains | UL0",
+    description:
+      "Shorten links free, connect your own custom domain, make QR codes and track clicks. No signup. Branded links without paid plans.",
     images: ["https://ul0.site/social-card.png"],
   },
   robots: {
@@ -72,7 +58,8 @@ const homePageSchema = {
     {
       "@type": "Organization",
       "@id": "https://ul0.site/#organization",
-      name: "ul0",
+      name: "UL0",
+      alternateName: "ul0.site",
       url: "https://ul0.site",
       logo: {
         "@type": "ImageObject",
@@ -80,7 +67,7 @@ const homePageSchema = {
         width: 512,
         height: 512
       },
-      description: "Free URL shortener and branded link management platform with QR codes, click analytics, UTM tools, and expense splitting.",
+      description: "Free branded short links, custom domain management, dynamic QR codes, and real-time click analytics.",
       foundingDate: "2024",
       email: "getul0site@gmail.com",
       sameAs: [
@@ -105,9 +92,24 @@ const homePageSchema = {
       "@type": "WebSite",
       "@id": "https://ul0.site/#website",
       url: "https://ul0.site",
-      name: "ul0 - Free URL Shortener",
+      name: "UL0",
+      alternateName: "ul0.site",
       publisher: { "@id": "https://ul0.site/#organization" },
       inLanguage: "en-US"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://ul0.site/#software",
+      name: "UL0",
+      applicationCategory: "BusinessApplication",
+      operatingSystem: "All (Web, iOS, Android, macOS, Windows, Linux)",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD"
+      },
+      description: "Free branded short links, custom domain management, dynamic vector QR codes, and real-time click attribution.",
+      url: "https://ul0.site"
     },
     {
       "@type": "WebPage",
@@ -291,10 +293,10 @@ export default function HomePage() {
               </div>
               
               <h1 className="mb-3 text-balance text-2xl font-bold tracking-tight text-foreground sm:mb-5 sm:text-4xl lg:text-5xl">
-                Link Management, Short Links & Real-Time Analytics
+                Free Branded Short Links, QR Codes & Click Analytics
               </h1>
               <p className="mb-2 text-pretty text-base text-muted-foreground sm:text-xl">
-                Shorten links, generate trackable QR codes, and connect custom branded domains. <strong>No signup required to start.</strong>
+                Shorten links free, generate trackable QR codes, and connect custom branded domains. <strong>No signup required to start.</strong>
               </p>
               <p className="mb-5 text-pretty text-sm text-muted-foreground sm:mb-8 sm:text-base">
                 Permanent 301 Redirects • Dynamic QR Codes • Real-Time Click Attribution • Custom Domain Support
@@ -307,9 +309,9 @@ export default function HomePage() {
                 <div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">Why Modern Teams Choose UL0</h3>
                   <ul className="space-y-1.5 list-disc list-inside">
-                    <li><strong>Permanent 301 Redirects</strong> - Maximum link equity and SEO authority pass-through</li>
-                    <li><strong>Branded Custom Domains</strong> - Up to 34% higher CTR with branded links like yourbrand.link</li>
-                    <li><strong>Privacy-Conscious Analytics</strong> - Track clicks, country, device, and referrer without invasive tracking</li>
+                    <li><strong>Permanent 301 Redirects</strong> - Clean link equity pass-through for SEO and attribution</li>
+                    <li><strong>Branded Custom Domains</strong> - Boost brand trust and click-through rates with your own domain</li>
+                    <li><strong>Privacy-Conscious Analytics</strong> - Track clicks, country, device, and referrer without cookies</li>
                     <li><strong>High-Resolution QR Codes</strong> - Auto-generated vector QR codes ready for print and digital marketing</li>
                     <li><strong>Instant Access</strong> - Shorten links immediately with zero mandatory registration</li>
                   </ul>
@@ -318,10 +320,10 @@ export default function HomePage() {
                 <div className="space-y-3 leading-relaxed text-sm">
                   <h3 className="text-lg font-semibold text-foreground">Infrastructure Built for Creators, Agencies & Businesses</h3>
                   <p>
-                    UL0 transforms unwieldy, tracking-heavy URLs into clean, secure, and professional branded links. Whether you are running multichannel marketing campaigns across LinkedIn, Instagram, and YouTube, or printing flyers with QR codes, UL0 ensures your links look trustworthy and load with sub-millisecond redirect latency.
+                    UL0 transforms unwieldy, tracking-heavy URLs into clean, secure, and professional branded links. Whether you are running multichannel marketing campaigns across LinkedIn, Instagram, and YouTube, or printing flyers with QR codes, UL0 ensures your links look trustworthy and load with fast edge redirects.
                   </p>
                   <p>
-                    Every shortened link is continuously screened against malware and phishing databases to protect both your brand reputation and your visitors. With built-in UTM campaign tagging, device attribution, and custom domain CNAME routing, UL0 delivers full enterprise-grade link management without the high subscription costs of legacy tools.
+                    Every shortened link is continuously screened against malware and phishing databases to protect both your brand reputation and your visitors. With built-in UTM campaign tagging, device attribution, and custom domain CNAME routing, UL0 delivers reliable link management without the high subscription costs of legacy tools.
                   </p>
                 </div>
 
@@ -422,61 +424,6 @@ export default function HomePage() {
                   />
                 </a>
 
-                <a
-                  href="https://strategic-flow-audit.replit.app/directory"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Visit ToolIndex DR 86 dofollow directory listing"
-                  className="flex items-center justify-center rounded-2xl border bg-background p-4 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md col-span-full lg:col-span-1"
-                >
-                  <span className="inline-flex items-center gap-2 font-mono text-xs font-semibold text-foreground">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                    ToolIndex · DR 86 Dofollow
-                  </span>
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Global market marquee */}
-        <section className="py-12 sm:py-14">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-5xl rounded-3xl border bg-card px-4 py-5 shadow-sm sm:px-6 sm:py-6">
-              <div className="mb-4 text-center">
-                <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  Built for creators in global markets
-                </h2>
-                <p className="mt-2 text-sm text-muted-foreground sm:text-base">
-                  Fast link shortening for creators, affiliates, and ecommerce brands targeting high-value regions.
-                </p>
-              </div>
-              <div className="marquee-mask overflow-hidden">
-                <div className="flex w-[200%] animate-marquee-left gap-3">
-                  {[
-                    "Canada",
-                    "New Zealand",
-                    "Germany",
-                    "Latvia",
-                    "United States",
-                    "United Kingdom",
-                    "Australia",
-                    "India",
-                  ].concat([
-                    "Canada",
-                    "New Zealand",
-                    "Germany",
-                    "Latvia",
-                    "United States",
-                    "United Kingdom",
-                    "Australia",
-                    "India",
-                  ]).map((country, index) => (
-                    <div key={`${country}-${index}`} className="shrink-0 rounded-full border bg-background px-4 py-2 text-sm font-medium text-foreground shadow-sm">
-                      {country}
-                    </div>
-                  ))}
-                </div>
               </div>
             </div>
           </div>
@@ -543,7 +490,7 @@ export default function HomePage() {
 
             <div className="text-center mt-8">
               <Link href="/blog" className="inline-flex items-center justify-center rounded-xl bg-muted px-6 py-3 text-sm font-semibold text-foreground hover:bg-muted/80 transition-colors">
-                Explore All 18 Published Articles & Guides →
+                Explore All Published Guides &amp; Tutorials →
               </Link>
             </div>
           </div>
@@ -552,71 +499,19 @@ export default function HomePage() {
         {/* Features Section */}
         <FeaturesSection />
 
-        {/* Massive 1,500+ Word Educational Infrastructure Guide */}
-        <section className="py-16 bg-muted/20 border-t">
-          <div className="container mx-auto px-4 max-w-5xl">
-            <article className="prose prose-slate dark:prose-invert max-w-none space-y-8">
-              <div className="border-b pb-6">
-                <Badge variant="secondary" className="mb-2">Technical Handbook</Badge>
-                <h2 className="text-3xl font-extrabold text-foreground sm:text-4xl">
-                  The Complete 2026 Link Infrastructure, Attribution & Privacy Handbook
-                </h2>
-                <p className="text-base text-muted-foreground mt-2">
-                  An authoritative guide to modern URL redirection architectures, custom domain deliverability, UTM campaign taxonomy, and security protocols.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-bold text-foreground mb-3">1. Redirection Mechanics: HTTP 301 Permanent Redirects vs. 302/200 Handshakes</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  When a client browser executes a short link request, the host server inspects the requested slug, queries the caching layer (e.g. Upstash Redis edge instance), and returns an HTTP status code header. <strong>ul0</strong> strictly emits <strong>HTTP 301 Permanent Redirect</strong> headers. In HTTP protocol specifications (RFC 7231), a 301 status indicates that the target resource has moved permanently to the target URI.
-                </p>
-                <p className="text-muted-foreground leading-relaxed mt-2">
-                  Crucially for search engine optimization (SEO), 301 status codes transfer 99–100% of link equity (PageRank) from the shortened alias directly to the destination URL. In contrast, 302 (Found/Temporary) or JavaScript-based client-side redirects cause search crawlers to drop indexing signals and create measurable render latency for mobile users.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-bold text-foreground mb-3">2. Custom Branded Domains: Click-Through Rates (CTR) & Trust Signals</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Consumer security awareness has heightened significantly. Generic URL shortener domains (e.g., bit.ly, tinyurl.com, is.gd) are frequently targeted by automated phishing scanners because bad actors attempt to hide destination URLs. As a result, major email service providers (Gmail, Outlook, Yahoo Mail) score emails containing generic short links with elevated spam risk factors.
-                </p>
-                <p className="text-muted-foreground leading-relaxed mt-2">
-                  Utilizing a custom branded domain (such as <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono font-bold">link.yourcompany.com</code>) reinforces brand ownership, preserves brand identity in social feeds, and yields up to a <strong>34% higher Click-Through Rate (CTR)</strong> across SMS, email, and social media campaigns.
-                </p>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-bold text-foreground mb-3">3. Advanced Campaign Attribution & UTM Parameter Taxonomy</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Tracking multi-channel marketing campaigns requires consistent Urchin Tracking Module (UTM) taxonomy. Attaching standardized parameters allows Google Analytics 4 (GA4) and enterprise attribution tools to isolate user acquisition channels accurately:
-                </p>
-                <ul className="list-disc list-inside space-y-1.5 text-muted-foreground mt-2">
-                  <li><strong className="text-foreground">utm_source:</strong> Identifies the traffic referrer (e.g., <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">newsletter</code>, <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">google</code>, <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">linkedin</code>).</li>
-                  <li><strong className="text-foreground">utm_medium:</strong> Identifies the marketing channel (e.g., <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">cpc</code>, <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">email</code>, <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">social_post</code>).</li>
-                  <li><strong className="text-foreground">utm_campaign:</strong> Identifies the strategic campaign initiative (e.g., <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono">summer_launch_2026</code>).</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-bold text-foreground mb-3">4. QR Code Matrix Architecture & Print Sizing Rules</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Quick Response (QR) codes use two-dimensional ISO/IEC 18004 matrix symbology containing square module patterns. When generating QR codes for print distribution:
-                </p>
-                <ul className="list-disc list-inside space-y-1 text-muted-foreground mt-2">
-                  <li><strong className="text-foreground">Quiet Zone:</strong> Maintain a minimum 4-module border of whitespace around the matrix.</li>
-                  <li><strong className="text-foreground">Print Sizing Rule:</strong> Minimum print width (in inches) = Scanning distance / 10. (e.g., a poster scanned from 10 feet away requires a minimum 12-inch QR code).</li>
-                  <li><strong className="text-foreground">Error Correction (Level H):</strong> Enables 30% data recovery even if the code suffers physical wear or partial coverage.</li>
-                </ul>
-              </div>
-
-              <div>
-                <h3 className="text-2xl font-bold text-foreground mb-3">5. Automated Anti-Phishing Security Verification</h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  To protect public users, <strong>ul0</strong> runs real-time security checks on submitted URLs against automated threat feeds (including Google Safe Browsing APIs). Short links leading to known phishing, malware, or credential harvesting endpoints are immediately flagged and blocked.
-                </p>
-              </div>
-            </article>
+        {/* Technical Infrastructure Overview */}
+        <section className="py-12 bg-muted/20 border-t">
+          <div className="container mx-auto px-4 max-w-4xl text-center">
+            <Badge variant="secondary" className="mb-3">Link Infrastructure</Badge>
+            <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+              Engineered for Speed, Deliverability &amp; Custom Domains
+            </h2>
+            <p className="text-muted-foreground mt-4 leading-relaxed max-w-2xl mx-auto">
+              ul0 is built on global edge infrastructure emitting standard HTTP 301 Permanent Redirect headers, preserving 100% of link equity (PageRank) for SEO and ensuring near-instant redirects worldwide.
+            </p>
+            <p className="text-muted-foreground mt-3 leading-relaxed max-w-2xl mx-auto">
+              Connect your own custom domain for free to maximize brand trust and avoid spam filters across SMS and email campaigns. Learn more in our <Link href="/blog/custom-domain-dns-cname-setup-guide" className="text-primary font-medium hover:underline">Custom Domain DNS Guide</Link> or explore all <Link href="/features" className="text-primary font-medium hover:underline">Core Features</Link>.
+            </p>
           </div>
         </section>
 
@@ -655,13 +550,13 @@ export default function HomePage() {
                   Looking for the <strong>best free URL shortener</strong>? ul0 is a fast, reliable link shortening service that lets you create short URLs without any signup or registration. Whether you need to shorten links for social media posts, email campaigns, or just to make long URLs more manageable, ul0 has you covered.
                 </p>
                 <p className="text-muted-foreground mt-3">
-                  Unlike other URL shorteners that require accounts or limit your usage, ul0 is <strong>completely free with no restrictions</strong>. Your shortened links are permanent and will continue to work as long as you need them. We also offer a unique <Link href="/split" className="text-primary hover:underline">expense splitting feature</Link> that lets you split bills with friends using UPI QR codes.
+                  Unlike other URL shorteners that require accounts or limit your usage, ul0 is <strong>completely free with no restrictions</strong>. Your shortened links are permanent and will continue to work as long as you need them. Connect your own <Link href="/custom-domain-landing" className="text-primary hover:underline font-medium">custom branded domain</Link> to create trust-building short links, or generate dynamic <Link href="/qr" className="text-primary hover:underline font-medium">vector QR codes</Link> ready for print and packaging.
                 </p>
                 <p className="text-muted-foreground mt-3">
                   Our link compression engine utilizes premium 301 Permanent Redirect headers. This ensures that 100% of your link equity (PageRank) is passed seamlessly to the target destination. This means search engines like Google, Bing, and Yahoo will attribute all the indexing credit directly to your original URL, making ul0 a highly safe choice for digital marketing agencies, brand developers, and SEO consultants looking to shorten domain paths.
                 </p>
                 <p className="text-muted-foreground mt-3">
-                  Privacy and safety are at the core of our platform. We scan every shortened URL for phishing, spam, and malware before execution, protecting your audience from malicious redirects. Additionally, the files you process in our PDF Scanner and the personal ledger calculations in our UPI Bill Splitter are handled strictly locally in your browser. We do not track personal details, meaning your browsing habits remain anonymous and protected.
+                  Privacy and safety are at the core of our platform. We scan every shortened URL for phishing, spam, and malware before execution, protecting your audience from malicious redirects. Additionally, our platform processes requests with strict privacy controls, never selling click analytics or harvesting personal data.
                 </p>
                 <h3 className="text-lg font-semibold mt-6 mb-3">Popular Uses for Short URLs</h3>
                 <ul className="text-muted-foreground list-disc list-inside space-y-1">
@@ -713,11 +608,11 @@ export default function HomePage() {
                         <td className="p-3 text-muted-foreground">Paid (Limited)</td>
                       </tr>
                       <tr>
-                        <td className="p-3 font-medium">Expense Splitter</td>
-                        <td className="p-3 text-green-600 font-semibold">Yes (Free)</td>
-                        <td className="p-3 text-muted-foreground">No</td>
-                        <td className="p-3 text-muted-foreground">No</td>
-                        <td className="p-3 text-muted-foreground">No</td>
+                        <td className="p-3 font-medium">Custom Domain Support</td>
+                        <td className="p-3 text-green-600 font-semibold">1 Free Domain</td>
+                        <td className="p-3 text-muted-foreground">Paid Only</td>
+                        <td className="p-3 text-muted-foreground">Paid Only</td>
+                        <td className="p-3 text-muted-foreground">Paid Only</td>
                       </tr>
                       <tr>
                         <td className="p-3 font-medium">WiFi QR Generator</td>
@@ -748,11 +643,11 @@ export default function HomePage() {
 
                 <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                   {[
-                    { href: "/split", label: "Split Expenses", desc: "Settle bills in INR or USD" },
+                    { href: "/custom-domain-landing", label: "Custom Domains", desc: "Shorten links with your own brand" },
                     { href: "/qr", label: "QR Code Generator", desc: "Turn any link into a QR code" },
                     { href: "/utm", label: "UTM Builder", desc: "Track campaigns with clean links" },
-                    { href: "/wifi", label: "WiFi QR Generator", desc: "Share WiFi in one scan" },
-                    { href: "/json", label: "JSON Formatter", desc: "Format and validate JSON" },
+                    { href: "/use-cases", label: "Use Cases", desc: "For marketing, creators & SMS" },
+                    { href: "/tools", label: "Free Tools Directory", desc: "WiFi, JSON, PDF & Splitter" },
                     { href: "/blog", label: "Blog Guides", desc: "SEO, tools, and comparisons" },
                   ].map((item) => (
                     <Link
