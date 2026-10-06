@@ -8,31 +8,22 @@ import Link from "next/link"
 import { Link2, Zap, Shield, Globe, Users, QrCode } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "मुफ्त URL शॉर्टनर - लिंक छोटा करें | ul0",
-  description: "ul0 - भारत का सबसे तेज़ और मुफ्त URL शॉर्टनर। किसी भी लिंक को तुरंत छोटा करें। कोई साइनअप नहीं, कोई विज्ञापन नहीं, 100% मुफ्त। UPI के साथ खर्च बांटें।",
-  keywords: [
-    "url shortener hindi",
-    "free url shortener india",
-    "link shortener hindi",
-    "मुफ्त url शॉर्टनर",
-    "लिंक छोटा करें",
-    "फ्री लिंक शॉर्टनर",
-    "bitly alternative india",
-    "url shortener india",
-    "short link generator hindi",
-    "expense splitter india",
-    "upi payment splitter",
-    "bill split app india",
-  ],
+  title: "मुफ्त URL शॉर्टनर - बिना साइनअप लिंक छोटा करें और QR कोड बनाएं | ul0",
+  description: "ul0 - भारत का सबसे तेज़ और मुफ्त URL शॉर्टनर। बिना साइनअप के किसी भी लिंक को तुरंत छोटा करें और हाई-रेज़ोल्यूशन QR कोड बनाएं। कस्टम डोमेन सपोर्ट उपलब्ध।",
   alternates: {
     canonical: "https://ul0.site/hi",
     languages: hreflangAlternates,
   },
   openGraph: {
     title: "मुफ्त URL शॉर्टनर - लिंक छोटा करें | ul0",
-    description: "भारत का सबसे तेज़ और मुफ्त URL शॉर्टनर। UPI के साथ खर्च बांटें।",
+    description: "भारत का सबसे तेज़ और मुफ्त URL शॉर्टनर। बिना साइनअप कस्टम डोमेन और QR कोड बनाएं।",
     url: "https://ul0.site/hi",
     locale: "hi_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "मुफ्त URL शॉर्टनर | ul0",
+    description: "बिना साइनअप के लिंक छोटा करें और QR कोड बनाएं।",
   },
 }
 

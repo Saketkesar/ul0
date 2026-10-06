@@ -1,13 +1,13 @@
 import type { MetadataRoute } from "next"
-import { SITE_URL, LOCALES, hreflangAlternates } from "@/lib/i18n"
+import { SITE_URL, INDEXED_LOCALES, hreflangAlternates } from "@/lib/i18n"
 
 export const dynamic = "force-dynamic"
 export const revalidate = 0
 
 const BASE_URL = SITE_URL
 
-// Language variants that have a localized homepage
-const LANGUAGES = LOCALES
+// Language variants that have a fully translated, indexed homepage (Tier 1)
+const LANGUAGES = INDEXED_LOCALES
 
 // Complete reciprocal hreflang alternates for the homepage + language pages
 const homeLanguageAlternates = hreflangAlternates
@@ -83,16 +83,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { slug: "wifi-qr-code-business-guide", published: "2026-07-20" },
     { slug: "custom-domain-short-links-guide", published: "2026-07-20" },
     { slug: "pomodoro-technique-productivity-guide", published: "2026-07-20" },
-    { slug: "bitly-alternative-usa", published: "2026-08-25" },
     { slug: "affiliate-link-shortener-usa", published: "2026-08-25" },
-    { slug: "best-free-url-shortener-canada", published: "2026-08-25" },
-    { slug: "qr-code-generator-canada", published: "2026-08-25" },
-    { slug: "url-kuerzen-kostenlos-deutschland", published: "2026-08-25" },
-    { slug: "qr-code-erstellen-kostenlos-deutsch", published: "2026-08-25" },
-    { slug: "best-free-url-shortener-uk", published: "2026-08-25" },
-    { slug: "qr-code-generator-uk", published: "2026-08-25" },
-    { slug: "best-free-url-shortener-australia", published: "2026-08-25" },
-    { slug: "qr-code-generator-australia", published: "2026-08-25" },
   ]
 
   // Informational / trust / legal pages

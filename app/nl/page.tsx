@@ -9,30 +9,24 @@ import { Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
 export const metadata: Metadata = {
   title: "Gratis URL Verkorter - Link Inkorten | ul0",
   description:
-    "ul0 is de snelste gratis URL-verkorter. Kort elke link direct in. Geen registratie, geen limieten, 100% gratis. Inclusief QR-codes en kosten delen.",
-  keywords: [
-    "url verkorten",
-    "url verkorter gratis",
-    "link inkorten",
-    "link verkorten gratis",
-    "korte url maken",
-    "linkverkorter",
-    "gratis url verkorter",
-    "bitly alternatief",
-    "tinyurl alternatief",
-    "url shortener nederland",
-    "qr code generator gratis",
-    "kosten delen app",
-  ],
+    "ul0 is de snelste gratis URL-verkorter. Kort elke link direct in. Geen registratie, geen limieten, 100% gratis.",
   alternates: {
     canonical: "https://ul0.site/nl",
-    languages: hreflangAlternates,
+  },
+  robots: {
+    index: false,
+    follow: true,
   },
   openGraph: {
     title: "Gratis URL Verkorter - Link Inkorten | ul0",
     description: "De snelste gratis URL-verkorter. Geen registratie nodig.",
     url: "https://ul0.site/nl",
     locale: "nl_NL",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Gratis URL Verkorter | ul0",
+    description: "Snelle gratis URL-verkorter zonder registratie.",
   },
 }
 

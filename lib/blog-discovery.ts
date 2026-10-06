@@ -38,17 +38,7 @@ const ALL_BLOG_SLUGS: BlogMeta[] = [
   { slug: "wifi-qr-code-business-guide", title: "WiFi QR Codes for Businesses: Complete Setup & Security Guide 2026", category: "Business", readTime: "5 min" },
   { slug: "custom-domain-short-links-guide", title: "Why Branded Custom Domain Short Links Outperform Generic URLs", category: "Branding", readTime: "5 min" },
   { slug: "pomodoro-technique-productivity-guide", title: "The Science of the Pomodoro Technique", category: "Productivity", readTime: "5 min" },
-  // Geo-specific articles
-  { slug: "affiliate-link-shortener-usa", title: "Affiliate Link Shortener for US Creators", category: "Marketing", readTime: "5 min" },
-  { slug: "best-free-url-shortener-australia", title: "Best Free URL Shortener Australia", category: "Regional", readTime: "5 min" },
-  { slug: "best-free-url-shortener-canada", title: "Best Free URL Shortener Canada", category: "Regional", readTime: "5 min" },
-  { slug: "best-free-url-shortener-uk", title: "Best Free URL Shortener UK", category: "Regional", readTime: "5 min" },
-  { slug: "bitly-alternative-usa", title: "Bitly Alternative USA", category: "Regional", readTime: "5 min" },
-  { slug: "qr-code-erstellen-kostenlos-deutsch", title: "QR Code Erstellen Kostenlos Deutsch", category: "Regional", readTime: "5 min" },
-  { slug: "qr-code-generator-australia", title: "QR Code Generator Australia", category: "Regional", readTime: "5 min" },
-  { slug: "qr-code-generator-canada", title: "QR Code Generator Canada", category: "Regional", readTime: "5 min" },
-  { slug: "qr-code-generator-uk", title: "QR Code Generator UK", category: "Regional", readTime: "5 min" },
-  { slug: "url-kuerzen-kostenlos-deutschland", title: "URL Kürzen Kostenlos Deutschland", category: "Regional", readTime: "5 min" },
+  { slug: "affiliate-link-shortener-usa", title: "Affiliate Link Shortener for US Creators: Amazon Associates & FTC Compliance", category: "Marketing", readTime: "7 min" },
 ]
 
 /**

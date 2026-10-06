@@ -7,32 +7,23 @@ import Link from "next/link"
 import { Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Kostenloser URL-Kürzer - Links kürzen | ul0",
+  title: "Kostenloser URL-Kürzer - Links & QR-Codes ohne Anmeldung | ul0",
   description:
-    "ul0 ist der schnellste kostenlose URL-Kürzer. Verkürze jeden Link sofort. Keine Anmeldung, keine Limits, 100% gratis. Inklusive QR-Codes und Kostenteilung.",
-  keywords: [
-    "url kürzen",
-    "url kürzen kostenlos",
-    "link kürzen",
-    "linkkürzer kostenlos",
-    "url verkürzen",
-    "kurze url erstellen",
-    "link verkürzer",
-    "bitly alternative",
-    "tinyurl alternative",
-    "url shortener deutschland",
-    "qr code generator kostenlos",
-    "kosten teilen app",
-  ],
+    "ul0 ist der schnellste kostenlose URL-Kürzer Deutschlands. Verkürze jeden Link sofort ohne Registrierung. Unterstützt eigene Branded Domains und dynamische QR-Codes.",
   alternates: {
     canonical: "https://ul0.site/de",
     languages: hreflangAlternates,
   },
   openGraph: {
     title: "Kostenloser URL-Kürzer - Links kürzen | ul0",
-    description: "Der schnellste kostenlose URL-Kürzer. Keine Anmeldung erforderlich.",
+    description: "Der schnellste kostenlose URL-Kürzer. Keine Anmeldung erforderlich, DSGVO-konform.",
     url: "https://ul0.site/de",
     locale: "de_DE",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Kostenloser URL-Kürzer | ul0",
+    description: "Links sofort kürzen und QR-Codes erstellen ohne Registrierung.",
   },
 }
 

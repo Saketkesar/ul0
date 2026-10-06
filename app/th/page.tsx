@@ -9,27 +9,23 @@ import { Link2, Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
 export const metadata: Metadata = {
   title: "ย่อลิงก์ฟรี - เครื่องมือย่อ URL | ul0",
   description: "ul0 - เครื่องมือย่อลิงก์ฟรีที่เร็วที่สุดในประเทศไทย ย่อลิงก์ใดก็ได้ทันที ไม่ต้องสมัครสมาชิก ไม่จำกัด ฟรี 100%",
-  keywords: [
-    "ย่อลิงก์ฟรี",
-    "ย่อ url",
-    "เครื่องมือย่อลิงก์",
-    "short link ไทย",
-    "ย่อลิงก์ออนไลน์",
-    "สร้างลิงก์สั้น",
-    "bitly ทางเลือก",
-    "url shortener thailand",
-    "link shortener thai",
-    "ย่อลิงก์ไม่ต้องสมัคร",
-  ],
   alternates: {
     canonical: "https://ul0.site/th",
-    languages: hreflangAlternates,
+  },
+  robots: {
+    index: false,
+    follow: true,
   },
   openGraph: {
     title: "ย่อลิงก์ฟรี - เครื่องมือย่อ URL | ul0",
     description: "เครื่องมือย่อลิงก์ฟรีที่เร็วที่สุดในประเทศไทย ไม่ต้องสมัครสมาชิก",
     url: "https://ul0.site/th",
     locale: "th_TH",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ย่อลิงก์ฟรี | ul0",
+    description: "เครื่องมือย่อลิงก์และสร้าง QR Code ฟรี ไม่ต้องสมัครสมาชิก",
   },
 }
 

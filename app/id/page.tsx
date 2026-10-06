@@ -8,29 +8,24 @@ import { Link2, Zap, Shield, Globe, Users, QrCode } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Pemendek URL Gratis - Perpendek Link | ul0",
-  description: "ul0 - Pemendek URL tercepat dan gratis di Indonesia. Perpendek link apapun secara instan. Tanpa daftar, tanpa batas, 100% gratis. Bagi tagihan dengan teman.",
-  keywords: [
-    "pemendek url gratis",
-    "pemendek link indonesia",
-    "short link gratis",
-    "url shortener indonesia",
-    "perpendek link",
-    "link pendek gratis",
-    "bitly alternatif indonesia",
-    "pemendek url terbaik",
-    "bagi tagihan",
-    "split bill indonesia",
-    "pembagi biaya",
-  ],
+  description: "ul0 - Pemendek URL tercepat dan gratis di Indonesia. Perpendek link apapun secara instan. Tanpa daftar, tanpa batas, 100% gratis.",
   alternates: {
     canonical: "https://ul0.site/id",
-    languages: hreflangAlternates,
+  },
+  robots: {
+    index: false,
+    follow: true,
   },
   openGraph: {
     title: "Pemendek URL Gratis - Perpendek Link | ul0",
-    description: "Pemendek URL tercepat dan gratis di Indonesia. Bagi tagihan dengan teman.",
+    description: "Pemendek URL tercepat dan gratis di Indonesia. Perpendek link instan tanpa daftar.",
     url: "https://ul0.site/id",
     locale: "id_ID",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pemendek URL Gratis | ul0",
+    description: "Pemendek tautan dan pembuat kode QR gratis tanpa registrasi.",
   },
 }
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Maximize2, Minimize2, Plus, X, Search, Globe, Sun, Moon } from "lucide-react"
 import Link from "next/link"
@@ -314,12 +314,99 @@ export default function WorldClockPage() {
             </div>
           )}
 
-          {/* Footer Note */}
+          {/* Informative Content & Guide */}
           {!isFullscreen && (
-            <div className="mt-8 text-center">
-              <p className="text-sm text-muted-foreground">
-                Click on a city to remove • Add up to 10 cities • Saved automatically
-              </p>
+            <div className="mt-12 space-y-8 text-left">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Coordinate Global Teams with Live Timezone Tracking</CardTitle>
+                  <CardDescription>Real-time UTC and local time synchronizer for remote engineering, marketing, and distributed founders</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3 text-sm text-muted-foreground">
+                  <p>
+                    When working across global teams in North America, Europe, and Asia-Pacific, calculating timezone offsets manually often leads to missed video conferences, botched software deployments, and late-night Slack pings.
+                  </p>
+                  <p>
+                    The <strong>ul0 World Clock</strong> displays real-time seconds, automatic Daylight Saving Time (DST) offsets, and relative hour differences compared to your current local machine time.
+                  </p>
+                </CardContent>
+              </Card>
+
+              {/* How-To Guide */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>How to Use the World Clock</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="rounded-lg border p-4">
+                      <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary font-bold">1</span>
+                        Add International Cities
+                      </div>
+                      <p>Click &quot;Add City&quot; or browse popular tech hubs. Type any major city or country name to instantly add it to your dashboard.</p>
+                    </div>
+                    <div className="rounded-lg border p-4">
+                      <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary font-bold">2</span>
+                        Inspect Relative Time Differences
+                      </div>
+                      <p>Each card calculates exact hours ahead (+) or behind (-) your local device time, preventing scheduling confusion across team calendars.</p>
+                    </div>
+                    <div className="rounded-lg border p-4">
+                      <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary font-bold">3</span>
+                        Monitor Day &amp; Night Cycles
+                      </div>
+                      <p>Visual sun and moon badges immediately communicate whether teammates are currently in active business hours or sleeping.</p>
+                    </div>
+                    <div className="rounded-lg border p-4">
+                      <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary font-bold">4</span>
+                        Fullscreen Wallboard Mode
+                      </div>
+                      <p>Click &quot;Fullscreen&quot; to transform any monitor, iPad, or office display into an always-on global team operations clock.</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* FAQ */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Frequently Asked Questions (FAQ)</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                  <div>
+                    <h4 className="font-semibold text-foreground mb-1">Does this clock adjust automatically for Daylight Saving Time (DST)?</h4>
+                    <p>Yes. The clock leverages the browser&apos;s native Intl.DateTimeFormat API and IANA timezone database, automatically accounting for Spring Forward and Fall Back shifts across all worldwide jurisdictions.</p>
+                  </div>
+                  <div className="border-t pt-3">
+                    <h4 className="font-semibold text-foreground mb-1">What is the difference between UTC and GMT?</h4>
+                    <p>Greenwich Mean Time (GMT) is a timezone primarily used in parts of Europe and Africa, while Coordinated Universal Time (UTC) is the atomic time standard used across computing, GPS, and internet infrastructure. Functionally, both share the same current hour and minute.</p>
+                  </div>
+                  <div className="border-t pt-3">
+                    <h4 className="font-semibold text-foreground mb-1">Are my selected cities saved between sessions?</h4>
+                    <p>Yes, your city dashboard configuration is saved in your browser&apos;s localStorage so your selected hubs are ready every time you open the tab.</p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Soft CTA to URL Shortener */}
+              <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-background to-primary/5 p-6 text-center">
+                <h3 className="text-lg font-bold text-foreground mb-2">Sharing Meeting Links, Calendly, or Zoom Invites?</h3>
+                <p className="text-sm text-muted-foreground max-w-xl mx-auto mb-4">
+                  Keep calendar invites and team links clean and memorable. Shorten long meeting URLs into custom branded links on your own domain with ul0 — 100% free with instant QR codes.
+                </p>
+                <div className="flex flex-wrap justify-center gap-3">
+                  <Button asChild size="sm">
+                    <a href="/">Shorten Meeting Link Free</a>
+                  </Button>
+                  <Button asChild variant="outline" size="sm">
+                    <a href="/custom-domain-landing">Branded Custom Domains &rarr;</a>
+                  </Button>
+                </div>
+              </div>
             </div>
           )}
         </div>

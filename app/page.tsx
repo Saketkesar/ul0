@@ -6,6 +6,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { hreflangAlternates } from "@/lib/i18n"
 import { Badge } from "@/components/ui/badge"
+import { Globe } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Free URL Shortener, QR Codes & Custom Domains | UL0",
@@ -298,9 +299,20 @@ export default function HomePage() {
               <p className="mb-2 text-pretty text-base text-muted-foreground sm:text-xl">
                 Shorten links free, generate trackable QR codes, and connect custom branded domains. <strong>No signup required to start.</strong>
               </p>
-              <p className="mb-5 text-pretty text-sm text-muted-foreground sm:mb-8 sm:text-base">
+              <p className="mb-5 text-pretty text-sm text-muted-foreground sm:mb-6 sm:text-base">
                 Permanent 301 Redirects • Dynamic QR Codes • Real-Time Click Attribution • Custom Domain Support
               </p>
+
+              <div className="mb-6 flex justify-center">
+                <Link
+                  href="/custom-domain-landing"
+                  className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-xs sm:text-sm font-medium text-primary hover:bg-primary/20 transition-all shadow-xs"
+                >
+                  <Globe className="h-4 w-4" />
+                  <span>Connect Your Own Domain Free (CNAME)</span>
+                  <span className="font-semibold underline underline-offset-2 ml-1">Explore &rarr;</span>
+                </Link>
+              </div>
 
               <LinkShortenerForm />
 

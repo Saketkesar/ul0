@@ -9,30 +9,24 @@ import { Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
 export const metadata: Metadata = {
   title: "اختصار الروابط مجانا - تقصير الرابط | ul0",
   description:
-    "ul0 هو أسرع أداة مجانية لاختصار الروابط. اختصر أي رابط فورا. بدون تسجيل، بدون حدود، مجاني 100%. يشمل أكواد QR وتقسيم المصاريف.",
-  keywords: [
-    "اختصار الروابط",
-    "تقصير الرابط مجانا",
-    "اختصار الروابط مجانا",
-    "مختصر روابط",
-    "تقصير الروابط",
-    "إنشاء رابط قصير",
-    "اختصار رابط",
-    "بديل bitly",
-    "بديل tinyurl",
-    "مختصر روابط مجاني",
-    "مولد رمز qr مجاني",
-    "تقسيم المصاريف",
-  ],
+    "ul0 هو أسرع أداة مجانية لاختصار الروابط. اختصر أي رابط فورا. بدون تسجيل، بدون حدود، مجاني 100%.",
   alternates: {
     canonical: "https://ul0.site/ar",
-    languages: hreflangAlternates,
+  },
+  robots: {
+    index: false,
+    follow: true,
   },
   openGraph: {
     title: "اختصار الروابط مجانا - تقصير الرابط | ul0",
     description: "أسرع أداة مجانية لاختصار الروابط. بدون تسجيل.",
     url: "https://ul0.site/ar",
     locale: "ar_AR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "اختصار الروابط مجانا | ul0",
+    description: "أداة تقصير الروابط وإنشاء رموز QR مجانا بدون تسجيل.",
   },
 }
 

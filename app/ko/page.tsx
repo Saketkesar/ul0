@@ -7,32 +7,23 @@ import Link from "next/link"
 import { Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "무료 URL 단축기 - 링크 줄이기 | ul0",
+  title: "무료 URL 단축기 - 회원가입 없는 링크 줄이기 & QR코드 | ul0",
   description:
-    "ul0는 가장 빠른 무료 URL 단축기입니다. 어떤 링크든 즉시 단축하세요. 가입 불필요, 제한 없음, 100% 무료. QR 코드 생성과 비용 분담 기능 포함.",
-  keywords: [
-    "url 단축",
-    "url 단축기 무료",
-    "링크 줄이기",
-    "단축 url 만들기",
-    "링크 단축기",
-    "무료 링크 단축기",
-    "짧은 url 만들기",
-    "bitly 대안",
-    "tinyurl 대안",
-    "url shortener 한국",
-    "qr 코드 생성 무료",
-    "더치페이 앱",
-  ],
+    "ul0는 가입 없이 즉시 사용하는 가장 빠른 무료 URL 단축기입니다. 맞춤형 커스텀 도메인 지원, 고화질 벡터 QR 코드 생성, 안전한 링크 보안을 모두 무료로 제공합니다.",
   alternates: {
     canonical: "https://ul0.site/ko",
     languages: hreflangAlternates,
   },
   openGraph: {
     title: "무료 URL 단축기 - 링크 줄이기 | ul0",
-    description: "가장 빠른 무료 URL 단축기. 가입 불필요.",
+    description: "가장 빠른 무료 URL 단축기. 가입 불필요, 커스텀 도메인 지원.",
     url: "https://ul0.site/ko",
     locale: "ko_KR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "무료 URL 단축기 | ul0",
+    description: "가입 없이 즉시 링크 단축 및 QR 코드 생성.",
   },
 }
 

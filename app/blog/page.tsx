@@ -7,70 +7,14 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar, Clock, ArrowRight } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Blog - URL Shortener Tips, Guides & Comparisons | ul0 [2026]",
-  description: "Best URL shortener guides 2026. Compare Bitly vs TinyURL vs ul0. Learn link shortening tips, QR code marketing, expense splitting guides. Free tips & tutorials.",
-  keywords: [
-    // Primary Keywords
-    "url shortener blog",
-    "link shortening tips",
-    "url shortener guide",
-    "link management tips",
-    "url shortener comparison",
-    
-    // Year-based
-    "best url shortener 2026",
-    "url shortener guide 2026",
-    "link shortener tips 2026",
-    
-    // Comparison keywords
-    "bitly vs tinyurl",
-    "bitly vs ul0",
-    "tinyurl vs ul0",
-    "url shortener comparison",
-    "best link shortener",
-    "compare url shorteners",
-    
-    // Guide keywords
-    "how to shorten url",
-    "how to create short link",
-    "url shortening guide",
-    "link shortening tutorial",
-    "qr code guide",
-    "qr code marketing",
-    "qr code tutorial",
-    
-    // Marketing keywords
-    "digital marketing tips",
-    "link tracking guide",
-    "utm parameters guide",
-    "campaign tracking",
-    "social media marketing",
-    
-    // Alternative keywords
-    "bitly alternative guide",
-    "tinyurl alternative guide",
-    "free url shortener guide",
-    "no signup url shortener",
-    
-    // Tool guides
-    "expense splitting guide",
-    "bill splitter tips",
-    "wifi qr code guide",
-    "json formatter guide",
-    "pomodoro technique",
-    
-    // Long-tail keywords
-    "best practices url shortening",
-    "when to use short links",
-    "url shortener for business",
-    "link shortener for marketing",
-  ],
+  title: "Blog: Branded Short Links, QR Codes & DNS Guides | ul0",
+  description: "Guides, technical tutorials, and competitor breakdowns on branded short links, custom domain DNS CNAME configuration, dynamic QR codes, and link analytics.",
   alternates: {
     canonical: "https://ul0.site/blog",
   },
   openGraph: {
-    title: "Blog - URL Shortener Tips & Guides | ul0",
-    description: "Best URL shortener guides 2026. Compare Bitly vs TinyURL, learn link shortening tips, QR code marketing & more.",
+    title: "Blog: Branded Short Links, QR Codes & DNS Guides | ul0",
+    description: "Guides, technical tutorials, and competitor breakdowns on branded short links, custom domain DNS CNAME configuration, dynamic QR codes, and link analytics.",
     url: "https://ul0.site/blog",
     type: "website",
     siteName: "ul0 Blog",
@@ -83,8 +27,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "URL Shortener Tips & Guides | ul0 Blog",
-    description: "Best URL shortener guides 2026. Compare Bitly vs TinyURL & more!",
+    title: "Blog: Branded Short Links, QR Codes & DNS Guides | ul0",
+    description: "Guides, technical tutorials, and competitor breakdowns on branded short links, custom domain DNS CNAME configuration, dynamic QR codes, and link analytics.",
     images: ["https://ul0.site/ul0.png"],
   },
   robots: {
@@ -273,6 +217,14 @@ const blogPosts = [
     category: "Productivity",
     readTime: "5 min read",
     date: "2026-03-12",
+  },
+  {
+    slug: "affiliate-link-shortener-usa",
+    title: "Affiliate Link Shortener for US Creators: Amazon Associates & FTC Compliance Guide 2026",
+    description: "Master affiliate link shortening for US creators. Learn FTC disclosure rules, Amazon Associates compliance, and how branded short links avoid spam filters.",
+    category: "Marketing",
+    readTime: "7 min read",
+    date: "2026-08-25",
   },
 ]
 

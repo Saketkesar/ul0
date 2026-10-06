@@ -47,6 +47,15 @@ export default clerkMiddleware(async (auth, req) => {
     "/dashboard/ads": "/dashboard/marketing",
     "/dashboard/keys": "/dashboard",
     "/blog/pdf-tools-free-online": "/pdf",
+    "/blog/bitly-alternative-usa": "/blog/bitly-alternative-free",
+    "/blog/best-free-url-shortener-australia": "/blog/best-url-shorteners-2026",
+    "/blog/best-free-url-shortener-canada": "/blog/best-url-shorteners-2026",
+    "/blog/best-free-url-shortener-uk": "/blog/best-url-shorteners-2026",
+    "/blog/qr-code-generator-australia": "/qr",
+    "/blog/qr-code-generator-canada": "/qr",
+    "/blog/qr-code-generator-uk": "/qr",
+    "/blog/url-kuerzen-kostenlos-deutschland": "/blog/link-kuerzen-ohne-anmeldung-kostenlos",
+    "/blog/qr-code-erstellen-kostenlos-deutsch": "/de",
   }
   if (LEGACY_REDIRECTS[path]) {
     return NextResponse.redirect(new URL(LEGACY_REDIRECTS[path], req.url), 301)

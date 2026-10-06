@@ -486,6 +486,26 @@ export default function QRCodeGeneratorPage() {
                   <h3 className="font-semibold text-foreground mb-1">Can I use generated QR codes for commercial printing?</h3>
                   <p className="text-muted-foreground">Yes. The high-resolution PNG image output provided by ul0 is completely royalty-free for use across commercial packaging, marketing flyers, business cards, and store signages.</p>
                 </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">How can I track scans or change the destination URL after printing?</h3>
+                  <p className="text-muted-foreground">To make your QR code dynamic, shorten your destination URL first with ul0 before generating the QR code. You can then change the destination redirect anytime and track scan counts, countries, and devices without ever reprinting your materials.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Dynamic QR Code Soft CTA */}
+            <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-background to-primary/5 p-6 text-center">
+              <h3 className="text-lg font-bold text-foreground mb-2">Want Dynamic QR Codes with Custom Domain Branding?</h3>
+              <p className="text-sm text-muted-foreground max-w-xl mx-auto mb-4">
+                Shorten your link with ul0 first to make any QR code permanently editable. Track real-time scan metrics and host short links on your own custom domain — 100% free, no credit card required.
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Button asChild size="sm">
+                  <a href="/">Shorten Link &amp; Make Dynamic QR</a>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <a href="/custom-domain-landing">Free Custom Domain Shortener &rarr;</a>
+                </Button>
               </div>
             </div>
           </section>
