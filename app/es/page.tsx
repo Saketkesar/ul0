@@ -7,31 +7,22 @@ import Link from "next/link"
 import { Link2, Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Acortador de URL Gratis - Acortar Enlaces | ul0",
-  description: "ul0 - El acortador de URL más rápido y gratuito. Acorta cualquier enlace al instante. Sin registro, sin límites, 100% gratis. Divide gastos con amigos.",
-  keywords: [
-    "acortador de url gratis",
-    "acortador de enlaces",
-    "short link gratis",
-    "acortar url",
-    "acortar enlace",
-    "link corto gratis",
-    "bitly alternativa",
-    "acortador de url mejor",
-    "dividir gastos",
-    "compartir gastos amigos",
-    "url shortener español",
-    "acortador links",
-  ],
+  title: "Acortador de URL Gratis - Acortar Enlaces y Códigos QR | ul0",
+  description: "El acortador de URL y generador de códigos QR más rápido y gratuito. Acorta cualquier enlace al instante sin registro ni límites. Enlaces de marca con dominio personalizado.",
   alternates: {
     canonical: "https://ul0.site/es",
     languages: hreflangAlternates,
   },
   openGraph: {
     title: "Acortador de URL Gratis - Acortar Enlaces | ul0",
-    description: "El acortador de URL más rápido y gratuito. Divide gastos con amigos.",
+    description: "El acortador de URL más rápido y gratuito. Sin registro y con soporte de dominios personalizados.",
     url: "https://ul0.site/es",
     locale: "es_ES",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Acortador de URL Gratis | ul0",
+    description: "Acorta enlaces gratis y genera códigos QR al instante sin registro.",
   },
 }
 

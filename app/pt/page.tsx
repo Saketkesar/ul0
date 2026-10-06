@@ -8,30 +8,24 @@ import { Link2, Zap, Shield, Globe, Users, QrCode } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Encurtador de URL Grátis - Encurtar Link | ul0",
-  description: "ul0 - O encurtador de URL mais rápido e gratuito do Brasil. Encurte qualquer link instantaneamente. Sem cadastro, sem limite, 100% grátis. Divida despesas com amigos.",
-  keywords: [
-    "encurtador de url gratis",
-    "encurtador de link",
-    "short link gratis",
-    "url shortener brasil",
-    "encurtar link",
-    "link curto gratis",
-    "bitly alternativa brasil",
-    "encurtador de url melhor",
-    "dividir despesas",
-    "rachar conta",
-    "split conta amigos",
-    "divisor de despesas",
-  ],
+  description: "ul0 - O encurtador de URL mais rápido e gratuito do Brasil. Encurte qualquer link instantaneamente. Sem cadastro, sem limite, 100% grátis.",
   alternates: {
     canonical: "https://ul0.site/pt",
-    languages: hreflangAlternates,
+  },
+  robots: {
+    index: false,
+    follow: true,
   },
   openGraph: {
     title: "Encurtador de URL Grátis - Encurtar Link | ul0",
-    description: "O encurtador de URL mais rápido e gratuito do Brasil. Divida despesas com amigos.",
+    description: "O encurtador de URL mais rápido e gratuito. Encurte links instantaneamente sem cadastro.",
     url: "https://ul0.site/pt",
     locale: "pt_BR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Encurtador de URL Grátis | ul0",
+    description: "Encurtador de links e gerador de QR code grátis sem cadastro.",
   },
 }
 

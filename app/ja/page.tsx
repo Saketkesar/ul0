@@ -7,32 +7,23 @@ import Link from "next/link"
 import { Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "無料URL短縮ツール - リンクを短縮 | ul0",
+  title: "無料URL短縮ツール - 登録不要の短縮リンク＆QRコード作成 | ul0",
   description:
-    "ul0は最速の無料URL短縮ツールです。どんなリンクも一瞬で短縮。登録不要、制限なし、100%無料。QRコード生成や割り勘機能も。",
-  keywords: [
-    "url 短縮",
-    "url短縮 無料",
-    "リンク 短縮",
-    "短縮url 作成",
-    "url短縮ツール",
-    "リンク短縮 無料",
-    "bitly 代替",
-    "tinyurl 代替",
-    "url shortener 日本",
-    "qrコード 作成 無料",
-    "割り勘 アプリ",
-    "短縮リンク 無料",
-  ],
+    "ul0は登録不要で使える最速の無料URL短縮ツールです。独自ドメイン対応、安全なリンク管理、ベクターQRコード生成をすべて完全無料で利用可能。",
   alternates: {
     canonical: "https://ul0.site/ja",
     languages: hreflangAlternates,
   },
   openGraph: {
     title: "無料URL短縮ツール - リンクを短縮 | ul0",
-    description: "最速の無料URL短縮ツール。登録不要。",
+    description: "最速の無料URL短縮ツール。登録不要、独自ドメイン対応。",
     url: "https://ul0.site/ja",
     locale: "ja_JP",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "無料URL短縮ツール | ul0",
+    description: "登録不要で瞬時にURL短縮＆QRコード作成。",
   },
 }
 

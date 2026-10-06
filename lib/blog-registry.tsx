@@ -21,15 +21,6 @@ export const BLOG_COMPONENTS: Record<string, () => Promise<{ default: React.Comp
   "custom-domain-short-links-guide": () => import("@/app/blog/custom-domain-short-links-guide/page"),
   "pomodoro-technique-productivity-guide": () => import("@/app/blog/pomodoro-technique-productivity-guide/page"),
   "affiliate-link-shortener-usa": () => import("@/app/blog/affiliate-link-shortener-usa/page"),
-  "best-free-url-shortener-australia": () => import("@/app/blog/best-free-url-shortener-australia/page"),
-  "best-free-url-shortener-canada": () => import("@/app/blog/best-free-url-shortener-canada/page"),
-  "best-free-url-shortener-uk": () => import("@/app/blog/best-free-url-shortener-uk/page"),
-  "bitly-alternative-usa": () => import("@/app/blog/bitly-alternative-usa/page"),
-  "qr-code-erstellen-kostenlos-deutsch": () => import("@/app/blog/qr-code-erstellen-kostenlos-deutsch/page"),
-  "qr-code-generator-australia": () => import("@/app/blog/qr-code-generator-australia/page"),
-  "qr-code-generator-canada": () => import("@/app/blog/qr-code-generator-canada/page"),
-  "qr-code-generator-uk": () => import("@/app/blog/qr-code-generator-uk/page"),
-  "url-kuerzen-kostenlos-deutschland": () => import("@/app/blog/url-kuerzen-kostenlos-deutschland/page"),
 }
 
 export async function getBlogComponent(slug: string): Promise<React.ComponentType<any> | null> {

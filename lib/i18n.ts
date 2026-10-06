@@ -4,22 +4,27 @@
 
 export const SITE_URL = "https://ul0.site"
 
-// Localized homepages (excluding the default English homepage at "/").
-// Targeted toward high-CPM / lower-competition markets.
-export const LOCALES = [
-  "es", // Spanish  - Spain, LATAM
-  "pt", // Portuguese - Brazil, Portugal
-  "hi", // Hindi - India
-  "id", // Indonesian - Indonesia
-  "vi", // Vietnamese - Vietnam
-  "th", // Thai - Thailand
-  "de", // German - Germany, Austria, Switzerland (high CPM)
-  "fr", // French - France, Belgium, Switzerland, Canada (high CPM)
-  "nl", // Dutch - Netherlands, Belgium (high CPM, low competition)
-  "ja", // Japanese - Japan (high CPM)
-  "ko", // Korean - South Korea
-  "ar", // Arabic - Gulf states (high CPM)
+// Tier 1 indexed locales (high-value / fully translated)
+export const INDEXED_LOCALES = [
+  "es", // Spanish
+  "de", // German
+  "fr", // French
+  "ja", // Japanese
+  "ko", // Korean
+  "hi", // Hindi
 ] as const
+
+// Unindexed locales (until fully translated / native quality)
+export const NOINDEX_LOCALES = [
+  "pt", // Portuguese
+  "nl", // Dutch
+  "vi", // Vietnamese
+  "id", // Indonesian
+  "th", // Thai
+  "ar", // Arabic
+] as const
+
+export const LOCALES = [...INDEXED_LOCALES, ...NOINDEX_LOCALES] as const
 
 export type Locale = (typeof LOCALES)[number]
 
@@ -28,10 +33,10 @@ export const RTL_LOCALES: readonly Locale[] = ["ar"]
 
 export const isRtl = (locale: Locale): boolean => RTL_LOCALES.includes(locale)
 
-// Complete reciprocal hreflang map emitted on every page.
-// Includes x-default + English + every localized homepage.
+// Complete reciprocal hreflang map emitted on indexed pages.
+// Only indexable pages are included so Google Search Console does not flag noindex hreflang mismatches.
 export const hreflangAlternates: Record<string, string> = {
   "x-default": SITE_URL,
   en: SITE_URL,
-  ...Object.fromEntries(LOCALES.map((l) => [l, `${SITE_URL}/${l}`])),
+  ...Object.fromEntries(INDEXED_LOCALES.map((l) => [l, `${SITE_URL}/${l}`])),
 }

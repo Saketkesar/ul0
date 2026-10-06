@@ -7,32 +7,23 @@ import Link from "next/link"
 import { Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Raccourcisseur d'URL Gratuit - Raccourcir un Lien | ul0",
+  title: "Raccourcisseur d'URL Gratuit - Liens et Codes QR sans Inscription | ul0",
   description:
-    "ul0 est le raccourcisseur d'URL gratuit le plus rapide. Raccourcissez n'importe quel lien instantanément. Sans inscription, sans limite, 100% gratuit. QR codes inclus.",
-  keywords: [
-    "raccourcir url",
-    "raccourcir un lien",
-    "raccourcisseur de lien gratuit",
-    "raccourcisseur url gratuit",
-    "raccourcir lien",
-    "créer lien court",
-    "lien court gratuit",
-    "bitly alternative",
-    "tinyurl alternative",
-    "raccourcisseur url france",
-    "générateur qr code gratuit",
-    "partager les dépenses",
-  ],
+    "ul0 est le raccourcisseur d'URL gratuit le plus rapide. Raccourcissez n'importe quel lien instantanément sans inscription. Support des domaines personnalisés et codes QR vectoriels.",
   alternates: {
     canonical: "https://ul0.site/fr",
     languages: hreflangAlternates,
   },
   openGraph: {
     title: "Raccourcisseur d'URL Gratuit - Raccourcir un Lien | ul0",
-    description: "Le raccourcisseur d'URL gratuit le plus rapide. Sans inscription.",
+    description: "Le raccourcisseur d'URL gratuit le plus rapide. Sans inscription, avec domaines personnalisés.",
     url: "https://ul0.site/fr",
     locale: "fr_FR",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Raccourcisseur d'URL Gratuit | ul0",
+    description: "Raccourcissez vos liens gratuitement et générez des QR codes instantanément.",
   },
 }
 

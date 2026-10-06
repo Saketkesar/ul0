@@ -9,27 +9,23 @@ import { Link2, Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
 export const metadata: Metadata = {
   title: "Rút gọn Link Miễn Phí - Công cụ Rút gọn URL | ul0",
   description: "ul0 - Công cụ rút gọn link miễn phí nhanh nhất Việt Nam. Rút gọn bất kỳ URL nào ngay lập tức. Không cần đăng ký, không giới hạn, 100% miễn phí.",
-  keywords: [
-    "rút gọn link miễn phí",
-    "rút gọn url",
-    "công cụ rút gọn link",
-    "short link việt nam",
-    "rút gọn link online",
-    "tạo link ngắn",
-    "bitly thay thế",
-    "rút gọn link không cần đăng ký",
-    "link shortener vietnam",
-    "url shortener vietnam",
-  ],
   alternates: {
     canonical: "https://ul0.site/vi",
-    languages: hreflangAlternates,
+  },
+  robots: {
+    index: false,
+    follow: true,
   },
   openGraph: {
     title: "Rút gọn Link Miễn Phí - Công cụ Rút gọn URL | ul0",
     description: "Công cụ rút gọn link miễn phí nhanh nhất Việt Nam. Không cần đăng ký.",
     url: "https://ul0.site/vi",
     locale: "vi_VN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rút gọn Link Miễn Phí | ul0",
+    description: "Công cụ rút gọn link và tạo mã QR miễn phí.",
   },
 }
 

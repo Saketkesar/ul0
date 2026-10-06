@@ -393,6 +393,83 @@ export default function JsonFormatterPage() {
               </ul>
             </CardContent>
           </Card>
+
+          {/* How-to Guide */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>How to Format & Validate JSON Online</CardTitle>
+              <CardDescription>Step-by-step guide to parsing, cleaning, and debugging JSON payload syntax</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm text-muted-foreground">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="rounded-lg border p-4">
+                  <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary font-bold">1</span>
+                    Paste or Upload Raw JSON
+                  </div>
+                  <p>Paste unformatted JSON into the editor on the left, or click &quot;Upload JSON&quot; to load local .json files directly into your browser.</p>
+                </div>
+                <div className="rounded-lg border p-4">
+                  <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary font-bold">2</span>
+                    Select Indentation Spacing
+                  </div>
+                  <p>Choose 2 spaces for standard compact web projects, 4 spaces for extended readability, or tab indentation depending on team style guidelines.</p>
+                </div>
+                <div className="rounded-lg border p-4">
+                  <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary font-bold">3</span>
+                    Instant Real-Time Validation
+                  </div>
+                  <p>Click &quot;Validate JSON&quot;. The parser highlights syntax errors, unescaped quotes, trailing commas, or missing brackets with line numbers.</p>
+                </div>
+                <div className="rounded-lg border p-4">
+                  <div className="flex items-center gap-2 font-semibold text-foreground mb-1">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs text-primary font-bold">4</span>
+                    Copy, Minify, or Download
+                  </div>
+                  <p>One-click copy formatted JSON to your clipboard, minify to reduce payload size over HTTP networks, or download as a clean .json file.</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* FAQ Section */}
+          <Card className="mt-6">
+            <CardHeader>
+              <CardTitle>Frequently Asked Questions (FAQ)</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm text-muted-foreground">
+              <div>
+                <h4 className="font-semibold text-foreground mb-1">Is my JSON data stored or sent to any server?</h4>
+                <p>No. All parsing, validation, minification, and formatting happen 100% locally in your client browser via the native JavaScript V8 engine. Zero payload data is ever logged or transmitted across the network.</p>
+              </div>
+              <div className="border-t pt-3">
+                <h4 className="font-semibold text-foreground mb-1">Why does JSON.parse() throw &quot;Unexpected token in JSON at position...&quot;?</h4>
+                <p>Common culprits include trailing commas after the last array item or object key (valid in JavaScript, illegal in strict RFC 8259 JSON), single quotes instead of double quotes, and unquoted keys.</p>
+              </div>
+              <div className="border-t pt-3">
+                <h4 className="font-semibold text-foreground mb-1">When should I minify JSON vs format it?</h4>
+                <p>Format JSON when reviewing API responses, writing documentation, or debugging locally. Minify JSON for production API endpoints, caching layers, and database records to save bandwidth and reduce transmission latency.</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Soft CTA to URL Shortener & Custom Domains */}
+          <div className="mt-8 rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-background to-primary/5 p-6 text-center">
+            <h3 className="text-lg font-bold text-foreground mb-2">Sharing API Endpoints, Webhooks, or Dev Docs?</h3>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto mb-4">
+              Turn long query-string URLs and API endpoints into branded short links on your own custom domain. Free forever, no signup required, with instant QR codes and click analytics.
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button asChild size="sm">
+                <a href="/">Shorten a Link Free</a>
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <a href="/custom-domain-landing">Free Custom Domain Shortener &rarr;</a>
+              </Button>
+            </div>
+          </div>
         </div>
       </main>
       

@@ -350,16 +350,22 @@ export default function WifiQRGeneratorPage() {
           </section>
 
           {/* CTA */}
-          <section className="mt-12 text-center">
-            <p className="text-muted-foreground mb-4">
-              Need other QR code types?
+          <section className="mt-12 rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-background to-primary/5 p-6 text-center">
+            <h3 className="text-lg font-bold text-foreground mb-2">Hosting a Digital Menu, Guest Portal, or Airbnb Guide?</h3>
+            <p className="text-sm text-muted-foreground max-w-xl mx-auto mb-4">
+              Pair your WiFi code with a branded short link for your digital menu or guest portal. Shorten links and connect custom domains on ul0 — 100% free with instant click tracking.
             </p>
-            <Link
-              href="/qr"
-              className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 font-medium"
-            >
-              Go to Full QR Generator →
-            </Link>
+            <div className="flex flex-wrap justify-center gap-3">
+              <Button asChild size="sm">
+                <a href="/">Shorten Link Free</a>
+              </Button>
+              <Button asChild variant="outline" size="sm">
+                <a href="/qr">Full QR Generator &rarr;</a>
+              </Button>
+              <Button asChild variant="ghost" size="sm">
+                <a href="/custom-domain-landing">Free Custom Domains &rarr;</a>
+              </Button>
+            </div>
           </section>
         </div>
       </main>

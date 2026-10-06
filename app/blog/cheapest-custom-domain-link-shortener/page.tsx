@@ -2,95 +2,164 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, Sparkles } from "lucide-react"
+import { ArrowLeft, Check, Sparkles, User, Calendar, Clock, ArrowRight, ExternalLink } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Cheapest Custom Domain Link Shortener 2026 - Save on Branded Links | ul0",
-  description: "Compare the cheapest custom domain URL shorteners in 2026. Find the best budget-friendly and free custom domain link shorteners like ul0, Dub.co, and Bitly.",
-  keywords: [
-    "cheapest custom domain link shortener",
-    "free custom domain link shortener",
-    "branded link shortener free",
-    "short link with custom domain free",
-    "own domain link shortener cheapest",
-    "connect domain link shortener free",
-    "custom domain redirect free",
-    "cheap branded short links",
-    "dub co cheap alternative",
-    "bitly alternative custom domain",
-    "budget branded url shortener",
-  ],
+  title: "Cheapest Custom Domain Link Shortener (2026 Comparison) | UL0",
+  description:
+    "Compare the cheapest custom domain link shorteners in 2026. Discover free and budget-friendly branded short link tools including UL0, Dub.co, Bitly, and Rebrandly.",
   alternates: {
     canonical: "https://ul0.site/blog/cheapest-custom-domain-link-shortener",
   },
   openGraph: {
-    title: "Cheapest Custom Domain Link Shortener 2026 - Save on Branded Links",
-    description: "Looking for a budget-friendly custom domain shortener? Compare the best options on the market.",
+    title: "Cheapest Custom Domain Link Shortener (2026 Comparison) | UL0",
+    description:
+      "Looking for a budget-friendly custom domain shortener? Compare the best free and low-cost branded link platforms.",
     url: "https://ul0.site/blog/cheapest-custom-domain-link-shortener",
     type: "article",
+    publishedTime: "2026-07-06",
+    modifiedTime: "2026-10-06",
   },
 }
 
 const blogSchema = {
   "@context": "https://schema.org",
   "@type": "Article",
-  headline: "Cheapest Custom Domain Link Shortener 2026 - Save on Branded Links",
-  description: "Compare the cheapest custom domain URL shorteners in 2026. Find the best budget-friendly and free custom domain link shorteners.",
-  author: { "@type": "Organization", name: "ul0" },
+  headline: "Cheapest Custom Domain Link Shortener (2026 Comparison)",
+  description:
+    "Compare the cheapest custom domain URL shorteners in 2026. Discover free and budget-friendly branded link tools.",
+  image: "https://ul0.site/social-card.png",
+  author: {
+    "@type": "Person",
+    name: "Saket Kesar",
+    jobTitle: "Founder & Developer",
+    url: "https://ul0.site/about",
+    sameAs: "https://github.com/Saketkesar",
+  },
   publisher: {
     "@type": "Organization",
-    name: "ul0",
+    name: "UL0",
     logo: { "@type": "ImageObject", url: "https://ul0.site/ul0.png" },
   },
   datePublished: "2026-07-06",
-  dateModified: "2026-07-06",
+  dateModified: "2026-10-06",
+  mainEntityOfPage: "https://ul0.site/blog/cheapest-custom-domain-link-shortener",
+}
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: "https://ul0.site" },
+    { "@type": "ListItem", position: 2, name: "Blog", item: "https://ul0.site/blog" },
+    {
+      "@type": "ListItem",
+      position: 3,
+      name: "Cheapest Custom Domain Link Shortener",
+      item: "https://ul0.site/blog/cheapest-custom-domain-link-shortener",
+    },
+  ],
 }
 
 const alternatives = [
   {
-    name: "ul0.site",
-    tagline: "The Cheapest Custom Domain & Branded Link Solution",
-    description: "ul0 is designed from the ground up to offer the most budget-friendly premium features. Users can link 1 custom domain for free, or upgrade to Pro to manage up to 3 domains with 100 links for just $2/month.",
-    features: ["1 Custom domain free", "Pro plan at only $2/mo", "Business plan with unlimited links for $6/mo", "Full analytics & link deletion", "Simple Notion-style dashboard"],
-    limitations: ["Fewer legacy tool integrations compared to Bitly"],
-    price: "Free / $2/mo Pro (Billed annually)",
-    verdict: "Best for: Small businesses, creators, and teams looking for the absolute cheapest branded links.",
-  },
-  {
-    name: "TinyURL",
-    tagline: "Established but Gated Custom Domains",
-    description: "TinyURL offers custom domain shortening, but it is entirely locked behind their paid Pro plan. Free users cannot connect domains or access any analytics.",
-    features: ["Good API for bulk shortening", "Longstanding domain authority", "Basic analytics on Pro"],
-    limitations: ["No free custom domains", "Pro plan limits custom links", "Expensive starting point"],
-    price: "$9.99/mo (Billed annually)",
-    verdict: "Best for: Users who want a recognizable, traditional name and don't mind the $10/mo barrier.",
-  },
-  {
-    name: "Rebrandly",
-    tagline: "Enterprise Domain Management",
-    description: "Rebrandly is a powerful, domain-first URL management tool. However, their pricing has increased significantly over the years, making it less attractive for budget-conscious creators.",
-    features: ["Multiple domain mapping", "Deep integration ecosystem", "Link retargeting pixels"],
-    limitations: ["Free plan has tight click limits", "High cost as link volume scales", "Complex control panel"],
-    price: "$13/mo (Billed annually)",
-    verdict: "Best for: Agencies managing dozens of separate clients and domains with large budgets.",
+    name: "UL0",
+    tagline: "Free Custom Domain Tier & Lowest Pro Upgrades",
+    description:
+      "UL0 provides full custom domain link shortening on its free tier with automated Let's Encrypt SSL, edge 301 redirects, and zero signup required for standard link creation. For power users managing multiple client brands, Pro starts at just $2/mo.",
+    features: [
+      "1 Custom domain included free",
+      "Automatic Let's Encrypt SSL certificates",
+      "HTTP 301 Permanent Redirects",
+      "Free dynamic vector QR code generator",
+      "Pro plan starts at just $2/mo for 3 domains",
+    ],
+    limitations: [
+      "Free tier custom domain limited to 1 domain",
+      "No enterprise SSO SAML (designed for indie creators & small teams)",
+    ],
+    price: "Free / $2/mo Pro",
+    verdict: "Best for: Creators, startups, and marketing teams looking for branded short links without a $35/mo subscription.",
+    url: "https://ul0.site/custom-domain-landing",
   },
   {
     name: "Dub.co",
-    tagline: "Developer-First Branded Links",
-    description: "Dub.co is a highly capable open-source platform focusing on developers and modern marketing. However, their Pro pricing begins at $24/mo, which is 12x the price of ul0's Pro plan.",
-    features: ["Excellent REST API & SDKs", "Advanced geo-targeting & device-routing", "Colleague workspaces"],
-    limitations: ["Pro plan starts at $24/mo", "High price tier progression"],
-    price: "$24/mo (Billed annually)",
-    verdict: "Best for: Developer teams that require advanced features like country/device redirect routing.",
+    tagline: "Developer-First Modern Platform",
+    description:
+      "Dub.co is a modern open-source link management engine with excellent developer APIs, analytics, and team workspaces. Their free tier includes 3 custom domains with 50k clicks/month, though high-volume pro features cost $24/month.",
+    features: [
+      "Generous free tier (3 custom domains)",
+      "High quality REST API and TypeScript SDK",
+      "Advanced geo and device targeting",
+      "Clean dashboard UX",
+    ],
+    limitations: [
+      "Pro plan starts at $24/mo",
+      "Click limits on free tier trigger upgrade prompts",
+      "Account registration strictly required",
+    ],
+    price: "Free / $24/mo Pro",
+    verdict: "Best for: High-growth SaaS engineering teams needing complex API integrations and webhook routing.",
+    url: "https://dub.co",
   },
   {
     name: "Bitly",
-    tagline: "Legacy Enterprise Brand",
-    description: "Bitly is the oldest player, but it is by far the most expensive. Connecting a custom domain on Bitly is gated, and their Core plan is restrictive for the price.",
-    features: ["Large integration library", "QR code bundles", "SOC 2 enterprise security"],
-    limitations: ["Free plan has a strict 5 links/mo limit", "Core plan is $8/mo for only 100 links", "High premium tier upgrade prompts"],
-    price: "$8/mo Core (Billed annually)",
-    verdict: "Best for: Traditional enterprise organizations that require legacy integrations.",
+    tagline: "Legacy Brand with Premium Enterprise Pricing",
+    description:
+      "Bitly is the most recognized brand in link shortening. However, custom domain support is locked behind their Core plan at $35/month ($29/mo annual). Their free plan does not support custom domains and limits users to only 5 short links per month.",
+    features: [
+      "Deep enterprise ecosystem & Salesforce integrations",
+      "Long domain history and brand recognition",
+      "SOC 2 compliance on Enterprise",
+    ],
+    limitations: [
+      "Custom domains require $35/mo Core plan",
+      "Free plan strictly capped at 5 links/month",
+      "Aggressive upgrade paywalls for basic features",
+    ],
+    price: "$35/mo (Core plan billed monthly) or $29/mo annual",
+    verdict: "Best for: Large corporate enterprises with existing legacy MarTech stacks that require SOC 2 vendor compliance.",
+    url: "https://bitly.com",
+  },
+  {
+    name: "TinyURL",
+    tagline: "Traditional URL Shortener with Pro Domain Addon",
+    description:
+      "TinyURL has offered simple shortening since 2002. Basic shortening is free without an account, but connecting your own custom branded domain requires their TinyURL Pro plan starting at $12.99/month ($9.99/mo annual).",
+    features: [
+      "Free basic link shortening without signup",
+      "Historical name recognition",
+      "Campaign tagging on paid plans",
+    ],
+    limitations: [
+      "Zero custom domains on free plan",
+      "Pro plan starts at $12.99/mo",
+      "Dated dashboard interface compared to modern tools",
+    ],
+    price: "Free basic / $12.99/mo Pro",
+    verdict: "Best for: Casual users shortening individual links on the tinyurl.com domain.",
+    url: "https://tinyurl.com",
+  },
+  {
+    name: "Rebrandly",
+    tagline: "Domain-Centric Marketing Platform",
+    description:
+      "Rebrandly focuses heavily on branded short links. While historically generous, their current pricing structures require their Essentials tier at $13/month for custom domain usage beyond introductory limits.",
+    features: [
+      "Multi-domain routing",
+      "Retargeting pixels and tracking tags",
+      "Extensive marketing team workflows",
+    ],
+    limitations: [
+      "Free plan has strict monthly click limits",
+      "Rapid price escalation for additional domains and users",
+      "Account signup mandatory",
+    ],
+    price: "Free / $13/mo Essentials",
+    verdict: "Best for: Marketing agencies requiring retargeting pixels embedded into short link flows.",
+    url: "https://rebrandly.com",
   },
 ]
 
@@ -101,158 +170,209 @@ export default function CheapestCustomDomainPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(blogSchema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <Header />
-      
+
       <main className="flex-1 py-8 sm:py-12">
         <article className="container mx-auto px-4 max-w-4xl">
-          <Link 
-            href="/blog" 
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
+          <Link
+            href="/blog"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 mr-1" />
-            Back to Blog
+            <ArrowLeft className="h-4 w-4 mr-1.5" />
+            Back to Blog Guides
           </Link>
 
           <header className="mb-8">
-            <h1 className="text-3xl font-bold mb-4 sm:text-4xl">
-              Cheapest Custom Domain Link Shortener 2026 - Save on Branded Links
+            <div className="flex items-center gap-2 mb-3">
+              <Badge variant="secondary">Pricing &amp; Tools</Badge>
+              <Badge variant="outline">Verified Oct 2026</Badge>
+            </div>
+            <h1 className="text-3xl font-extrabold mb-4 sm:text-4xl text-foreground">
+              Cheapest Custom Domain Link Shortener (2026 Comparison)
             </h1>
-            <p className="text-muted-foreground">
-              Published July 2026 • 5 min read
-            </p>
+            <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y py-3">
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4 text-primary" />
+                <Link href="/about" className="hover:underline text-foreground font-medium">
+                  Saket Kesar
+                </Link>
+              </div>
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-primary" />
+                <span>Updated Oct 6, 2026</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-primary" />
+                <span>7 min read</span>
+              </div>
+            </div>
           </header>
 
-          <div className="prose prose-gray dark:prose-invert max-w-none">
-            <p className="text-lg">
-              Using a <strong>custom branded domain</strong> (e.g. <code>link.yourbrand.com/summer</code>) to share short URLs increases link click-through rates (CTR) by up to <strong>34%</strong>. However, standard tools like Bitly or Dub.co make branded links expensive, often charging $10 to $25+ per month.
+          <div className="prose prose-slate dark:prose-invert max-w-none space-y-6 leading-relaxed">
+            <p className="text-lg text-muted-foreground">
+              Using a <strong>custom branded domain</strong> (such as <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-sm text-foreground">go.yourbrand.com/deal</code>) rather than a generic shortener increases audience click confidence, prevents email spam triggers, and complies with mobile carrier 10DLC SMS guidelines. However, legacy players like Bitly paywall custom domain delegation behind steep $35/month tiers.
             </p>
 
-            <p className="text-lg">
-              If you want the <strong>cheapest custom domain link shortener</strong> that still provides full click analytics, custom slug editing, and lightning-fast redirects, this 2026 budget comparison guide is for you.
+            <p className="text-muted-foreground">
+              If you want the <strong>cheapest custom domain link shortener</strong> that includes automated Let&apos;s Encrypt SSL, fast HTTP 301 edge redirection, and click tracking without locking you into expensive multi-year contracts, this fact-checked 2026 guide breaks down the best options.
             </p>
 
-            <div className="bg-primary/5 border border-primary/20 p-5 rounded-lg my-6 flex items-start gap-3">
-              <Sparkles className="h-5 w-5 text-primary mt-0.5 shrink-0" />
-              <div>
-                <h3 className="font-bold text-gray-900 dark:text-gray-150">Summary: The Budget Winner</h3>
-                <p className="text-sm mt-1 text-muted-foreground">
-                  <strong>ul0.site</strong> is the clear winner for budget link shortening. It offers <strong>1 custom domain for free</strong> (with 1 short link), and its Pro tier is just <strong>$2/month</strong> ($24 billed annually), offering 3 custom domains and 100 links. This is 1/5th the price of TinyURL and 1/12th the price of Dub.co.
+            {/* Winner Callout */}
+            <div className="not-prose rounded-2xl border border-primary/20 bg-primary/5 p-6 my-6 flex items-start gap-4">
+              <Sparkles className="h-5 w-5 text-primary mt-1 shrink-0" />
+              <div className="space-y-1">
+                <h3 className="font-bold text-foreground text-base">The Free &amp; Budget Leader: UL0</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  <strong>UL0</strong> is the lowest-cost solution for creators and businesses. It offers <strong>1 custom domain completely free</strong> with automated SSL and edge 301 redirects. For growing agencies and teams managing multiple domains, Pro starts at just <strong>$2/month</strong> ($24/year). Check out the <Link href="/custom-domain-landing" className="text-primary font-semibold hover:underline">UL0 Custom Domain Overview</Link> or follow the <Link href="/blog/custom-domain-dns-cname-setup-guide" className="text-primary font-semibold hover:underline">CNAME Setup Guide</Link>.
                 </p>
               </div>
             </div>
 
-            <h2 className="text-2xl font-bold mt-8 mb-4">Competitor Pricing Comparison Grid</h2>
-            <div className="overflow-x-auto my-6">
-              <table className="w-full text-left border-collapse border border-border">
+            <h2 className="text-2xl font-bold mt-8 mb-4 text-foreground">Pricing &amp; Limits Comparison Table</h2>
+            <div className="not-prose overflow-x-auto my-6 rounded-xl border shadow-xs">
+              <table className="w-full text-left border-collapse text-sm">
                 <thead>
-                  <tr className="bg-muted">
-                    <th className="p-3 border border-border">Provider</th>
-                    <th className="p-3 border border-border">Free Domain Support</th>
-                    <th className="p-3 border border-border">Paid Price (Billed Annually)</th>
-                    <th className="p-3 border border-border">Limits (Entry Paid Plan)</th>
+                  <tr className="bg-muted/70 border-b">
+                    <th className="p-3.5 font-semibold text-foreground">Provider</th>
+                    <th className="p-3.5 font-semibold text-foreground">Free Custom Domain?</th>
+                    <th className="p-3.5 font-semibold text-foreground">Lowest Plan for Domains</th>
+                    <th className="p-3.5 font-semibold text-foreground">Best Value Use Case</th>
                   </tr>
                 </thead>
-                <tbody>
-                  <tr>
-                    <td className="p-3 border border-border font-semibold">ul0.site</td>
-                    <td className="p-3 border border-border text-green-600 font-medium">Yes (1 domain)</td>
-                    <td className="p-3 border border-border font-bold text-primary">$2 / month ($24/yr)</td>
-                    <td className="p-3 border border-border">3 custom domains, 100 links</td>
+                <tbody className="divide-y divide-border">
+                  <tr className="bg-primary/5">
+                    <td className="p-3.5 font-bold text-primary">UL0</td>
+                    <td className="p-3.5 text-emerald-600 dark:text-emerald-400 font-bold">Yes (1 Free Domain)</td>
+                    <td className="p-3.5 font-bold text-foreground">$0 / mo (Pro $2/mo)</td>
+                    <td className="p-3.5 text-muted-foreground">Indie creators, small businesses, marketing agencies</td>
                   </tr>
                   <tr>
-                    <td className="p-3 border border-border font-semibold">Bitly</td>
-                    <td className="p-3 border border-border text-red-500">No</td>
-                    <td className="p-3 border border-border">$8 / month ($96/yr)</td>
-                    <td className="p-3 border border-border">1 domain, 100 links</td>
+                    <td className="p-3.5 font-semibold text-foreground">Dub.co</td>
+                    <td className="p-3.5 text-emerald-600 dark:text-emerald-400 font-semibold">Yes (3 Domains, limits apply)</td>
+                    <td className="p-3.5 text-foreground">$0 / mo (Pro $24/mo)</td>
+                    <td className="p-3.5 text-muted-foreground">Developer teams needing advanced API routing</td>
                   </tr>
                   <tr>
-                    <td className="p-3 border border-border font-semibold">TinyURL</td>
-                    <td className="p-3 border border-border text-red-500">No</td>
-                    <td className="p-3 border border-border">$9.99 / month ($120/yr)</td>
-                    <td className="p-3 border border-border">Custom domains, 500 links</td>
+                    <td className="p-3.5 font-semibold text-foreground">Rebrandly</td>
+                    <td className="p-3.5 text-muted-foreground">Limited trial</td>
+                    <td className="p-3.5 text-foreground">$13 / mo (Essentials)</td>
+                    <td className="p-3.5 text-muted-foreground">Marketing teams needing ad retargeting pixels</td>
                   </tr>
                   <tr>
-                    <td className="p-3 border border-border font-semibold">Rebrandly</td>
-                    <td className="p-3 border border-border text-green-600 font-medium">Yes (1 domain, tight limits)</td>
-                    <td className="p-3 border border-border">$13 / month ($156/yr)</td>
-                    <td className="p-3 border border-border">1 domain, 250 links</td>
+                    <td className="p-3.5 font-semibold text-foreground">TinyURL</td>
+                    <td className="p-3.5 text-rose-500 font-medium">No (Paid Only)</td>
+                    <td className="p-3.5 text-foreground">$12.99 / mo ($9.99 annual)</td>
+                    <td className="p-3.5 text-muted-foreground">Users wanting the traditional TinyURL brand name</td>
                   </tr>
                   <tr>
-                    <td className="p-3 border border-border font-semibold">Dub.co</td>
-                    <td className="p-3 border border-border text-green-600 font-medium">Yes (1 domain, tight limits)</td>
-                    <td className="p-3 border border-border">$24 / month ($288/yr)</td>
-                    <td className="p-3 border border-border">3 custom domains, 1,000 links</td>
+                    <td className="p-3.5 font-semibold text-foreground">Bitly</td>
+                    <td className="p-3.5 text-rose-500 font-medium">No (Paid Only)</td>
+                    <td className="p-3.5 text-foreground">$35 / mo ($29 annual Core)</td>
+                    <td className="p-3.5 text-muted-foreground">Enterprises requiring legacy SOC 2 compliance</td>
                   </tr>
                 </tbody>
               </table>
             </div>
 
-            <h2 className="text-2xl font-bold mt-8 mb-4">Deep Dive Comparison</h2>
+            <h2 className="text-2xl font-bold mt-10 mb-4 text-foreground">In-Depth Platform Reviews</h2>
 
-            {alternatives.map((alt, index) => (
-              <div key={alt.name} className="mb-8 p-6 border border-border rounded-lg bg-card text-card-foreground">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xl font-bold">{index + 1}. {alt.name}</h3>
-                  <span className="text-xs font-semibold bg-primary/10 text-primary px-3 py-1 rounded-full">
-                    {alt.price}
-                  </span>
-                </div>
-                <p className="text-sm text-primary font-medium mb-3">{alt.tagline}</p>
-                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{alt.description}</p>
-                
-                <div className="grid md:grid-cols-2 gap-4 mb-4">
-                  <div>
-                    <h4 className="font-semibold text-xs text-green-600 uppercase tracking-wider mb-2">Key Features</h4>
-                    <ul className="text-xs space-y-1 text-muted-foreground">
-                      {alt.features.map((f) => (
-                        <li key={f} className="flex items-center gap-1.5">
-                          <Check className="h-3.5 w-3.5 text-green-500 shrink-0" />
-                          <span>{f}</span>
-                        </li>
-                      ))}
-                    </ul>
+            <div className="not-prose space-y-6">
+              {alternatives.map((alt, index) => (
+                <div key={alt.name} className="rounded-2xl border p-6 bg-card text-card-foreground shadow-xs">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                        {index + 1}
+                      </span>
+                      <h3 className="text-xl font-bold text-foreground">{alt.name}</h3>
+                    </div>
+                    <span className="text-xs font-semibold bg-muted px-3 py-1 rounded-full text-foreground w-fit">
+                      {alt.price}
+                    </span>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-xs text-red-600 uppercase tracking-wider mb-2">Pricing Constraints</h4>
-                    <ul className="text-xs space-y-1 text-muted-foreground">
-                      {alt.limitations.map((l) => (
-                        <li key={l}>• {l}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                
-                <p className="text-xs bg-muted p-3 rounded">
-                  <strong>Verdict:</strong> {alt.verdict}
-                </p>
-              </div>
-            ))}
+                  <p className="text-xs text-primary font-medium mb-3">{alt.tagline}</p>
+                  <p className="text-sm text-muted-foreground mb-4 leading-relaxed">{alt.description}</p>
 
-            <div className="bg-primary/10 p-6 rounded-lg my-8 text-center">
-              <h3 className="font-bold text-lg mb-2">Start Branding Your Links For Less</h3>
-              <p className="text-sm text-muted-foreground mb-4">
-                 ul0 provides everything you need to create custom branded links at a fraction of the cost. Get 1 domain connected free, or test our Pro tools today.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                <Link 
-                  href="/sign-up"
-                  className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 font-medium text-sm"
-                >
-                  Create Free Account
-                </Link>
-                <Link 
-                  href="/pricing"
-                  className="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-6 font-medium text-sm"
-                >
-                  View Cheapest Paid Plans
-                </Link>
-              </div>
+                  <div className="grid sm:grid-cols-2 gap-4 mb-4 text-xs">
+                    <div>
+                      <h4 className="font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+                        Strengths &amp; Features
+                      </h4>
+                      <ul className="space-y-1.5 text-muted-foreground">
+                        {alt.features.map((f) => (
+                          <li key={f} className="flex items-start gap-1.5">
+                            <Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
+                            <span>{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-muted-foreground uppercase tracking-wider mb-2">
+                        Constraints &amp; Limits
+                      </h4>
+                      <ul className="space-y-1.5 text-muted-foreground">
+                        {alt.limitations.map((l) => (
+                          <li key={l} className="flex items-start gap-1.5">
+                            <span className="text-muted-foreground/60">•</span>
+                            <span>{l}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+                    <span className="text-muted-foreground italic">{alt.verdict}</span>
+                    {alt.name === "UL0" ? (
+                      <Link href="/custom-domain-landing" className="font-semibold text-primary hover:underline inline-flex items-center gap-1">
+                        <span>Try UL0 Custom Domains Free →</span>
+                      </Link>
+                    ) : (
+                      <a
+                        href={alt.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
+                      >
+                        <span>Visit {alt.name}</span>
+                        <ExternalLink className="h-3 w-3 opacity-60" />
+                      </a>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <h2 className="text-2xl font-bold mt-8 mb-4">Conclusion</h2>
+            <h2 className="text-2xl font-bold mt-10 mb-4 text-foreground">How to Get Started with a Free Custom Domain</h2>
             <p className="text-muted-foreground">
-              If your goal is to save money while maintaining a premium brand identity, <strong>ul0.site</strong> is the best value in 2026. Avoid paying $10-$25/month for basic redirection features and secure your branded domain redirection with us today.
+              Setting up a custom domain takes less than 3 minutes. You keep your domain registered at your current registrar (Cloudflare, Namecheap, GoDaddy, etc.) and simply add a CNAME record:
             </p>
+            <ol className="list-decimal list-inside space-y-2 text-muted-foreground text-sm">
+              <li>Log in to your registrar and select your domain.</li>
+              <li>Add a <strong>CNAME record</strong> for your subdomain (e.g., host <code className="bg-muted px-1 rounded font-mono">go</code>) pointing to <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-primary font-bold">cname.ul0.site</code>.</li>
+              <li>Visit your <Link href="/dashboard/domains" className="text-primary hover:underline font-semibold">UL0 Domains Dashboard</Link> and click &quot;Connect Domain&quot;.</li>
+              <li>Our edge infrastructure verifies your DNS within minutes and automatically generates a free Let&apos;s Encrypt SSL certificate.</li>
+            </ol>
+          </div>
+
+          {/* Author Card */}
+          <div className="mt-12 p-6 rounded-2xl border bg-muted/30 flex items-center gap-4">
+            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-xl shrink-0">
+              SK
+            </div>
+            <div>
+              <h3 className="font-bold text-foreground">
+                Written by <Link href="/about" className="hover:underline text-primary">Saket Kesar</Link>
+              </h3>
+              <p className="text-sm text-muted-foreground mt-0.5">
+                Founder &amp; Developer at UL0. Analyzing URL infrastructure economics, deliverability benchmarks, and developer tooling. Connect on <a href="https://github.com/Saketkesar" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">GitHub</a>.
+              </p>
+            </div>
           </div>
         </article>
       </main>
