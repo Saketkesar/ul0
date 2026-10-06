@@ -15,155 +15,11 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   metadataBase: new URL("https://ul0.site"),
   title: {
-    default: "UL0 — Free Link Management, Custom Domains & Analytics [Zero Ads]",
-    template: "%s — UL0"
+    default: "UL0 — Free URL Shortener, QR Codes & Custom Domains",
+    template: "%s | UL0"
   },
   description:
-    "Free modern link management platform. Shorten URLs, connect custom domains, generate vector QR codes, and track real-time clicks with zero ads.",
-  keywords: [
-    // Branded & Custom Domain transactional keywords
-    "custom domain short link free",
-    "free custom domain link shortener",
-    "cheapest custom domain link shortener",
-    "branded url shortener free",
-    "short link with custom domain free",
-    "own domain link shortener cheapest",
-    "personal domain url shortener free",
-    "connect domain link shortener free",
-    "custom domain redirect free",
-    "cheap branded short links",
-    "dub co cheap alternative",
-    "bitly alternative custom domain",
-
-    // Primary keywords - English
-    "url shortener",
-    "free url shortener",
-    "link shortener",
-    "shorten url",
-    "short link",
-    "tiny url",
-    "short url generator",
-    "link shortener free",
-    "url shortener free",
-    "shorten link free",
-    "free link shortener",
-    "online url shortener",
-    "best url shortener",
-    "url shortener online",
-    "short link generator",
-    "link compressor",
-    "shrink url",
-    "compress url",
-    "make link shorter",
-    "shorten my link",
-    "url shortener no signup",
-    "free link shortener no signup",
-    "link shortener without login",
-    "anonymous url shortener",
-    "url shortener without registration",
-    // Competitor alternatives
-    "bitly alternative",
-    "bitly alternative free",
-    "tinyurl alternative",
-    "rebrandly alternative",
-    "free bitly alternative",
-    "bit.ly alternative",
-    "ow.ly alternative",
-    "t.co alternative",
-    "goo.gl alternative",
-    "is.gd alternative",
-    "cutt.ly alternative",
-    "short.io alternative",
-    // Year-based searches
-    "best url shortener 2026",
-    "best url shortener 2026",
-    "best link shortener 2026",
-    "free url shortener 2026",
-    "top url shortener 2026",
-    // Feature keywords
-    "custom short link",
-    "custom url shortener",
-    "branded short links",
-    "url shortener with analytics",
-    "link shortener with qr code",
-    "qr code generator",
-    "free qr code generator",
-    "qr code maker",
-    "wifi qr code",
-    "qr code from link",
-    "url to qr code",
-    // Use case keywords
-    "shorten youtube link",
-    "shorten amazon link",
-    "shorten instagram link",
-    "shorten twitter link",
-    "shorten facebook link",
-    "shorten tiktok link",
-    "shorten affiliate link",
-    "marketing link shortener",
-    "social media link shortener",
-    // Question keywords
-    "how to shorten url",
-    "how to shorten a link",
-    "how to make short link",
-    "how to create short url",
-    "how to shorten url free",
-    // Split expenses keywords
-    "split expenses",
-    "bill splitter",
-    "expense splitter",
-    "split bill app",
-    "splitwise alternative",
-    "upi qr code",
-    "payment qr code",
-    "share expenses",
-    // International - Spanish
-    "acortador de enlaces",
-    "acortador de url gratis",
-    "acortar link",
-    "acortador de links",
-    // International - Portuguese
-    "encurtador de link",
-    "encurtador de url gratis",
-    "encurtar link",
-    // International - Hindi
-    "url shortener hindi",
-    "link shortener india",
-    "free url shortener india",
-    // International - Indonesian
-    "pemendek link",
-    "pemendek url gratis",
-    // International - Vietnamese
-    "rút gọn link",
-    "rút gọn url miễn phí",
-    // International - Thai
-    "ย่อลิงค์",
-    "ย่อ url ฟรี",
-    // International - French
-    "raccourcir url",
-    "raccourcisseur de lien gratuit",
-    // International - German
-    "url kürzen",
-    "link kürzer kostenlos",
-    // International - Japanese
-    "url短縮",
-    "リンク短縮無料",
-    // International - Korean
-    "url 단축",
-    "링크 단축기 무료",
-    // International - Arabic
-    "اختصار الروابط",
-    "تقصير الرابط مجانا",
-    // Long-tail keywords
-    "shorten url online free without registration",
-    "best free url shortener without ads",
-    "simple url shortener no account needed",
-    "fast link shortener free",
-    "instant url shortener",
-    "bulk url shortener free",
-    "private url shortener",
-    "secure link shortener",
-  ],
+    "Shorten links free, connect your own custom domain, make dynamic QR codes, and track clicks without signup.",
   authors: [{ name: "ul0", url: "https://ul0.site" }],
   creator: "ul0",
   publisher: "ul0",
@@ -175,26 +31,26 @@ export const metadata: Metadata = {
     languages: hreflangAlternates,
   },
   openGraph: {
-    title: "UL0 — Free Link Management, Custom Domains & Analytics [Zero Ads]",
-    description: "Free modern link management platform. Shorten links, connect custom domains, generate vector QR codes, and track real-time click attribution.",
+    title: "UL0 — Free URL Shortener, QR Codes & Custom Domains",
+    description: "Shorten links free, connect your own custom domain, make dynamic QR codes, and track clicks without signup.",
     url: "https://ul0.site",
     type: "website",
     locale: "en_US",
-    siteName: "UL0 — Link Management Platform",
+    siteName: "UL0",
     images: [
       {
         url: "https://ul0.site/social-card.png",
         width: 1376,
         height: 768,
-        alt: "ul0.site — Free URL Shortener, Bill Splitter & QR Codes",
+        alt: "UL0 — Free URL Shortener, Custom Domains & QR Codes",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "UL0 — Free Link Management, Custom Domains & Analytics [Zero Ads]",
-    description: "Free modern link management platform. Shorten links, connect custom domains, generate vector QR codes, and track real-time click attribution.",
+    title: "UL0 — Free URL Shortener, QR Codes & Custom Domains",
+    description: "Shorten links free, connect your own custom domain, make dynamic QR codes, and track clicks without signup.",
     images: ["https://ul0.site/social-card.png"],
   },
   robots: {
@@ -316,7 +172,7 @@ export default async function RootLayout({
             "@type": "WebPage",
             name: "Branded Custom Domains",
             description: "Connect your own custom root or sub-domain free",
-            url: "https://ul0.site/pricing"
+            url: "https://ul0.site/custom-domain-landing"
           },
           {
             "@type": "WebPage",
@@ -350,38 +206,31 @@ export default async function RootLayout({
           },
           {
             "@type": "WebPage",
-            name: "Notion Backlinks Directory",
-            description: "Aesthetic Notion badge backlink exchange for indie builders",
+            name: "Free Backlinks Directory",
+            description: "Aesthetic badge backlink exchange for indie builders",
             url: "https://ul0.site/backlinks"
           },
           {
             "@type": "WebPage",
-            name: "US Growth & SEO Blog",
+            name: "Link Management & SEO Blog",
             description: "Guides on link management, Bitly alternatives, and QR marketing",
             url: "https://ul0.site/blog"
           }
         ]
       },
-      // SoftwareApplication with AggregateRating (enables Google Gold Stars in search results)
+      // SoftwareApplication
       {
         "@type": "SoftwareApplication",
         "@id": "https://ul0.site/#app",
         name: "UL0",
         applicationCategory: "BusinessApplication, LinkManagement, DeveloperApplication",
         operatingSystem: "All (Web, iOS, Android, macOS, Windows, Linux)",
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: "4.9",
-          ratingCount: "348",
-          bestRating: "5",
-          worstRating: "1"
-        },
         offers: {
           "@type": "Offer",
           price: "0",
           priceCurrency: "USD"
         },
-        description: "Free modern link management platform with branded custom domains, dynamic vector QR codes, real-time analytics, and developer APIs. 100% free with zero ads.",
+        description: "Free modern link management platform with branded custom domains, dynamic vector QR codes, and real-time analytics.",
         url: "https://ul0.site"
       }
     ],

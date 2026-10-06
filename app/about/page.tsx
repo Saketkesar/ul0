@@ -7,16 +7,16 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "About UL0 — The Modern Link Management & Analytics Platform",
+  title: "About UL0 | Free Link Management & Custom Domains",
   description:
-    "Learn about UL0's mission to build fast, secure, and privacy-respecting link infrastructure, custom branded domains, and dynamic QR codes for businesses and developers.",
+    "Learn about UL0's mission to build fast, secure, and privacy-respecting link infrastructure, custom branded domains, and dynamic QR codes for creators and developers.",
   alternates: {
     canonical: "https://ul0.site/about",
   },
   openGraph: {
-    title: "About UL0 — Next-Generation Link Infrastructure",
+    title: "About UL0 — Free Link Management & Custom Domains",
     description:
-      "UL0 empowers marketing teams, developers, and businesses with fast 301 redirects, real-time analytics, and custom domain delegation.",
+      "UL0 empowers creators, developers, and businesses with fast 301 redirects, real-time analytics, and free custom domain setup.",
     url: "https://ul0.site/about",
     type: "website",
   },
@@ -28,30 +28,54 @@ export default function AboutPage() {
       icon: Zap,
       title: "Edge-Level Speed",
       description:
-        "Every millisecond matters when routing a user to your offer. UL0's edge distribution network executes 301 redirects in under 15ms globally with zero intermediary interstitial ads.",
+        "Every millisecond matters when routing a user to your destination. UL0's edge distribution network executes 301 redirects near-instantaneously worldwide.",
     },
     {
       icon: ShieldCheck,
       title: "Integrity & Anti-Abuse",
       description:
-        "We actively police our link network using automated malware filters and domain reputation feeds to ensure bad actors never abuse our infrastructure for phishing.",
+        "We actively monitor our link network using automated malware filters and domain reputation feeds to ensure bad actors never abuse our infrastructure for phishing.",
     },
     {
       icon: BarChart3,
       title: "Privacy-Respecting Analytics",
       description:
-        "Our analytics deliver deep geographic and device insights without invading consumer privacy, avoiding invasive tracking cookies while maintaining 100% GDPR and CCPA compliance.",
+        "Our analytics deliver essential geographic and device insights without invasive cross-site tracking cookies, maintaining user privacy by design.",
     },
     {
       icon: Globe,
       title: "Brand Ownership",
       description:
-        "We believe businesses should never be forced to share third-party short domains. UL0 enables easy, multi-tenant custom domain delegation for all organizations.",
+        "We believe businesses should never be forced to share third-party short domains. UL0 enables easy custom domain delegation for all organizations free.",
     },
   ]
 
+  const aboutSchema = {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name: "About UL0",
+    url: "https://ul0.site/about",
+    description: "Learn about UL0's mission and founders.",
+    mainEntity: {
+      "@type": "Organization",
+      name: "UL0",
+      url: "https://ul0.site",
+      founder: {
+        "@type": "Person",
+        name: "Saket Kesar",
+        jobTitle: "Founder & Developer",
+        url: "https://ul0.site/about",
+        sameAs: "https://github.com/Saketkesar",
+      },
+    },
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutSchema) }}
+      />
       <Header />
 
       <main className="flex-1">
@@ -124,6 +148,47 @@ export default function AboutPage() {
                   </div>
                 )
               })}
+            </div>
+          </div>
+        </section>
+
+        {/* Founder & Engineering Section */}
+        <section className="py-12 sm:py-16">
+          <div className="container mx-auto px-4 max-w-3xl">
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground mb-6">Built by Indie Engineers</h2>
+            <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6 shadow-xs">
+              <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center font-bold text-primary text-2xl shrink-0">
+                SK
+              </div>
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center gap-3">
+                  <h3 className="text-lg font-bold text-foreground">Saket Kesar</h3>
+                  <span className="text-xs px-2.5 py-0.5 rounded-full bg-primary/10 text-primary font-semibold">
+                    Founder &amp; Developer
+                  </span>
+                </div>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  Saket started UL0 with a simple mission: fast 301 URL shortening, custom branded domains, and privacy-respecting attribution should be accessible to all creators and developers without paywalls or bloated dashboards.
+                </p>
+                <div className="pt-2 flex items-center gap-4 text-xs">
+                  <a
+                    href="https://github.com/Saketkesar/ul0"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-primary hover:underline inline-flex items-center gap-1.5"
+                  >
+                    <span>View Project on GitHub →</span>
+                  </a>
+                  <a
+                    href="https://x.com/ul0site"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    Twitter / X
+                  </a>
+                </div>
+              </div>
             </div>
           </div>
         </section>

@@ -45,6 +45,8 @@ export default clerkMiddleware(async (auth, req) => {
     "/qr-code-for-business": "/qr",
     "/ads": "/dashboard/marketing",
     "/dashboard/ads": "/dashboard/marketing",
+    "/dashboard/keys": "/dashboard",
+    "/blog/pdf-tools-free-online": "/pdf",
   }
   if (LEGACY_REDIRECTS[path]) {
     return NextResponse.redirect(new URL(LEGACY_REDIRECTS[path], req.url), 301)
@@ -177,6 +179,11 @@ export default clerkMiddleware(async (auth, req) => {
   Object.entries(securityHeaders).forEach(([key, value]) => {
     response.headers.set(key, value)
   })
+
+  // Prevent search engines from indexing short redirect links
+  if (pathname.startsWith("/r/") || pathname.startsWith("/go/")) {
+    response.headers.set("X-Robots-Tag", "noindex, nofollow")
+  }
 
   // Add HSTS header for HTTPS connections (only in production)
   if (process.env.NODE_ENV === "production") {

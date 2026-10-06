@@ -23,7 +23,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/changelog", priority: 0.85, freq: "weekly" },
     { path: "/qr", priority: 0.95, freq: "weekly" },
     { path: "/utm", priority: 0.9, freq: "weekly" },
-    { path: "/backlinks", priority: 0.95, freq: "daily" },
     { path: "/docs", priority: 0.85, freq: "weekly" },
     { path: "/custom-domain-landing", priority: 0.85, freq: "weekly" },
   ]
@@ -50,7 +49,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/tools/og-preview", priority: 0.95 },
     { path: "/tools/meta-tag-generator", priority: 0.95 },
     { path: "/split", priority: 0.95 },
-    { path: "/share", priority: 0.85 },
     { path: "/pdf", priority: 0.85 },
     { path: "/wifi", priority: 0.85 },
     { path: "/json", priority: 0.85 },
@@ -95,7 +93,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { slug: "qr-code-generator-uk", published: "2026-08-25" },
     { slug: "best-free-url-shortener-australia", published: "2026-08-25" },
     { slug: "qr-code-generator-australia", published: "2026-08-25" },
-    { slug: "pdf-tools-free-online", published: "2026-09-12" },
   ]
 
   // Informational / trust / legal pages
