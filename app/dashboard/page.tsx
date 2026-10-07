@@ -16,33 +16,55 @@ export default async function DashboardPage() {
   const { userId, has } = await auth()
   if (!userId) redirect("/sign-in")
 
-  // Determine active plan from Clerk Billing
-  let activePlan = "free_user"
-  if (has({ plan: "business_user" })) {
-    activePlan = "business_user"
-  } else if (has({ plan: "pro_user" })) {
-    activePlan = "pro_user"
-  }
-
   // Parallelize all data fetches to eliminate sequential waterfalls and optimize loading speed
   const [
     user,
     accountDoc,
     linksResult,
     domains,
-    canAccessMarketing,
   ] = await Promise.all([
     currentUser().catch(() => null),
     getAccountByClerkId(userId).catch(() => null),
     listLinksByOwner(userId).catch(() => ({ links: [], total: 0 })),
     getDomainsByOwner(userId).catch(() => []),
-    isMarketingAdmin(userId).catch(() => false),
   ])
 
-  const email = user?.emailAddresses?.[0]?.emailAddress ?? null
+  const email = user?.emailAddresses?.[0]?.emailAddress?.toLowerCase() ?? null
+  const meta = (user?.publicMetadata || {}) as Record<string, unknown>
 
-  // Ensure account exists; if found, use existing without redundant write
-  const account = accountDoc || (await upsertAccount(userId, email, activePlan))
+  const isDevSaini =
+    userId === "user_3KM0jUFBVAeH8wi7WNkyhPrBMom" ||
+    email === "dev45144@gmail.com"
+
+  const isSaket =
+    (process.env.MARKETING_ADMIN_CLERK_USER_ID && userId === process.env.MARKETING_ADMIN_CLERK_USER_ID) ||
+    userId === "user_3G4mPjpnIRkBEiRcnpjbEBkDcxc" ||
+    email === "kesarsaket607@gmail.com"
+
+  const hasMarketingAccess =
+    meta.marketing_access === true ||
+    meta.role === "marketing_admin"
+
+  const canAccessMarketing = isDevSaini || isSaket || hasMarketingAccess
+
+  // Determine active plan from Clerk Billing, publicMetadata, or manual admin grant
+  let activePlan = "free_user"
+  if (has({ plan: "business_user" }) || meta.plan === "business_user") {
+    activePlan = "business_user"
+  } else if (
+    has({ plan: "pro_user" }) ||
+    meta.plan === "pro_user" ||
+    accountDoc?.plan === "pro_user" ||
+    isDevSaini ||
+    isSaket
+  ) {
+    activePlan = "pro_user"
+  }
+
+  // Ensure account exists and reflects active plan
+  const account = accountDoc
+    ? { ...accountDoc, plan: activePlan === "pro_user" ? "pro_user" : accountDoc.plan }
+    : await upsertAccount(userId, email, activePlan)
   const { links, total } = linksResult
 
   const limits = getPlanLimits(account.plan)

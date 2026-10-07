@@ -18,7 +18,8 @@ export async function isMarketingAdmin(userId: string | null): Promise<boolean> 
   // 1. Direct match on Clerk User ID env var or known admin user IDs
   if (
     (MARKETING_ADMIN_ID && userId === MARKETING_ADMIN_ID) ||
-    userId === "user_3KM0jUFBVAeH8wi7WNkyhPrBMom"
+    userId === "user_3KM0jUFBVAeH8wi7WNkyhPrBMom" ||
+    userId === "user_3G4mPjpnIRkBEiRcnpjbEBkDcxc"
   ) {
     return true
   }
