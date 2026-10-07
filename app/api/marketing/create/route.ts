@@ -58,7 +58,14 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
-    const { destination_url, alias: rawAlias, blog_count: rawBlogCount } = body
+    const {
+      destination_url,
+      alias: rawAlias,
+      blog_count: rawBlogCount,
+      link_type: rawLinkType,
+      timer_seconds: rawTimerSeconds,
+      target_slug: rawTargetSlug,
+    } = body
 
     // Validate destination URL
     if (!destination_url?.trim()) {
@@ -107,7 +114,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Validate blog count
-    const blogCount = Math.min(MAX_GATE_BLOGS, Math.max(1, parseInt(rawBlogCount, 10) || 3))
+    const MAX_GATE_LIMIT = Math.max(MAX_GATE_BLOGS, 15)
+    const blogCount = Math.min(MAX_GATE_LIMIT, Math.max(1, parseInt(rawBlogCount, 10) || 3))
     const totalAvailable = getTotalBlogCount()
     if (blogCount > totalAvailable) {
       return NextResponse.json(
@@ -116,12 +124,27 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Validate link_type
+    const linkType: "button" | "auto_skip" = rawLinkType === "auto_skip" ? "auto_skip" : "button"
+
+    // Validate timer_seconds (5 sec default, min 2, max 60)
+    let timerSeconds = parseInt(rawTimerSeconds, 10)
+    if (isNaN(timerSeconds) || timerSeconds < 2 || timerSeconds > 60) {
+      timerSeconds = 5 // default 5 seconds
+    }
+
+    // Target slug (optional specific article)
+    const targetSlug = (rawTargetSlug || "").trim()
+
     // Create the link
     const doc = await createMarketingLink({
       alias,
       destination_url: destUrl,
       owner_clerk_user_id: userId!,
-      blog_count: blogCount,
+      blog_count: targetSlug ? 1 : blogCount,
+      link_type: linkType,
+      timer_seconds: timerSeconds,
+      target_slug: targetSlug,
     })
 
     return NextResponse.json({

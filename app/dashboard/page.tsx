@@ -3,10 +3,11 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { upsertAccount } from "@/lib/appwrite/accounts"
+import { getAccountByClerkId, upsertAccount } from "@/lib/appwrite/accounts"
 import { listLinksByOwner } from "@/lib/appwrite/links"
 import { getDomainsByOwner } from "@/lib/appwrite/domains"
 import { getPlanLimits } from "@/lib/plans"
+import { isMarketingAdmin } from "@/lib/marketing-auth"
 import { Link2, ExternalLink, MousePointerClick, Plus, BarChart3, Globe, ArrowRight, Key, QrCode, Megaphone, DollarSign, Sparkles } from "lucide-react"
 import { CreateLinkButton } from "./create-link-button"
 import { DeleteLinkButton } from "./delete-link-button"
@@ -23,18 +24,26 @@ export default async function DashboardPage() {
     activePlan = "pro_user"
   }
 
-  // Get Clerk user for email
-  const user = await currentUser()
+  // Parallelize all data fetches to eliminate sequential waterfalls and optimize loading speed
+  const [
+    user,
+    accountDoc,
+    linksResult,
+    domains,
+    canAccessMarketing,
+  ] = await Promise.all([
+    currentUser().catch(() => null),
+    getAccountByClerkId(userId).catch(() => null),
+    listLinksByOwner(userId).catch(() => ({ links: [], total: 0 })),
+    getDomainsByOwner(userId).catch(() => []),
+    isMarketingAdmin(userId).catch(() => false),
+  ])
+
   const email = user?.emailAddresses?.[0]?.emailAddress ?? null
 
-  // Upsert account on first authenticated visit (keeps plan in sync)
-  const account = await upsertAccount(userId, email, activePlan)
-
-  // Fetch user's links and domains
-  const [{ links, total }, domains] = await Promise.all([
-    listLinksByOwner(userId),
-    getDomainsByOwner(userId),
-  ])
+  // Ensure account exists; if found, use existing without redundant write
+  const account = accountDoc || (await upsertAccount(userId, email, activePlan))
+  const { links, total } = linksResult
 
   const limits = getPlanLimits(account.plan)
 
@@ -54,9 +63,8 @@ export default async function DashboardPage() {
             </p>
           </div>
 
-          {/* Private Adsterra Marketing Engine Banner */}
-          {((process.env.MARKETING_ADMIN_CLERK_USER_ID && userId === process.env.MARKETING_ADMIN_CLERK_USER_ID) ||
-            email?.toLowerCase() === "kesarsaket607@gmail.com") && (
+          {/* Marketing Engine Banner */}
+          {canAccessMarketing && (
             <div className="mb-8 p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
               <div className="flex items-center gap-3.5">
                 <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-2.5 text-emerald-500 shrink-0">
@@ -70,7 +78,7 @@ export default async function DashboardPage() {
                     </span>
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Create ad-supported content gate links, configure blog article sequences, and monitor live Adsterra stats.
+                    Create ad-supported content gate links, configure auto-skips (5s), and select from 25+ blog articles.
                   </p>
                 </div>
               </div>
@@ -184,8 +192,7 @@ export default async function DashboardPage() {
               {account.plan === "free_user" ? "Upgrade Plan" : "Manage Plan"}
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
-            {((process.env.MARKETING_ADMIN_CLERK_USER_ID && userId === process.env.MARKETING_ADMIN_CLERK_USER_ID) ||
-              email?.toLowerCase() === "kesarsaket607@gmail.com") && (
+            {canAccessMarketing && (
               <Link
                 href="/dashboard/marketing"
                 className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 px-4 py-2 text-sm font-medium hover:bg-emerald-500/20 transition-colors"

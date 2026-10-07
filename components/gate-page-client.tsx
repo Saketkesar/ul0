@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Clock, CheckCircle2, ArrowRight, ShieldCheck, Loader2, Sparkles, AlertCircle, ChevronDown } from "lucide-react"
+import { Clock, CheckCircle2, ArrowRight, ShieldCheck, Loader2, Sparkles, AlertCircle, ChevronDown, Zap } from "lucide-react"
 import { AdBanner } from "@/components/ad-banner"
 import { Button } from "@/components/ui/button"
 
@@ -14,6 +14,9 @@ interface GatePageClientProps {
   totalSteps: number
   gateTimerSeconds?: number
   destinationDomain: string
+  linkType?: "button" | "auto_skip"
+  currentSlug?: string
+  blogTitle?: string
   children: React.ReactNode
 }
 
@@ -22,8 +25,11 @@ export function GatePageClient({
   sessionToken,
   currentStep,
   totalSteps,
-  gateTimerSeconds = 15,
+  gateTimerSeconds = 5,
   destinationDomain,
+  linkType = "button",
+  currentSlug,
+  blogTitle,
   children,
 }: GatePageClientProps) {
   const [secondsLeft, setSecondsLeft] = useState(gateTimerSeconds)
@@ -31,13 +37,21 @@ export function GatePageClient({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const actionSectionRef = useRef<HTMLDivElement>(null)
+  const hasAutoAdvancedRef = useRef(false)
 
-  // Ensure cookie is synced on the client
+  // Ensure cookie is synced on the client & update URL slug
   useEffect(() => {
     if (sessionToken && typeof document !== "undefined") {
       document.cookie = `ul0_gate_token=${encodeURIComponent(sessionToken)}; path=/; max-age=1800; SameSite=Lax`
     }
-  }, [sessionToken])
+    if (currentSlug && typeof window !== "undefined") {
+      try {
+        const url = new URL(window.location.href)
+        url.searchParams.set("slug", currentSlug)
+        window.history.replaceState(null, "", url.toString())
+      } catch {}
+    }
+  }, [sessionToken, currentSlug])
 
   // Countdown timer
   useEffect(() => {
@@ -60,14 +74,9 @@ export function GatePageClient({
     return () => clearInterval(timer)
   }, [secondsLeft])
 
-  // Scroll to bottom action
-  const scrollToContinue = () => {
-    actionSectionRef.current?.scrollIntoView({ behavior: "smooth" })
-  }
-
   // Handle advance step or destination redirect
   const handleAdvance = async () => {
-    if (!isUnlocked || isSubmitting) return
+    if (isSubmitting) return
 
     setIsSubmitting(true)
     setErrorMessage(null)
@@ -102,6 +111,19 @@ export function GatePageClient({
     }
   }
 
+  // AUTO-SKIP: Trigger handleAdvance as soon as countdown hits 0
+  useEffect(() => {
+    if (isUnlocked && linkType === "auto_skip" && !hasAutoAdvancedRef.current && !isSubmitting) {
+      hasAutoAdvancedRef.current = true
+      handleAdvance()
+    }
+  }, [isUnlocked, linkType, isSubmitting])
+
+  // Scroll to bottom action
+  const scrollToContinue = () => {
+    actionSectionRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
   const isFinalStep = currentStep + 1 >= totalSteps
   const stepNumber = currentStep + 1
   const progressPercent = Math.min(100, Math.round((currentStep / totalSteps) * 100))
@@ -109,7 +131,7 @@ export function GatePageClient({
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-emerald-500/20 selection:text-emerald-400">
       {/* Top Floating Progress Bar & Navigation */}
-      <header className="sticky top-0 z-50 border-b border-border/80 bg-background/90 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md">
         {/* Step Progress Line */}
         <div className="w-full bg-muted/40 h-1">
           <div
@@ -118,53 +140,108 @@ export function GatePageClient({
           />
         </div>
 
-        <div className="container mx-auto px-4 h-14 flex items-center justify-between gap-2">
-          {/* Brand */}
-          <Link href="/" className="flex items-center gap-2 group shrink-0" target="_blank" rel="noopener noreferrer">
-            <Image
-              src="/ul0.png"
-              alt="ul0 Logo"
-              width={72}
-              height={26}
-              className="h-6 w-auto object-contain transition-transform group-hover:scale-105"
-              priority
-            />
-          </Link>
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-3">
+          {/* Brand & Step Info */}
+          <div className="flex items-center gap-3 shrink-0">
+            <Link href="/" className="flex items-center gap-2 group shrink-0" target="_blank" rel="noopener noreferrer">
+              <Image
+                src="/ul0.png"
+                alt="ul0 Logo"
+                width={72}
+                height={26}
+                className="h-6 w-auto object-contain transition-transform group-hover:scale-105"
+                priority
+              />
+            </Link>
 
-          {/* Center Step Indicator */}
-          <div className="flex items-center gap-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400">
+            <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <span>
-                Step {stepNumber} of {totalSteps}
+                Step {stepNumber}/{totalSteps}
               </span>
             </div>
           </div>
 
-          {/* Right Status / Jump Button */}
-          <div className="flex items-center gap-2">
-            {!isUnlocked ? (
-              <button
-                onClick={scrollToContinue}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-muted/80 hover:bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
-                title="Scroll down to unlock"
+          {/* Center: Open Blog with Slug Badge */}
+          {currentSlug && (
+            <div className="hidden md:flex items-center min-w-0 max-w-sm">
+              <Link
+                href={`/blog/${currentSlug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/60 hover:bg-muted border border-border/80 text-xs text-muted-foreground hover:text-foreground transition-all group truncate"
+                title={`Open article at /blog/${currentSlug}`}
               >
-                <Clock className="h-3.5 w-3.5 text-amber-500 animate-spin" style={{ animationDuration: "3s" }} />
-                <span>{secondsLeft}s left</span>
-                <ChevronDown className="h-3.5 w-3.5" />
-              </button>
+                <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
+                <span className="truncate font-medium">{blogTitle || currentSlug}</span>
+                <ArrowRight className="h-3 w-3 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
+              </Link>
+            </div>
+          )}
+
+          {/* Right Header Status / Live Countdown Timer */}
+          <div className="flex items-center gap-2 shrink-0">
+            {linkType === "auto_skip" ? (
+              // AUTO-SKIP HEADER BADGE
+              !isUnlocked ? (
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-semibold shadow-sm">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                  </span>
+                  <span className="font-mono text-sm font-bold">{secondsLeft}s</span>
+                  <span className="hidden sm:inline">Auto-Skip</span>
+                </div>
+              ) : (
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-bold shadow-sm animate-pulse">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>Skipping...</span>
+                </div>
+              )
             ) : (
-              <button
-                onClick={scrollToContinue}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold hover:bg-emerald-500/20 transition-all shadow-sm"
+              // BUTTON MODE HEADER
+              !isUnlocked ? (
+                <button
+                  onClick={scrollToContinue}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/80 hover:bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-colors border border-border/60"
+                  title="Scroll down to unlock"
+                >
+                  <Clock className="h-3.5 w-3.5 text-amber-500 animate-spin" style={{ animationDuration: "3s" }} />
+                  <span className="font-mono font-bold text-amber-500">{secondsLeft}s</span>
+                  <ChevronDown className="h-3.5 w-3.5" />
+                </button>
+              ) : (
+                <button
+                  onClick={handleAdvance}
+                  disabled={isSubmitting}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all shadow-md shadow-emerald-500/25 cursor-pointer hover:scale-105"
+                  title="Click to continue"
+                >
+                  {isSubmitting ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  )}
+                  <span>Continue</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </button>
+              )
+            )}
+
+            {/* Direct Open Blog Slug Link on mobile */}
+            {currentSlug && (
+              <Link
+                href={`/blog/${currentSlug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="md:hidden p-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground transition-colors"
+                title={`Open /blog/${currentSlug}`}
               >
-                <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400" />
-                <span>Ready</span>
-                <ChevronDown className="h-3.5 w-3.5" />
-              </button>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             )}
           </div>
         </div>
@@ -220,7 +297,11 @@ export function GatePageClient({
 
               {/* Title */}
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                {isFinalStep
+                {linkType === "auto_skip"
+                  ? isUnlocked
+                    ? "⚡ Auto-Skipping to Destination..."
+                    : `⚡ Auto-Skipping in ${secondsLeft} Seconds`
+                  : isFinalStep
                   ? isUnlocked
                     ? "Destination Link Ready!"
                     : "Unlocking Your Final Destination"
@@ -231,10 +312,27 @@ export function GatePageClient({
 
               {/* Subtitle */}
               <p className="mt-2 text-sm text-muted-foreground max-w-md">
-                {isFinalStep
+                {linkType === "auto_skip"
+                  ? `This link automatically advances in ${gateTimerSeconds} seconds. You will be redirected to ${destinationDomain} momentarily.`
+                  : isFinalStep
                   ? `You are heading to ${destinationDomain}. Click continue below to proceed.`
                   : `Please explore the content above for ${gateTimerSeconds} seconds to support our free service and unlock the next article.`}
               </p>
+
+              {/* Direct blog slug reference */}
+              {currentSlug && (
+                <div className="mt-3">
+                  <Link
+                    href={`/blog/${currentSlug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
+                  >
+                    <span>Read full article at /blog/{currentSlug}</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              )}
 
               {/* Error display if any */}
               {errorMessage && (
@@ -248,7 +346,7 @@ export function GatePageClient({
               {!isUnlocked && (
                 <div className="mt-6 w-full max-w-md">
                   <div className="flex justify-between items-center text-xs font-mono text-muted-foreground mb-1.5">
-                    <span>Verifying session</span>
+                    <span>{linkType === "auto_skip" ? "Auto-skipping" : "Verifying session"}</span>
                     <span className="text-amber-400 font-bold">{secondsLeft}s remaining</span>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
@@ -277,12 +375,16 @@ export function GatePageClient({
                   {isSubmitting ? (
                     <span className="flex items-center gap-2">
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      <span>Verifying & Advancing...</span>
+                      <span>Verifying &amp; Advancing...</span>
                     </span>
                   ) : !isUnlocked ? (
                     <span className="flex items-center gap-2">
                       <Clock className="h-4 w-4" />
-                      <span>Please wait {secondsLeft} seconds...</span>
+                      <span>
+                        {linkType === "auto_skip"
+                          ? `Auto-skipping in ${secondsLeft}s...`
+                          : `Please wait ${secondsLeft} seconds...`}
+                      </span>
                     </span>
                   ) : isFinalStep ? (
                     <span className="flex items-center gap-2">

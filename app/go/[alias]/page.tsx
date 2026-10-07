@@ -11,7 +11,7 @@ import {
   markStepStarted,
   GATE_TIMER_SECONDS,
 } from "@/lib/marketing-gate-session"
-import { selectRandomBlogs } from "@/lib/blog-discovery"
+import { selectRandomBlogs, getBlogMeta } from "@/lib/blog-discovery"
 import { getBlogComponent } from "@/lib/blog-registry"
 import { GatePageClient } from "@/components/gate-page-client"
 import { AlertCircle, ArrowLeft } from "lucide-react"
@@ -75,16 +75,26 @@ export default async function GatePage({ params }: PageProps) {
   // If token is invalid or belongs to a different alias, generate a fresh session
   if (!session || session.alias !== link.alias) {
     token = generateSessionToken()
-    let selectedSlugs = selectRandomBlogs(link.blog_count || 3)
+    let selectedSlugs: string[] = []
+    if (link.target_slug?.trim()) {
+      selectedSlugs = [link.target_slug.trim()]
+    } else {
+      selectedSlugs = selectRandomBlogs(link.blog_count || 3)
+    }
     if (!selectedSlugs || selectedSlugs.length === 0) {
       selectedSlugs = ["link-shortening-best-practices-2026"]
     }
+
+    const linkType = link.link_type || "button"
+    const timerSeconds = link.timer_seconds || (linkType === "auto_skip" ? 5 : 5)
 
     session = await createGateSession(token, {
       marketing_link_id: link.$id,
       alias: link.alias,
       blog_slugs: selectedSlugs,
       destination_url: link.destination_url,
+      timer_seconds: timerSeconds,
+      link_type: linkType,
     })
 
     // Track open
@@ -102,6 +112,7 @@ export default async function GatePage({ params }: PageProps) {
   // 5. Load the current step's blog article
   const currentSlug = session.blog_slugs[session.current_step] || session.blog_slugs[0]
   const BlogComponent = await getBlogComponent(currentSlug)
+  const blogMeta = getBlogMeta(currentSlug)
 
   // Parse destination hostname for preview
   let destinationDomain = "destination site"
@@ -111,14 +122,20 @@ export default async function GatePage({ params }: PageProps) {
     destinationDomain = "destination site"
   }
 
+  const activeTimerSeconds = session.timer_seconds || link.timer_seconds || (link.link_type === "auto_skip" ? 5 : 5)
+  const activeLinkType = session.link_type || link.link_type || "button"
+
   return (
     <GatePageClient
       alias={link.alias}
       sessionToken={token!}
       currentStep={session.current_step}
       totalSteps={session.blog_slugs.length}
-      gateTimerSeconds={GATE_TIMER_SECONDS}
+      gateTimerSeconds={activeTimerSeconds}
       destinationDomain={destinationDomain}
+      linkType={activeLinkType}
+      currentSlug={currentSlug}
+      blogTitle={blogMeta?.title || currentSlug}
     >
       {BlogComponent ? (
         <BlogComponent />
