@@ -5,7 +5,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { MarketingDashboardClient } from "@/components/marketing-dashboard-client"
 import { listMarketingLinksByOwner } from "@/lib/appwrite/marketing-links"
-import { getTotalBlogCount } from "@/lib/blog-discovery"
+import { getTotalBlogCount, getEligibleBlogSlugs } from "@/lib/blog-discovery"
 import { isMarketingAdmin } from "@/lib/marketing-auth"
 import { Lock } from "lucide-react"
 
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-const MAX_GATE_BLOGS = parseInt(process.env.MAX_GATE_BLOGS || "10", 10)
+const MAX_GATE_BLOGS = parseInt(process.env.MAX_GATE_BLOGS || "15", 10)
 
 export default async function MarketingDashboardPage() {
   const { userId } = await auth()
@@ -56,6 +56,8 @@ export default async function MarketingDashboardPage() {
   const totalCompletions = links.reduce((sum, l) => sum + (l.total_completions || 0), 0)
   const completionRate = totalGateOpens > 0 ? Math.round((totalCompletions / totalGateOpens) * 100) : 0
 
+  const availableBlogs = getEligibleBlogSlugs()
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Header />
@@ -72,6 +74,7 @@ export default async function MarketingDashboardPage() {
             }}
             maxBlogCount={MAX_GATE_BLOGS}
             totalBlogsAvailable={totalBlogsAvailable}
+            availableBlogs={availableBlogs}
           />
         </div>
       </main>

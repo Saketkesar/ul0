@@ -15,6 +15,8 @@ export interface GateSession {
   started_at: number
   step_unlocked_at: number[]
   completed: boolean
+  timer_seconds?: number
+  link_type?: "button" | "auto_skip"
 }
 
 // ---------------------------------------------------------------------------
@@ -22,7 +24,7 @@ export interface GateSession {
 // ---------------------------------------------------------------------------
 
 const SESSION_TTL = 30 * 60 // 30 minutes
-const GATE_TIMER_SECONDS = parseInt(process.env.GATE_TIMER_SECONDS || "15", 10)
+const GATE_TIMER_SECONDS = parseInt(process.env.GATE_TIMER_SECONDS || "5", 10)
 
 function sessionKey(token: string): string {
   return `gate_session:${token}`
@@ -97,18 +99,19 @@ export async function advanceGateStep(
   const currentStep = session.current_step
   const totalSteps = session.blog_slugs.length
 
-  // Validate timer: the current step must have been open for at least GATE_TIMER_SECONDS
+  // Validate timer: the current step must have been open for at least requiredSeconds
+  const requiredSeconds = session.timer_seconds || GATE_TIMER_SECONDS
   const lastUnlock = session.step_unlocked_at[currentStep]
   if (!lastUnlock) {
     return { ok: false, error: "Step not yet started." }
   }
 
   const elapsed = (Date.now() - lastUnlock) / 1000
-  if (elapsed < GATE_TIMER_SECONDS - 1) {
+  if (elapsed < requiredSeconds - 1) {
     // Allow 1s grace for network latency
     return {
       ok: false,
-      error: `Please wait ${Math.ceil(GATE_TIMER_SECONDS - elapsed)} more seconds.`,
+      error: `Please wait ${Math.ceil(requiredSeconds - elapsed)} more seconds.`,
     }
   }
 

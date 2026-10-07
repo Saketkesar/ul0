@@ -19,8 +19,8 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Rate limit: 1 advance per 10 seconds per session
-    const rl = await checkRateLimit(`gate_advance:${token}`, 1, 10)
+    // Rate limit: 2 advances per 6 seconds per session
+    const rl = await checkRateLimit(`gate_advance:${token}`, 2, 6)
     if (!rl.allowed) {
       return NextResponse.json(
         { error: "Please wait before continuing." },

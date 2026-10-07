@@ -12,6 +12,9 @@ export interface MarketingLinkDoc {
   destination_url: string
   owner_clerk_user_id: string
   blog_count: number
+  link_type?: "button" | "auto_skip"
+  timer_seconds?: number
+  target_slug?: string
   is_active: boolean
   total_gate_opens: number
   total_completions: number
@@ -24,6 +27,9 @@ export interface CreateMarketingLinkInput {
   destination_url: string
   owner_clerk_user_id: string
   blog_count: number
+  link_type?: "button" | "auto_skip"
+  timer_seconds?: number
+  target_slug?: string
 }
 
 // ---------------------------------------------------------------------------
@@ -47,6 +53,9 @@ export async function createMarketingLink(
     destination_url: input.destination_url,
     owner_clerk_user_id: input.owner_clerk_user_id,
     blog_count: input.blog_count,
+    link_type: input.link_type || "button",
+    timer_seconds: input.timer_seconds || 5,
+    target_slug: input.target_slug || "",
     is_active: true,
     total_gate_opens: 0,
     total_completions: 0,

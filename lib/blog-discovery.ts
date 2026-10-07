@@ -39,6 +39,12 @@ const ALL_BLOG_SLUGS: BlogMeta[] = [
   { slug: "custom-domain-short-links-guide", title: "Why Branded Custom Domain Short Links Outperform Generic URLs", category: "Branding", readTime: "5 min" },
   { slug: "pomodoro-technique-productivity-guide", title: "The Science of the Pomodoro Technique", category: "Productivity", readTime: "5 min" },
   { slug: "affiliate-link-shortener-usa", title: "Affiliate Link Shortener for US Creators: Amazon Associates & FTC Compliance", category: "Marketing", readTime: "7 min" },
+  { slug: "how-to-split-expenses-group-bills-online", title: "How to Split Expenses & Group Bills Online Free (No App Required in 2026)", category: "Utilities", readTime: "7 min" },
+  { slug: "acortar-link-gratis-guia-completa", title: "Cómo Acortar Links Gratis en 2026: Guía Completa Sin Registro (Bitly vs ul0)", category: "Español", readTime: "6 min" },
+  { slug: "link-kuerzen-ohne-anmeldung-kostenlos", title: "Link kürzen ohne Anmeldung 2026: Die besten kostenlosen URL-Shortener", category: "Deutsch", readTime: "5 min" },
+  { slug: "tiktok-bio-link-tools-guide-2026", title: "The Ultimate TikTok Bio Link Guide 2026: Boost Engagement & Sales", category: "Social Media", readTime: "6 min" },
+  { slug: "utm-builder-tracking-guide-2026", title: "How to Build UTM Campaign Links that Track Every Conversion in 2026", category: "Analytics", readTime: "7 min" },
+  { slug: "branded-short-links-roi-case-study", title: "Why Branded Short Links Increase CTR by 39%: Data & Case Studies", category: "Branding", readTime: "6 min" },
 ]
 
 /**

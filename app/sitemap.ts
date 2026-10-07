@@ -62,6 +62,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Blog posts with actual publish dates
   const blogPosts: { slug: string; published: string }[] = [
+    { slug: "tiktok-bio-link-tools-guide-2026", published: "2026-10-07" },
+    { slug: "utm-builder-tracking-guide-2026", published: "2026-10-07" },
+    { slug: "branded-short-links-roi-case-study", published: "2026-10-07" },
     { slug: "acortar-link-gratis-guia-completa", published: "2026-10-03" },
     { slug: "how-to-split-expenses-group-bills-online", published: "2026-10-03" },
     { slug: "link-kuerzen-ohne-anmeldung-kostenlos", published: "2026-10-03" },

@@ -39,6 +39,33 @@ export const metadata: Metadata = {
 
 const blogPosts = [
   {
+    slug: "tiktok-bio-link-tools-guide-2026",
+    title: "The Ultimate TikTok Bio Link Guide 2026: Boost Engagement & Sales",
+    description: "Master TikTok bio links in 2026. How to add links without 10k followers, compare Linktree vs custom domains, avoid shadowbans, and boost conversions.",
+    category: "Social Media",
+    readTime: "6 min read",
+    date: "2026-10-07",
+    featured: true,
+  },
+  {
+    slug: "utm-builder-tracking-guide-2026",
+    title: "How to Build UTM Campaign Links that Track Every Conversion in 2026",
+    description: "Master UTM parameter tagging and campaign tracking in 2026. Learn best practices for Google Analytics 4, avoid fractured reporting, and shorten tagged links cleanly.",
+    category: "Analytics",
+    readTime: "7 min read",
+    date: "2026-10-07",
+    featured: true,
+  },
+  {
+    slug: "branded-short-links-roi-case-study",
+    title: "Why Branded Short Links Increase CTR by 39%: Data & Case Studies 2026",
+    description: "Discover real-world conversion benchmarks and case study data showing why branded custom domain short links outperform generic shortened URLs.",
+    category: "Branding",
+    readTime: "6 min read",
+    date: "2026-10-07",
+    featured: true,
+  },
+  {
     slug: "acortar-link-gratis-guia-completa",
     title: "Cómo Acortar Links Gratis en 2026: Guía Completa Sin Registro (Bitly vs ul0)",
     description: "Aprende cómo acortar un link gratis en 2026 paso a paso sin registro. Compara ul0, Bitly y TinyURL. Mejora tu CTR en WhatsApp, Instagram y TikTok.",

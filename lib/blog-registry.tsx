@@ -21,6 +21,12 @@ export const BLOG_COMPONENTS: Record<string, () => Promise<{ default: React.Comp
   "custom-domain-short-links-guide": () => import("@/app/blog/custom-domain-short-links-guide/page"),
   "pomodoro-technique-productivity-guide": () => import("@/app/blog/pomodoro-technique-productivity-guide/page"),
   "affiliate-link-shortener-usa": () => import("@/app/blog/affiliate-link-shortener-usa/page"),
+  "how-to-split-expenses-group-bills-online": () => import("@/app/blog/how-to-split-expenses-group-bills-online/page"),
+  "acortar-link-gratis-guia-completa": () => import("@/app/blog/acortar-link-gratis-guia-completa/page"),
+  "link-kuerzen-ohne-anmeldung-kostenlos": () => import("@/app/blog/link-kuerzen-ohne-anmeldung-kostenlos/page"),
+  "tiktok-bio-link-tools-guide-2026": () => import("@/app/blog/tiktok-bio-link-tools-guide-2026/page"),
+  "utm-builder-tracking-guide-2026": () => import("@/app/blog/utm-builder-tracking-guide-2026/page"),
+  "branded-short-links-roi-case-study": () => import("@/app/blog/branded-short-links-roi-case-study/page"),
 }
 
 export async function getBlogComponent(slug: string): Promise<React.ComponentType<any> | null> {
