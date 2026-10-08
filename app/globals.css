@@ -206,3 +206,13 @@ img {
   from { width: 100%; }
   to   { width: 0%; }
 }
+
+/* Marketing Link Embedded Blog Cleanup */
+.gate-embedded-article header,
+.gate-embedded-article footer {
+  display: none !important;
+}
+
+.gate-embedded-article a[href="/blog"] {
+  display: none !important;
+}
