@@ -37,21 +37,25 @@ export function GatePageClient({
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const actionSectionRef = useRef<HTMLDivElement>(null)
+  const articleSectionRef = useRef<HTMLDivElement>(null)
   const hasAutoAdvancedRef = useRef(false)
 
-  // Ensure cookie is synced on the client & update URL slug
+  // Ensure cookie is synced on the client & keep URL clean (remove ?slug=)
   useEffect(() => {
     if (sessionToken && typeof document !== "undefined") {
       document.cookie = `ul0_gate_token=${encodeURIComponent(sessionToken)}; path=/; max-age=1800; SameSite=Lax`
     }
-    if (currentSlug && typeof window !== "undefined") {
+    if (typeof window !== "undefined") {
       try {
         const url = new URL(window.location.href)
-        url.searchParams.set("slug", currentSlug)
-        window.history.replaceState(null, "", url.toString())
+        if (url.searchParams.has("slug")) {
+          url.searchParams.delete("slug")
+          const cleanUrl = url.pathname + (url.search ? url.search : "") + url.hash
+          window.history.replaceState(null, "", cleanUrl)
+        }
       } catch {}
     }
-  }, [sessionToken, currentSlug])
+  }, [sessionToken])
 
   // Countdown timer
   useEffect(() => {
@@ -123,6 +127,9 @@ export function GatePageClient({
   const scrollToContinue = () => {
     actionSectionRef.current?.scrollIntoView({ behavior: "smooth" })
   }
+  const scrollToArticle = () => {
+    articleSectionRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
   const isFinalStep = currentStep + 1 >= totalSteps
   const stepNumber = currentStep + 1
@@ -165,20 +172,10 @@ export function GatePageClient({
             </div>
           </div>
 
-          {/* Center: Open Blog with Slug Badge */}
-          {currentSlug && (
-            <div className="hidden md:flex items-center min-w-0 max-w-sm">
-              <Link
-                href={`/blog/${currentSlug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted/60 hover:bg-muted border border-border/80 text-xs text-muted-foreground hover:text-foreground transition-all group truncate"
-                title={`Open article at /blog/${currentSlug}`}
-              >
-                <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
-                <span className="truncate font-medium">{blogTitle || currentSlug}</span>
-                <ArrowRight className="h-3 w-3 opacity-60 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all shrink-0" />
-              </Link>
+          {/* Center: Article Title */}
+          {blogTitle && (
+            <div className="hidden md:flex items-center min-w-0 max-w-sm text-xs text-muted-foreground truncate font-medium">
+              <span className="truncate">{blogTitle}</span>
             </div>
           )}
 
@@ -230,19 +227,6 @@ export function GatePageClient({
                 </button>
               )
             )}
-
-            {/* Direct Open Blog Slug Link on mobile */}
-            {currentSlug && (
-              <Link
-                href={`/blog/${currentSlug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="md:hidden p-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground transition-colors"
-                title={`Open /blog/${currentSlug}`}
-              >
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            )}
           </div>
         </div>
       </header>
@@ -261,8 +245,127 @@ export function GatePageClient({
           </div>
         </section>
 
+        {/* Top Continue & Scroll Action Bar */}
+        <section className="container mx-auto max-w-3xl px-4 pt-4 pb-2">
+          <div className="relative overflow-hidden rounded-2xl border border-emerald-500/25 bg-card p-4 sm:p-5 shadow-lg shadow-black/5">
+            {/* Ambient decorative glow */}
+            <div className="absolute -top-12 -right-12 h-28 w-28 rounded-full bg-emerald-500/10 blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-12 -left-12 h-28 w-28 rounded-full bg-primary/10 blur-2xl pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
+              {/* Left Info: Status / Timer / Step */}
+              <div className="flex items-center gap-3.5 text-left w-full sm:w-auto">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                  {isUnlocked ? (
+                    <CheckCircle2 className="h-6 w-6 text-emerald-400" />
+                  ) : linkType === "auto_skip" ? (
+                    <Zap className="h-6 w-6 text-amber-400 animate-pulse" />
+                  ) : (
+                    <Clock className="h-6 w-6 text-amber-400 animate-spin" style={{ animationDuration: "3s" }} />
+                  )}
+                </div>
+
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Step {stepNumber} of {totalSteps}
+                    </span>
+                    {!isUnlocked && (
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                        {secondsLeft}s
+                      </span>
+                    )}
+                  </div>
+                  <h3 className="text-sm sm:text-base font-bold text-foreground truncate mt-0.5">
+                    {linkType === "auto_skip"
+                      ? isUnlocked
+                        ? "⚡ Auto-Skipping to Destination..."
+                        : `Auto-Skipping in ${secondsLeft}s`
+                      : isUnlocked
+                      ? isFinalStep
+                        ? "Destination Ready!"
+                        : "Ready! Click Continue below"
+                      : `Please wait ${secondsLeft}s to unlock Continue`}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">
+                    {isUnlocked
+                      ? isFinalStep
+                        ? `Ready to proceed to ${destinationDomain}`
+                        : `Next article ready. You can also scroll below to read.`
+                      : "Scroll down to browse the article while verifying"}
+                  </p>
+                </div>
+              </div>
+
+              {/* Right Action: Continue Button or Scroll Down Helper */}
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                {linkType === "auto_skip" ? (
+                  isUnlocked ? (
+                    <Button
+                      onClick={handleAdvance}
+                      disabled={isSubmitting}
+                      className="w-full sm:w-auto h-11 px-6 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm shadow-md shadow-emerald-500/25 cursor-pointer hover:scale-[1.02] transition-all"
+                    >
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      <span>Skipping...</span>
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={scrollToArticle}
+                      variant="outline"
+                      className="w-full sm:w-auto h-11 px-4 border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 text-amber-500 text-xs font-semibold gap-2"
+                    >
+                      <ChevronDown className="h-4 w-4 animate-bounce" />
+                      <span>Scroll down to read</span>
+                    </Button>
+                  )
+                ) : isUnlocked ? (
+                  <Button
+                    onClick={handleAdvance}
+                    disabled={isSubmitting}
+                    className="w-full sm:w-auto h-11 px-6 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm shadow-md shadow-emerald-500/25 cursor-pointer hover:scale-[1.02] transition-all gap-2"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Advancing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Continue</span>
+                        <ArrowRight className="h-4 w-4" />
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={scrollToArticle}
+                    variant="outline"
+                    className="w-full sm:w-auto h-11 px-4 border-border/80 bg-muted/50 hover:bg-muted text-xs font-semibold text-muted-foreground hover:text-foreground gap-2"
+                  >
+                    <ChevronDown className="h-4 w-4 animate-bounce" />
+                    <span>Scroll down to read</span>
+                  </Button>
+                )}
+              </div>
+            </div>
+
+            {/* Countdown Progress bar if locked */}
+            {!isUnlocked && (
+              <div className="mt-3 w-full bg-muted/60 rounded-full h-1.5 overflow-hidden">
+                <div
+                  className="bg-amber-500 h-1.5 transition-all duration-1000 ease-linear rounded-full"
+                  style={{
+                    width: `${Math.round(((gateTimerSeconds - secondsLeft) / gateTimerSeconds) * 100)}%`,
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* Real Embedded Blog Article */}
-        <div className="gate-embedded-article [&>div>header]:hidden [&>div>footer]:hidden [&_a[href='/blog']]:hidden [&>div]:min-h-0 [&>div]:bg-transparent">
+        <div ref={articleSectionRef} className="gate-embedded-article [&>div]:min-h-0 [&>div]:bg-transparent">
           {children}
         </div>
 
@@ -318,21 +421,6 @@ export function GatePageClient({
                   ? `You are heading to ${destinationDomain}. Click continue below to proceed.`
                   : `Please explore the content above for ${gateTimerSeconds} seconds to support our free service and unlock the next article.`}
               </p>
-
-              {/* Direct blog slug reference */}
-              {currentSlug && (
-                <div className="mt-3">
-                  <Link
-                    href={`/blog/${currentSlug}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 text-xs text-primary hover:underline"
-                  >
-                    <span>Read full article at /blog/{currentSlug}</span>
-                    <ArrowRight className="h-3 w-3" />
-                  </Link>
-                </div>
-              )}
 
               {/* Error display if any */}
               {errorMessage && (
