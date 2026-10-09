@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server"
+import { auth } from "@clerk/nextjs/server"
+import { isMarketingAdmin } from "@/lib/marketing-auth"
 
 export async function POST(req: NextRequest) {
   try {
+    const { userId } = await auth()
+    if (!userId || !(await isMarketingAdmin(userId))) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
+    }
+
     const { url } = await req.json()
     const targetUrl = (url as string) || "https://ul0.site"
 

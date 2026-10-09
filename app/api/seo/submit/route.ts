@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server"
+import { auth } from "@clerk/nextjs/server"
+import { isMarketingAdmin } from "@/lib/marketing-auth"
 
 const HOST = "ul0.site"
 const KEY = "1b98f244195a4bb896890d3bb639f7ee"
@@ -61,6 +63,11 @@ const BLOG_SLUGS = [
 ]
 
 export async function POST() {
+  const { userId } = await auth()
+  if (!userId || !(await isMarketingAdmin(userId))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
+  }
+
   const allUrls = [
     ...CORE_PATHS.map((p) => `https://${HOST}${p}`),
     ...BLOG_SLUGS.map((slug) => `https://${HOST}/blog/${slug}`),

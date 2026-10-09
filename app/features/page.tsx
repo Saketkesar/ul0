@@ -38,11 +38,11 @@ export default function FeaturesPage() {
   const coreFeatures = [
     {
       icon: Zap,
-      title: "Edge-Routed 301 Redirects",
-      badge: "Sub-15ms Latency",
+      title: "Global Edge Redirection",
+      badge: "Edge Routed",
       description:
-        "Every short link is distributed globally via edge nodes. Permanent 301 redirects ensure instant navigation with zero render-blocking delay.",
-      highlights: ["Global CDN distribution", "99.99% uptime guarantee", "Preserves HTTP referrer headers"],
+        "Every short link is distributed globally via edge nodes. Fast redirects ensure instant navigation without render-blocking delays.",
+      highlights: ["Global CDN distribution", "High availability infrastructure", "Preserves HTTP referrer headers"],
     },
     {
       icon: Globe,
@@ -66,7 +66,7 @@ export default function FeaturesPage() {
       badge: "Print-Ready SVG",
       description:
         "Generate high-resolution vector QR codes for physical marketing, retail signs, and product packaging. Update destination URLs anytime without reprinting.",
-      highlights: ["Lossless SVG and high-res PNG export", "Custom foreground & background palette", "Lifetime scan tracking"],
+      highlights: ["Lossless SVG and high-res PNG export", "Custom foreground & background palette", "Real-time scan tracking"],
     },
     {
       icon: Lock,
@@ -82,18 +82,18 @@ export default function FeaturesPage() {
       badge: "cURL & SDK",
       description:
         "Integrate link shortening and analytics directly into your CI/CD pipelines, CRM, or backend microservices using standardized REST endpoints.",
-      highlights: ["Standard Bearer token auth", "Rate-limit transparency", "Webhooks for scan event triggers"],
+      highlights: ["Standard Bearer token auth", "Rate-limit transparency", "Fast JSON payloads"],
     },
   ]
 
   const comparisonRows = [
-    { feature: "Branded Custom Domains", ul0: "Yes (Multi-domain)", bitly: "$35/mo plan req.", tinyurl: "Pro plan req." },
-    { feature: "Edge Redirect Latency", ul0: "< 15ms", bitly: "50-120ms", tinyurl: "80-150ms" },
+    { feature: "Branded Custom Domains", ul0: "Yes (Multi-domain)", bitly: "Higher tiers", tinyurl: "Paid tier" },
+    { feature: "Edge Routing", ul0: "Global Edge", bitly: "Cloud Edge", tinyurl: "Standard DNS" },
     { feature: "Real-Time Geo Analytics", ul0: "Instant (Live)", bitly: "Delayed batch", tinyurl: "Basic counts" },
     { feature: "Dynamic Vector QR (SVG)", ul0: "Included free", bitly: "Add-on fee", tinyurl: "PNG only" },
     { feature: "Password Protection", ul0: "Included", bitly: "Enterprise only", tinyurl: "Paid tier" },
     { feature: "Full Developer API", ul0: "Included", bitly: "Restricted quotas", tinyurl: "Limited" },
-    { feature: "Free Web Utilities (Redirect/OG)", ul0: "Yes, 100% Free", bitly: "No", tinyurl: "No" },
+    { feature: "Free Web Utilities (Redirect/OG)", ul0: "Yes, Included", bitly: "No", tinyurl: "No" },
   ]
 
   return (

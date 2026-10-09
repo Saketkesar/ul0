@@ -42,6 +42,28 @@ const BLOCKED_HOSTNAMES = [
   'kubernetes.default.svc',
 ]
 
+// Known shorteners and self-domains to prevent redirect loops and chaining
+export const KNOWN_SHORTENER_DOMAINS = [
+  'ul0.site',
+  'bit.ly',
+  'tinyurl.com',
+  't.co',
+  'cutt.ly',
+  'rebrand.ly',
+  'is.gd',
+  'ow.ly',
+  'buff.ly',
+  'adf.ly',
+  'shorte.st',
+  'linkvertise.com',
+  'bc.vc',
+  'goo.gl',
+  'qr.ae',
+  'rb.gy',
+  'shorturl.at',
+  'dub.sh',
+]
+
 // Only HTTPS is allowed — http:// and protocol-less URLs are rejected
 const ALLOWED_PROTOCOLS = ['https:']
 
@@ -246,6 +268,16 @@ export function validateUrl(urlString: string): UrlValidationResult {
   if (isBlockedHostname(hostname)) {
     return { valid: false, error: "This domain has been flagged for phishing or fraud and is permanently blocked on ul0." }
   }
+
+  // Block self-links and shortener chains (prevents loops and abuse)
+  if (hostname === "ul0.site" || hostname.endsWith(".ul0.site")) {
+    return { valid: false, error: "Shortening ul0.site links to prevent redirect loops is not permitted." }
+  }
+  for (const shortener of KNOWN_SHORTENER_DOMAINS) {
+    if (hostname === shortener || hostname.endsWith("." + shortener)) {
+      return { valid: false, error: "Shortening links from other URL shorteners to prevent redirect chains is not permitted." }
+    }
+  }
   
   // Check for URL obfuscation attempts with userinfo
   if (url.username || url.password) {
@@ -296,7 +328,11 @@ const RESERVED_SLUGS = [
   'about', 'pricing', 'support', 'status', 'legal',
   'assets', 'images', 'css', 'js', 'fonts', 'media',
   'qr', 'wifi', 'split', 'r', 'es', 'hi', 'id', 'pt', 'th', 'vi',
-  'go', 'marketing', 'ads', 'm',
+  'go', 'marketing', 'ads', 'm', 'q',
+  'changelog', 'features', 'compare', 'use-cases', 'tools',
+  'utm', 'json', 'pdf', 'pomodoro', 'quotes', 'worldclock',
+  'clock', 'countdown', 'ambient', 'buy', 'security', 'threats',
+  'backlinks', 'report-abuse', 'refund',
 ]
 
 // Slug constraints

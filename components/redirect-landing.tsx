@@ -301,16 +301,6 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
               </div>
             </div>
           )}
-
-          {/* Disclaimer / Support Notice */}
-          <div className="mt-2 p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-center text-xs max-w-md w-full space-y-1">
-            <p className="font-semibold text-amber-900 dark:text-amber-200">
-              Please don't click on ads. These ads support the ul0 project.
-            </p>
-            <p className="text-amber-800/80 dark:text-amber-300/80 text-[11px]">
-              Please disable ad blockers to support our free service!
-            </p>
-          </div>
         </div>
 
         {/* 3. Right Side Tower Ad (160x300 on PC, centered stack on mobile) */}
