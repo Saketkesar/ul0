@@ -83,14 +83,6 @@ export function isSuspiciousRequest(request: Request): { suspicious: boolean; re
     }
   }
   
-  // Check for missing common headers that browsers typically send
-  const acceptHeader = request.headers.get('accept')
-  const acceptLanguage = request.headers.get('accept-language')
-  
-  if (!acceptHeader || !acceptLanguage) {
-    return { suspicious: true, reason: 'missing_headers' }
-  }
-  
   return { suspicious: false }
 }
 

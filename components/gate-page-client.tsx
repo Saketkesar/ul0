@@ -391,13 +391,10 @@ export function GatePageClient({
             <div className="relative z-10 flex flex-col items-center text-center">
               {/* Brand Logo */}
               <div className="mb-3 flex items-center justify-center">
-                <Image
-                  src="/ulo_4kwebp.webp"
+                <img
+                  src="/ulo_4k.webp"
                   alt="ul0"
-                  width={120}
-                  height={54}
-                  className="h-8 w-auto object-contain"
-                  priority
+                  className="h-10 w-auto object-contain"
                 />
               </div>
 

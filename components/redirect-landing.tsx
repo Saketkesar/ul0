@@ -258,15 +258,12 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
 
         {/* Center Main Redirect Card */}
         <div className="flex-1 w-full max-w-xl flex flex-col items-center gap-4 text-center my-auto">
-          {/* Official 4K Brand Logo */}
-          <div className="flex justify-center">
-            <Image
-              src="/ulo_4kwebp.webp"
-              alt="UL0 Link Platform"
-              width={160}
-              height={72}
-              className="h-11 w-auto object-contain"
-              priority
+          {/* Animated WebP Brand Logo (/ulo_4k.webp) */}
+          <div className="flex justify-center p-2 rounded-2xl bg-card/60 border border-border/60 shadow-xs max-w-sm w-full">
+            <img
+              src="/ulo_4k.webp"
+              alt="UL0 Official Platform"
+              className="h-20 sm:h-24 w-auto object-contain"
             />
           </div>
 
@@ -295,25 +292,6 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
             <Shield className="h-3.5 w-3.5" />
             <span>Link verified safe</span>
           </div>
-
-          {/* QR Code Scan Handoff for Desktop Users */}
-          {!isMobile && (
-            <div className="flex flex-col items-center gap-2 rounded-2xl border border-border/80 bg-card p-3.5 shadow-xs">
-              <div className="rounded-xl border border-border/60 bg-white p-2">
-                <Image
-                  src="/ulo_qr.webp"
-                  alt="Scan QR code to open on mobile"
-                  width={128}
-                  height={128}
-                  className="h-28 w-28 object-contain"
-                  priority
-                />
-              </div>
-              <p className="text-[11px] font-medium text-muted-foreground">
-                Scan with phone to open instantly on mobile
-              </p>
-            </div>
-          )}
 
           {/* Destination URL */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/20 px-4 py-3 rounded-xl border border-border/50 max-w-md w-full justify-center">
