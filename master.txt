@@ -1,0 +1,1086 @@
+UL0 (ul0.site) — MASTER PLAN
+Full analysis + redesign + fixes + growth
+Written: 2026-10-09
+Audience for this file: the AI coding agent that will edit the UL0 repo (github.com/Saketkesar/ul0).
+Stack (from README): Next.js 16 App Router, Clerk auth, Appwrite DB, Upstash Redis, Vercel, shadcn/ui.
+
+======================================================================
+0. HOW TO USE THIS FILE (RULES FOR THE BUILDER)
+======================================================================
+
+Work in the order of section 16 (roadmap). Do not skip ahead to design before the P0 fixes.
+
+Ground rules:
+- Small PRs. One concern per PR. Each PR lists what it changed and how it was tested.
+- Never break existing short links. Every existing slug must keep redirecting.
+- Database changes need a migration and a rollback note.
+- Never commit secrets. Never print env values.
+- Every claim shown on the website must be true and provable. If you cannot prove it, delete it.
+- No fake stats, fake testimonials, fake reviews, fake traffic, doorway pages, or mass AI pages.
+- No new heavy dependencies. Prefer what is already installed (shadcn/ui, Tailwind, Lucide).
+- Accessibility: WCAG AA contrast, keyboard navigation, visible focus rings, aria labels on icon buttons.
+- Before you say something is fixed, show a test that proves it (curl output, screenshot, or automated test).
+
+Evidence labels used below:
+[VERIFIED]   Seen directly on the live site, in the public repo, or in the user's screenshots.
+[HYPOTHESIS] Likely cause, but the code or data was not visible. You must confirm before changing anything.
+[BLOCKED]    Could not be accessed (login-only pages, Simple Analytics data, repo /app folder).
+
+======================================================================
+1. WHAT WAS ANALYZED
+======================================================================
+
+Read and reviewed:
+- Homepage, /docs, /pricing, /features (live HTML)
+- GitHub README, middleware.ts, UL0_Master_US_Audience_Growth_Plan.txt, repo file list
+- Two screenshots: logged-in customer dashboard, logged-in homepage
+- Simple Analytics public page (loads with JavaScript only, so no numbers were readable)
+
+Could NOT see: /dashboard/* pages, /dashboard/keys, the /app route handlers (redirect + click logging code),
+Appwrite schema, Search Console data, Simple Analytics numbers.
+Anything about tracking internals below is therefore a hypothesis with a test, not a claim.
+
+======================================================================
+2. EXECUTIVE DIAGNOSIS (THE 12 THINGS THAT MATTER MOST)
+======================================================================
+
+1. [VERIFIED] The API Keys page cannot open. middleware.ts has a permanent 301 redirect:
+   "/dashboard/keys": "/dashboard". The dashboard "API Keys" button and the link in /docs both point to
+   /dashboard/keys, so users bounce back to the dashboard. Because it is a 301, browsers cache it, so the bug
+   survives even after the code is fixed (test in a private window or clear cache).
+
+2. [VERIFIED] The site's central promise is "permanent 301 redirects". That conflicts with the product features
+   it sells: click tracking, editable QR destinations, one-time links, click caps, expiry, password gates,
+   geo/device targeting, A/B splits. A browser-cacheable 301 means repeat clicks never reach your server, so they
+   are never counted and destination edits do not take effect. [HYPOTHESIS] This is a major cause of
+   "tracking doesn't work". Test in section 4.
+
+3. [VERIFIED] middleware.ts runs Clerk on every request, including /r/* short-link redirects. That adds latency
+   and a failure point to the hottest path. It also makes the "sub-15ms redirect" claim impossible.
+
+4. [VERIFIED] Identity confusion. The homepage sells a link manager, then an expense splitter, a UPI QR generator,
+   a PDF scanner, pomodoro, ambient sounds, etc. Bitly, TinyURL and Cuttly never do this. It weakens trust and
+   dilutes search relevance. It also pulls an India-specific tool (UPI) into a site that wants US users.
+
+5. [VERIFIED] Unprovable or inconsistent claims on public pages (details in section 10): "99.99% uptime
+   guarantee", "<15ms latency", "increase CTR by 34%", competitor price/latency numbers, "24/7 dedicated support"
+   at $9/mo, "Webhooks for scan events" (not in README), "100% free forever" vs paid plans.
+
+6. [VERIFIED] Pricing is inconsistent. The Free plan card lists paid features (A/B splits, geo targeting, password
+   protection, CSV export) while the comparison table says Free has none of them. README says Stripe and ~$2/$6;
+   pricing page says $3/$9 and links to a Polar.sh portal. Homepage says "Free limit: Unlimited" while pricing
+   says 1 domain short link.
+
+7. [VERIFIED] API docs and README disagree: docs use header "Authorization: Bearer" and field "longUrl";
+   README uses header "x-api-key" and field "url". One of them is wrong for developers.
+
+8. [VERIFIED] Visual "AI tells" (section 6): icon on every nav item, tinted icon chips, rounded pill buttons with
+   arrows everywhere, bold-lead bullet lists with " - " dashes, hype copy ("Enterprise-grade", "Next-Gen",
+   "Infrastructure Built For..."), a wall of directory badges, flag emojis, an oversized footer.
+   The Product Hunt badge shows "2" votes, which hurts credibility more than it helps.
+
+9. [VERIFIED] The dashboard is dull and incomplete: a large admin-promo banner ("Marketing Link Engine") dominates
+   the top; 7 pill buttons wrap and orphan "Marketing Links" on a second row; the link list has no copy button,
+   no search, no sorting, no filters, no tags, no QR shortcut, unlabeled icon-only actions, and a trash icon with
+   no visible confirmation. Admin tools ("SEO & Search Console", "Marketing Links") appear in the customer UI.
+
+10. [VERIFIED] Abuse/safety risk. The first link in the dashboard shortens ul0.site itself (a loop), another points
+    to pastebin.com. Shorteners on cheap TLDs get blocklisted fast. If ul0.site gets flagged by Google Safe
+    Browsing or email filters, everything else stops mattering. (Section 14.)
+
+11. [VERIFIED] Ad-gated "Marketing Link Engine" (content gates, 5s auto-skip). Interstitial ad gates make a
+    shortener look like spam to users, browsers and ad networks. Keep it admin-only, noindex, and away from the
+    brand until the core product is trusted. Consider removing it.
+
+12. [VERIFIED] The competitive claim is "Free, unlimited, no limits" while selling Pro/Business. You will not
+    out-feature Bitly. You can win on: free custom domain, privacy-first analytics, honest pricing, open source,
+    clean developer API, and a calmer, faster UI. Build the brand around those, not around "we are bigger".
+
+======================================================================
+3. P0 HOTFIXES (DO THESE FIRST — DAY 0 TO 2)
+======================================================================
+
+3.1 Fix the API Keys page
+[ ] In middleware.ts, DELETE the line  "/dashboard/keys": "/dashboard",  from LEGACY_REDIRECTS.
+[ ] Confirm the page file exists (app/dashboard/keys/page.tsx or equivalent). If it was moved, update the
+    dashboard button, the docs link, and any other links to the real path instead.
+[ ] Also review "/dashboard/ads" -> "/dashboard/marketing" and "/ads" -> "/dashboard/marketing" (make sure
+    those targets exist and are admin-protected).
+[ ] Do not use 301 for app routes that may change. Use 302/307, or no redirect at all.
+[ ] Because browsers cached the old 301, test in a private window. Tell existing users to hard-refresh.
+[ ] Test: signed in -> dashboard -> "API Keys" opens a keys page. Create a key, copy it, call the API with it,
+    revoke it, confirm 401 after revoke.
+[ ] Keys UX: show the full key once at creation, then only a prefix (ul0_ab12...). Show name, created date,
+    last used, and a revoke button with confirmation.
+
+3.2 Stop caching redirects incorrectly (see section 4 for full detail)
+[ ] Run:  curl -sI https://ul0.site/r/vishal
+    Record the status code and Cache-Control. If it is 301 with no cache headers, change it (section 4.2).
+
+3.3 Take Clerk off the redirect path
+[ ] In middleware.ts, exclude /r/* (and /go/*) from the Clerk matcher so redirects never wait on auth.
+    Keep the X-Robots-Tag noindex header via next.config headers() instead of middleware.
+[ ] Re-measure redirect time (TTFB) before and after. Record numbers.
+
+3.4 Remove false or unprovable claims (full list in section 10). At minimum, today:
+[ ] Delete "99.99% uptime guarantee", "<15ms", "increase CTR by 34%", and the competitor latency/price rows.
+[ ] Remove "Webhooks for scan event triggers" unless webhooks exist.
+[ ] Fix the Free/Pro/Business feature lists so the cards and the comparison table agree.
+
+3.5 Block self-links and redirect loops
+[ ] Reject destinations on ul0.site, on any connected custom domain, and on known shortener domains
+    (bit.ly, tinyurl.com, t.co, cutt.ly, rebrand.ly, etc.). Return a friendly error.
+[ ] Add a reserved-slug list (dashboard, api, docs, pricing, login, admin, etc.).
+
+3.6 Hide admin tools from customers
+[ ] Marketing Engine, "Marketing Links" and "SEO & Search Console" move to /admin.
+[ ] Enforce the role check on the server (route handler and server components), not just by hiding buttons.
+
+======================================================================
+4. TRACKING & ANALYTICS REBUILD
+======================================================================
+
+Evidence: dashboard shows 20 links, 33 total clicks; a link created 10/8 shows 0 clicks; others show 2 and 6.
+User reports tracking "does not work properly". Code not visible, so investigate in this order.
+
+4.1 Diagnose (write findings into the PR description)
+Check each hypothesis and mark confirmed/rejected:
+
+H1 Redirect is a cacheable 301.
+   Test: curl -sI https://ul0.site/r/<slug>. Look at status and Cache-Control.
+   Then open the short link twice in the same browser with DevTools Network open. If the second request says
+   "(from disk cache)" or never hits the server, repeat clicks are lost.
+
+H2 Redis cache-hit path skips click logging.
+   Common bug: cache hit -> redirect immediately, click logging only runs on cache miss.
+   Test: click a link twice; compare Redis hit logs vs Appwrite click rows.
+
+H3 Click logging is fire-and-forget and gets killed.
+   On Vercel, un-awaited promises after the response can be cancelled. Use after() from "next/server"
+   (or waitUntil) so logging finishes after the redirect is sent.
+
+H4 Custom-domain path.
+   middleware rewrites custom-domain slugs to /r/<slug>. Confirm the click row records the correct host,
+   linkId and owner, and that dashboard queries include custom-domain clicks.
+
+H5 Dashboard aggregation bugs.
+   - Appwrite listDocuments returns 25 rows by default. Any "total clicks" computed from a default page is wrong
+     once data grows. Use Query.limit and the response "total", or keep counters.
+   - Time zone: "today/yesterday" must use one explicit time zone (store UTC, display in user's zone).
+   - Per-link count vs total count computed by different code paths.
+
+H6 Bots and prefetchers.
+   Link-preview bots (WhatsApp, Slack, Facebook, Google, Bing, uptime monitors) either inflate counts or,
+   if filtered badly, hide real clicks. Decide and implement a clear rule (4.3).
+
+H7 Missing indexes or schema limits in Appwrite causing silent write failures or timeouts.
+   Check server logs for rejected writes, rate limits, or attribute size errors.
+
+4.2 Redirect behavior (decision)
+- Default for all links: HTTP 307 or 302 with  Cache-Control: no-store  (or private, max-age=0).
+  This makes counting, edits, expiry, passwords, geo rules and A/B splits actually work.
+- Offer "Permanent (301)" as an optional per-link setting for SEO-only use, with a visible note that clicks
+  from repeat visitors may not be counted.
+- Rewrite the marketing copy to match: do not sell "301 equity" as the headline.
+  Shortener URLs are noindexed; the equity claim is weak and risky.
+
+4.3 Event pipeline (target design)
+On every redirect (including cache hits):
+1. Resolve slug from Redis (fallback Appwrite, then re-warm Redis).
+2. Evaluate rules in order: disabled/expired/click-cap -> password gate -> geo/device rules -> A/B choice.
+3. Send the redirect immediately.
+4. In after(): write one click event. Never block the redirect on analytics.
+
+Click event fields:
+  linkId, ownerId, host, slug, ts (UTC), country, region, city (optional),
+  device (mobile/tablet/desktop), os, browser, referrerHost, utm_source/medium/campaign/term/content,
+  language, isBot, visitorHash, isUnique(day).
+
+Geo: use Vercel headers x-vercel-ip-country, x-vercel-ip-country-region, x-vercel-ip-city.
+Do not store raw IPs.
+Unique visitors: visitorHash = SHA-256(dailySalt + ip + userAgent), salt rotated daily and never stored with
+the data. No cookies. This keeps the "privacy-first, no cookies" promise true.
+Bots: use the `isbot` package plus an allowlist of preview bots. Store isBot=true, exclude from default
+dashboard totals, add a "show bots" toggle.
+
+4.4 Aggregation
+- Keep a real-time counter in Redis (INCR per link per hour) for fast "live" numbers.
+- Roll up to a daily collection: (linkId, date) -> clicks, uniques, per-country, per-device, per-referrer maps.
+- Dashboard charts read the rollups, not raw events. Raw events remain for drill-down and CSV export.
+- Retention: raw events 13 months on paid plans, 30 days on free (state this on pricing).
+
+4.5 Acceptance tests for tracking
+[ ] Click a new link 5 times in one browser: dashboard shows 5 total within a few seconds.
+[ ] Click from phone and desktop: device split shows both.
+[ ] Click with ?utm_source=test: appears under UTM sources.
+[ ] Click through a custom domain: counted under the right link.
+[ ] Expired / password / click-cap / one-time links behave correctly and log the right outcome.
+[ ] Edit the destination: next click goes to the new destination immediately.
+[ ] Bot user-agent (curl with Slackbot UA): flagged, excluded from default totals.
+[ ] Total clicks on dashboard = sum of per-link clicks for the same date range, always.
+[ ] Kill-test: simulate slow DB; redirect still returns in under 100 ms.
+[ ] Add an automated integration test for each of the above where possible.
+
+======================================================================
+5. LOGIC AUDIT (EVERYTHING THAT "DOESN'T WORK")
+======================================================================
+
+Run this matrix, record pass/fail, fix failures. The user reports "all the logics don't even work",
+so do not assume anything works.
+
+Link creation
+[ ] Anonymous create from homepage (valid URL, invalid URL, no protocol, very long, unicode).
+[ ] Custom slug: allowed chars, length limits, reserved words, duplicate -> clear 409 message.
+[ ] Authenticated create saves to the right owner and domain.
+[ ] Plan limits enforced server-side (Free 1 domain link, Pro 100, Business unlimited) and shown in UI.
+[ ] Safe-destination scan actually runs (see 14) and failure paths are handled.
+
+Link management
+[ ] Edit destination, slug, title, tags. Slug changes keep the old slug as a redirect or warn.
+[ ] Delete asks for confirmation, supports undo (soft delete 30 days), and frees plan quota.
+[ ] Copy button, open button, QR button on every row.
+[ ] Pagination or infinite scroll beyond 25 rows. Search by slug, destination, title, tag.
+
+Advanced link features (each must work end to end, or be hidden until it does)
+[ ] Password protection (hashing, wrong-password message, rate limit).
+[ ] Expiry date and click-cap expiry; expired page is friendly and offers a fallback URL.
+[ ] One-time links.
+[ ] Geo targeting and device targeting rules.
+[ ] A/B split with weights; clicks counted per variant.
+[ ] UTM builder saves and appends parameters correctly without breaking existing query strings.
+[ ] CSV export contains correct columns and respects date range.
+
+Domains
+[ ] Add domain -> DNS instructions -> verify -> SSL status. Clear states: Pending, Verifying, Active, Failed.
+[ ] Domain limit per plan enforced (dashboard shows 1/3 on Pro).
+[ ] Remove domain: what happens to its links is explained before confirming.
+[ ] Root-domain landing (custom-domain-landing) is clean and brandable, not a UL0 ad page.
+[ ] Vercel preview hostnames (*.vercel.app) must NOT be treated as customer custom domains
+    (middleware currently treats any unknown host as a custom domain).
+
+Billing
+[ ] Checkout -> webhook -> plan updates in the dashboard within seconds.
+[ ] Downgrade/cancel behavior: what happens to links/domains above the new limit.
+[ ] Billing portal link works. Decide ONE provider (README says Stripe, pricing uses Polar) and update docs.
+
+Auth
+[ ] Sign up, sign in, sign out, deleted account data removal.
+[ ] Anonymous links can be claimed after signing up (nice conversion feature).
+
+QR
+[ ] SVG and PNG export, colors, logo upload, size, error-correction level.
+[ ] "Dynamic" QR: it must encode the short link (not the destination) so edits work. Scan counts tie to the link.
+
+======================================================================
+6. DESIGN SYSTEM (APPLE / NOTION / LINEAR FEEL, NOT "AI GENERATED")
+======================================================================
+
+Reference products to study before designing: Dub.co (closest competitor), Linear, Vercel, Notion, Apple.com,
+Stripe Docs, Raycast. Bitly, TinyURL and Cuttly are the market reference for familiar patterns,
+not for visual quality.
+
+6.1 Principles
+- Quiet. Content first. One accent color. Whitespace does the work, not boxes and shadows.
+- Hairline borders instead of heavy shadows. Almost flat.
+- Consistent: one type scale, one spacing scale, one radius set, one icon set.
+- Real product screenshots instead of illustrations and icon chips.
+- Plain, specific copy. Say what the product does. No superlatives.
+
+6.2 What currently reads as AI-generated (remove these)
+[ ] Icons on every top-nav item. Nav should be text only.
+[ ] Tinted square icon chips (green/blue/purple) in cards and stats.
+[ ] Arrow glyphs on every button and link ("Manage Domains ->", "Open Marketing Engine ->").
+[ ] Heavy 800-weight headlines. Use 600 with tight tracking.
+[ ] Bullet lists with bold lead-in and " - " dash explanations.
+[ ] Words: "Enterprise-grade", "Next-Gen", "Infrastructure Built for...", "Engineered for...", "Modern Teams".
+[ ] Directory badge wall ("Featured on trusted directories") and SEO paragraph blocks on the homepage.
+[ ] Flag emojis in the footer language list.
+[ ] A 40-link footer.
+[ ] The "$" inside the logo mark (signals ad monetization). Use a clean mark.
+[ ] Gradients, glows, glassmorphism, blobs, animated gradients.
+
+6.3 Tokens (adjust accent to the logo's exact teal-green)
+Colors, light:
+  --bg #FFFFFF   --surface #FAFAFA   --surface-2 #F4F4F5
+  --border rgba(0,0,0,0.08)   --border-strong rgba(0,0,0,0.14)
+  --text #0A0A0B   --text-muted #6B6B72   --text-faint #9A9AA2
+  --accent #12926E (derive from logo)   --accent-hover darker 8%   --danger #D92D20   --warn #B54708   --ok #067647
+Colors, dark:
+  --bg #0B0B0C   --surface #111113   --surface-2 #18181B
+  --border rgba(255,255,255,0.08)   --text #F4F4F5   --text-muted #A1A1AA
+Support light and dark from day one (prefers-color-scheme + manual toggle).
+
+Typography:
+  Inter (variable, self-hosted via next/font) or Geist. One family.
+  Marketing: H1 56/60 (mobile 36/40) weight 600 tracking -0.03em; H2 36/42; H3 20/28; body 17/28 muted.
+  App: 14/20 body, 13 secondary, 12 captions, 24/32 page titles. Tabular numbers for all metrics.
+  Mono (Geist Mono or JetBrains Mono) only for short links, API keys, code.
+
+Spacing: 4px base; use 4, 8, 12, 16, 24, 32, 48, 72, 112.
+Radius: 8 (inputs, buttons), 12 (cards, popovers), 9999 only for tiny badges.
+Borders: 1px. Shadows: only on popovers/menus (0 8px 24px rgba(0,0,0,0.08)).
+Max content width: 1120 marketing, 1280 app. Marketing sections use 112px vertical rhythm on desktop.
+
+Motion: 120-200ms, ease-out, opacity/translate only. Respect prefers-reduced-motion.
+Loading: skeletons, never spinners on full pages. Toasts for success/failure. Optimistic updates.
+
+Buttons: primary (solid text color or accent), secondary (border), ghost. 36px app height, 44px marketing.
+No arrows inside buttons except on explicit "next" actions.
+
+Icons: ONE set. Use Lucide at strokeWidth 1.5 (or Phosphor Regular). 16px in app, 18px in marketing.
+Rules: icons only where they speed recognition (copy, QR, analytics, delete, external link, search, settings).
+Never decorative. Never inside colored chips. Always paired with an aria-label or tooltip when icon-only.
+Replace all currently mixed icon styles so strokes match. Logo: redraw as a simple monochrome mark
+that works at 16px favicon, with a light and dark variant.
+
+6.4 Component rules (shadcn/ui, restyled with the tokens above)
+- Tables: 44px rows, hairline row dividers, hover background surface, sticky header, sortable columns.
+- Cards: border only, 12px radius, no shadow, 20-24px padding.
+- Inputs: 36-40px, 1px border, accent focus ring (2px, offset 2px).
+- Command palette (Cmd/Ctrl-K): search links, jump to pages, create link.
+- Empty states: one sentence, one primary action, optional small screenshot.
+- Confirm dialogs for destructive actions, with undo toast where possible.
+
+======================================================================
+7. MARKETING SITE REDESIGN (PAGE BY PAGE)
+======================================================================
+
+7.1 Global navigation
+Left: logo. Center (text only): Product (menu: Short links, QR codes, Analytics, Custom domains, API),
+Pricing, Docs, Blog, Free tools. Right: Sign in (ghost), Get started (primary).
+When signed in: "Dashboard" button + avatar menu (Dashboard, Settings, Billing, Sign out). Avoid showing
+"Dashboard" as a page-looking tab on the dashboard itself.
+Remove the standalone "Shorten" and "Use Cases" top items (Use cases lives in Product/Solutions menu or footer).
+
+7.2 Homepage (priority 1)
+Structure:
+1. Hero: one H1 ("Short links you own." or "Branded short links, QR codes and analytics."),
+   one sentence of subcopy, the shorten box as the focal element (URL field + Shorten button),
+   a collapsed "Custom alias / domain" row that expands. After submit: result card with the short link,
+   Copy button, QR button, "Create a free account to track clicks".
+2. A real product screenshot of the analytics dashboard in a clean browser frame.
+3. Three alternating feature rows (Branded domains, Analytics, QR codes), each with a real screenshot,
+   2-3 lines of plain copy, a text link.
+4. Honest comparison table (UL0 vs Bitly vs TinyURL vs Cuttly) with "Last verified <date>" and only facts
+   you checked on their pricing pages that day. Link sources. If you cannot verify a row, delete it.
+5. Pricing teaser (3 cards, same data as /pricing, single source of truth in code).
+6. FAQ accordion (6-8 real questions, FAQPage schema).
+7. Final CTA.
+8. Footer: 4 columns max (Product, Resources, Company, Legal) + language dropdown.
+
+Remove from the homepage: expense splitter, UPI QR, PDF scanner, directory badge wall, "Why Choose ul0"
+three-by-three block, the long SEO paragraphs, "Popular uses for short URLs" list.
+Keep keyword-relevant text, but write it as 2-3 useful short sections (How it works, Who it is for),
+not stuffing.
+Social proof: show only real numbers (links created, clicks served) pulled from the database, rounded, with the
+date. If numbers are small, skip numbers and show a customer quote only if it is real.
+Product Hunt/NextGen badges: move to /about (small, one row) or hide until the numbers are strong.
+
+7.3 Pricing
+[ ] One source of truth: a plans.ts config that drives cards, comparison table, dashboard limits, and API limits.
+[ ] Cards list only features that plan actually includes. Free = what Free really gets.
+[ ] Monthly/annual toggle, annual price shown per month. Currency: USD.
+[ ] A single comparison table, grouped (Links, Domains, Analytics, Security, Support).
+[ ] Fix support claims ("24/7 dedicated" only if true).
+[ ] Add a short FAQ: cancellation, refunds, what happens when you downgrade, data retention.
+
+7.4 Product pages (create or rebuild, each with real screenshots and a working demo or tool)
+/features (overview), /analytics, /qr-codes, /custom-domains, /api.
+Each: H1 specific to search intent, a 3-step "how it works", screenshot, short FAQ, CTA.
+Merge /custom-domain-landing and the custom domain marketing into /custom-domains.
+(Note: custom-domain-landing is also the root page shown on customers' domains. Keep a neutral,
+brandable variant for that use and a separate marketing page.)
+
+7.5 Free tools (/tools)
+Keep indexable only tools with real search demand and quality: QR generator, UTM builder, redirect checker,
+URL expander/safety check, OpenGraph preview, meta tag generator, WiFi QR.
+Move bill splitter, UPI QR, PDF scanner, pomodoro, world clock, ambient sounds, quotes to a separate
+"More utilities" area, noindex until each is high quality, or spin them off to another domain so they stop
+diluting the brand.
+Every tool page: tool above the fold, explanation under it, examples, FAQ, related guides, soft CTA.
+
+7.6 Blog
+- Clean index with category filter and search. Large readable typography (680px column), real author bio, updated date.
+- Audit all articles. Delete or merge thin ones. Rewrite ones with invented stats ("increase CTR by 34%").
+- Add table of contents, author schema, and internal links to a product/tool.
+
+7.7 Localization
+12 language folders exist (es, pt, de, fr, nl, ja, ko, vi, id, th, hi, ar).
+[ ] For a USA push, lead with en-US. Audit the translations. Machine-translated thin pages can hurt quality
+    signals. Keep only locales that are complete and reviewed; noindex the rest until ready.
+[ ] Implement hreflang correctly (self-referencing + x-default).
+[ ] Replace flag emojis with a "Language" dropdown.
+
+7.8 Footer (target)
+Product: Short links, QR codes, Analytics, Custom domains, API, Pricing, Changelog.
+Resources: Docs, Blog, Free tools, Guides, Status.
+Company: About, Contact, Security, Report abuse.
+Legal: Privacy, Terms, Refund.
+Remove "Backlinks & Badges" from the public footer (it reads as link-scheme bait). Keep "Threat Radar"
+only if it is a real, maintained page.
+
+======================================================================
+8. DASHBOARD REDESIGN (CUSTOMER)
+======================================================================
+
+8.1 Layout (Notion/Linear style)
+Left sidebar (240px, collapsible, hairline right border):
+  Workspace/account switcher at the top
+  Overview, Links, Analytics, QR codes, Campaigns (UTM), Domains, API, Settings, Billing
+  Plan usage meter at the bottom ("Domain links 12 / 100", "Domains 1 / 3") with an Upgrade link
+Top bar: search field (Cmd-K), "Create link" primary button, help menu, avatar.
+Mobile: bottom tab bar (Overview, Links, Analytics, More) and a full-screen create sheet.
+
+8.2 Overview
+- Greeting is a single small line, no big welcome copy.
+- Date range selector (24h, 7d, 30d, 90d, custom) that applies to everything on the page.
+- KPI row: Clicks, Unique visitors, Links, Top country. Each with delta vs previous period and a sparkline.
+- Main chart: clicks over time (line/area), with compare-to-previous toggle.
+- Panels: Top links, Top countries (list with bars, map later), Devices, Browsers/OS, Referrers, UTM campaigns.
+- First-run state: checklist (Create first link, Connect a domain, Make a QR code, Create API key) that disappears when done.
+
+8.3 Links (the heart of the product)
+Table columns: select checkbox | link (favicon of destination + title + short URL with copy button) |
+destination (truncated, tooltip) | clicks (7d sparkline + total) | tags | created | status | row menu.
+Above table: search, filters (domain, tag, status, created date), sort, "Create link".
+Row menu: Edit, Copy, QR code, Analytics, Duplicate, Archive, Delete (with confirm + undo toast).
+Bulk actions: tag, archive, delete.
+Create/Edit in a right-side drawer: destination, domain, slug (with availability check), title, tags,
+UTM builder (inline), advanced (password, expiry, click cap, geo/device rules, A/B split, redirect type).
+Show the plan-gate inline: locked features show a small "Pro" tag and open an upgrade dialog, not a dead end.
+
+8.4 Link detail page
+Header: short link + copy + QR + edit. Same date range control. Charts and breakdowns scoped to this link,
+recent clicks feed (country, device, referrer, time), export CSV.
+
+8.5 Admin tools
+Remove from customer UI. Create /admin (role-checked server side) containing Marketing Engine, SEO tools,
+abuse queue, user list, flagged links, and system health.
+
+8.6 States and polish
+[ ] Skeleton loaders. Error boundaries with retry. Offline/slow notice.
+[ ] Empty states for every page.
+[ ] Toasts for every mutation. Keyboard shortcuts: C create, / search, G then L links, G then A analytics.
+[ ] Dark mode. Responsive down to 360px.
+[ ] No horizontal scroll. Touch targets 44px.
+
+======================================================================
+9. API & DOCS
+======================================================================
+
+[ ] Decide the contract and document ONE version. Recommended:
+    Header  Authorization: Bearer ul0_xxx  (also accept X-API-Key for convenience)
+    Body    { "url": "...", "domain": "link.example.com", "slug": "summer-promo" }
+    (Accept legacy longUrl/host for backwards compatibility, but document only the new names.)
+[ ] Version the API: /api/v1/links. Keep /api/shorten as an alias.
+[ ] Endpoints to ship: POST/GET/PATCH/DELETE /links, GET /links/{id}/analytics, GET /domains, POST /qr.
+[ ] JSON error format: { "error": { "code": "slug_taken", "message": "...", "status": 409 } }.
+[ ] Rate limit headers on every response (X-RateLimit-Limit, -Remaining, -Reset) and Retry-After on 429.
+[ ] Per-key rate limiting in Upstash. Pro 60/min, Business 300/min (matches current docs).
+[ ] Docs redesign (Stripe/Vercel docs feel): left nav, right-hand code panel, language tabs (cURL, Node, Python, Go),
+    copy buttons, a "Try it" request builder, error code table, changelog link.
+[ ] Publish an OpenAPI spec at /openapi.json. Generate SDK snippets from it.
+[ ] Webhooks only if built: click events, link created, domain verified. Otherwise remove all mentions.
+[ ] Fix the docs link to the keys page (see 3.1) and add a "Get API key" button that deep-links there.
+
+======================================================================
+10. CONTENT & CLAIMS CLEANUP
+======================================================================
+
+Remove or replace (these are on the live site today):
+- "99.99% uptime guarantee" (no SLA or status page exists). Replace with a real /status page and measured uptime later.
+- "Sub-15ms latency", "<15ms" and competitor latency numbers (50-120ms, 80-150ms). Remove unless you publish a
+  methodology and measurements.
+- "Increase CTR by 34%" (blog). Remove or cite a real source.
+- Competitor pricing rows ("$35/mo plan req.", "From $8/mo", "From $12.99/mo", "From $13/mo", "Delayed batch").
+  Competitor pricing changes often. Re-verify against their pricing pages on the day, add "verified <date>" and link,
+  or delete the rows.
+- "100% free forever", "Completely free with no restrictions", "No paid walls" vs the Pro/Business plans.
+  Replace with: "Free to start. Custom domain on every plan."
+- "Enterprise-grade", "Next-Gen", "bank-level", "Infrastructure Built for Creators, Agencies & Businesses".
+- "24/7 Dedicated" support on the $9 plan unless you actually offer it.
+- "Continuously screened against malware and phishing databases" unless the scan really runs on every link
+  (and on re-check). See section 14.
+- "Webhooks for scan event triggers" (unless built).
+- "Lifetime scan tracking" (define retention, state it).
+- "Cheapest URL shortener SaaS in 2026" (meta description on pricing). Unprovable.
+- "Featured on trusted directories" wall and the 2-vote Product Hunt badge on the homepage.
+- Homepage line "best free link shortener with expense splitting" (confusing positioning).
+
+Copy style guide:
+- Short sentences. Concrete nouns. Numbers only when verifiable.
+- Sentence case headings. No exclamation marks. No "seamless", "robust", "cutting-edge", "leverage", "unlock".
+- Say what a feature does and who it is for. One idea per paragraph.
+- Do not use " - " bold-lead bullet patterns. Prefer short sentences or a simple table.
+
+Suggested messaging (replace the hero and meta once approved by the owner):
+  Title tag:   UL0: Free branded short links, QR codes and click analytics
+  H1:          Branded short links, QR codes and analytics
+  Subcopy:     Shorten a link in seconds. Add your own domain for free. See who clicks, without cookies.
+  Meta desc:   Create short links on your own domain, generate QR codes and track clicks with privacy-friendly
+               analytics. Free to start, no credit card.
+
+======================================================================
+11. POSITIONING & COMPETITIVE STRATEGY
+======================================================================
+
+Reality: Bitly, TinyURL, Cuttly, Rebrandly, Short.io and Dub are well funded or long established.
+You cannot beat them head to head on breadth. Pick a lane that is true and defensible.
+
+Recommended positioning (pick this unless the owner decides otherwise):
+  "The calm, privacy-first link manager with a free custom domain. Open source."
+
+Real differentiators to build and prove:
+1. Free custom domain on every plan (check it stays true and cheap to operate).
+2. Cookie-free, privacy-first analytics with an honest explanation of how uniques are counted.
+3. Open source (AGPL) + self-host option (Docker). Dub proves developers like this.
+4. Clean, fast developer API with a good OpenAPI spec and SDKs.
+5. Transparent, low pricing with a single plans.ts source of truth.
+6. Speed you can prove (public benchmark page with method).
+7. Excellent dashboard UX (section 8). This is currently the weakest area versus the market.
+
+Competitor study (do before design lock):
+- For each of Bitly, TinyURL, Cuttly, Rebrandly, Short.io, Dub: screenshot homepage, pricing, dashboard (free account),
+  onboarding flow, empty states. Note what they do well. Save in /docs/competitors/ (internal).
+- Steal patterns (layout, flows), not copy or branding.
+
+Trust signals to earn (not fake): real customer logos/quotes (with permission), public status page,
+public changelog, GitHub activity, security page with a disclosure address, named founder on About.
+
+Brand note: "ul0" uses a zero but the logo reads like a capital O. People will type "ulo.site".
+Fix the wordmark so the zero is distinct (slashed or dotted zero), and consider owning a typo domain later
+only when revenue allows (do not buy more domains now).
+Long term: a .site TLD is a weak trust signal for a link shortener. When revenue allows, move to a .com/.io/.co
+with a clean 301 migration plan. Not a P0.
+
+======================================================================
+12. SEO & RANKING PLAN
+======================================================================
+
+Honest framing: "free URL shortener" is dominated by sites with huge authority. No one can guarantee
+rankings, including this plan. The path is long-tail intent, quality tools, comparison pages, product-led
+discovery and earned links. Expect months, not days.
+
+12.1 Technical foundation
+[ ] robots.txt and sitemap.xml: confirm they exist, include only canonical, indexable URLs, and list lastmod.
+[ ] Canonical on every page. One canonical host (ul0.site), force-redirect www if used.
+[ ] Check indexing in Search Console: Pages report, "Crawled - currently not indexed", "Duplicate" buckets. Fix causes.
+[ ] Keep /r/* and /go/* noindex (already set). Also confirm user-generated pages cannot be indexed.
+[ ] Structured data: Organization, WebSite (SearchAction optional), SoftwareApplication (with real offers),
+    FAQPage on FAQs, BreadcrumbList, Article on posts. Validate with Rich Results Test.
+[ ] Core Web Vitals: LCP < 2.0s, CLS < 0.05, INP < 200ms on mobile. Measure with PageSpeed + CrUX.
+    Remove heavy third-party scripts from the homepage (ads, badges, widgets).
+[ ] Title/meta rules: unique, 50-60 / 140-155 chars, no keyword stuffing. Many pages currently repeat the same
+    twitter:title/description and OG image. Give every page its own.
+[ ] Internal linking: every blog post links to 1 feature, 1 tool, 2 related posts, pricing.
+[ ] Remove duplicate or doorway content (regional blog posts were already redirected: good, keep it that way).
+[ ] Locale pages: see 7.7.
+
+12.2 Keyword targets (verify volume and difficulty in a keyword tool before committing)
+Cluster A (comparison/alternative, high intent):
+  bitly alternative, bitly alternative free, tinyurl alternative, cuttly alternative, rebrandly alternative,
+  free url shortener with custom domain, free custom domain link shortener
+Cluster B (product):
+  qr code generator with analytics, dynamic qr code generator free, branded short links,
+  link click tracking free, utm builder, privacy friendly link shortener, url shortener api
+Cluster C (tools, link-magnets):
+  redirect checker, url expander, link safety checker, og image preview, meta tag generator, wifi qr code generator
+Cluster D (how-to, US small business):
+  how to track qr code scans for a restaurant / real estate flyers / events,
+  how to track instagram link clicks, how to set up a custom domain for short links
+
+12.3 Pages to create (quality over quantity — 1 strong page beats 10 thin ones)
+- /compare/bitly-alternative, /compare/tinyurl-alternative, /compare/cuttly-alternative, /compare/rebrandly-alternative:
+  honest, specific, dated, with a real feature table and "who should choose which".
+- /custom-domains with a step-by-step DNS guide (Cloudflare, GoDaddy, Namecheap, Squarespace/Google Domains successors).
+- /qr-codes + a best-in-class QR generator page.
+- Use-case pages (already exist under /use-cases): rewrite each with a real workflow, screenshots and FAQ.
+- Public changelog and a /status page.
+First 10 articles: pick from the user's existing plan (UL0_Master_US_Audience_Growth_Plan.txt, section 3),
+starting with Cluster A and D. Each with original screenshots and a real UL0 workflow.
+
+12.4 Links and mentions (earned only)
+- Product Hunt: relaunch properly when the new design and dashboard ship (the current listing has 2 votes).
+- Show HN, r/selfhosted, r/SideProject, Indie Hackers, dev.to: share the open-source and privacy angles with real content.
+- AlternativeTo, SaaSHub, Slant, G2/Capterra listings (free profiles), awesome-lists on GitHub where the project fits.
+- Publish a "State of link shorteners / QR scan stats" original-data article only if the data is real.
+- Never buy links, swap links in bulk, or run directory-submission blasts.
+
+12.5 Measurement
+Weekly: Search Console (queries, pages, countries, CTR, position), Simple Analytics (top pages, referrers),
+signups, activations (created a link in first session), paid conversions.
+Rules: high impressions + low CTR -> rewrite title/meta; position 11-30 -> deepen content and add internal links;
+position 30+ -> rethink intent.
+
+======================================================================
+13. USA AUDIENCE & DISTRIBUTION
+======================================================================
+
+No bought traffic, no VPN traffic, no exchanges. Qualified US users only.
+
+[ ] English copy in US spelling and examples (restaurants, open houses, creators, Shopify/Etsy sellers, agencies).
+[ ] Price in USD everywhere. Show a US-friendly billing flow.
+[ ] Publish and post in US business hours (about 8-10am ET / 7-9am PT on weekdays) for launches.
+[ ] Channels that actually reach US small businesses and developers: LinkedIn, X, Reddit, Hacker News, YouTube tutorials,
+    newsletters (guest posts), creator communities.
+[ ] Short YouTube/Shorts tutorials: "Track your QR code scans", "Use your own domain for short links".
+[ ] Partnerships: small agencies, freelance marketers, Shopify/Etsy/Notion/Webflow template creators (free plan with their domain).
+[ ] Referral program: invite 3 -> 1 month Pro (sustainable only if margins allow).
+[ ] "Powered by UL0" optional footer on public QR landing pages and expired-link pages.
+[ ] Ask the owner to export Simple Analytics (countries, pages, referrers) and Search Console (queries by country)
+    so this plan can be tuned to real data.
+
+======================================================================
+14. TRUST, SAFETY & DOMAIN REPUTATION
+======================================================================
+
+[ ] Destination scanning: integrate Google Safe Browsing / Web Risk (or similar) at creation and on a schedule
+    (daily re-scan for the first 7 days, then weekly). Cache results. Disable and flag unsafe links automatically.
+[ ] Block known-bad TLDs/patterns, self-links, link chains, and abusive keywords. Maintain a blocklist.
+[ ] Rate limit anonymous link creation (Upstash ratelimit by IP + fingerprint). CAPTCHA (Turnstile) on suspicion.
+[ ] Abuse workflow: /report-abuse -> queue in /admin -> one-click disable -> notify owner -> audit log.
+[ ] Interstitial "preview page" for flagged or unclaimed anonymous links (shows destination, warns the user).
+[ ] Monitor domain reputation: Google Safe Browsing status, Spamhaus/SURBL/URIBL, email deliverability. Alert on listing.
+[ ] Keep the anonymous shortener and customer domains operationally separate if possible, so abuse on free
+    links cannot sink paying customers' branded links.
+[ ] Security headers: keep current ones; add a Content-Security-Policy, Permissions-Policy (camera only on the
+    scanner page, not site-wide), and HSTS preload when ready.
+[ ] SECURITY.md already exists: add a security.txt at /.well-known/security.txt.
+[ ] Privacy: write a clear explanation of what is stored per click and for how long. Honor deletion requests.
+[ ] The ad-gate "Marketing Link Engine": keep admin-only and noindex. Do not link it from public pages. Consider
+    removing it entirely if it harms trust.
+[ ] AdSense: the plan file already says do not depend on it. Remove the AdSense meta tag from pages until an
+    account is approved and ads are actually used, so crawlers and users get a clean experience.
+
+======================================================================
+15. PERFORMANCE, TECH DEBT & REPO CLEANUP
+======================================================================
+
+Performance
+[ ] Budgets: marketing pages < 150 KB JS gzipped, LCP < 2s on mobile 4G.
+[ ] next/image everywhere, AVIF/WebP, correct sizes, priority only on the hero image.
+[ ] Server components by default; client components only for interactive widgets.
+[ ] Edge runtime for the redirect handler with Redis-first lookup. Target p95 < 50 ms measured, not claimed.
+[ ] Lazy-load tools (PDF/camera code must not load on marketing pages).
+
+Middleware fixes (from the code)
+[ ] Remove the /dashboard/keys redirect (3.1).
+[ ] Exclude /r/* from Clerk.
+[ ] Treat only hosts that exist in the domains collection as custom domains. Unknown hosts (including *.vercel.app
+    previews) should serve the main app or a 404, not "custom-domain-landing".
+[ ] Normalize host (lowercase, strip port) before matching.
+[ ] Reserved-path list for custom domains is missing public pages like /features, /docs, /about, /use-cases,
+    /tools, /changelog, /compare and locale folders. Decide the rule: on a customer domain only "/" and slugs
+    are served; everything else redirects to ul0.site or 404s.
+[ ] Use 308/307 (not default) intentionally for redirects, and 301 only for truly permanent SEO moves.
+
+Repo cleanup (public repo is part of your brand)
+[ ] Remove or move to a private notes folder: gw33.txt, adsscript.txt, "browser icons.txt", newfeaure.md, scratch/,
+    and any other working notes. Check none contain secrets before moving.
+[ ] Keep one clear README: what it is, screenshots, quick start, self-host with Docker, env table, API link,
+    architecture, contributing, license. Update billing provider (Stripe vs Polar) and the API example to match the docs.
+[ ] Add .env.example, CONTRIBUTING.md, issue templates, a CI workflow (lint, typecheck, tests).
+[ ] Merge or close the open PR.
+[ ] Add tests: redirect handler, slug rules, plan limits, API auth/rate limit, tracking pipeline.
+
+======================================================================
+16. ROADMAP (ORDER OF WORK)
+======================================================================
+
+PHASE 0 — HOTFIX (days 0-2)
+  Fix /dashboard/keys; remove false claims; fix pricing card/table mismatch; block self-links; admin tools out of
+  customer UI; exclude /r/* from Clerk; curl-test redirect status and cache headers.
+  Done when: API keys page opens and works end to end; no unverifiable claim remains; redirects measured.
+
+PHASE 1 — TRACKING & CORE LOGIC (week 1-2)
+  Execute section 4 (diagnose, redirect policy, event pipeline, rollups) and section 5 matrix.
+  Done when: all acceptance tests in 4.5 pass and the section 5 matrix is green or the failing features are hidden.
+
+PHASE 2 — DESIGN SYSTEM + MARKETING SITE (weeks 2-4)
+  Tokens, typography, icon set, logo mark, components; rebuild nav, homepage, pricing, features, footer;
+  rewrite copy per section 10.
+  Done when: Lighthouse mobile >= 95 (Performance, Accessibility, SEO, Best Practices) on home, pricing, docs;
+  light and dark both look intentional; no icon chips, no decorative icons in nav.
+
+PHASE 3 — DASHBOARD REBUILD (weeks 3-6)
+  Sidebar layout, Overview, Links table + drawer, Link detail, Domains, API keys, Billing, Settings; /admin split.
+  Done when: a new user can sign up, create a link, copy it, see a click, connect a domain and create an API key
+  without help, in under 5 minutes; keyboard and mobile flows work.
+
+PHASE 4 — API, DOCS, TRUST (weeks 5-7)
+  v1 API, OpenAPI, rate-limit headers, docs redesign, status page, changelog, security.txt, Safe Browsing integration.
+
+PHASE 5 — SEO & CONTENT (weeks 4-10, in parallel)
+  Technical SEO fixes, comparison pages, custom-domain guide, first 10 articles, tool pages polish,
+  locale audit, schema markup.
+
+PHASE 6 — LAUNCH & DISTRIBUTION (weeks 8-12)
+  Product Hunt relaunch, Show HN, Reddit/Indie Hackers posts, directory profiles, tutorials,
+  referral program, open-source self-host (Docker) release.
+
+PHASE 7 — DIFFERENTIATION (after week 12)
+  Teams/workspaces, scheduled reports, webhooks (if not yet), Zapier/Make integrations, Chrome extension,
+  link-in-bio (only if it fits), AI insights written from real data ("Clicks from the US rose 18% this week").
+
+======================================================================
+17. QA, ACCEPTANCE & METRICS
+======================================================================
+
+Definition of done for any change:
+[ ] Tests added or updated, all pass.  [ ] No console errors.  [ ] Keyboard-only usable.
+[ ] Checked at 360, 768, 1280, 1920 px, light and dark.  [ ] Lighthouse not regressed.
+[ ] Copy reviewed against the section 10 style guide.  [ ] No unverifiable claim added.
+
+Product metrics (weekly):
+  Visitors, US visitors, signups, activation rate (created a link within the first session),
+  7-day retention, links created, clicks served, paid conversions, MRR, redirect p95 latency, error rate.
+
+Targets (goals, not guarantees):
+  30 days: API keys page fixed, tracking verified, new homepage live, pricing consistent.
+  60 days: new dashboard live, 10 quality pages indexed and gaining impressions.
+  90 days: first meaningful organic traffic from comparison/tool pages, first paying customers, relaunch complete.
+
+======================================================================
+18. OPEN QUESTIONS (OWNER ACTION)
+======================================================================
+
+1. Provide the redirect handler code (app/r/[slug] or similar) and the click-logging code so the tracking
+   diagnosis can be confirmed instead of hypothesized.
+2. Provide an export from Simple Analytics (countries, top pages, referrers, last 90 days) and Search Console
+   (queries and countries). Used to tune section 12-13.
+3. Billing provider: Stripe or Polar? Pick one and align README, pricing page and code.
+4. Is the free custom domain on every plan sustainable? (Vercel domain costs scale with count.)
+5. Keep or remove the Marketing Link Engine (ad gates)?
+6. Which locales are reviewed and complete enough to keep indexable?
+7. Should the splitter/PDF/UPI utilities stay on ul0.site, move to another domain, or be retired?
+8. Approve or edit the positioning line in section 11 and the hero copy in section 10.
+
+END OF FILE
+
+
+======================================================================
+19. PREMIUM FEEL ADDENDUM (ADDED 2026-10-09)
+======================================================================
+
+This section OVERRIDES the accent colors in 6.3 and relaxes the "no gradients" line in 6.2.
+Rule: motion and color should make the product feel fast and valuable, never busy.
+Everything below is subtle, single-hue, and functional. If an effect does not help the user understand
+what just happened, cut it.
+
+----------------------------------------------------------------------
+19.1 COLOR SYSTEM DERIVED FROM THE LOGO
+----------------------------------------------------------------------
+The logo is a teal-green rounded square with a lighter green coin. Build the whole brand from those two hues.
+
+Step 1: sample the exact colors from https://ul0.site/ul0.png (eyedropper or a small node script with sharp/pngjs).
+        Use the dominant teal as BRAND-600 and the coin green as COIN. If sampling is not possible, use the
+        fallback values below (estimated from the screenshots, adjust to match).
+
+Brand teal scale (fallback values):
+  teal-50  #ECFAF6    teal-100 #D2F3EA    teal-200 #A8E6D5    teal-300 #74D3BC    teal-400 #3FBBA0
+  teal-500 #1FA087    teal-600 #168270 (PRIMARY)    teal-700 #136759    teal-800 #12524A    teal-900 #0E3D38
+Coin green (sparingly: success, "live" dot, positive deltas, Pro highlights):
+  coin-400 #5FD38D    coin-500 #3DBE7A    coin-600 #2A9D61
+Tinted neutrals (replace pure grays so the page feels branded but calm):
+  Light:  bg #FFFFFF  surface #F8FBFA  surface-2 #F0F5F3  border rgba(14,61,56,0.10)  text #0B1412  muted #5B6B67
+  Dark:   bg #08100E  surface #0D1815  surface-2 #13211D  border rgba(168,230,213,0.10)  text #ECF5F2  muted #8DA39D
+Usage:
+  Primary button: teal-600 background, white text (about 4.7:1 contrast, verify with a checker; if it fails use teal-700).
+  Links and focus ring: teal-600 (light) / teal-300 (dark). Focus ring 2px + 2px offset.
+  Selection color: teal-200 at 60%.
+  Charts: series 1 teal-500, series 2 coin-500, series 3 #6C8EF5 (muted indigo for contrast), series 4 #F2A93B.
+  Status: success coin-600, warning #B54708, danger #D92D20, info teal-600.
+  Pro badge: small pill, teal-50 background, teal-700 text, 1px teal-200 border (light). Never a rainbow or gold.
+Allowed gradients (single hue only):
+  - Primary button hover sheen: teal-600 to teal-500 over 160ms.
+  - Chart area fill: teal-500 at 18% fading to 0%.
+  - Hero shorten-box focus glow: 0 0 0 4px rgba(31,160,135,0.15).
+  - A very faint radial teal wash behind the hero (opacity 6-8%), masked so it fades out.
+Not allowed: multi-color gradients, neon glows, glassmorphism, animated gradient backgrounds.
+Logo: redraw with a distinct slashed zero if possible, remove the "$" from the mark, keep the teal square.
+      Provide mono (black and white) variants and a 16px favicon version.
+
+----------------------------------------------------------------------
+19.2 LINK-GENERATION ANIMATION (HOMEPAGE HERO + DASHBOARD)
+----------------------------------------------------------------------
+Goal: shortening a link should feel like a small moment of delight, in under 700ms, without ever delaying the real result.
+
+Sequence (homepage):
+  0 ms       Click Shorten. Button label swaps to a thin progress bar (no spinner). A 2px teal line sweeps across
+             the bottom of the input (150ms).
+  60-350 ms  "Compress": the long URL text clips and scales down toward the output slot while fading
+             (transform + opacity only).
+  200-520 ms Result card rises in (translateY 8px to 0, opacity 0 to 1, spring: stiffness 320, damping 28).
+             The short link types in character by character in the mono font (stagger 16ms per character).
+  350-600 ms A check mark draws with an SVG stroke (stroke-dashoffset, 220ms) next to the link.
+  400-800 ms If a QR is shown: modules fade in as a diagonal wave (stagger by x+y, total 400ms).
+  After      Copy button gets focus. Click: label morphs "Copy" to "Copied" with a check, reverts after 1.6s.
+             On mobile: navigator.vibrate(10) if available. Never auto-copy without a setting.
+Rules:
+  - Show the real result the moment the API returns. The animation has a minimum duration of about 350ms but
+    never waits on the network twice.
+  - Error: input shakes (two 4px cycles, 240ms) and a human message appears under it. No red flashing.
+  - prefers-reduced-motion: swap instantly, no typing, no wave, no shake (use a color fade only).
+  - Implement with CSS transitions and the Web Animations API first. Use the "motion" (Framer Motion) library only
+    if needed, in a lazy-loaded client component. Total animation JS budget: under 25 KB gzipped.
+
+Dashboard create flow:
+  - Create happens in the right-side drawer. On success the drawer shows the same compress-to-link animation,
+    then closes after the user copies or presses Done.
+  - The new row slides into the top of the table and its background pulses teal-500 at 12% fading to 0 over 1.2s.
+  - Very first link ever: a small, tasteful burst of about 14 teal/coin particles for 600ms. Never again after that.
+  - Quick-create: Cmd/Ctrl-K then paste a URL then Enter creates a link without leaving the page.
+  - Paste detection: if the clipboard contains a URL when the user focuses the field, offer a "Paste URL" chip.
+
+----------------------------------------------------------------------
+19.3 DASHBOARD FEATURES THAT MAKE PAYING FEEL WORTH IT
+----------------------------------------------------------------------
+Goal: the paid product should look and feel clearly better than free, with real value, not locked buttons.
+
+A. Live clicks
+   - A "Live" pill with a pulsing coin-green dot. New clicks appear in a feed within 5 seconds
+     (SSE, or polling every 5s as the simple first version). Each new item slides in and the counter rolls up.
+   - Counters animate on load (count-up 600ms, ease-out, tabular numbers).
+B. Charts
+   - Smooth area chart, hover crosshair, tooltip with exact numbers, compare-to-previous toggle, drag to zoom a range.
+   - Country heat map (lightweight SVG world map, no 3D). Optional globe later, lazy-loaded only on demand.
+C. Insights (real data only)
+   - Card on Overview: "Your best link this week", "Clicks from the US up 18%", "Peak hour: 8-9 PM ET", "3 links got no clicks".
+   - Weekly email report (Pro) with the same insights and a one-click link to the dashboard.
+D. Link health monitor (Pro)
+   - Checks each destination daily (200/404/redirect loop/Safe Browsing). Shows a status dot per link and emails
+     the owner when a destination breaks. This alone justifies a few dollars a month.
+E. QR Studio
+   - Live preview, templates, colors from the brand scale, logo upload, frames ("Scan me"), error correction,
+     export SVG, PNG and PDF. Scan counts tied to the link.
+F. Domain wizard
+   - Add domain, copy DNS record with a copy button, live check with animated steps:
+     "DNS record found" then "Verifying" then "SSL issued" then "Live" (each step gets a check). Plain error help per registrar.
+G. Power tools
+   - Bulk import (CSV) and bulk create, export, tags and folders, saved UTM presets, link templates.
+   - Shareable read-only public report link for a campaign (also a growth loop: "Powered by UL0").
+   - Team workspace and seats (Business). Roles: owner, editor, viewer.
+H. "Wrapped" share card
+   - Monthly summary ("Your links got 12.4k clicks in October") generated as an OG image (@vercel/og)
+     that users can share. Real numbers only.
+I. Onboarding
+   - 3-step checklist with a progress ring: Create a link, Connect a domain, Make a QR code (API key as optional 4th).
+     Completion shows a short animation and unlocks nothing fake.
+J. Upgrade moments (not dead ends)
+   - Locked feature shows a real, slightly blurred preview of that feature with a clear "Available on Pro" button.
+   - Usage meters at 80% and 100% (links, domains) with a single clear upgrade action.
+   - Offer a 7-day Pro trial with no card for new accounts, and a clear refund policy.
+   - Plan card in the sidebar shows usage rings and renewal date.
+   - Owner decision: Pro at $3 is very low. Consider testing higher price points later with an A/B test.
+     Do not change the price without the owner approving it.
+
+----------------------------------------------------------------------
+19.4 MICRO-INTERACTIONS AND POLISH LIST
+----------------------------------------------------------------------
+[ ] Buttons: press scale 0.98 over 80ms. No hover lift, just a color shift.
+[ ] Row hover reveals action icons (copy, QR, analytics, menu). Actions are always reachable by keyboard.
+[ ] Copy button morph (Copy to Copied with check). Same pattern everywhere (links, API keys, DNS records).
+[ ] Toggles and tabs use a spring (stiffness 400, damping 30). Tab underline slides between tabs.
+[ ] Toasts stack bottom-right with a spring, auto-dismiss in 4s, hover pauses, undo action where relevant.
+[ ] Skeletons match the exact layout of the content they replace, with a very subtle shimmer.
+[ ] Page transitions: View Transitions API with a 150ms cross-fade. Fall back to nothing.
+[ ] Theme switch: circular reveal from the toggle using View Transitions (Apple-like). Fall back to instant.
+[ ] Sidebar collapse animates width 200ms ease-out, labels fade first.
+[ ] Command palette (Cmd/Ctrl-K) opens in 120ms with fuzzy search, recent links and actions.
+[ ] Keyboard shortcut overlay on "?".
+[ ] Tooltips on icon-only buttons with a 300ms delay.
+[ ] Numbers use tabular figures and roll when they change.
+[ ] Empty states have one sentence, one action, and a small real illustration or screenshot, not a stock icon.
+[ ] Landing page: faint dot grid behind the hero with a radial mask, product screenshot tilts about 2 degrees on scroll
+    (transform only), sections reveal once with 12px translate and fade. Nothing loops forever.
+[ ] Cursor-aware spotlight on pricing cards is optional; skip if it hurts performance.
+[ ] No sound effects. No autoplay video. No infinite animations except the Live dot.
+
+----------------------------------------------------------------------
+19.5 PERFORMANCE AND QUALITY GUARDRAILS FOR ALL MOTION
+----------------------------------------------------------------------
+[ ] Animate transform and opacity only. No layout-thrashing properties.
+[ ] Hold 60fps on a low-end Android phone (test on real device or 4x CPU throttle).
+[ ] Animation libraries load lazily and never block LCP. Hero animation only starts after the page is interactive.
+[ ] All motion respects prefers-reduced-motion.
+[ ] Lighthouse mobile stays at 95 or above after animations are added.
+[ ] Every animated element still works with JavaScript errors or slow networks (the content is the fallback).
+
+----------------------------------------------------------------------
+19.6 TASTE CHECKLIST (RUN BEFORE EVERY RELEASE)
+----------------------------------------------------------------------
+[ ] Spacing follows the 4px scale. No one-off margins.
+[ ] Text baselines and icon centers line up. No orphan buttons that wrap alone.
+[ ] One icon set, one stroke width, one radius family.
+[ ] The same action looks and behaves the same everywhere (copy, delete, edit).
+[ ] Error and empty copy is human and specific ("That slug is taken. Try summer-promo-2."), never "Something went wrong".
+[ ] Dark mode checked screen by screen, not just inverted.
+[ ] Screenshots in marketing are real, current, and match the shipped UI.
+[ ] Squint test: the page has one clear primary action.
+
+----------------------------------------------------------------------
+19.7 WHERE THIS FITS IN THE ROADMAP (SECTION 16)
+----------------------------------------------------------------------
+Phase 2 (design system + marketing): logo-derived tokens (19.1), hero link-generation animation (19.2), landing polish (19.4 landing items).
+Phase 3 (dashboard rebuild): live clicks, counters and charts (19.3 A-B), create-flow animation, command palette, QR Studio, domain wizard, onboarding, upgrade moments.
+Phase 5-7: insights email, link health monitor, wrapped share card, bulk tools, teams, public reports.
+Do NOT start 19.3 features that depend on tracking (live feed, charts, insights) until the section 4 tracking
+acceptance tests pass. Animated numbers on top of wrong data make the product look worse, not better.
+
+END OF ADDENDUM
+
+
+======================================================================
+20. HOMEPAGE CREATOR: LINK + QR + "CLAIM THIS LINK" (ADDED 2026-10-09)
+======================================================================
+
+Goal: a visitor pastes a URL, gets a short link and/or a QR code in one step, and is then invited to
+sign in to claim it and see analytics. This is the main conversion funnel of the whole site, so it must feel
+instant, honest and never block the visitor from copying or downloading.
+
+Current state (from the screenshot): URL field + dark "Shorten" button, then a second row with the fixed prefix
+"ul0.site/r/" and a slug field, plus the helper text "Only letters, numbers and dashes. Leave blank for a random slug."
+No QR option, no claim step.
+
+----------------------------------------------------------------------
+20.1 THE CREATOR UI
+----------------------------------------------------------------------
+[ ] One input. Above it, an Apple-style segmented control: "Short link" | "QR code".
+    Both tabs use the same URL field and the same Shorten/Create button, so switching never loses the typed URL.
+[ ] The slug row moves into a collapsed "Customize" row (a small text button under the input).
+    Expanded: slug field with live availability check (debounced 300ms) and inline validation.
+    Remove the permanent helper sentence; show it only as an inline error when needed.
+[ ] Short link tab result card: short link (mono), Copy, Open, "Create QR code" button, and the claim banner (20.3).
+[ ] QR code tab result card: QR preview, the short link under it, Download PNG, Download SVG, Copy link,
+    and "Customize QR" (colors, background, size; logo and frames are Pro). Also shows the claim banner.
+[ ] BOTH tabs always create a real short link first. A QR never encodes the raw destination (see 20.4).
+[ ] Result card reuses the compress-to-link animation and QR wave from section 19.2.
+[ ] Optional later: paste detection chip ("Paste URL from clipboard") and drag a URL onto the box.
+[ ] Recent links: keep the last 5 links this browser created in a small "Your recent links" list under the result,
+    each with Copy, QR and a claim status. If 2 or more are unclaimed, show one "Claim all (n)" button.
+
+DECISION (OWNER, FINAL): keep the "/r/" format. Short links stay ul0.site/r/<slug> and QR codes use ul0.site/q/<slug>.
+Do NOT migrate to root slugs and do not propose it again. Keep every existing /r/ link working forever.
+
+----------------------------------------------------------------------
+20.2 CLAIM SYSTEM (HOW ANONYMOUS LINKS BECOME ACCOUNT LINKS)
+----------------------------------------------------------------------
+Rules:
+- Anonymous links always work immediately and permanently, claimed or not.
+- Clicks are recorded from the very first click (cheap, privacy-friendly, see section 4), whether or not the link is claimed.
+  After claiming, the owner sees the history, nothing is lost.
+- Only the browser that created the link (or someone holding its claim link) can claim it.
+
+Flow:
+1. Create: POST /api/shorten { url, slug?, withQr?: boolean } as anonymous.
+   Server creates the link with ownerId = null, source = "anon", and a random claim token (32 bytes).
+   Store only a hash of the token in the database. Return the raw token once.
+2. Browser keeps the token in an httpOnly, Secure, SameSite=Lax cookie (a signed list of {linkId, token}, max 20 entries,
+   30-day expiry) and ALSO stores a non-secret list of {linkId, shortUrl} in localStorage for the "recent links" UI.
+   Never put the raw token in localStorage.
+3. Show the claim banner (20.3). "Claim" starts Clerk sign-in (Google one tap or button) and returns to the homepage with ?claim=1.
+4. After sign-in, the page calls POST /api/links/claim (authenticated). The server reads the cookie, verifies each token hash,
+   confirms the link is unclaimed and under 30 days old, sets ownerId = current user, claimedAt = now, clears the token hash,
+   and removes claimed items from the cookie. Idempotent: calling twice is safe.
+5. Redirect the user to the link detail page in the dashboard with a "Link claimed" toast and the entrance animation.
+6. Lost cookie fallback: the result card offers "Copy claim link" (https://ul0.site/claim/<token>) so the user can claim from
+   another device or after clearing cookies. The claim page requires sign-in, then applies the same server checks.
+7. Expiry: unclaimed tokens expire after 30 days. After that the link keeps working but can no longer be claimed or edited.
+8. Plan limits on claim: anonymous public-domain links do not count toward custom-domain limits. If a limit would be exceeded,
+   claim as many as fit, tell the user which were not claimed, and explain the options (no data is deleted).
+9. Abuse: rate limit /api/links/claim per user and per IP. Log every claim (userId, linkId, time).
+
+----------------------------------------------------------------------
+20.3 THE CLAIM BANNER (THE CONVERSION MOMENT)
+----------------------------------------------------------------------
+Placement: inside the result card, under the link/QR, appearing 600ms after the result so the user sees the link first.
+Style: tinted teal-50 surface, one sentence, one primary button, a small "Not now" text button.
+It never covers the Copy or Download buttons and never blocks them.
+
+Copy (keep it honest and specific):
+  Headline:    Want to see who clicks this link?
+  Body:        Sign in to claim it and get analytics, edit the destination later, and keep it in your dashboard.
+  Primary:     Claim this link   (opens Google sign-in)
+  Secondary:   Not now
+Live teaser (real data only): once the link has clicks, replace the body with
+  "{n} clicks so far. Claim this link to see countries, devices and referrers."
+  Show the real total count. Blur the breakdown preview. Never show fake numbers.
+After "Not now": do not show the banner again for that link on this visit. Show a subtle "Claim" text link on the recent-links row.
+After claim: banner becomes "Claimed. View analytics" with a link.
+Do not interrupt with modals, popups or exit-intent tricks.
+
+Messaging for the QR tab:
+  "Your QR code points to this short link. Claim it to track scans and change where it goes without reprinting."
+
+----------------------------------------------------------------------
+20.4 QR LOGIC (MUST BE CORRECT)
+----------------------------------------------------------------------
+[ ] The QR encodes the SHORT link, never the destination. This is what makes it "dynamic" and trackable.
+[ ] Scan vs click: encode a QR-specific path so scans are counted separately, e.g. https://ul0.site/q/<slug>
+    (or <customdomain>/q/<slug>). The /q/<slug> handler runs exactly the same rules as /r/<slug> and logs source = "qr".
+    Add /q/ to the middleware passthrough on custom domains and keep it noindex.
+    (A query parameter like ?s=qr also works but makes the code denser; the path is preferred.)
+[ ] Generation is client-side from the short URL using a small library (qr-code-styling or qrcode). Lazy-load it only when
+    the QR tab is used, so the homepage stays fast.
+[ ] Defaults: error correction M (H when a logo is added), quiet zone of 4 modules, minimum print size shown in the UI
+    (e.g. "at least 2 cm / 0.8 in"), foreground/background contrast check with a warning if too low.
+[ ] Exports: SVG (vector), PNG 1024px, filename = slug. PDF export later (Pro).
+[ ] Free: colors, background, size, margins. Pro: logo, frames ("Scan me"), gradients on modules, bulk QR.
+[ ] Editing the destination after claim immediately changes where existing printed QR codes go (no cache; see 4.2).
+[ ] Do not claim "lifetime scan tracking" until retention is defined. State retention on the pricing page.
+[ ] Other QR types (WiFi, text, vCard) stay in their own tools; this creator is URL-to-QR only.
+
+----------------------------------------------------------------------
+20.5 SAFETY AND ABUSE CONTROLS FOR THE ANONYMOUS CREATOR
+----------------------------------------------------------------------
+[ ] Apply 3.5 and section 14: block self-links, shortener chains, bad TLDs and flagged destinations.
+    Run Safe Browsing/Web Risk check before returning a link. Do not return a QR for a blocked destination.
+[ ] Rate limits (Upstash): about 10 creations per hour per IP, burst 3 per minute. Turnstile only when suspicious.
+[ ] Validate URL: http/https only, max length 2048, normalize (trim, punycode), reject credentials in the URL.
+[ ] Anonymous links get the preview/warning interstitial treatment if later flagged.
+[ ] Add "Report abuse" link in the result card footer (small, quiet).
+
+----------------------------------------------------------------------
+20.6 DATA MODEL ADDITIONS
+----------------------------------------------------------------------
+links: add claimTokenHash (nullable), claimedAt (nullable), source ("anon" | "user"), createdVia
+       ("home-link" | "home-qr" | "dashboard" | "api"), hasQr (boolean), qrStyle (JSON, nullable, for saved QR design after claim).
+clicks: add source ("link" | "qr").
+Indexes: links by ownerId, by claimedAt, by createdAt; clicks by (linkId, ts).
+Write a migration and a rollback note. Existing links get source = "user" if ownerId is set, otherwise "anon" with no token
+(cannot be claimed; offer an admin-only manual claim if the owner needs it).
+
+----------------------------------------------------------------------
+20.7 FUNNEL METRICS (PRIVACY-FRIENDLY EVENTS)
+----------------------------------------------------------------------
+Send named events (Simple Analytics custom events or your own server counters, no personal data):
+  create_link, create_qr, copy_link, download_qr, claim_banner_shown, claim_clicked, signup_completed, claim_completed,
+  first_dashboard_visit, second_link_created.
+Report weekly: creations, claim rate (claim_completed / creations), signup rate, activation (second link within 7 days).
+Targets are goals, not guarantees. Use the numbers to tune the banner copy and timing, never to add dark patterns.
+
+----------------------------------------------------------------------
+20.8 ACCEPTANCE TESTS
+----------------------------------------------------------------------
+[ ] Paste a URL, press Shorten: result appears with copy button; refresh the page: recent link is still listed.
+[ ] Switch to the QR tab with the URL typed: no retyping needed; QR renders from the short link; both PNG and SVG download and scan correctly with a phone.
+[ ] Scan the QR: link opens the destination; the click is recorded with source = "qr".
+[ ] Anonymous user clicks "Claim this link": sign-in works, user returns to the site, link appears in their dashboard with the earlier clicks.
+[ ] Claim twice: no duplicates, no error. Claim with a cleared cookie but the claim link: works. Claim an already claimed link: clean refusal.
+[ ] Another account cannot claim a link without the token. Expired token cannot claim.
+[ ] Copy and Download stay usable the whole time, even if the claim banner is open or dismissed.
+[ ] Blocked destination: no link, no QR, clear message. Self-link: refused.
+[ ] Rate limit hit: friendly message with a retry time.
+[ ] Keyboard only: tab order is input, tabs, Shorten, Customize, result actions, claim banner.
+[ ] Reduced-motion mode: no animations, same result.
+[ ] Homepage Lighthouse mobile stays at 95 or above (QR library is not loaded until needed).
+
+----------------------------------------------------------------------
+20.9 WHERE THIS FITS IN THE ROADMAP
+----------------------------------------------------------------------
+Phase 1 (after the tracking tests pass): data model changes, claim API, /q/ handler, anonymous rate limits.
+Phase 2: segmented control UI, result card, QR rendering, claim banner and animation (builds on 19.2).
+Phase 3: claim landing in the dashboard, recent links, saved QR styles, QR Studio.
+Do not ship the claim banner before click tracking is correct. The "{n} clicks so far" teaser only works if the number is right.
+
+END OF SECTION 20

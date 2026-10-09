@@ -107,48 +107,43 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Center: Desktop Navigation Bar with Prominent Tools */}
+        {/* Center: Desktop Navigation Bar (Text-only per design system) */}
         <nav className="hidden xl:flex items-center gap-1 text-sm font-medium text-muted-foreground" aria-label="Main navigation">
           {/* 1. URL Shortener */}
           <Link
             href="/"
-            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5"
+            className="rounded-md px-3 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
           >
-            <Link2 className="h-4 w-4 text-primary" />
-            <span>Shorten</span>
+            Shorten
           </Link>
 
-          {/* 2. Custom Domains (Direct to money page) */}
+          {/* 2. Custom Domains */}
           <Link
             href="/custom-domain-landing"
-            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5"
+            className="rounded-md px-3 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
           >
-            <Globe className="h-4 w-4 text-primary" />
-            <span>Custom Domains</span>
+            Custom Domains
           </Link>
 
           {/* 3. Vector QR Generator */}
           <Link
             href="/qr"
-            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5"
+            className="rounded-md px-3 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
           >
-            <QrCode className="h-4 w-4 text-muted-foreground" />
-            <span>QR Codes</span>
+            QR Codes
           </Link>
 
           {/* 4. Use Cases Solutions */}
           <Link
             href="/use-cases"
-            className="rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground flex items-center gap-1.5"
+            className="rounded-md px-3 py-1.5 transition-colors hover:bg-accent hover:text-foreground"
           >
-            <Briefcase className="h-4 w-4 text-muted-foreground" />
-            <span>Use Cases</span>
+            Use Cases
           </Link>
 
-          {/* 5. Free Tools Dropdown (Includes Split, PDF, UTM, WiFi, etc.) */}
+          {/* 5. Free Tools Dropdown */}
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 rounded-md px-2.5 py-1.5 transition-colors hover:bg-accent hover:text-foreground outline-none">
-              <Sparkles className="h-4 w-4 text-muted-foreground" />
+            <DropdownMenuTrigger className="flex items-center gap-1 rounded-md px-3 py-1.5 transition-colors hover:bg-accent hover:text-foreground outline-none cursor-pointer">
               <span>Free Tools</span>
               <ChevronDown className="h-3.5 w-3.5 opacity-60" />
             </DropdownMenuTrigger>

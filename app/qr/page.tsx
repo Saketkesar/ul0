@@ -346,9 +346,9 @@ export default function QRCodeGeneratorPage() {
                   {qrDataUrl ? (
                     <img src={qrDataUrl} alt="Generated QR Code" className="w-full h-full" />
                   ) : (
-                    <div className="text-center text-muted-foreground">
-                      <QrCode className="h-16 w-16 mx-auto mb-2 opacity-50" />
-                      <p>Your QR code will appear here</p>
+                    <div className="flex flex-col items-center justify-center p-3 text-center text-muted-foreground">
+                      <img src="/ulo_qr.webp" alt="Sample Branded QR Code" className="w-44 h-44 object-contain mb-2 rounded-lg shadow-xs" />
+                      <p className="text-xs font-medium">Sample Preview • Enter data to generate</p>
                     </div>
                   )}
                 </div>

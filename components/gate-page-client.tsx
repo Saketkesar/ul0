@@ -389,12 +389,24 @@ export function GatePageClient({
             <div className="absolute -bottom-24 -left-24 h-48 w-48 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
 
             <div className="relative z-10 flex flex-col items-center text-center">
+              {/* Brand Logo */}
+              <div className="mb-3 flex items-center justify-center">
+                <Image
+                  src="/ulo_4kwebp.webp"
+                  alt="ul0"
+                  width={120}
+                  height={54}
+                  className="h-8 w-auto object-contain"
+                  priority
+                />
+              </div>
+
               {/* Step Icon */}
-              <div className="mb-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-3.5 text-emerald-400">
+              <div className="mb-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-3 text-emerald-400">
                 {isUnlocked ? (
-                  <Sparkles className="h-7 w-7 text-emerald-400 animate-pulse" />
+                  <Sparkles className="h-6 w-6 text-emerald-400 animate-pulse" />
                 ) : (
-                  <Clock className="h-7 w-7 text-amber-400 animate-pulse" />
+                  <Clock className="h-6 w-6 text-amber-400 animate-pulse" />
                 )}
               </div>
 

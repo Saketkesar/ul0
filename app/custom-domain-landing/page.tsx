@@ -88,8 +88,18 @@ export default async function CustomDomainLandingPage() {
             />
           </div>
         ) : (
-          <div className="mb-8 font-mono text-sm tracking-tight border border-gray-200 bg-gray-50 rounded-md px-3.5 py-1.5 text-gray-600 font-semibold shadow-sm">
-            {domain}
+          <div className="mb-8 flex flex-col items-center gap-3">
+            <Image
+              src="/ulo_4kwebp.webp"
+              alt="UL0 Platform"
+              width={160}
+              height={72}
+              className="h-10 w-auto object-contain"
+              priority
+            />
+            <div className="font-mono text-xs tracking-tight border border-gray-200 bg-gray-50 rounded-md px-3 py-1 text-gray-600 font-semibold shadow-xs">
+              {domain}
+            </div>
           </div>
         )}
 
