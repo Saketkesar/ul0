@@ -108,8 +108,11 @@ export default function QRCodeGeneratorPage() {
       await navigator.clipboard.write([
         new ClipboardItem({ "image/png": blob })
       ])
+      if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
+        navigator.vibrate(10)
+      }
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setTimeout(() => setCopied(false), 1600)
     } catch (err) {
       console.error("Error copying:", err)
     }
@@ -344,7 +347,7 @@ export default function QRCodeGeneratorPage() {
               <CardContent className="flex flex-col items-center">
                 <div className="w-[300px] h-[300px] border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/30 mb-4">
                   {qrDataUrl ? (
-                    <img src={qrDataUrl} alt="Generated QR Code" className="w-full h-full" />
+                    <img key={qrDataUrl} src={qrDataUrl} alt="Generated QR Code" className="w-full h-full animate-qr-wave rounded-md" />
                   ) : (
                     <div className="flex flex-col items-center justify-center p-3 text-center text-muted-foreground">
                       <img src="/ulo_qr.webp" alt="Sample Branded QR Code" className="w-44 h-44 object-contain mb-2 rounded-lg shadow-xs" />
