@@ -66,7 +66,7 @@ export function FeaturesSection() {
           Why Choose ul0 URL Shortener?
         </h2>
         <p className="mx-auto mb-8 max-w-2xl text-center text-sm text-muted-foreground sm:mb-12 sm:text-base">
-          The best free link shortener with expense splitting. No signup needed. No hidden fees. 100% free forever.
+          Fast, reliable branded link shortening, custom domains, and dynamic QR codes. Free to start with no credit card required.
         </p>
 
         <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">

@@ -45,7 +45,6 @@ export default clerkMiddleware(async (auth, req) => {
     "/qr-code-for-business": "/qr",
     "/ads": "/dashboard/marketing",
     "/dashboard/ads": "/dashboard/marketing",
-    "/dashboard/keys": "/dashboard",
     "/blog/pdf-tools-free-online": "/pdf",
     "/blog/bitly-alternative-usa": "/blog/bitly-alternative-free",
     "/blog/best-free-url-shortener-australia": "/blog/best-url-shorteners-2026",
@@ -207,8 +206,8 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Match all routes except static files
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp3|wav|ogg|ico|txt|xml|json)$).*)",
+    // Match all routes except static files and public redirect paths (/r/*, /go/*)
+    "/((?!_next/static|_next/image|favicon.ico|r/|go/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp3|wav|ogg|ico|txt|xml|json)$).*)",
     // API and tRPC routes
     "/(api|trpc)(.*)",
     // Clerk auto-proxy path

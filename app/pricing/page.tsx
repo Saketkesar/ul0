@@ -7,7 +7,7 @@ import { ExternalLink } from "lucide-react"
 export const metadata: Metadata = {
   title: "Pricing — ul0",
   description:
-    "Simple, transparent pricing. Start free, upgrade when you need custom domains and full analytics. Cheapest URL shortener SaaS in 2026.",
+    "Simple, transparent pricing. Start free, upgrade when you need custom domains and full analytics. No hidden fees.",
   alternates: {
     canonical: "https://ul0.site/pricing",
   },
@@ -20,7 +20,7 @@ const comparison = [
   { feature: "Public Shortener Analytics", free: "—", pro: "✓", business: "✓" },
   { feature: "Link Deletion", free: "—", pro: "✓", business: "✓" },
   { feature: "QR Code Generator", free: "✓", pro: "✓", business: "✓" },
-  { feature: "Support", free: "Community", pro: "Priority", business: "24/7 Dedicated" },
+  { feature: "Support", free: "Community", pro: "Priority email", business: "Dedicated support" },
 ]
 
 const faqs = [

@@ -262,37 +262,6 @@ export default function HomePage() {
 
           <div className="container mx-auto px-4">
             <div className="mx-auto max-w-3xl text-center">
-              {/* Product Hunt & NextGen Tools Badges */}
-              <div className="mb-4 flex justify-center items-center gap-3 flex-wrap">
-                <a 
-                  href="https://www.producthunt.com/products/ul0?embed=true&utm_source=badge-featured&utm_medium=badge&utm_source=badge-ul0" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img 
-                    src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1044134&theme=light&t=1764499330543" 
-                    alt="ul0 - Free URL shortener & expense splitter | Product Hunt" 
-                    width="250" 
-                    height="54"
-                    className="h-[54px] w-[250px]"
-                  />
-                </a>
-                <a 
-                  href="https://www.nxgntools.com/tools/ul0?utm_source=ul0" 
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <img 
-                    src="https://www.nxgntools.com/api/embed/ul0?type=PLACED_1ST_ON" 
-                    alt="NextGen Tools #1 Tool of the Week Badge - Top Trending Tool" 
-                    width="168"
-                    height="48"
-                    loading="lazy"
-                    className="h-[48px] w-auto"
-                  />
-                </a>
-              </div>
-              
               <h1 className="mb-3 text-balance text-2xl font-bold tracking-tight text-foreground sm:mb-5 sm:text-4xl lg:text-5xl">
                 Free Branded Short Links, QR Codes & Click Analytics
               </h1>
@@ -300,7 +269,7 @@ export default function HomePage() {
                 Shorten links free, generate trackable QR codes, and connect custom branded domains. <strong>No signup required to start.</strong>
               </p>
               <p className="mb-5 text-pretty text-sm text-muted-foreground sm:mb-6 sm:text-base">
-                Permanent 301 Redirects • Dynamic QR Codes • Real-Time Click Attribution • Custom Domain Support
+                Fast Edge Redirects • Dynamic QR Codes • Real-Time Click Attribution • Custom Domain Support
               </p>
 
               <div className="mb-6 flex justify-center">
@@ -321,7 +290,7 @@ export default function HomePage() {
                 <div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">Why Modern Teams Choose UL0</h3>
                   <ul className="space-y-1.5 list-disc list-inside">
-                    <li><strong>Permanent 301 Redirects</strong> - Clean link equity pass-through for SEO and attribution</li>
+                    <li><strong>Fast Edge Redirects</strong> - Instant navigation with global edge routing and referrer retention</li>
                     <li><strong>Branded Custom Domains</strong> - Boost brand trust and click-through rates with your own domain</li>
                     <li><strong>Privacy-Conscious Analytics</strong> - Track clicks, country, device, and referrer without cookies</li>
                     <li><strong>High-Resolution QR Codes</strong> - Auto-generated vector QR codes ready for print and digital marketing</li>
@@ -330,12 +299,12 @@ export default function HomePage() {
                 </div>
 
                 <div className="space-y-3 leading-relaxed text-sm">
-                  <h3 className="text-lg font-semibold text-foreground">Infrastructure Built for Creators, Agencies & Businesses</h3>
+                  <h3 className="text-lg font-semibold text-foreground">Clean, Fast Link Management</h3>
                   <p>
                     UL0 transforms unwieldy, tracking-heavy URLs into clean, secure, and professional branded links. Whether you are running multichannel marketing campaigns across LinkedIn, Instagram, and YouTube, or printing flyers with QR codes, UL0 ensures your links look trustworthy and load with fast edge redirects.
                   </p>
                   <p>
-                    Every shortened link is continuously screened against malware and phishing databases to protect both your brand reputation and your visitors. With built-in UTM campaign tagging, device attribution, and custom domain CNAME routing, UL0 delivers reliable link management without the high subscription costs of legacy tools.
+                    Every shortened link is screened against safety and phishing heuristics to protect both your brand reputation and your visitors. With built-in UTM campaign tagging, device attribution, and custom domain CNAME routing, UL0 delivers reliable link management with a free custom domain on every plan.
                   </p>
                 </div>
 
@@ -355,93 +324,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* Featured badges section */}
-        <section className="border-y bg-muted/20 py-12 sm:py-14">
-          <div className="container mx-auto px-4">
-            <div className="mx-auto max-w-5xl text-center">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                Featured on trusted directories
-              </h2>
-              <p className="mt-3 text-sm text-muted-foreground sm:text-base">
-                Discover ul0 across the web and support the tools that help people find this project.
-              </p>
-
-              <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                <a
-                  href="https://dang.ai/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Visit Dang.ai"
-                  className="flex items-center justify-center rounded-2xl border bg-background p-4 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <img
-                    src="https://cdn.prod.website-files.com/63d8afd87da01fb58ea3fbcb/6487e2868c6c8f93b4828827_dang-badge.png"
-                    alt="Dang.ai"
-                    width="150"
-                    height="54"
-                    loading="lazy"
-                    className="h-[54px] w-[150px]"
-                  />
-                </a>
-
-                <a
-                  href="https://turbo0.com/item/ul0"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Visit Turbo0 listing for ul0"
-                  className="flex items-center justify-center rounded-2xl border bg-background p-4 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <img
-                    src="https://img.turbo0.com/badge-listed-dark.svg"
-                    alt="Listed on Turbo0"
-                    width="150"
-                    height="54"
-                    loading="lazy"
-                    className="h-[54px] w-auto"
-                  />
-                </a>
-
-                <a
-                  href="https://findly.tools/ul0?utm_source=ul0"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Visit Findly.tools featured listing for ul0"
-                  className="flex items-center justify-center rounded-2xl border bg-background p-4 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <img
-                    src="https://findly.tools/badges/findly-tools-badge-light.svg"
-                    alt="Featured on Findly.tools"
-                    width="175"
-                    height="55"
-                    loading="lazy"
-                    className="h-[55px] w-[175px]"
-                  />
-                </a>
-
-                <a
-                  href="https://neeed.directory/products/ul0?utm_source=ul0"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Visit neeed.directory featured listing for ul0"
-                  className="flex items-center justify-center rounded-2xl border bg-background p-4 shadow-sm transition-transform hover:-translate-y-0.5 hover:shadow-md"
-                >
-                  <img
-                    src="https://neeed.directory/badges/neeed-badge-light.svg"
-                    alt="Featured on neeed.directory"
-                    width="139"
-                    height="54"
-                    loading="lazy"
-                    className="h-[54px] w-[139px]"
-                  />
-                </a>
-
-              </div>
-            </div>
-          </div>
-        </section>
-
-
 
         {/* Featured Editorial Publications Section */}
         <section className="py-14 bg-background border-t">

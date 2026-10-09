@@ -6,6 +6,22 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  async headers() {
+    return [
+      {
+        source: '/r/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
+      },
+      {
+        source: '/go/:path*',
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+        ],
+      },
+    ]
+  },
   async redirects() {
     return [
       {

@@ -20,11 +20,11 @@ export function Footer() {
               />
             </Link>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              Enterprise-grade link management, custom domain routing, real-time attribution analytics, and dynamic vector QR codes. Fast edge 301 redirects with instant routing and automated security screening.
+              Fast, privacy-first link management, custom domain routing, real-time attribution analytics, and dynamic vector QR codes. Free custom domain included on every plan.
             </p>
             <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
               <ShieldCheck className="h-4 w-4 text-emerald-500 shrink-0" />
-              <span>Edge 301 Redirects • Anti-Phishing Screened</span>
+              <span>Fast Edge Redirects • Anti-Phishing Screened</span>
             </div>
 
             {/* Verified Social Media Channels (Resolves Semrush 0% Social Media Score) */}
@@ -172,7 +172,6 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-3 text-sm">Trust &amp; Legal</h3>
             <nav className="flex flex-col gap-2 text-xs sm:text-sm text-muted-foreground" aria-label="Company navigation">
               <Link href="/about" className="hover:text-foreground transition-colors">About UL0</Link>
-              <Link href="/backlinks" className="hover:text-foreground transition-colors font-medium text-primary">Backlinks &amp; Badges</Link>
               <Link href="/contact" className="hover:text-foreground transition-colors">Contact Support</Link>
               <Link href="/security" className="hover:text-foreground transition-colors text-emerald-500 font-medium">Security &amp; Safety</Link>
               <Link href="/threats" className="hover:text-foreground transition-colors text-rose-500 font-medium flex items-center gap-1">
