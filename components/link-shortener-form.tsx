@@ -50,7 +50,17 @@ export function LinkShortenerForm() {
   const [factIndex, setFactIndex] = useState(0)
   const [cooldown, setCooldown] = useState(0)
   const [isIndia, setIsIndia] = useState(false)
+  const [isShaking, setIsShaking] = useState(false)
+  const [typedUrl, setTypedUrl] = useState("")
+  const [showCheckmark, setShowCheckmark] = useState(false)
   const animRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Trigger input shake for errors
+  const triggerError = (msg: string) => {
+    setError(msg)
+    setIsShaking(true)
+    setTimeout(() => setIsShaking(false), 300)
+  }
 
   // Detect Indian users
   useEffect(() => {
@@ -87,37 +97,43 @@ export function LinkShortenerForm() {
     return () => clearInterval(t)
   }, [carbonSaved])
 
-  // Link compression animation
-  const runAnimation = (originalUrl: string, finalShortUrl: string) => {
+  // 19.2 Delight Animation: Fast compression and typing reveal sequence (<700ms)
+  const runDelightAnimation = (originalUrl: string, finalShortUrl: string) => {
     setIsAnimating(true)
     setAnimStep(1)
     setDisplayUrl(originalUrl)
+    setTypedUrl("")
+    setShowCheckmark(false)
 
-    // Phase 1: shrink the displayed URL character by character
+    // Phase 1: 0-250ms "compress" long URL down
     let len = originalUrl.length
     const shrinkInterval = setInterval(() => {
-      len = Math.max(0, len - Math.ceil(originalUrl.length / 18))
+      len = Math.max(0, len - Math.ceil(originalUrl.length / 8))
       setDisplayUrl(originalUrl.slice(0, len) + (len > 0 ? "…" : ""))
+
       if (len <= 0) {
         clearInterval(shrinkInterval)
-        // Phase 2: expand the short URL
-        setDisplayUrl("")
-        let idx = 0
-        const growInterval = setInterval(() => {
-          idx++
-          setDisplayUrl(finalShortUrl.slice(0, idx))
-          if (idx >= finalShortUrl.length) {
-            clearInterval(growInterval)
-            setAnimStep(2)
+        setAnimStep(2)
+
+        // Phase 2: 250-500ms fast type-in of short URL (stagger ~16ms/char)
+        let charIndex = 0
+        const typeInterval = setInterval(() => {
+          charIndex++
+          setTypedUrl(finalShortUrl.slice(0, charIndex))
+
+          if (charIndex >= finalShortUrl.length) {
+            clearInterval(typeInterval)
+            // Phase 3: Reveal checkmark
+            setShowCheckmark(true)
             setTimeout(() => {
               setIsAnimating(false)
               setAnimStep(0)
-            }, 600)
+            }, 300)
           }
-        }, 35)
-        animRef.current = growInterval
+        }, 16)
+        animRef.current = typeInterval
       }
-    }, 40)
+    }, 28)
     animRef.current = shrinkInterval
   }
 
@@ -130,11 +146,11 @@ export function LinkShortenerForm() {
 
     if (!isValidUrl(longUrl)) {
       if (longUrl.startsWith("http://")) {
-        setError("Only HTTPS links are accepted. Please use https:// instead.")
+        triggerError("Only HTTPS links are accepted. Please use https:// instead.")
       } else if (!longUrl.startsWith("https://")) {
-        setError("Please include https:// at the start of your URL (e.g. https://example.com)")
+        triggerError("Please include https:// at the start of your URL (e.g. https://example.com)")
       } else {
-        setError("Please enter a valid URL (e.g. https://example.com)")
+        triggerError("Please enter a valid URL (e.g. https://example.com)")
       }
       return
     }
@@ -170,10 +186,10 @@ export function LinkShortenerForm() {
       setLongUrl("")
       setCustomSlug("")
 
-      // Run the animation after state is set
-      setTimeout(() => runAnimation(urlForAnimation, resultShortUrl), 50)
+      // Execute delight sequence immediately upon receiving result
+      runDelightAnimation(urlForAnimation, resultShortUrl)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong")
+      triggerError(err instanceof Error ? err.message : "Something went wrong")
     } finally {
       setIsLoading(false)
     }
@@ -181,9 +197,16 @@ export function LinkShortenerForm() {
 
   const copyToClipboard = async () => {
     if (shortUrl) {
-      await navigator.clipboard.writeText(shortUrl)
+      try {
+        await navigator.clipboard.writeText(shortUrl)
+        if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
+          navigator.vibrate(10)
+        }
+      } catch {
+        // Fallback
+      }
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setTimeout(() => setCopied(false), 1600)
     }
   }
 
@@ -198,7 +221,7 @@ export function LinkShortenerForm() {
     const raw = e.target.value
     // Block protocol schemes and common URL characters
     if (raw.includes("://") || raw.includes(".com") || raw.includes(".in") || raw.includes(".net") || raw.includes(".org")) {
-      setError("Custom slug should be a short word like 'my-link', not a full URL")
+      triggerError("Custom slug should be a short word like 'my-link', not a full URL")
       return
     }
     setError(null)
@@ -209,26 +232,37 @@ export function LinkShortenerForm() {
     <>
       <div className="mx-auto w-full max-w-xl">
         <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
-            <Input
-              type="url"
-              placeholder="Paste your long URL here..."
-              value={longUrl}
-              onChange={(e) => setLongUrl(e.target.value)}
-              className="h-11 flex-1 text-base sm:h-12"
-              required
-            />
-            <Button type="submit" disabled={isLoading || cooldown > 0} className="h-11 px-6 sm:h-12 sm:px-8">
+          <div className={`relative flex flex-col gap-2 sm:flex-row sm:gap-3 transition-transform ${isShaking ? "animate-input-shake" : ""}`}>
+            <div className="relative flex-1">
+              <Input
+                type="url"
+                placeholder="Paste your long URL here..."
+                value={longUrl}
+                onChange={(e) => setLongUrl(e.target.value)}
+                className="h-11 w-full text-base sm:h-12 border-border focus-visible:ring-primary focus-visible:border-primary"
+                required
+              />
+              {/* 2px teal sweep line during loading */}
+              {isLoading && (
+                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary overflow-hidden rounded-b">
+                  <div className="h-full bg-emerald-400 animate-line-sweep" />
+                </div>
+              )}
+            </div>
+            <Button
+              type="submit"
+              disabled={isLoading || cooldown > 0}
+              className="h-11 px-6 sm:h-12 sm:px-8 bg-primary hover:bg-[#136759] text-white font-medium active:scale-[0.98] transition-all cursor-pointer shadow-xs"
+            >
               {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  <span className="sm:hidden">...</span>
-                  <span className="hidden sm:inline">Shortening...</span>
-                </>
+                <span className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-300 animate-ping" />
+                  <span>Compressing</span>
+                </span>
               ) : cooldown > 0 ? (
                 `Wait ${cooldown}s`
               ) : (
-                "Shorten"
+                "Shorten URL"
               )}
             </Button>
           </div>
@@ -296,29 +330,44 @@ export function LinkShortenerForm() {
         {/* Result card */}
         {shortUrl && !isAnimating && (
           <>
-            <Card className="mt-4 border-primary/20 bg-primary/5 sm:mt-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <Card className="mt-4 border-primary/25 bg-primary/5 sm:mt-6 animate-card-rise shadow-sm">
               <CardContent className="p-3 sm:p-4">
-                <p className="mb-2 text-xs font-medium text-foreground sm:text-sm">Your short link:</p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <span>Your short link:</span>
+                  </p>
+                  {/* SVG animated stroke checkmark per master.txt Section 19.2 */}
+                  <div className="flex items-center gap-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                    <svg className="h-4 w-4 stroke-current fill-none stroke-[2.5]" viewBox="0 0 24 24">
+                      <polyline points="20 6 9 17 4 12" className="animate-stroke-check" />
+                    </svg>
+                    <span>Ready</span>
+                  </div>
+                </div>
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-                  <code className="flex-1 truncate rounded bg-background px-2 py-1.5 text-xs font-medium text-primary sm:px-3 sm:py-2 sm:text-sm">
+                  <code className="flex-1 truncate rounded-lg border border-border/80 bg-background px-3 py-2 text-xs font-mono font-semibold text-primary sm:text-sm">
                     {shortUrl}
                   </code>
                   <div className="flex gap-2">
                     <Button
                       size="sm"
-                      variant="outline"
                       onClick={copyToClipboard}
-                      className="h-8 gap-1 text-xs sm:h-9 sm:text-sm bg-transparent"
+                      className={`h-9 px-3.5 gap-1.5 text-xs font-medium transition-all cursor-pointer shadow-xs ${
+                        copied
+                          ? "bg-emerald-600 hover:bg-emerald-500 text-white"
+                          : "bg-primary hover:bg-[#136759] text-white active:scale-95"
+                      }`}
                     >
                       {copied ? (
                         <>
-                          <Check className="h-3 w-3 text-green-500 sm:h-4 sm:w-4" />
-                          <span className="hidden sm:inline">Copied</span>
+                          <Check className="h-3.5 w-3.5" />
+                          <span>Copied</span>
                         </>
                       ) : (
                         <>
-                          <Copy className="h-3 w-3 sm:h-4 sm:w-4" />
-                          <span className="hidden sm:inline">Copy</span>
+                          <Copy className="h-3.5 w-3.5" />
+                          <span>Copy</span>
                         </>
                       )}
                     </Button>
