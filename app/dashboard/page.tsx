@@ -39,13 +39,11 @@ export default async function DashboardPage() {
   const isSaket =
     (process.env.MARKETING_ADMIN_CLERK_USER_ID && userId === process.env.MARKETING_ADMIN_CLERK_USER_ID) ||
     userId === "user_3G4mPjpnIRkBEiRcnpjbEBkDcxc" ||
-    email === "kesarsaket607@gmail.com"
+    userId === "user_3G4rnFLHEvo7Fj8wlkWmU4eQ1qq" ||
+    email === "kesarsaket607@gmail.com" ||
+    email === "saketkesar.bcseiot2024@huroorkee.ac.in"
 
-  const hasMarketingAccess =
-    meta.marketing_access === true ||
-    meta.role === "marketing_admin"
-
-  const canAccessMarketing = isDevSaini || isSaket || hasMarketingAccess
+  const canAccessMarketing = isDevSaini || isSaket
 
   // Determine active plan from Clerk Billing, publicMetadata, or database record
   let activePlan = "free_user"
@@ -74,154 +72,148 @@ export default async function DashboardPage() {
     <>
       <Header />
       <main className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
           {/* Welcome Section */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <p className="mt-1 text-muted-foreground">
-              Welcome back{user?.firstName ? `, ${user.firstName}` : ""}! Manage your links and analytics.
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">Dashboard</h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Welcome back{user?.firstName ? `, ${user.firstName}` : ""}. Manage your short links, domains, and analytics.
             </p>
           </div>
 
-          {/* Marketing Engine Banner */}
+          {/* Marketing Engine Banner (Admin Only for Saket & Dev) */}
           {canAccessMarketing && (
-            <div className="mb-8 p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm">
+            <div className="mb-8 p-4 sm:p-5 rounded-xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
               <div className="flex items-center gap-3.5">
-                <div className="rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-2.5 text-emerald-500 shrink-0">
-                  <DollarSign className="h-6 w-6" />
+                <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-2 text-emerald-500 shrink-0">
+                  <DollarSign className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-                    Marketing Link Engine Active
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-mono font-bold">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    Marketing Link Engine
+                    <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-mono font-bold">
                       Admin
                     </span>
                   </h3>
                   <p className="text-xs text-muted-foreground mt-0.5">
-                    Create ad-supported content gate links, configure auto-skips (5s), and select from 25+ blog articles.
+                    Ad-supported content gates with auto-skips and 25+ blog articles.
                   </p>
                 </div>
               </div>
               <Link
                 href="/dashboard/marketing"
-                className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-xs transition-all shadow-md shadow-emerald-500/20 shrink-0 flex items-center gap-1.5"
+                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors shadow-xs shrink-0 flex items-center gap-1.5"
               >
-                <span>Open Marketing Engine</span>
-                <ArrowRight className="h-3.5 w-3.5" />
+                <span>Open Engine</span>
               </Link>
             </div>
           )}
 
-          {/* Stats Cards */}
+          {/* Stats Cards - Clean Apple/Linear design */}
           <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+            <div className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center gap-3">
-                <div className="rounded-lg bg-primary/10 p-2.5">
-                  <Link2 className="h-5 w-5 text-primary" />
+                <div className="h-9 w-9 rounded-lg border border-border bg-muted/40 flex items-center justify-center text-muted-foreground">
+                  <Link2 className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Links</p>
-                  <p className="text-2xl font-bold">{total}</p>
+                  <p className="text-xs text-muted-foreground font-medium">Total Links</p>
+                  <p className="text-2xl font-semibold tracking-tight tabular-nums">{total}</p>
                 </div>
               </div>
             </div>
-            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+            <div className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center gap-3">
-                <div className="rounded-lg bg-green-500/10 p-2.5">
-                  <MousePointerClick className="h-5 w-5 text-green-500" />
+                <div className="h-9 w-9 rounded-lg border border-border bg-muted/40 flex items-center justify-center text-muted-foreground">
+                  <MousePointerClick className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Total Clicks</p>
-                  <p className="text-2xl font-bold">
+                  <p className="text-xs text-muted-foreground font-medium">Total Clicks</p>
+                  <p className="text-2xl font-semibold tracking-tight tabular-nums">
                     {links.reduce((sum, l) => sum + (l.clicks_count || 0), 0)}
                   </p>
                 </div>
               </div>
             </div>
-            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+            <div className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center gap-3">
-                <div className="rounded-lg bg-blue-500/10 p-2.5">
-                  <BarChart3 className="h-5 w-5 text-blue-500" />
+                <div className="h-9 w-9 rounded-lg border border-border bg-muted/40 flex items-center justify-center text-muted-foreground">
+                  <BarChart3 className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Plan</p>
-                  <p className="text-2xl font-bold capitalize">{account.plan.replace("_user", "")}</p>
+                  <p className="text-xs text-muted-foreground font-medium">Plan</p>
+                  <p className="text-2xl font-semibold tracking-tight capitalize">
+                    {account.plan === "pro_user" ? "Pro" : account.plan === "business_user" ? "Business" : "Free"}
+                  </p>
                 </div>
               </div>
             </div>
-            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+            <div className="rounded-xl border border-border bg-card p-5">
               <div className="flex items-center gap-3">
-                <div className="rounded-lg bg-purple-500/10 p-2.5">
-                  <Globe className="h-5 w-5 text-purple-500" />
+                <div className="h-9 w-9 rounded-lg border border-border bg-muted/40 flex items-center justify-center text-muted-foreground">
+                  <Globe className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Domains</p>
-                  <p className="text-2xl font-bold">{domains.length}/{limits.maxDomains}</p>
+                  <p className="text-xs text-muted-foreground font-medium">Domains</p>
+                  <p className="text-2xl font-semibold tracking-tight tabular-nums">{domains.length}/{limits.maxDomains}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Quick Actions */}
-          <div className="mb-8 flex flex-wrap gap-3">
+          <div className="mb-8 flex flex-wrap gap-2.5">
             <Link
               href="/dashboard/domains"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-accent transition-colors"
             >
-              <Globe className="h-4 w-4" />
-              Manage Domains
-              <ArrowRight className="h-3.5 w-3.5" />
+              <Globe className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>Manage Domains</span>
             </Link>
             <Link
               href="/dashboard/campaigns"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-accent transition-colors"
             >
-              <Megaphone className="h-4 w-4" />
-              Campaign Builder
-              <ArrowRight className="h-3.5 w-3.5" />
+              <Megaphone className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>Campaign Builder</span>
             </Link>
             <Link
               href="/qr"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-accent transition-colors"
             >
-              <QrCode className="h-4 w-4" />
-              QR Generator
-              <ArrowRight className="h-3.5 w-3.5" />
+              <QrCode className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>QR Generator</span>
             </Link>
             {canAccessMarketing && (
               <Link
                 href="/dashboard/seo"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-semibold text-primary hover:bg-primary/10 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/5 px-3.5 py-1.5 text-xs font-semibold text-primary hover:bg-primary/10 transition-colors"
               >
-                <Sparkles className="h-4 w-4" />
-                SEO &amp; Search Console
-                <ArrowRight className="h-3.5 w-3.5" />
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>SEO &amp; Search Console</span>
               </Link>
             )}
             <Link
               href="/dashboard/keys"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-accent transition-colors"
             >
-              <Key className="h-4 w-4" />
-              API Keys
-              <ArrowRight className="h-3.5 w-3.5" />
+              <Key className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>API Keys</span>
             </Link>
             <Link
               href="/pricing"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-accent transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3.5 py-1.5 text-xs font-medium text-foreground hover:bg-accent transition-colors"
             >
-              <BarChart3 className="h-4 w-4" />
-              {account.plan === "free_user" ? "Upgrade Plan" : "Manage Plan"}
-              <ArrowRight className="h-3.5 w-3.5" />
+              <BarChart3 className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>{account.plan === "free_user" ? "Upgrade Plan" : "Manage Plan"}</span>
             </Link>
             {canAccessMarketing && (
               <Link
                 href="/dashboard/marketing"
-                className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 px-4 py-2 text-sm font-medium hover:bg-emerald-500/20 transition-colors"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400 px-3.5 py-1.5 text-xs font-medium hover:bg-emerald-500/20 transition-colors"
               >
-                <DollarSign className="h-4 w-4" />
-                Marketing Links
-                <ArrowRight className="h-3.5 w-3.5" />
+                <DollarSign className="h-3.5 w-3.5" />
+                <span>Marketing Links</span>
               </Link>
             )}
           </div>

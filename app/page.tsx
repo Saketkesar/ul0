@@ -4,6 +4,7 @@ import { LinkShortenerForm } from "@/components/link-shortener-form"
 import { FeaturesSection } from "@/components/features-section"
 import { Metadata } from "next"
 import Link from "next/link"
+import Image from "next/image"
 import { hreflangAlternates } from "@/lib/i18n"
 import { Badge } from "@/components/ui/badge"
 import { Globe } from "lucide-react"
@@ -285,8 +286,57 @@ export default function HomePage() {
 
               <LinkShortenerForm />
 
+              {/* Product Visual Showcase (Real 4K Brand & Vector QR) */}
+              <div className="mt-10 grid gap-4 sm:grid-cols-2 text-left">
+                <div className="rounded-2xl border border-border/80 bg-card/60 p-5 flex flex-col justify-between shadow-xs">
+                  <div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground font-semibold">
+                      Brand Authority
+                    </span>
+                    <h3 className="text-base font-semibold text-foreground mt-1 mb-1">
+                      Crisp Branded Links
+                    </h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Shorten links with authority. Share clean, custom-domain URLs across social profiles, SMS, and ad campaigns.
+                    </p>
+                  </div>
+                  <div className="mt-4 flex items-center justify-center p-3 rounded-xl bg-background/80 border border-border/60">
+                    <Image
+                      src="/ulo_4kwebp.webp"
+                      alt="UL0 Official Platform"
+                      width={240}
+                      height={108}
+                      className="h-12 w-auto object-contain"
+                    />
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-border/80 bg-card/60 p-5 flex flex-col justify-between shadow-xs">
+                  <div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground font-semibold">
+                      Print-Ready Matrix
+                    </span>
+                    <h3 className="text-base font-semibold text-foreground mt-1 mb-1">
+                      High-Resolution QR Codes
+                    </h3>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Auto-generate dynamic vector QR codes with embedded center brand marks and high error-correction (Level H).
+                    </p>
+                  </div>
+                  <div className="mt-4 flex items-center justify-center p-3 rounded-xl bg-background/80 border border-border/60">
+                    <Image
+                      src="/ulo_qr.webp"
+                      alt="UL0 Branded QR Code"
+                      width={120}
+                      height={120}
+                      className="h-14 w-14 object-contain"
+                    />
+                  </div>
+                </div>
+              </div>
+
               {/* SEO-rich content below form */}
-              <div className="mt-8 text-left text-sm text-muted-foreground space-y-6">
+              <div className="mt-10 text-left text-sm text-muted-foreground space-y-6">
                 <div>
                   <h3 className="text-lg font-semibold text-foreground mb-2">Why Modern Teams Choose UL0</h3>
                   <ul className="space-y-1.5 list-disc list-inside">

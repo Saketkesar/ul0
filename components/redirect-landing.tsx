@@ -257,10 +257,22 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
         )}
 
         {/* Center Main Redirect Card */}
-        <div className="flex-1 w-full max-w-xl flex flex-col items-center gap-5 text-center my-auto">
+        <div className="flex-1 w-full max-w-xl flex flex-col items-center gap-4 text-center my-auto">
+          {/* Official 4K Brand Logo */}
+          <div className="flex justify-center">
+            <Image
+              src="/ulo_4kwebp.webp"
+              alt="UL0 Link Platform"
+              width={160}
+              height={72}
+              className="h-11 w-auto object-contain"
+              priority
+            />
+          </div>
+
           {/* App Detection & Buttons */}
           {isMobile && detectedApp && (
-            <div className="flex flex-col items-center gap-3 rounded-lg border border-primary/20 bg-primary/5 p-4 w-full">
+            <div className="flex flex-col items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4 w-full">
               <div className="flex items-center gap-2 text-sm font-medium text-foreground">
                 <AppIcon className="h-5 w-5 text-primary" />
                 <span>Open in {appConfig?.name}</span>
@@ -279,10 +291,29 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
           )}
 
           {/* Trust Badge */}
-          <div className="flex items-center gap-2 rounded-full bg-green-500/10 px-4 py-2 text-sm text-green-600 dark:text-green-400">
-            <Shield className="h-4 w-4" />
+          <div className="flex items-center gap-2 rounded-full bg-emerald-500/10 px-3.5 py-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+            <Shield className="h-3.5 w-3.5" />
             <span>Link verified safe</span>
           </div>
+
+          {/* QR Code Scan Handoff for Desktop Users */}
+          {!isMobile && (
+            <div className="flex flex-col items-center gap-2 rounded-2xl border border-border/80 bg-card p-3.5 shadow-xs">
+              <div className="rounded-xl border border-border/60 bg-white p-2">
+                <Image
+                  src="/ulo_qr.webp"
+                  alt="Scan QR code to open on mobile"
+                  width={128}
+                  height={128}
+                  className="h-28 w-28 object-contain"
+                  priority
+                />
+              </div>
+              <p className="text-[11px] font-medium text-muted-foreground">
+                Scan with phone to open instantly on mobile
+              </p>
+            </div>
+          )}
 
           {/* Destination URL */}
           <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/20 px-4 py-3 rounded-xl border border-border/50 max-w-md w-full justify-center">
