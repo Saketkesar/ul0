@@ -302,11 +302,12 @@ export default function HomePage() {
                   </div>
                   <div className="mt-4 flex items-center justify-center p-3 rounded-xl bg-background/80 border border-border/60">
                     <Image
-                      src="/ulo_4kwebp.webp"
+                      src="/ulo_4k.webp"
                       alt="UL0 Official Platform"
                       width={240}
                       height={108}
                       className="h-12 w-auto object-contain"
+                      unoptimized
                     />
                   </div>
                 </div>
@@ -325,11 +326,12 @@ export default function HomePage() {
                   </div>
                   <div className="mt-4 flex items-center justify-center p-3 rounded-xl bg-background/80 border border-border/60">
                     <Image
-                      src="/ulo_qr.webp"
+                      src="/ulo_qr_logo.webp"
                       alt="UL0 Branded QR Code"
                       width={120}
                       height={120}
                       className="h-14 w-14 object-contain"
+                      unoptimized
                     />
                   </div>
                 </div>

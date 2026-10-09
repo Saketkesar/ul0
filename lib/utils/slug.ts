@@ -44,7 +44,6 @@ const BLOCKED_HOSTNAMES = [
 
 // Known shorteners and self-domains to prevent redirect loops and chaining
 export const KNOWN_SHORTENER_DOMAINS = [
-  'ul0.site',
   'bit.ly',
   'tinyurl.com',
   't.co',
@@ -271,7 +270,10 @@ export function validateUrl(urlString: string): UrlValidationResult {
 
   // Block self-links and shortener chains (prevents loops and abuse)
   if (hostname === "ul0.site" || hostname.endsWith(".ul0.site")) {
-    return { valid: false, error: "Shortening ul0.site links to prevent redirect loops is not permitted." }
+    const p = url.pathname.toLowerCase()
+    if (p.startsWith("/r/") || p.startsWith("/m/") || p.startsWith("/gate/")) {
+      return { valid: false, error: "Shortening an existing redirect link to prevent loops is not permitted." }
+    }
   }
   for (const shortener of KNOWN_SHORTENER_DOMAINS) {
     if (hostname === shortener || hostname.endsWith("." + shortener)) {

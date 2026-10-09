@@ -201,8 +201,8 @@ export function QrCustomizer({ shortUrl, slug }: QrCustomizerProps) {
                 />
               </div>
             ) : (
-              <div className="w-[200px] h-[200px] bg-muted/30 border border-dashed rounded-2xl flex items-center justify-center">
-                <QrCode className="h-10 w-10 text-muted-foreground/30 animate-pulse" />
+              <div className="w-[200px] h-[200px] bg-muted/30 border border-dashed rounded-2xl flex items-center justify-center p-2">
+                <img src="/ulo_qr_logo.webp" alt="UL0 Branded QR Animation" className="w-full h-full object-contain" />
               </div>
             )}
             <div className="flex gap-2 w-full max-w-[200px]">

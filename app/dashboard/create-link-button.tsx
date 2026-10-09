@@ -160,14 +160,16 @@ export function CreateLinkButton({ verifiedDomains }: CreateLinkButtonProps) {
 
         {success ? (
           <div className="space-y-4 py-4">
-            <div className="rounded-lg bg-green-500/10 p-4 text-center">
-              <CheckCircle2 className="mx-auto h-8 w-8 text-green-500 mb-2" />
-              <h3 className="font-semibold text-green-600">Link Created Successfully!</h3>
+            <div className="rounded-lg bg-emerald-500/10 border border-emerald-500/20 p-4 text-center">
+              <div className="mx-auto w-full max-w-[220px] rounded-lg overflow-hidden border border-border/60 bg-background/80 p-2 mb-3">
+                <img src="/ulo_4k.webp" alt="Link Created" className="w-full h-auto object-contain" />
+              </div>
+              <h3 className="font-semibold text-emerald-600 dark:text-emerald-400">Link Created Successfully!</h3>
               <p className="mt-1 text-xs text-muted-foreground">
-                Your short link is ready to use:
+                Your branded short link is active on the edge network:
               </p>
               <div className="mt-3 flex items-center justify-center gap-2 rounded bg-background px-3 py-2 text-sm font-mono border border-border">
-                <span className="truncate max-w-[280px]">{success}</span>
+                <span className="truncate max-w-[280px] text-primary font-semibold">{success}</span>
               </div>
             </div>
             <button

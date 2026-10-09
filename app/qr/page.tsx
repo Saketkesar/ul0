@@ -33,6 +33,7 @@ export default function QRCodeGeneratorPage() {
   const generateQR = async (data: string) => {
     if (!data.trim()) return
     setGenerating(true)
+    const startTime = Date.now()
     try {
       const canvas = canvasRef.current
       if (canvas) {
@@ -74,6 +75,11 @@ export default function QRCodeGeneratorPage() {
         }
 
         const url = canvas.toDataURL("image/png")
+        // Ensure the QR generation WebP animation (/ulo_qr_logo.webp) displays for at least 1500ms
+        const elapsed = Date.now() - startTime
+        if (elapsed < 1600) {
+          await new Promise((resolve) => setTimeout(resolve, 1600 - elapsed))
+        }
         setQrDataUrl(url)
       } else {
         const url = await QRCode.toDataURL(data, {
@@ -85,12 +91,17 @@ export default function QRCodeGeneratorPage() {
             light: "#ffffff",
           },
         })
+        const elapsed = Date.now() - startTime
+        if (elapsed < 1600) {
+          await new Promise((resolve) => setTimeout(resolve, 1600 - elapsed))
+        }
         setQrDataUrl(url)
       }
     } catch (err) {
       console.error("Error generating QR code:", err)
+    } finally {
+      setGenerating(false)
     }
-    setGenerating(false)
   }
 
   const downloadQR = () => {
@@ -345,12 +356,24 @@ export default function QRCodeGeneratorPage() {
                 <CardDescription>Scan with any QR code reader app</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col items-center">
-                <div className="w-[300px] h-[300px] border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/30 mb-4">
-                  {qrDataUrl ? (
-                    <img key={qrDataUrl} src={qrDataUrl} alt="Generated QR Code" className="w-full h-full animate-qr-wave rounded-md" />
+                <div className="w-[300px] h-[300px] border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/30 mb-4 overflow-hidden p-2">
+                  {generating ? (
+                    <div className="flex flex-col items-center justify-center p-3 text-center animate-in fade-in duration-200">
+                      <img
+                        src="/ulo_qr_logo.webp"
+                        alt="Generating QR Code Animation"
+                        className="w-44 h-44 object-contain mb-2"
+                      />
+                      <p className="text-xs font-semibold text-primary flex items-center gap-1.5">
+                        <span className="h-2 w-2 rounded-full bg-primary animate-ping" />
+                        <span>Generating Vector QR Code...</span>
+                      </p>
+                    </div>
+                  ) : qrDataUrl ? (
+                    <img key={qrDataUrl} src={qrDataUrl} alt="Generated QR Code" className="w-full h-full animate-qr-wave rounded-md object-contain" />
                   ) : (
                     <div className="flex flex-col items-center justify-center p-3 text-center text-muted-foreground">
-                      <img src="/ulo_qr.webp" alt="Sample Branded QR Code" className="w-44 h-44 object-contain mb-2 rounded-lg shadow-xs" />
+                      <img src="/ulo_qr_logo.webp" alt="UL0 Branded QR Code" className="w-44 h-44 object-contain mb-2 rounded-lg shadow-xs" />
                       <p className="text-xs font-medium">Sample Preview • Enter data to generate</p>
                     </div>
                   )}
