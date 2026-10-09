@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation"
+import { after } from "next/server"
 import { RedirectLanding } from "@/components/redirect-landing"
 import { headers } from "next/headers"
 import { getCachedUrl, setCachedUrl, redis } from "@/lib/redis"
@@ -216,49 +217,56 @@ export default async function RedirectPage({ params, searchParams }: Props) {
   // Unique visitor check (cached in Redis to avoid DB querying overhead)
   const unique = await isUniqueVisitor(link.$id, ipHash)
 
-  // Asynchronously log the click with full variables
-  logClick({
-    link_id: link.$id,
-    owner_id: link.owner_id,
-    user_agent: userAgent.substring(0, 500),
-    referrer: referrer.substring(0, 500),
-    device_type: uaData.device,
-    country,
-    region,
-    city,
-    latitude,
-    longitude,
-    browser: uaData.browser,
-    os: uaData.os,
-    device: uaData.device === "mobile" ? "Mobile Phone" : uaData.device === "tablet" ? "Tablet" : "Desktop Computer",
-    utm_source,
-    utm_medium,
-    utm_campaign,
-    language,
-    timezone,
-    bot: uaData.bot,
-    unique_visitor: unique,
-    qr_scan: isQr,
-    ip_hash: ipHash,
-  }).catch(console.error)
-
-  incrementClickCount(link.$id).catch(console.error)
-
-  // Push to Live Feed (Redis list for modern Realtime updates on Dashboard)
-  if (link.owner_id) {
-    const liveEvent = {
-      linkId: link.$id,
-      slug: link.slug,
-      timestamp: new Date().toISOString(),
-      country,
-      city,
-      device: uaData.device,
-      browser: uaData.browser,
+  // Reliably log click events and live feed updates without blocking the page response
+  after(async () => {
+    try {
+      await Promise.allSettled([
+        logClick({
+          link_id: link.$id,
+          owner_id: link.owner_id,
+          user_agent: userAgent.substring(0, 500),
+          referrer: referrer.substring(0, 500),
+          device_type: uaData.device,
+          country,
+          region,
+          city,
+          latitude,
+          longitude,
+          browser: uaData.browser,
+          os: uaData.os,
+          device: uaData.device === "mobile" ? "Mobile Phone" : uaData.device === "tablet" ? "Tablet" : "Desktop Computer",
+          utm_source,
+          utm_medium,
+          utm_campaign,
+          language,
+          timezone,
+          bot: uaData.bot,
+          unique_visitor: unique,
+          qr_scan: isQr,
+          ip_hash: ipHash,
+        }),
+        incrementClickCount(link.$id),
+        link.owner_id
+          ? redis
+              .lpush(
+                `live_clicks:${link.owner_id}`,
+                JSON.stringify({
+                  linkId: link.$id,
+                  slug: link.slug,
+                  timestamp: new Date().toISOString(),
+                  country,
+                  city,
+                  device: uaData.device,
+                  browser: uaData.browser,
+                })
+              )
+              .then(() => redis.ltrim(`live_clicks:${link.owner_id}`, 0, 49))
+          : Promise.resolve(),
+      ])
+    } catch (e) {
+      console.error("after() click background processing error:", e)
     }
-    redis.lpush(`live_clicks:${link.owner_id}`, JSON.stringify(liveEvent))
-      .then(() => redis.ltrim(`live_clicks:${link.owner_id}`, 0, 49)) // Cap at 50 events
-      .catch(console.error)
-  }
+  })
 
   // 4. One-time link behavior: expire after first click
   if (oneTime) {

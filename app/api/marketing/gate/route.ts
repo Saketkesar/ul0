@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse, after } from "next/server"
 import { cookies } from "next/headers"
 import { advanceGateStep, getGateSession } from "@/lib/marketing-gate-session"
 import { incrementCompletions } from "@/lib/appwrite/marketing-links"
@@ -37,9 +37,16 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // If gate completed, increment completions counter
+    // If gate completed, reliably increment completions counter in background
     if (result.isComplete && result.session) {
-      incrementCompletions(result.session.marketing_link_id).catch(console.error)
+      const linkId = result.session.marketing_link_id
+      after(async () => {
+        try {
+          await incrementCompletions(linkId)
+        } catch (e) {
+          console.error("Increment completions error:", e)
+        }
+      })
     }
 
     return NextResponse.json({

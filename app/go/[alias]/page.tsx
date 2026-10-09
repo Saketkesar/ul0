@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 import { notFound, redirect } from "next/navigation"
+import { after } from "next/server"
 import { cookies } from "next/headers"
 import Link from "next/link"
 import Image from "next/image"
@@ -97,8 +98,14 @@ export default async function GatePage({ params }: PageProps) {
       link_type: linkType,
     })
 
-    // Track open
-    incrementGateOpens(link.$id).catch(console.error)
+    // Track open reliably in background
+    after(async () => {
+      try {
+        await incrementGateOpens(link.$id)
+      } catch (e) {
+        console.error("Increment gate opens error:", e)
+      }
+    })
   }
 
   // 3. Completion Check
