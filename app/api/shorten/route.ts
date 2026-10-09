@@ -11,17 +11,17 @@ import { getPlanLimits } from "@/lib/plans"
 // Rate limit configurations
 const RATE_LIMIT_CONFIG = {
   windowMs: 60000, // 1 minute
-  maxRequests: 3, // Normal users: 3 requests per minute
+  maxRequests: 30, // Normal users: 30 requests per minute
 }
 
 const STRICT_RATE_LIMIT_CONFIG = {
   windowMs: 60000, // 1 minute
-  maxRequests: 1, // Suspicious requests: 1 per minute
+  maxRequests: 10, // Suspicious requests: 10 per minute
 }
 
 const DAILY_RATE_LIMIT_CONFIG = {
   windowMs: 86400000, // 24 hours
-  maxRequests: 50, // Max 50 links per day per IP
+  maxRequests: 500, // Max 500 links per day per IP
 }
 
 export async function POST(request: NextRequest) {

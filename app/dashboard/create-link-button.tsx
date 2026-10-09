@@ -63,6 +63,9 @@ export function CreateLinkButton({ verifiedDomains }: CreateLinkButtonProps) {
 
     // Append UTM tags to destination URL
     let finalUrl = longUrl.trim()
+    if (!/^https?:\/\//i.test(finalUrl)) {
+      finalUrl = `https://${finalUrl}`
+    }
     try {
       if (utmSource || utmMedium || utmCampaign) {
         const urlObj = new URL(finalUrl)

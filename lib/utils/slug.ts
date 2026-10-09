@@ -63,8 +63,8 @@ export const KNOWN_SHORTENER_DOMAINS = [
   'dub.sh',
 ]
 
-// Only HTTPS is allowed — http:// and protocol-less URLs are rejected
-const ALLOWED_PROTOCOLS = ['https:']
+// HTTPS and HTTP protocols allowed
+const ALLOWED_PROTOCOLS = ['https:', 'http:']
 
 // Known malicious TLD/domain pattern heuristics (supplemental layer)
 // Full protection requires server-side Google Safe Browsing API
@@ -223,17 +223,20 @@ export interface UrlValidationResult {
  * Prevents SSRF, XSS, and other injection attacks
  */
 export function validateUrl(urlString: string): UrlValidationResult {
-  // Check length limits
-  if (!urlString || urlString.length < MIN_URL_LENGTH) {
-    return { valid: false, error: "URL is too short" }
+  // Check input
+  if (!urlString || urlString.trim().length < 3) {
+    return { valid: false, error: "Please enter a destination URL" }
   }
   
   if (urlString.length > MAX_URL_LENGTH) {
     return { valid: false, error: "URL is too long (max 2048 characters)" }
   }
   
-  // Basic sanitization - trim whitespace
-  const trimmedUrl = urlString.trim()
+  // Basic sanitization - trim whitespace and auto-prepend https:// if missing protocol
+  let trimmedUrl = urlString.trim()
+  if (!/^https?:\/\//i.test(trimmedUrl)) {
+    trimmedUrl = `https://${trimmedUrl}`
+  }
   
   // Block data: and javascript: URLs
   const lowerUrl = trimmedUrl.toLowerCase()
@@ -248,12 +251,9 @@ export function validateUrl(urlString: string): UrlValidationResult {
     return { valid: false, error: "Invalid URL format" }
   }
   
-  // Protocol validation - HTTPS only
+  // Protocol validation - HTTP and HTTPS
   if (!ALLOWED_PROTOCOLS.includes(url.protocol)) {
-    if (url.protocol === 'http:') {
-      return { valid: false, error: "Only HTTPS links are accepted. Please use https:// instead of http://" }
-    }
-    return { valid: false, error: "Only https:// links are allowed" }
+    return { valid: false, error: "Only web links (http:// or https://) are supported" }
   }
   
   // Hostname validation

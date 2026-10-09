@@ -151,10 +151,14 @@ export function LinkShortenerForm() {
     setQrDataUrl(null)
     setFactIndex(0)
 
-    const trimmedUrl = longUrl.trim()
+    let trimmedUrl = longUrl.trim()
     if (!trimmedUrl) {
       triggerError("Please enter a destination URL")
       return
+    }
+
+    if (!/^https?:\/\//i.test(trimmedUrl)) {
+      trimmedUrl = `https://${trimmedUrl}`
     }
 
     const validation = validateUrl(trimmedUrl)
@@ -277,8 +281,9 @@ export function LinkShortenerForm() {
           <div className={`relative flex flex-col gap-2 sm:flex-row sm:gap-3 transition-transform ${isShaking ? "animate-input-shake" : ""}`}>
             <div className="relative flex-1">
               <Input
-                type="url"
-                placeholder="Paste your long URL here..."
+                type="text"
+                inputMode="url"
+                placeholder="Paste your link here (e.g. pastebin.com/xyz or https://...)"
                 value={longUrl}
                 onChange={(e) => setLongUrl(e.target.value)}
                 className="h-11 w-full text-base sm:h-12 border-border focus-visible:ring-primary focus-visible:border-primary"
