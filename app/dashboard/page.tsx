@@ -47,23 +47,21 @@ export default async function DashboardPage() {
 
   const canAccessMarketing = isDevSaini || isSaket || hasMarketingAccess
 
-  // Determine active plan from Clerk Billing, publicMetadata, or manual admin grant
+  // Determine active plan from Clerk Billing, publicMetadata, or database record
   let activePlan = "free_user"
-  if (has({ plan: "business_user" }) || meta.plan === "business_user") {
+  if (has({ plan: "business_user" }) || meta.plan === "business_user" || accountDoc?.plan === "business_user") {
     activePlan = "business_user"
   } else if (
     has({ plan: "pro_user" }) ||
     meta.plan === "pro_user" ||
-    accountDoc?.plan === "pro_user" ||
-    isDevSaini ||
-    isSaket
+    accountDoc?.plan === "pro_user"
   ) {
     activePlan = "pro_user"
   }
 
   // Ensure account exists and reflects active plan
   const account = accountDoc
-    ? { ...accountDoc, plan: activePlan === "pro_user" ? "pro_user" : accountDoc.plan }
+    ? { ...accountDoc, plan: activePlan }
     : await upsertAccount(userId, email, activePlan)
   const { links, total } = linksResult
 
