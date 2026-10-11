@@ -19,6 +19,7 @@ import {
   TrendingUp,
   Eye,
   Scissors,
+  MessageCircle,
 } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -52,6 +53,14 @@ const TOOL_CATEGORIES = [
     category: "Link & SEO Utilities",
     description: "Inspect redirects, audit short link security, and optimize campaign attribution.",
     tools: [
+      {
+        title: "WhatsApp Link & QR Generator",
+        slug: "whatsapp-link",
+        href: "/whatsapp",
+        icon: <MessageCircle className="h-5 w-5 text-emerald-500" />,
+        badge: "Popular",
+        description: "Create wa.me click-to-chat links with custom pre-filled messages, trackable short URLs, and printable QR codes.",
+      },
       {
         title: "HTTP Redirect Checker",
         slug: "redirect-checker",

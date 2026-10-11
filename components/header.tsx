@@ -48,6 +48,7 @@ import {
   Wifi,
   Sun,
   Moon,
+  MessageCircle,
 } from "lucide-react"
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs"
 
@@ -102,6 +103,7 @@ export function Header() {
   const allNavLinks = useMemo(
     () => [
       { name: "URL Shortener", href: "/", category: "Link Tools", icon: Link2, desc: "Fast 301 link shortening with no signup" },
+      { name: "WhatsApp Link & QR", href: "/whatsapp", category: "Link Tools", icon: MessageCircle, badge: "New", desc: "Create wa.me click-to-chat links with custom pre-filled message" },
       { name: "Split Expenses & UPI", href: "/split", category: "Utilities", icon: Users, badge: "Popular", desc: "Split bills and calculate group dues with UPI QR" },
       { name: "PDF Page Splitter", href: "/tools/pdf-splitter", category: "PDF Tools", icon: Scissors, badge: "New", desc: "Extract & download single PDF pages line-by-line" },
       { name: "PDF Scanner & Document Tools", href: "/pdf", category: "PDF Tools", icon: ScanLine, desc: "Scan, crop, merge and manage PDFs" },
@@ -201,6 +203,18 @@ export function Header() {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link href="/whatsapp" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
+                  <MessageCircle className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
+                  <div>
+                    <div className="text-xs font-semibold text-foreground flex items-center gap-1.5">
+                      <span>WhatsApp Link &amp; QR</span>
+                      <span className="text-[9px] px-1 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold">New</span>
+                    </div>
+                    <div className="text-[11px] text-muted-foreground">wa.me chat links with custom message</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
               <DropdownMenuItem asChild>
                 <Link href="/split" className="flex items-start gap-2.5 p-2 rounded-lg cursor-pointer">
                   <Users className="h-4 w-4 text-emerald-500 mt-0.5 shrink-0" />
