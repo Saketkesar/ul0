@@ -55,7 +55,7 @@ export default function ChangelogPage() {
       date: "July 2026",
       title: "Multi-Tenant Custom Domains & Edge 301 Engine",
       description:
-        "Complete overhaul of DNS verification and edge redirection infrastructure to provide sub-15ms redirect latency globally.",
+        "Complete overhaul of DNS verification and edge redirection infrastructure to provide high-performance edge redirection globally.",
       tags: ["Infrastructure", "Speed"],
       changes: [
         "Automated Let's Encrypt SSL provisioning for custom user domains.",

@@ -129,6 +129,7 @@ export function Footer() {
               <Link href="/qr" className="hover:text-foreground transition-colors">Vector QR Generator</Link>
               <Link href="/custom-domain-landing" className="hover:text-foreground transition-colors">Branded Custom Domains</Link>
               <Link href="/pricing" className="hover:text-foreground transition-colors">Pricing &amp; Plans</Link>
+              <Link href="/compare" className="hover:text-foreground transition-colors">Compare Alternatives</Link>
               <Link href="/changelog" className="hover:text-foreground transition-colors">Changelog &amp; Updates</Link>
               <Link href="/docs" className="hover:text-foreground transition-colors">Developer REST API</Link>
             </nav>
@@ -172,6 +173,7 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-3 text-sm">Trust &amp; Legal</h3>
             <nav className="flex flex-col gap-2 text-xs sm:text-sm text-muted-foreground" aria-label="Company navigation">
               <Link href="/about" className="hover:text-foreground transition-colors">About UL0</Link>
+              <Link href="/status" className="hover:text-foreground transition-colors">System Status</Link>
               <Link href="/contact" className="hover:text-foreground transition-colors">Contact Support</Link>
               <Link href="/security" className="hover:text-foreground transition-colors text-emerald-500 font-medium">Security &amp; Safety</Link>
               <Link href="/threats" className="hover:text-foreground transition-colors text-rose-500 font-medium flex items-center gap-1">

@@ -5,11 +5,29 @@ import { PricingSection } from "./pricing-section"
 import { ExternalLink } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Pricing — ul0",
+  title: "Pricing: Branded Short Links from $0",
   description:
     "Simple, transparent pricing. Start free, upgrade when you need custom domains and full analytics. No hidden fees.",
   alternates: {
     canonical: "https://ul0.site/pricing",
+  },
+  openGraph: {
+    title: "Pricing: Branded Short Links from $0 | UL0",
+    description: "Simple, transparent pricing. Start free, upgrade when you need custom domains and full analytics. No hidden fees.",
+    url: "https://ul0.site/pricing",
+    type: "website",
+    images: [{
+      url: "https://ul0.site/social-card.png",
+      width: 1376,
+      height: 768,
+      alt: "UL0 Pricing — Branded Short Links from $0",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pricing: Branded Short Links from $0 | UL0",
+    description: "Simple, transparent pricing. Start free, upgrade when you need custom domains and full analytics. No hidden fees.",
+    images: ["https://ul0.site/social-card.png"],
   },
 }
 

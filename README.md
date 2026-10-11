@@ -7,7 +7,7 @@
 
   <h1>UL0 — Link Management, Branded Short Links &amp; Analytics</h1>
 
-  <p>An enterprise-grade URL shortener, branded domain management platform, and high-performance developer tool suite built for startups, marketing agencies, and creators.</p>
+  <p>An open-source URL shortener, branded domain management platform, and privacy-first link infrastructure built for startups, marketers, and developers.</p>
 
   <p>
     <a href="https://www.nxgntools.com/tools/ul0?utm_source=ul0" target="_blank">
@@ -20,16 +20,6 @@
     &nbsp;
     <a href="https://dashboard.simpleanalytics.com/ul0.site" target="_blank">
       <img src="https://simpleanalyticsbadges.com/ul0.site?mode=light" alt="Simple Analytics" height="36" />
-    </a>
-  </p>
-
-  <p>
-    <a href="https://frogdr.com/ul0.site" target="_blank">
-      <img src="https://frogdr.com/ul0.site/badge-white.svg" alt="Domain Rating" height="34" />
-    </a>
-    &nbsp;
-    <a href="https://www.seobility.net/en/seocheck/check?url=https%3A%2F%2Ful0.site%2F">
-      <img src="https://app.seobility.net/widget/widget.png?url=https%3A%2F%2Ful0.site%2F" alt="Seobility Score" height="34" />
     </a>
   </p>
 

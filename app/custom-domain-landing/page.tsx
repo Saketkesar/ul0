@@ -6,9 +6,9 @@ import { Link2, ArrowRight } from "lucide-react"
 import { getDomainByName } from "@/lib/appwrite/domains"
 
 export const metadata: Metadata = {
-  title: "Connect a Custom Domain to Shorten Links — ul0.site",
+  title: "Free Custom Domain URL Shortener (CNAME Setup)",
   description:
-    "Connect your own branded domain to ul0.site and create custom short links for free. Build audience trust, increase click-through rates, and track link analytics. Starting at $2/month.",
+    "Connect your own branded domain to ul0.site and create custom short links for free. Build audience trust, increase click-through rates, and track link analytics.",
   keywords: [
     "custom domain link shortener",
     "branded short links",
@@ -18,12 +18,25 @@ export const metadata: Metadata = {
     "branded URL shortener free",
   ],
   openGraph: {
-    title: "Connect a Custom Domain to Shorten Links — ul0.site",
+    title: "Free Custom Domain URL Shortener (CNAME Setup) | UL0",
     description:
-      "Create branded short URLs on your own domain. Track clicks, manage links, and build trust with your audience using ul0.site.",
+      "Create branded short URLs on your own domain. Track clicks, manage links, and build trust with your audience.",
     url: "https://ul0.site/custom-domain-landing",
-    siteName: "ul0.site",
+    siteName: "UL0",
     type: "website",
+    images: [{
+      url: "https://ul0.site/social-card.png",
+      width: 1376,
+      height: 768,
+      alt: "Free Custom Domain URL Shortener",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Custom Domain URL Shortener (CNAME Setup) | UL0",
+    description:
+      "Create branded short URLs on your own domain. Track clicks, manage links, and build trust with your audience.",
+    images: ["https://ul0.site/social-card.png"],
   },
   alternates: {
     canonical: "https://ul0.site/custom-domain-landing",

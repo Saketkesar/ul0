@@ -13,51 +13,63 @@ const LANGUAGES = INDEXED_LOCALES
 const homeLanguageAlternates = hreflangAlternates
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const now = new Date()
+  // Real update timestamps (avoid setting "now" on every build so crawlers respect lastmod)
+  const coreUpdated = new Date("2026-10-11")
+  const toolsUpdated = new Date("2026-10-01")
+  const legalUpdated = new Date("2026-08-01")
 
   // Core product & platform pages
-  const corePages: { path: string; priority: number; freq: "daily" | "weekly" | "monthly" }[] = [
-    { path: "", priority: 1.0, freq: "daily" }, // homepage
-    { path: "/features", priority: 0.95, freq: "weekly" },
-    { path: "/pricing", priority: 0.95, freq: "weekly" },
-    { path: "/changelog", priority: 0.85, freq: "weekly" },
-    { path: "/qr", priority: 0.95, freq: "weekly" },
-    { path: "/utm", priority: 0.9, freq: "weekly" },
-    { path: "/docs", priority: 0.85, freq: "weekly" },
-    { path: "/custom-domain-landing", priority: 0.85, freq: "weekly" },
+  const corePages = [
+    "", // homepage
+    "/features",
+    "/pricing",
+    "/changelog",
+    "/status",
+    "/compare",
+    "/compare/bitly",
+    "/compare/tinyurl",
+    "/compare/rebrandly",
+    "/compare/short-io",
+    "/compare/dub",
+    "/compare/t-ly",
+    "/compare/cuttly",
+    "/qr",
+    "/utm",
+    "/docs",
+    "/custom-domain-landing",
   ]
 
   // Use Case Landing Pages
-  const useCasePages: { path: string; priority: number }[] = [
-    { path: "/use-cases", priority: 0.95 },
-    { path: "/use-cases/small-business", priority: 0.9 },
-    { path: "/use-cases/marketing-agencies", priority: 0.9 },
-    { path: "/use-cases/real-estate", priority: 0.9 },
-    { path: "/use-cases/restaurants", priority: 0.9 },
-    { path: "/use-cases/creators", priority: 0.9 },
-    { path: "/use-cases/ecommerce", priority: 0.9 },
-    { path: "/use-cases/startups", priority: 0.9 },
-    { path: "/use-cases/events", priority: 0.9 },
+  const useCasePages = [
+    "/use-cases",
+    "/use-cases/small-business",
+    "/use-cases/marketing-agencies",
+    "/use-cases/real-estate",
+    "/use-cases/restaurants",
+    "/use-cases/creators",
+    "/use-cases/ecommerce",
+    "/use-cases/startups",
+    "/use-cases/events",
   ]
 
   // Free SEO & Web Developer Tools
-  const toolPages: { path: string; priority: number }[] = [
-    { path: "/tools", priority: 0.95 },
-    { path: "/tools/pdf-splitter", priority: 0.95 },
-    { path: "/tools/redirect-checker", priority: 0.95 },
-    { path: "/tools/url-expander", priority: 0.95 },
-    { path: "/tools/og-preview", priority: 0.95 },
-    { path: "/tools/meta-tag-generator", priority: 0.95 },
-    { path: "/split", priority: 0.95 },
-    { path: "/pdf", priority: 0.85 },
-    { path: "/wifi", priority: 0.85 },
-    { path: "/json", priority: 0.85 },
-    { path: "/pomodoro", priority: 0.8 },
-    { path: "/clock", priority: 0.8 },
-    { path: "/worldclock", priority: 0.8 },
-    { path: "/ambient", priority: 0.8 },
-    { path: "/countdown", priority: 0.8 },
-    { path: "/quotes", priority: 0.8 },
+  const toolPages = [
+    "/tools",
+    "/tools/pdf-splitter",
+    "/tools/redirect-checker",
+    "/tools/url-expander",
+    "/tools/og-preview",
+    "/tools/meta-tag-generator",
+    "/split",
+    "/pdf",
+    "/wifi",
+    "/json",
+    "/pomodoro",
+    "/clock",
+    "/worldclock",
+    "/ambient",
+    "/countdown",
+    "/quotes",
   ]
 
   // Blog posts with actual publish dates
@@ -90,80 +102,69 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ]
 
   // Informational / trust / legal pages
-  const infoPages: { path: string; priority: number; freq: "daily" | "weekly" | "monthly" | "yearly" }[] = [
-    { path: "/blog", priority: 0.85, freq: "weekly" },
-    { path: "/faq", priority: 0.8, freq: "weekly" },
-    { path: "/about", priority: 0.8, freq: "monthly" },
-    { path: "/contact", priority: 0.7, freq: "monthly" },
-    { path: "/security", priority: 0.85, freq: "weekly" },
-    { path: "/threats", priority: 0.85, freq: "daily" },
-    { path: "/report-abuse", priority: 0.7, freq: "monthly" },
-    { path: "/refund", priority: 0.4, freq: "yearly" },
-    { path: "/privacy", priority: 0.4, freq: "yearly" },
-    { path: "/terms", priority: 0.4, freq: "yearly" },
+  const infoPages = [
+    { path: "/blog", date: coreUpdated },
+    { path: "/faq", date: coreUpdated },
+    { path: "/about", date: legalUpdated },
+    { path: "/contact", date: legalUpdated },
+    { path: "/security", date: coreUpdated },
+    { path: "/threats", date: coreUpdated },
+    { path: "/backlinks", date: toolsUpdated },
+    { path: "/report-abuse", date: legalUpdated },
+    { path: "/refund", date: legalUpdated },
+    { path: "/privacy", date: legalUpdated },
+    { path: "/terms", date: legalUpdated },
   ]
 
   const entries: MetadataRoute.Sitemap = []
 
   // Core pages
-  for (const { path, priority, freq } of corePages) {
+  for (const path of corePages) {
     entries.push({
       url: `${BASE_URL}${path}`,
-      lastModified: now,
-      changeFrequency: freq,
-      priority,
+      lastModified: coreUpdated,
       ...(path === "" ? { alternates: { languages: homeLanguageAlternates } } : {}),
     })
   }
 
   // Use case pages
-  for (const { path, priority } of useCasePages) {
+  for (const path of useCasePages) {
     entries.push({
       url: `${BASE_URL}${path}`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority,
+      lastModified: coreUpdated,
     })
   }
 
   // Tool pages
-  for (const { path, priority } of toolPages) {
+  for (const path of toolPages) {
     entries.push({
       url: `${BASE_URL}${path}`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority,
+      lastModified: toolsUpdated,
     })
   }
 
-  // Language homepages with hreflang alternates
+  // Language homepages with reciprocal hreflang alternates
   for (const lang of LANGUAGES) {
     entries.push({
       url: `${BASE_URL}/${lang}`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8,
+      lastModified: coreUpdated,
       alternates: { languages: homeLanguageAlternates },
     })
   }
 
-  // Blog posts — use actual publish dates
+  // Blog posts — use real publish dates
   for (const { slug, published } of blogPosts) {
     entries.push({
       url: `${BASE_URL}/blog/${slug}`,
       lastModified: new Date(published),
-      changeFrequency: "monthly",
-      priority: 0.8,
     })
   }
 
   // Info / legal pages
-  for (const { path, priority, freq } of infoPages) {
+  for (const { path, date } of infoPages) {
     entries.push({
       url: `${BASE_URL}${path}`,
-      lastModified: now,
-      changeFrequency: freq,
-      priority,
+      lastModified: date,
     })
   }
 

@@ -225,6 +225,148 @@ export async function incrementClickCount(linkId: string): Promise<void> {
 // Owner-scoped queries (dashboard)
 // ---------------------------------------------------------------------------
 
+export interface LinkFilterOptions {
+  limit?: number
+  offset?: number
+  search?: string
+  domain?: string
+  status?: "all" | "active" | "expired" | "has_password" | "has_expiry" | "ab_test"
+  sort?: "newest" | "oldest" | "clicks"
+}
+
+/**
+ * Filtered, sorted, and paginated links query for the dashboard.
+ */
+export async function getPaginatedLinksByOwner(
+  ownerId: string,
+  options: LinkFilterOptions = {}
+): Promise<{ links: LinkDoc[]; total: number }> {
+  const {
+    limit = 25,
+    offset = 0,
+    search = "",
+    domain,
+    status = "all",
+    sort = "newest",
+  } = options
+
+  // Build base Appwrite query
+  const queries = [Query.equal("owner_id", ownerId)]
+
+  if (domain && domain !== "all") {
+    queries.push(Query.equal("host", domain))
+  }
+
+  if (sort === "clicks") {
+    queries.push(Query.orderDesc("clicks_count"))
+  } else if (sort === "oldest") {
+    queries.push(Query.orderAsc("created_at"))
+  } else {
+    queries.push(Query.orderDesc("created_at"))
+  }
+
+  // If search or complex JSON status filters are applied,
+  // fetch up to 200 documents and filter in-memory for precision
+  if (search || (status && status !== "all")) {
+    queries.push(Query.limit(200))
+    const { documents } = await db().listDocuments(DB, LINKS, queries)
+    let filtered = documents as unknown as LinkDoc[]
+
+    if (search) {
+      const q = search.toLowerCase().trim()
+      filtered = filtered.filter(
+        (l) =>
+          l.slug?.toLowerCase().includes(q) ||
+          l.long_url?.toLowerCase().includes(q) ||
+          l.host?.toLowerCase().includes(q) ||
+          l.meta_title?.toLowerCase().includes(q)
+      )
+    }
+
+    const now = new Date().toISOString()
+    if (status === "active") {
+      filtered = filtered.filter((l) => !l.expire_at || l.expire_at > now)
+    } else if (status === "expired") {
+      filtered = filtered.filter((l) => Boolean(l.expire_at && l.expire_at <= now))
+    } else if (status === "has_password") {
+      filtered = filtered.filter((l) => {
+        try {
+          const t = l.targeting_json ? JSON.parse(l.targeting_json) : null
+          return Boolean(t?.password)
+        } catch {
+          return false
+        }
+      })
+    } else if (status === "has_expiry") {
+      filtered = filtered.filter((l) => Boolean(l.expire_at))
+    } else if (status === "ab_test") {
+      filtered = filtered.filter((l) => {
+        try {
+          const t = l.targeting_json ? JSON.parse(l.targeting_json) : null
+          return Boolean(t?.ab_rules?.length)
+        } catch {
+          return false
+        }
+      })
+    }
+
+    const total = filtered.length
+    const paginated = filtered.slice(offset, offset + limit)
+    return { links: paginated, total }
+  }
+
+  // Standard direct database pagination
+  queries.push(Query.limit(limit))
+  queries.push(Query.offset(offset))
+
+  const { documents, total } = await db().listDocuments(DB, LINKS, queries)
+  return {
+    links: documents as unknown as LinkDoc[],
+    total,
+  }
+}
+
+/**
+ * Lightweight KPIs for owner (total links, total clicks, total custom domain links)
+ * without fetching full click records.
+ */
+export async function getUserLinksStats(ownerId: string): Promise<{
+  totalLinks: number
+  totalClicks: number
+  domainLinksCount: number
+}> {
+  try {
+    const { documents, total } = await db().listDocuments(DB, LINKS, [
+      Query.equal("owner_id", ownerId),
+      Query.limit(100),
+      Query.select(["clicks_count", "host"]),
+    ])
+
+    let totalClicks = 0
+    let domainLinksCount = 0
+
+    for (const doc of documents as unknown as LinkDoc[]) {
+      totalClicks += doc.clicks_count || 0
+      if (doc.host && doc.host !== DEFAULT_HOST) {
+        domainLinksCount++
+      }
+    }
+
+    return {
+      totalLinks: total,
+      totalClicks,
+      domainLinksCount,
+    }
+  } catch (err) {
+    console.error("Error fetching user links stats:", err)
+    return {
+      totalLinks: 0,
+      totalClicks: 0,
+      domainLinksCount: 0,
+    }
+  }
+}
+
 /**
  * List links owned by a specific user, paginated.
  * Results are ordered by creation date descending (newest first).

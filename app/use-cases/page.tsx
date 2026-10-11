@@ -19,16 +19,28 @@ import {
 } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Link Management Use Cases for US Businesses & Creators | UL0",
+  title: "Short Link & QR Use Cases for Every Business",
   description: "Discover how small businesses, marketing agencies, real estate professionals, restaurants, and creators use UL0 for link tracking, branded short links, and QR campaigns.",
   alternates: {
     canonical: "https://ul0.site/use-cases",
   },
   openGraph: {
-    title: "UL0 Use Cases — Link Management for Modern Workflows",
+    title: "Short Link & QR Use Cases for Every Business | UL0",
     description: "Explore tailored link tracking and QR code solutions for your industry.",
     url: "https://ul0.site/use-cases",
     type: "website",
+    images: [{
+      url: "https://ul0.site/social-card.png",
+      width: 1376,
+      height: 768,
+      alt: "UL0 Short Link & QR Use Cases",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Short Link & QR Use Cases for Every Business | UL0",
+    description: "Explore tailored link tracking and QR code solutions for your industry.",
+    images: ["https://ul0.site/social-card.png"],
   },
 }
 

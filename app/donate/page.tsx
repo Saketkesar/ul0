@@ -50,12 +50,13 @@ const progressPct = Math.min(
   Math.round((MILESTONE_RAISED_PAISE / MILESTONE_TARGET_PAISE) * 100)
 )
 
-export default function DonatePage({
+export default async function DonatePage({
   searchParams,
 }: {
-  searchParams: { success?: string }
+  searchParams: Promise<{ success?: string }>
 }) {
-  const isSuccess = searchParams?.success === "true"
+  const params = await searchParams
+  const isSuccess = params?.success === "true"
 
   return (
     <div className="flex min-h-screen flex-col bg-background">

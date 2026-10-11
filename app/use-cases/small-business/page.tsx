@@ -38,7 +38,7 @@ const faqSchema = {
       name: "Why should a small business use branded short links instead of generic ones?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Generic short links like bit.ly or tinyurl often look suspicious to customers and get blocked by email spam filters. Using a branded domain (e.g., brand.link) builds brand trust and typically increases click-through rates by up to 34%."
+        text: "Generic short links like bit.ly or tinyurl often look unfamiliar to customers and can get flagged by spam filters. Using a branded domain (e.g., brand.link) builds customer trust and increases click confidence compared to generic shared short domains."
       }
     },
     {

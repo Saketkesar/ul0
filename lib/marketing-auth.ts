@@ -1,47 +1,69 @@
 import "server-only"
 import { currentUser } from "@clerk/nextjs/server"
 
-const MARKETING_ADMIN_ID = process.env.MARKETING_ADMIN_CLERK_USER_ID || ""
-const ADMIN_EMAILS = [
+function parseEnvList(val: string | undefined): string[] {
+  if (!val) return []
+  return val
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
+/**
+ * Verified Admin User IDs and Emails from environment variables.
+ * Can be configured via:
+ * - MARKETING_ADMIN_CLERK_USER_IDS="user_xxx,user_yyy"
+ * - MARKETING_ADMIN_EMAILS="admin@example.com,dev@example.com"
+ * - MARKETING_ADMIN_CLERK_USER_ID="user_xxx" (legacy singular)
+ */
+const ENV_ADMIN_IDS = parseEnvList(process.env.MARKETING_ADMIN_CLERK_USER_IDS)
+const ENV_ADMIN_EMAILS = parseEnvList(process.env.MARKETING_ADMIN_EMAILS).map((e) => e.toLowerCase())
+const SINGULAR_ADMIN_ID = process.env.MARKETING_ADMIN_CLERK_USER_ID?.trim() || ""
+
+// Built-in fallback IDs for Saket & Dev
+const DEFAULT_ADMIN_USER_IDS = [
+  "user_3G4mPjpnIRkBEiRcnpjbEBkDcxc",
+  "user_3G4rnFLHEvo7Fj8wlkWmU4eQ1qq",
+  "user_3KM0jUFBVAeH8wi7WNkyhPrBMom",
+]
+
+const DEFAULT_ADMIN_EMAILS = [
   "kesarsaket607@gmail.com",
   "saketkesar.bcseiot2024@huroorkee.ac.in",
   "dev45144@gmail.com",
 ]
 
-const ADMIN_USER_IDS = [
-  "user_3G4mPjpnIRkBEiRcnpjbEBkDcxc", // Saket Kesar
-  "user_3G4rnFLHEvo7Fj8wlkWmU4eQ1qq", // Saket Kesar
-  "user_3KM0jUFBVAeH8wi7WNkyhPrBMom", // Dev Saini
-]
+const ALL_ADMIN_IDS = Array.from(
+  new Set([SINGULAR_ADMIN_ID, ...ENV_ADMIN_IDS, ...DEFAULT_ADMIN_USER_IDS].filter(Boolean))
+)
+
+const ALL_ADMIN_EMAILS = Array.from(
+  new Set([...ENV_ADMIN_EMAILS, ...DEFAULT_ADMIN_EMAILS].filter(Boolean))
+)
 
 /**
- * Check if the given Clerk user is authorized as the marketing admin.
- * Exclusively restricted to Saket Kesar and Dev Saini.
+ * Synchronous admin check when userId and email are already resolved.
+ */
+export function isUserAdmin(userId: string | null, email?: string | null): boolean {
+  if (!userId) return false
+  if (ALL_ADMIN_IDS.includes(userId)) return true
+  if (email && ALL_ADMIN_EMAILS.includes(email.toLowerCase())) return true
+  return false
+}
+
+/**
+ * Async admin check that inspects the current user if email is not provided.
  */
 export async function isMarketingAdmin(userId: string | null): Promise<boolean> {
   if (!userId) return false
+  if (isUserAdmin(userId)) return true
 
-  // 1. Direct match on Clerk User ID env var or verified admin user IDs
-  if (
-    (MARKETING_ADMIN_ID && userId === MARKETING_ADMIN_ID) ||
-    ADMIN_USER_IDS.includes(userId)
-  ) {
-    return true
-  }
-
-  // 2. Strict email match for Saket Kesar and Dev Saini
   try {
     const user = await currentUser()
-    if (!user) return false
-
-    const email = user.emailAddresses?.[0]?.emailAddress?.toLowerCase()
-    if (email && ADMIN_EMAILS.includes(email)) {
-      console.log(`[Marketing Auth] Authorized admin ${email} (${userId})`)
-      return true
-    }
+    const email = user?.emailAddresses?.[0]?.emailAddress?.toLowerCase()
+    return isUserAdmin(userId, email)
   } catch (err) {
     console.error("Error verifying marketing admin identity:", err)
+    return false
   }
-
-  return false
 }

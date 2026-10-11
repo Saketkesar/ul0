@@ -7,29 +7,29 @@ import { Badge } from "@/components/ui/badge"
 import { Calendar, Clock, ArrowRight } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Blog: Branded Short Links, QR Codes & DNS Guides | ul0",
+  title: "Link Management, QR Code & UTM Guides",
   description: "Guides, technical tutorials, and competitor breakdowns on branded short links, custom domain DNS CNAME configuration, dynamic QR codes, and link analytics.",
   alternates: {
     canonical: "https://ul0.site/blog",
   },
   openGraph: {
-    title: "Blog: Branded Short Links, QR Codes & DNS Guides | ul0",
+    title: "Link Management, QR Code & UTM Guides | UL0",
     description: "Guides, technical tutorials, and competitor breakdowns on branded short links, custom domain DNS CNAME configuration, dynamic QR codes, and link analytics.",
     url: "https://ul0.site/blog",
     type: "website",
-    siteName: "ul0 Blog",
+    siteName: "UL0 Blog",
     images: [{
-      url: "https://ul0.site/ul0.png",
-      width: 1200,
-      height: 630,
-      alt: "ul0 Blog - URL Shortener Tips & Guides",
+      url: "https://ul0.site/social-card.png",
+      width: 1376,
+      height: 768,
+      alt: "UL0 Blog — URL Shortener Tips & Guides",
     }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Blog: Branded Short Links, QR Codes & DNS Guides | ul0",
+    title: "Link Management, QR Code & UTM Guides | UL0",
     description: "Guides, technical tutorials, and competitor breakdowns on branded short links, custom domain DNS CNAME configuration, dynamic QR codes, and link analytics.",
-    images: ["https://ul0.site/ul0.png"],
+    images: ["https://ul0.site/social-card.png"],
   },
   robots: {
     index: true,

@@ -1,60 +1,45 @@
-import { auth } from "@clerk/nextjs/server"
+import { auth, currentUser } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import type { Metadata } from "next"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
 import { getDomainsByOwner } from "@/lib/appwrite/domains"
-import { upsertAccount } from "@/lib/appwrite/accounts"
-import { getPlanLimits } from "@/lib/plans"
+import { getAccountByClerkId, upsertAccount } from "@/lib/appwrite/accounts"
+import { getActivePlan } from "@/lib/plan.server"
 import { DomainsClient } from "./domains-client"
 
 export const metadata: Metadata = {
-  title: "Domains — Dashboard",
-  description: "Manage your custom domains.",
+  title: "Domains",
+  description: "Connect and manage your custom branded domains.",
 }
 
 export default async function DomainsPage() {
-  const { userId, has } = await auth()
+  const authSession = await auth()
+  const { userId } = authSession
   if (!userId) redirect("/sign-in")
 
-  // Determine active plan from Clerk
-  let activePlan = "free_user"
-  if (has({ plan: "business_user" })) {
-    activePlan = "business_user"
-  } else if (has({ plan: "pro_user" })) {
-    activePlan = "pro_user"
-  }
-
-  // Load domains and sync account plan in Appwrite
-  const [domains, account] = await Promise.all([
-    getDomainsByOwner(userId),
-    upsertAccount(userId, null, activePlan),
+  const [user, accountDoc, domains] = await Promise.all([
+    currentUser().catch(() => null),
+    getAccountByClerkId(userId).catch(() => null),
+    getDomainsByOwner(userId).catch(() => []),
   ])
 
-  const limits = getPlanLimits(account.plan)
+  const plan = getActivePlan(authSession, user, accountDoc)
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-background">
-        <div className="container mx-auto px-4 py-8">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight">
-              Custom Domains
-            </h1>
-            <p className="mt-1 text-muted-foreground">
-              Connect your own domain to create branded short links.
-            </p>
-          </div>
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+          Custom Domains
+        </h1>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
+          Connect your own branded domain to create trusted short links.
+        </p>
+      </div>
 
-          <DomainsClient
-            initialDomains={JSON.parse(JSON.stringify(domains))}
-            maxDomains={limits.maxDomains}
-            currentPlan={limits.label}
-          />
-        </div>
-      </main>
-      <Footer />
-    </>
+      <DomainsClient
+        initialDomains={JSON.parse(JSON.stringify(domains))}
+        maxDomains={plan.limits.maxDomains}
+        currentPlan={plan.label}
+      />
+    </div>
   )
 }
