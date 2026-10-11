@@ -19,18 +19,31 @@ import {
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Features — Advanced Link Management & Real-Time Analytics | UL0",
+  title: "Link Management Features: Analytics, QR & API",
   description:
     "Explore UL0's link infrastructure: custom branded domains, fast edge redirects, real-time analytics, dynamic vector QR codes, password protection, and developer API.",
   alternates: {
     canonical: "https://ul0.site/features",
   },
   openGraph: {
-    title: "UL0 Platform Features — Modern Link Management",
+    title: "Link Management Features: Analytics, QR & API | UL0",
     description:
       "Branded link shortening, custom domains, real-time geo-attribution analytics, and vector QR codes.",
     url: "https://ul0.site/features",
     type: "website",
+    images: [{
+      url: "https://ul0.site/social-card.png",
+      width: 1376,
+      height: 768,
+      alt: "UL0 Platform Features",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Link Management Features: Analytics, QR & API | UL0",
+    description:
+      "Branded link shortening, custom domains, real-time geo-attribution analytics, and vector QR codes.",
+    images: ["https://ul0.site/social-card.png"],
   },
 }
 

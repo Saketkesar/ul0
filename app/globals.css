@@ -39,11 +39,23 @@
   --border: rgba(14, 61, 56, 0.12);
   --input: rgba(14, 61, 56, 0.15);
   --ring: #168270;
+  --surface-1: #FFFFFF;
+  --surface-2: #F8FBFA;
+  --surface-3: #F0F5F3;
+  --success: #168270;
+  --success-foreground: #FFFFFF;
+  --warning: #D97706;
+  --warning-foreground: #FFFFFF;
+  --danger: #D92D20;
+  --danger-foreground: #FFFFFF;
+  --info: #2563EB;
+  --info-foreground: #FFFFFF;
   --chart-1: #1FA087; /* Teal-500 */
   --chart-2: #3DBE7A; /* Coin-500 */
   --chart-3: #6C8EF5; /* Muted Indigo */
   --chart-4: #F2A93B; /* Amber */
   --chart-5: #168270;
+  --chart-6: #8B5CF6; /* Violet */
   --radius: 0.625rem;
   --sidebar: #F8FBFA;
   --sidebar-foreground: #0B1412;
@@ -62,6 +74,9 @@
   --card-foreground: #ECF5F2;
   --popover: #0D1815;
   --popover-foreground: #ECF5F2;
+  --surface-1: #08100E;
+  --surface-2: #0D1815;
+  --surface-3: #13211D;
   --primary: #1FA087; /* Brand Teal-500 for crisp dark contrast */
   --primary-foreground: #08100E;
   --secondary: #13211D;
@@ -71,7 +86,15 @@
   --accent: #13211D;
   --accent-foreground: #74D3BC;
   --destructive: #D92D20;
-  --destructive-foreground: #ECF5F2;
+  --destructive-foreground: #FFFFFF;
+  --success: #1FA087;
+  --success-foreground: #08100E;
+  --warning: #F59E0B;
+  --warning-foreground: #08100E;
+  --danger: #EF4444;
+  --danger-foreground: #FFFFFF;
+  --info: #3B82F6;
+  --info-foreground: #FFFFFF;
   --border: rgba(168, 230, 213, 0.12);
   --input: rgba(168, 230, 213, 0.15);
   --ring: #74D3BC;
@@ -80,6 +103,7 @@
   --chart-3: #82A2F8;
   --chart-4: #F6BC5E;
   --chart-5: #3FBBA0;
+  --chart-6: #A78BFA;
   --sidebar: #0D1815;
   --sidebar-foreground: #ECF5F2;
   --sidebar-primary: #1FA087;
@@ -91,14 +115,17 @@
 }
 
 @theme inline {
-  --font-sans: 'Geist', 'Geist Fallback';
-  --font-mono: 'Geist Mono', 'Geist Mono Fallback';
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-secondary: var(--secondary);
@@ -109,6 +136,14 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -117,6 +152,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

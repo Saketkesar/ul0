@@ -1,22 +1,27 @@
-import {ClerkProvider} from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs"
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next"
 import { Autotag } from "@/components/autotag"
 import { hreflangAlternates } from "@/lib/i18n"
-import { headers } from "next/headers"
 import Script from "next/script"
 import "./globals.css"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+})
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ul0.site"),
   title: {
-    default: "UL0 — Free URL Shortener, QR Codes & Custom Domains",
-    template: "%s | UL0"
+    default: "Free URL Shortener, QR Codes & Custom Domains | UL0",
+    template: "%s | UL0",
   },
   description:
     "Shorten links free, connect your own custom domain, make dynamic QR codes, and track clicks without signup.",
@@ -31,7 +36,7 @@ export const metadata: Metadata = {
     languages: hreflangAlternates,
   },
   openGraph: {
-    title: "UL0 — Free URL Shortener, QR Codes & Custom Domains",
+    title: "Free URL Shortener, QR Codes & Custom Domains | UL0",
     description: "Shorten links free, connect your own custom domain, make dynamic QR codes, and track clicks without signup.",
     url: "https://ul0.site",
     type: "website",
@@ -49,7 +54,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "UL0 — Free URL Shortener, QR Codes & Custom Domains",
+    title: "Free URL Shortener, QR Codes & Custom Domains | UL0",
     description: "Shorten links free, connect your own custom domain, make dynamic QR codes, and track clicks without signup.",
     images: ["https://ul0.site/social-card.png"],
   },
@@ -93,14 +98,11 @@ export const viewport: Viewport = {
   ],
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const headersList = await headers()
-  const locale = headersList.get("x-locale") || "en"
-
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -109,26 +111,16 @@ export default async function RootLayout({
         "@type": "WebSite",
         "@id": "https://ul0.site/#website",
         url: "https://ul0.site",
-        name: "ul0 - Free URL Shortener",
-        description: "Best free URL shortener 2026. Shorten links instantly without signup. Create short URLs, QR codes & track clicks.",
+        name: "UL0",
+        description: "Free URL shortener, custom branded domains, and click analytics.",
         publisher: { "@id": "https://ul0.site/#organization" },
-        potentialAction: [
-          {
-            "@type": "SearchAction",
-            target: {
-              "@type": "EntryPoint",
-              urlTemplate: "https://ul0.site/?q={search_term_string}"
-            },
-            "query-input": "required name=search_term_string",
-          },
-        ],
         inLanguage: "en-US",
       },
       // Organization
       {
         "@type": "Organization",
         "@id": "https://ul0.site/#organization",
-        name: "ul0",
+        name: "UL0",
         url: "https://ul0.site",
         logo: {
           "@type": "ImageObject",
@@ -137,7 +129,7 @@ export default async function RootLayout({
           contentUrl: "https://ul0.site/ul0.png",
           width: 512,
           height: 512,
-          caption: "ul0 - Free URL Shortener"
+          caption: "UL0 Logo",
         },
         image: { "@id": "https://ul0.site/#logo" },
         sameAs: [
@@ -148,102 +140,37 @@ export default async function RootLayout({
           "https://www.youtube.com/@ul0site",
           "https://www.instagram.com/ul0site",
           "https://www.facebook.com/ul0site",
-          "https://www.producthunt.com/products/ul0"
+          "https://www.producthunt.com/products/ul0",
         ],
         contactPoint: {
           "@type": "ContactPoint",
           contactType: "customer support",
-          url: "https://ul0.site/contact"
-        }
-      },
-      // SiteNavigationElement for Google search sitelinks
-      {
-        "@type": "SiteNavigationElement",
-        "@id": "https://ul0.site/#navigation",
-        name: "Main Navigation",
-        hasPart: [
-          {
-            "@type": "WebPage",
-            name: "URL Shortener",
-            description: "High-performance short link generator with 301 redirects",
-            url: "https://ul0.site"
-          },
-          {
-            "@type": "WebPage",
-            name: "Branded Custom Domains",
-            description: "Connect your own custom root or sub-domain free",
-            url: "https://ul0.site/custom-domain-landing"
-          },
-          {
-            "@type": "WebPage",
-            name: "Split Expenses Online",
-            description: "Free group expense splitter with instant UPI QR code settlement",
-            url: "https://ul0.site/split"
-          },
-          {
-            "@type": "WebPage",
-            name: "PDF Page Splitter",
-            description: "Extract and download individual pages from any PDF",
-            url: "https://ul0.site/tools/pdf-splitter"
-          },
-          {
-            "@type": "WebPage",
-            name: "Vector QR Generator",
-            description: "Create SVG vector QR codes with colors and tracking",
-            url: "https://ul0.site/qr"
-          },
-          {
-            "@type": "WebPage",
-            name: "301 Redirect Checker",
-            description: "Audit HTTP status codes and redirect chains",
-            url: "https://ul0.site/tools/redirect-checker"
-          },
-          {
-            "@type": "WebPage",
-            name: "UTM Campaign Builder",
-            description: "Create Google Analytics & Meta campaign links",
-            url: "https://ul0.site/utm"
-          },
-          {
-            "@type": "WebPage",
-            name: "Free Backlinks Directory",
-            description: "Aesthetic badge backlink exchange for indie builders",
-            url: "https://ul0.site/backlinks"
-          },
-          {
-            "@type": "WebPage",
-            name: "Link Management & SEO Blog",
-            description: "Guides on link management, Bitly alternatives, and QR marketing",
-            url: "https://ul0.site/blog"
-          }
-        ]
+          url: "https://ul0.site/contact",
+        },
       },
       // SoftwareApplication
       {
         "@type": "SoftwareApplication",
         "@id": "https://ul0.site/#app",
         name: "UL0",
-        applicationCategory: "BusinessApplication, LinkManagement, DeveloperApplication",
-        operatingSystem: "All (Web, iOS, Android, macOS, Windows, Linux)",
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "All (Web)",
         offers: {
           "@type": "Offer",
           price: "0",
-          priceCurrency: "USD"
+          priceCurrency: "USD",
         },
-        description: "Free modern link management platform with branded custom domains, dynamic vector QR codes, and real-time analytics.",
-        url: "https://ul0.site"
-      }
+        description: "Free modern link management platform with branded custom domains, dynamic vector QR codes, and real-time privacy-first analytics.",
+        url: "https://ul0.site",
+      },
     ],
   }
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://ul0.site" />
         <link rel="llms.txt" href="/llms.txt" />
-        <meta name="theme-color" content="#000000" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="format-detection" content="telephone=no" />
@@ -258,19 +185,17 @@ export default async function RootLayout({
         <meta name="google-adsense-account" content="ca-pub-8018312015732327" />
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
-        <ClerkProvider dynamic>
+        <ClerkProvider>
           <div className="relative">
-          {children}
+            {children}
           </div>
-          <Analytics />
           <Autotag />
-          {/* Simple Analytics - Privacy-friendly analytics */}
+          {/* Simple Analytics - Privacy-friendly cookieless analytics */}
           <Script 
             src="https://scripts.simpleanalyticscdn.com/latest.js"
             strategy="afterInteractive"
             data-collect-dnt="true"
           />
-          {/* Simple Analytics noscript fallback with descriptive alt */}
           <noscript>
             <img 
               src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" 

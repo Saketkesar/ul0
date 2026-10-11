@@ -22,16 +22,28 @@ import {
 } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Free Web & Link Developer Tools Suite | UL0",
+  title: "Free Link Tools: Redirect Checker, UTM, OG Preview",
   description: "Free developer and marketer tools: HTTP redirect checker, URL expander, OpenGraph previewer, UTM campaign builder, QR code generator, and Meta tag generator.",
   alternates: {
     canonical: "https://ul0.site/tools",
   },
   openGraph: {
-    title: "UL0 Free Web & Developer Tools Suite",
+    title: "Free Link Tools: Redirect Checker, UTM, OG Preview | UL0",
     description: "High-performance tools for link inspection, SEO metadata, QR generation, and campaign tracking.",
     url: "https://ul0.site/tools",
     type: "website",
+    images: [{
+      url: "https://ul0.site/social-card.png",
+      width: 1376,
+      height: 768,
+      alt: "UL0 Free Web & Developer Tools Suite",
+    }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Free Link Tools: Redirect Checker, UTM, OG Preview | UL0",
+    description: "High-performance tools for link inspection, SEO metadata, QR generation, and campaign tracking.",
+    images: ["https://ul0.site/social-card.png"],
   },
 }
 

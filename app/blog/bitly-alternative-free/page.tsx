@@ -204,7 +204,7 @@ export default function BitlyAlternativePage() {
                 <span>The State of Bitly&apos;s Free Plan in 2026</span>
               </div>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Bitly&apos;s free tier now limits users to only 5 links and 3 custom back-halves per month. Custom domain support is completely removed from the free plan, requiring an upgrade to their Core plan ($35/month billed monthly, or $29/mo annual).
+                Bitly&apos;s free plan limits users to only 5 short links and 3 custom back-halves per month. Custom domain delegation requires a paid subscription. (Last verified: 2026-10-11 via public pricing at bitly.com).
               </p>
             </div>
 
