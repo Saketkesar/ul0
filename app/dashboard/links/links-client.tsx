@@ -42,6 +42,7 @@ import {
 import { toast } from "sonner"
 import type { PlanSlug, PlanLimits } from "@/lib/plans"
 import QRCodeLib from "qrcode"
+import { getShortUrl, getShortDisplayPrefix } from "@/lib/utils/link-url"
 
 interface LinkItem {
   $id: string
@@ -88,7 +89,7 @@ export function LinksClient({
   // Generate QR code on demand
   useEffect(() => {
     if (qrModalLink) {
-      QRCodeLib.toDataURL(`https://${qrModalLink.host}/${qrModalLink.slug}`, {
+      QRCodeLib.toDataURL(getShortUrl(qrModalLink.host, qrModalLink.slug), {
         width: 240,
         margin: 2,
       })
@@ -211,7 +212,7 @@ export function LinksClient({
     const rows = filteredLinks.map((l) => [
       l.slug,
       l.host,
-      `https://${l.host}/${l.slug}`,
+      getShortUrl(l.host, l.slug),
       `"${l.long_url.replace(/"/g, '""')}"`,
       l.clicks_count || 0,
       l.created_at || "",
@@ -412,7 +413,7 @@ export function LinksClient({
               </thead>
               <tbody className="divide-y divide-border">
                 {filteredLinks.map((link) => {
-                  const shortUrl = `https://${link.host}/${link.slug}`
+                  const shortUrl = getShortUrl(link.host, link.slug)
                   const isSelected = selectedIds.has(link.$id)
 
                   return (
@@ -439,7 +440,7 @@ export function LinksClient({
                             href={`/dashboard/links/${link.$id}`}
                             className="font-mono text-xs hover:underline flex items-center"
                           >
-                            <span className="text-muted-foreground">{link.host}/</span>
+                            <span className="text-muted-foreground">{getShortDisplayPrefix(link.host)}</span>
                             <span className="font-bold text-foreground group-hover:text-primary transition-colors">
                               {link.slug}
                             </span>
@@ -564,16 +565,17 @@ export function LinksClient({
           {/* Mobile Card View */}
           <div className="md:hidden divide-y divide-border">
             {filteredLinks.map((link) => {
-              const shortUrl = `https://${link.host}/${link.slug}`
+              const shortUrl = getShortUrl(link.host, link.slug)
               return (
                 <div key={link.$id} className="p-4 space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <Link
                         href={`/dashboard/links/${link.$id}`}
-                        className="font-mono text-sm font-bold text-foreground hover:text-primary transition-colors"
+                        className="font-mono text-sm font-bold text-foreground hover:text-primary transition-colors flex items-center"
                       >
-                        {link.host}/{link.slug}
+                        <span className="text-muted-foreground font-normal">{getShortDisplayPrefix(link.host)}</span>
+                        <span>{link.slug}</span>
                       </Link>
                       <p className="text-xs text-muted-foreground truncate max-w-xs mt-0.5">
                         {link.long_url}
@@ -624,7 +626,7 @@ export function LinksClient({
           <DialogContent className="sm:max-w-md text-center">
             <DialogHeader>
               <DialogTitle className="text-base font-bold">
-                QR Code for {qrModalLink.host}/{qrModalLink.slug}
+                QR Code for {getShortDisplayPrefix(qrModalLink.host)}{qrModalLink.slug}
               </DialogTitle>
               <DialogDescription className="text-xs">
                 Scan with any smartphone camera to test the link.

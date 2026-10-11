@@ -183,6 +183,28 @@ export default function RootLayout({
 
         {/* Google AdSense account verification */}
         <meta name="google-adsense-account" content="ca-pub-8018312015732327" />
+
+        {/* Immediate theme restoration to prevent flash and preserve dark/light preference */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var stored = localStorage.getItem('theme');
+                  var cookieMatch = document.cookie.match(/(?:^|; )theme=([^;]*)/);
+                  var cookieTheme = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null;
+                  var theme = stored || cookieTheme;
+                  var supportDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (theme === 'dark' || (!theme && supportDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body className="font-sans antialiased" suppressHydrationWarning>
         <ClerkProvider>

@@ -43,6 +43,7 @@ import {
 } from "recharts"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { getShortUrl, getShortDisplayPrefix } from "@/lib/utils/link-url"
 import { toast } from "sonner"
 import type { PlanSlug, PlanLimits } from "@/lib/plans"
 import { PlanGate } from "@/components/dashboard/plan-gate"
@@ -123,7 +124,7 @@ export function LinkDetailClient({
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
-  const shortUrl = `https://${link.host}/${link.slug}`
+  const shortUrl = getShortUrl(link.host, link.slug)
 
   // Fetch aggregated analytics
   const fetchAnalytics = async (selectedRange = range) => {
@@ -293,7 +294,7 @@ export function LinkDetailClient({
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-mono text-xl sm:text-2xl font-bold text-foreground">
-                <span className="text-muted-foreground">{link.host}/</span>
+                <span className="text-muted-foreground">{getShortDisplayPrefix(link.host)}</span>
                 {link.slug}
               </span>
               <button
@@ -807,7 +808,7 @@ export function LinkDetailClient({
                 Confirm Permanent Deletion
               </DialogTitle>
               <DialogDescription className="text-xs leading-relaxed">
-                Are you sure you want to delete <span className="font-mono font-bold text-foreground">{link.host}/{link.slug}</span>? This action is immediate and non-reversible.
+                Are you sure you want to delete <span className="font-mono font-bold text-foreground">{getShortDisplayPrefix(link.host)}{link.slug}</span>? This action is immediate and non-reversible.
               </DialogDescription>
             </DialogHeader>
 

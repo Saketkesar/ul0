@@ -276,79 +276,81 @@ export function LinkShortenerForm() {
 
   return (
     <>
-      <div className="mx-auto w-full max-w-xl">
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div className={`relative flex flex-col gap-2 sm:flex-row sm:gap-3 transition-transform ${isShaking ? "animate-input-shake" : ""}`}>
-            <div className="relative flex-1">
-              <Input
-                type="text"
-                inputMode="url"
-                placeholder="Paste your link here (e.g. pastebin.com/xyz or https://...)"
-                value={longUrl}
-                onChange={(e) => setLongUrl(e.target.value)}
-                className="h-11 w-full text-base sm:h-12 border-border focus-visible:ring-primary focus-visible:border-primary"
-                required
-              />
-              {/* 2px teal sweep line during loading */}
-              {isLoading && (
-                <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary overflow-hidden rounded-b">
-                  <div className="h-full bg-emerald-400 animate-line-sweep" />
-                </div>
-              )}
+      <div className="mx-auto w-full max-w-2xl">
+        <div className="rounded-2xl border border-border bg-surface-2/90 backdrop-blur-md p-4 sm:p-6 shadow-xl shadow-primary/5 space-y-4 text-left">
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div className={`relative flex flex-col gap-2 sm:flex-row sm:gap-3 transition-transform ${isShaking ? "animate-input-shake" : ""}`}>
+              <div className="relative flex-1">
+                <Input
+                  type="text"
+                  inputMode="url"
+                  placeholder="Paste your link here (e.g. pastebin.com/xyz or https://...)"
+                  value={longUrl}
+                  onChange={(e) => setLongUrl(e.target.value)}
+                  className="h-11 w-full text-base sm:h-12 border-border focus-visible:ring-primary focus-visible:border-primary bg-surface-1"
+                  required
+                />
+                {/* 2px teal sweep line during loading */}
+                {isLoading && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary overflow-hidden rounded-b">
+                    <div className="h-full bg-emerald-400 animate-line-sweep" />
+                  </div>
+                )}
+              </div>
+              <Button
+                type="submit"
+                disabled={isLoading || cooldown > 0}
+                className="h-11 px-6 sm:h-12 sm:px-8 bg-primary hover:bg-primary/90 text-primary-foreground font-bold active:scale-[0.98] transition-all cursor-pointer shadow-md"
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-emerald-300 animate-ping" />
+                    <span>Compressing</span>
+                  </span>
+                ) : cooldown > 0 ? (
+                  `Wait ${cooldown}s`
+                ) : (
+                  "Shorten URL"
+                )}
+              </Button>
             </div>
-            <Button
-              type="submit"
-              disabled={isLoading || cooldown > 0}
-              className="h-11 px-6 sm:h-12 sm:px-8 bg-primary hover:bg-[#136759] text-white font-medium active:scale-[0.98] transition-all cursor-pointer shadow-xs"
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-emerald-300 animate-ping" />
-                  <span>Compressing</span>
+
+            {/* Custom slug row */}
+            <div>
+              <div className="flex items-center gap-0 rounded-lg border border-border bg-surface-1 overflow-hidden focus-within:ring-2 focus-within:ring-ring transition-all">
+                <span className="shrink-0 select-none px-3 py-2 text-xs font-mono text-muted-foreground border-r border-border bg-surface-3 whitespace-nowrap">
+                  ul0.site/r/
                 </span>
-              ) : cooldown > 0 ? (
-                `Wait ${cooldown}s`
-              ) : (
-                "Shorten URL"
-              )}
-            </Button>
-          </div>
-
-          {/* Custom slug row */}
-          <div>
-            <div className="flex items-center gap-0 rounded-lg border border-border bg-muted/40 overflow-hidden focus-within:ring-2 focus-within:ring-ring transition-all">
-              <span className="shrink-0 select-none px-3 py-2 text-xs font-mono text-muted-foreground border-r border-border bg-muted whitespace-nowrap">
-                ul0.site/r/
-              </span>
-              <input
-                id="customSlug"
-                type="text"
-                placeholder="your-slug  (letters, numbers, dashes)"
-                value={customSlug}
-                onChange={handleSlugChange}
-                className="flex-1 bg-transparent px-3 py-2 text-sm font-mono placeholder:text-muted-foreground/40 outline-none"
-                autoComplete="off"
-                spellCheck={false}
-                maxLength={50}
-              />
-              {customSlug && (
-                <button
-                  type="button"
-                  onClick={() => { setCustomSlug(""); setError(null) }}
-                  className="px-2 py-2 text-muted-foreground hover:text-foreground text-xs transition-colors"
-                  aria-label="Clear custom slug"
-                >
-                  ✕
-                </button>
-              )}
+                <input
+                  id="customSlug"
+                  type="text"
+                  placeholder="your-slug  (letters, numbers, dashes)"
+                  value={customSlug}
+                  onChange={handleSlugChange}
+                  className="flex-1 bg-transparent px-3 py-2 text-sm font-mono placeholder:text-muted-foreground/40 outline-none"
+                  autoComplete="off"
+                  spellCheck={false}
+                  maxLength={50}
+                />
+                {customSlug && (
+                  <button
+                    type="button"
+                    onClick={() => { setCustomSlug(""); setError(null) }}
+                    className="px-2 py-2 text-muted-foreground hover:text-foreground text-xs transition-colors cursor-pointer"
+                    aria-label="Clear custom slug"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+              <p className="mt-1 text-[11px] text-muted-foreground/70 pl-1">
+                Only letters, numbers and dashes. Leave blank for a random slug.
+              </p>
             </div>
-            <p className="mt-1 text-[11px] text-muted-foreground/60 pl-1">
-              Only letters, numbers and dashes. Leave blank for a random slug.
-            </p>
-          </div>
 
-          {error && <p className="text-sm text-destructive">{error}</p>}
-        </form>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+          </form>
+        </div>
 
         {/* Link Generation WebP Animation (/ulo_4k.webp) */}
         {(isLoading || isAnimating) && (
