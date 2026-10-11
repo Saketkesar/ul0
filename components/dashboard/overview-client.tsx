@@ -37,6 +37,7 @@ import {
 import { toast } from "sonner"
 import type { PlanSlug, PlanLimits } from "@/lib/plans"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
+import { getShortUrl, getShortDisplayPrefix } from "@/lib/utils/link-url"
 
 interface LinkItem {
   $id: string
@@ -510,7 +511,7 @@ export function OverviewClient({
           ) : (
             <div className="space-y-2.5">
               {topLinks.map((link) => {
-                const shortUrl = `https://${link.host}/${link.slug}`
+                const shortUrl = getShortUrl(link.host, link.slug)
                 return (
                   <div
                     key={link.$id}
@@ -518,7 +519,7 @@ export function OverviewClient({
                   >
                     <div className="min-w-0 flex-1 space-y-0.5">
                       <div className="flex items-center gap-1.5 font-mono text-xs">
-                        <span className="text-muted-foreground">{link.host}/</span>
+                        <span className="text-muted-foreground">{getShortDisplayPrefix(link.host)}</span>
                         <span className="font-semibold text-foreground group-hover:text-primary transition-colors">
                           {link.slug}
                         </span>

@@ -82,21 +82,42 @@ export function DashboardShell({
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
   const [isDark, setIsDark] = useState(false)
 
-  // Initialize theme from document class
+  // Initialize theme from localStorage, cookies, or system preference
   useEffect(() => {
-    const isDarkMode = document.documentElement.classList.contains("dark")
-    setIsDark(isDarkMode)
+    try {
+      const stored = localStorage.getItem("theme")
+      const cookieMatch = document.cookie.match(/(?:^|; )theme=([^;]*)/)
+      const cookieTheme = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null
+      const theme = stored || cookieTheme
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+      const isDarkMode = theme === "dark" || (!theme && prefersDark) || document.documentElement.classList.contains("dark")
+      setIsDark(isDarkMode)
+      if (isDarkMode) {
+        document.documentElement.classList.add("dark")
+      } else {
+        document.documentElement.classList.remove("dark")
+      }
+    } catch {
+      setIsDark(document.documentElement.classList.contains("dark"))
+    }
   }, [])
 
   const toggleTheme = () => {
     const nextDark = !isDark
     setIsDark(nextDark)
-    if (nextDark) {
-      document.documentElement.classList.add("dark")
-      localStorage.setItem("theme", "dark")
-    } else {
-      document.documentElement.classList.remove("dark")
-      localStorage.setItem("theme", "light")
+    try {
+      if (nextDark) {
+        document.documentElement.classList.add("dark")
+        localStorage.setItem("theme", "dark")
+        document.cookie = "theme=dark; path=/; max-age=31536000; SameSite=Lax"
+      } else {
+        document.documentElement.classList.remove("dark")
+        localStorage.setItem("theme", "light")
+        document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax"
+      }
+      window.dispatchEvent(new CustomEvent("theme-change", { detail: { theme: nextDark ? "dark" : "light" } }))
+    } catch (e) {
+      console.error("Theme toggle error:", e)
     }
   }
 
