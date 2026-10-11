@@ -25,10 +25,11 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://ul0.site/social-card.png",
-        width: 1376,
-        height: 768,
-        alt: "Free WhatsApp Link Generator | UL0",
+        url: "https://ul0.site/whatsapp-social-card.png",
+        width: 1200,
+        height: 630,
+        alt: "Free WhatsApp Link Generator & QR Code Studio | UL0",
+        type: "image/png",
       },
     ],
   },
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     title: "Free WhatsApp Link Generator with Message & QR Code | UL0",
     description:
       "Generate instant wa.me click-to-chat links with custom messages and trackable QR codes.",
-    images: ["https://ul0.site/social-card.png"],
+    images: ["https://ul0.site/whatsapp-social-card.png"],
   },
 }
 
