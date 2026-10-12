@@ -10,7 +10,7 @@ import Link from "next/link"
 
 export const metadata: Metadata = {
   title: "Dynamic QR Studio & No-Ads Link Generator — Dashboard | UL0",
-  description: "Create and manage dynamic vector QR codes with editable destination URLs and stealth monetization.",
+  description: "Create and manage dynamic vector QR codes with editable destination URLs and high-speed redirection.",
 }
 
 export default async function DynamicQrStudioPage() {
