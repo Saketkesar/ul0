@@ -857,7 +857,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
 
   // Notion-inspired styling tokens (Dark mode native with CSS custom properties)
   const s = {
-    page: "space-y-6 max-w-5xl mx-auto pb-16" as const,
+    page: "space-y-6 max-w-5xl mx-auto pb-16 px-4 sm:px-6" as const,
     label: {
       fontSize: "12px",
       fontWeight: 500,
@@ -922,7 +922,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
   return (
     <div className={s.page} style={{ fontFamily: "'Inter', -apple-system, system-ui, sans-serif" }}>
       {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0" }}>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 py-2">
         <div>
           <h1 style={{ fontSize: "24px", fontWeight: 700, color: "var(--foreground)", letterSpacing: "-0.03em", margin: 0 }}>
             QR Studio
@@ -932,7 +932,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "4px", background: "var(--surface-3)", borderRadius: "10px", padding: "3px", border: "1px solid var(--border)" }}>
+        <div className="flex items-center gap-1 bg-[var(--surface-3)] rounded-xl p-1 border border-[var(--border)] overflow-x-auto max-w-full">
           {(["create", "manage", "analytics"] as const).map((tab) => (
             <button
               key={tab}
@@ -951,6 +951,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 color: view === tab ? "var(--foreground)" : "var(--muted-foreground)",
                 boxShadow: view === tab ? "0 1px 3px rgba(0,0,0,0.12)" : "none",
                 textTransform: "capitalize",
+                whiteSpace: "nowrap",
               }}
             >
               {tab === "create" ? "Create QR" : tab === "manage" ? `Manage (${links.length})` : "Scan Analytics"}
@@ -960,7 +961,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       </div>
 
       {/* Top Stats Banner */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px" }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {[
           { label: "Dynamic QRs", value: links.length.toString(), sub: "Permanent slugs" },
           { label: "Total Scans", value: totalScans.toLocaleString(), sub: "Redirects completed" },
@@ -988,7 +989,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
 
       {/* TAB 1: CREATE VIEW */}
       {view === "create" && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "24px", alignItems: "start" }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6 items-start">
           {/* Form */}
           <div style={s.card}>
             <form onSubmit={handleCreateDynamicQr} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
@@ -1046,7 +1047,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
               </div>
 
               {/* Title & Slug */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label style={s.label}>Campaign Title</label>
                   <input
@@ -1110,13 +1111,13 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 <h2 style={{ fontSize: "16px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>
                   Vector Styling &amp; Shapes
                 </h2>
-                <p style={{ fontSize: "12px", color: "#999", margin: "4px 0 0" }}>
+                <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: "4px 0 0" }}>
                   Apple-inspired smooth corner eyes and dot patterns
                 </p>
               </div>
 
               {/* Colors */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label style={s.label}>Dark Color (Foreground)</label>
                   <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", alignItems: "center" }}>
@@ -1355,7 +1356,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           </div>
 
           {/* Right Preview Card */}
-          <div style={{ ...s.card, position: "sticky", top: "80px" }}>
+          <div className="w-full lg:sticky lg:top-20" style={s.card}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
               <p style={{ fontSize: "12px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>Live Preview</p>
               <div style={{ display: "flex", gap: "2px", background: "var(--surface-3)", borderRadius: "6px", padding: "2px", border: "1px solid var(--border)" }}>
@@ -1562,11 +1563,11 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       {view === "manage" && (
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           {/* Search bar */}
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <div style={{ position: "relative", flex: 1, maxWidth: "360px" }}>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
+            <div className="relative flex-1 sm:max-w-[360px]">
               <Search
                 className="w-4 h-4"
-                style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#bbb" }}
+                style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--muted-foreground)" }}
               />
               <input
                 type="text"
@@ -1576,7 +1577,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 style={{ ...s.input, paddingLeft: "36px", fontSize: "13px" }}
               />
             </div>
-            <button type="button" onClick={() => setView("create")} style={s.btnPrimary}>
+            <button type="button" onClick={() => setView("create")} style={s.btnPrimary} className="self-start sm:self-auto">
               <Plus className="w-3.5 h-3.5" />
               <span>New QR</span>
             </button>
@@ -1597,8 +1598,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
               <div
+                className="hidden md:grid"
                 style={{
-                  display: "grid",
                   gridTemplateColumns: "1fr 1.5fr 90px 140px",
                   padding: "8px 16px",
                   fontSize: "11px",
@@ -1617,13 +1618,10 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
               {filteredLinks.map((item) => (
                 <div
                   key={item.id}
+                  className="flex flex-col md:grid md:grid-cols-[1fr_1.5fr_90px_140px] items-stretch md:items-center gap-3 md:gap-2"
                   style={{
                     ...s.card,
                     padding: "14px 16px",
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1.5fr 90px 140px",
-                    alignItems: "center",
-                    gap: "8px",
                   }}
                 >
                   <div style={{ minWidth: 0 }}>
@@ -1650,11 +1648,14 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     {item.long_url}
                   </p>
 
-                  <p style={{ fontSize: "16px", fontWeight: 700, color: "var(--foreground)", margin: 0, textAlign: "center", ...s.mono }}>
-                    {item.clicks_count}
-                  </p>
+                  <div className="flex items-center justify-between md:justify-center">
+                    <span className="md:hidden text-xs text-[var(--muted-foreground)]">Scans</span>
+                    <p style={{ fontSize: "16px", fontWeight: 700, color: "var(--foreground)", margin: 0, textAlign: "center", ...s.mono }}>
+                      {item.clicks_count}
+                    </p>
+                  </div>
 
-                  <div style={{ display: "flex", gap: "6px", justifyContent: "flex-end" }}>
+                  <div style={{ display: "flex", gap: "6px", justifyContent: "flex-end", flexWrap: "wrap" }}>
                     <button
                       type="button"
                       onClick={() => copyToClipboard(item.dynamicUrl, item.id)}
@@ -1770,7 +1771,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           </div>
 
           {/* Breakdown Grid: Browsers, Operating Systems, Devices */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px" }}>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* 1. Browsers */}
             <div style={s.card}>
               <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
