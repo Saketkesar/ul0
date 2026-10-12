@@ -850,37 +850,38 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
     )
   })
 
-  // Notion-inspired styling tokens
+  // Notion-inspired styling tokens (Dark mode native with CSS custom properties)
   const s = {
     page: "space-y-6 max-w-5xl mx-auto pb-16" as const,
     label: {
       fontSize: "12px",
       fontWeight: 500,
-      color: "#37352F",
+      color: "var(--foreground)",
       marginBottom: "4px",
       display: "block",
     } as React.CSSProperties,
     input: {
       width: "100%",
-      padding: "8px 12px",
-      border: "1px solid #e8e8e8",
+      padding: "9px 12px",
+      border: "1px solid var(--border)",
       borderRadius: "8px",
       fontSize: "14px",
-      background: "#fff",
-      color: "#1a1a1a",
+      background: "var(--surface-3)",
+      color: "var(--foreground)",
       outline: "none",
       fontFamily: "inherit",
-      transition: "border-color 0.15s",
+      transition: "border-color 0.15s, background 0.15s",
     } as React.CSSProperties,
     card: {
-      background: "#fff",
-      border: "1px solid #e8e8e8",
+      background: "var(--card)",
+      border: "1px solid var(--border)",
       borderRadius: "12px",
       padding: "24px",
+      boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
     } as React.CSSProperties,
     btnPrimary: {
-      background: "#1a1a1a",
-      color: "#fff",
+      background: "var(--primary)",
+      color: "var(--primary-foreground)",
       border: "none",
       borderRadius: "8px",
       padding: "10px 18px",
@@ -890,13 +891,13 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       display: "inline-flex",
       alignItems: "center",
       gap: "6px",
-      transition: "background 0.15s",
+      transition: "opacity 0.15s",
       fontFamily: "inherit",
     } as React.CSSProperties,
     btnSecondary: {
-      background: "#fff",
-      color: "#37352F",
-      border: "1px solid #e8e8e8",
+      background: "var(--surface-2)",
+      color: "var(--foreground)",
+      border: "1px solid var(--border)",
       borderRadius: "8px",
       padding: "8px 14px",
       fontSize: "13px",
@@ -918,15 +919,15 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 0" }}>
         <div>
-          <h1 style={{ fontSize: "24px", fontWeight: 700, color: "#1a1a1a", letterSpacing: "-0.03em", margin: 0 }}>
+          <h1 style={{ fontSize: "24px", fontWeight: 700, color: "var(--foreground)", letterSpacing: "-0.03em", margin: 0 }}>
             QR Studio
           </h1>
-          <p style={{ fontSize: "13px", color: "#999", margin: "4px 0 0", letterSpacing: "-0.01em" }}>
+          <p style={{ fontSize: "13px", color: "var(--muted-foreground)", margin: "4px 0 0", letterSpacing: "-0.01em" }}>
             Dynamic QR codes · Vector shapes · Logo background removal · Live scan telemetry
           </p>
         </div>
 
-        <div style={{ display: "flex", gap: "4px", background: "#f5f5f5", borderRadius: "10px", padding: "3px" }}>
+        <div style={{ display: "flex", gap: "4px", background: "var(--surface-3)", borderRadius: "10px", padding: "3px", border: "1px solid var(--border)" }}>
           {(["create", "manage", "analytics"] as const).map((tab) => (
             <button
               key={tab}
@@ -941,9 +942,9 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 cursor: "pointer",
                 transition: "all 0.15s",
                 fontFamily: "inherit",
-                background: view === tab ? "#fff" : "transparent",
-                color: view === tab ? "#1a1a1a" : "#999",
-                boxShadow: view === tab ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                background: view === tab ? "var(--card)" : "transparent",
+                color: view === tab ? "var(--foreground)" : "var(--muted-foreground)",
+                boxShadow: view === tab ? "0 1px 3px rgba(0,0,0,0.12)" : "none",
                 textTransform: "capitalize",
               }}
             >
@@ -963,7 +964,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
             <p
               style={{
                 fontSize: "11px",
-                color: "#999",
+                color: "var(--muted-foreground)",
                 fontWeight: 500,
                 textTransform: "uppercase",
                 letterSpacing: "0.04em",
@@ -972,10 +973,10 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
             >
               {stat.label}
             </p>
-            <p style={{ fontSize: "22px", fontWeight: 700, color: "#1a1a1a", margin: "4px 0 0", ...s.mono }}>
+            <p style={{ fontSize: "22px", fontWeight: 700, color: "var(--foreground)", margin: "4px 0 0", ...s.mono }}>
               {stat.value}
             </p>
-            <p style={{ fontSize: "11px", color: "#bbb", margin: "2px 0 0" }}>{stat.sub}</p>
+            <p style={{ fontSize: "11px", color: "var(--muted-foreground)", opacity: 0.8, margin: "2px 0 0" }}>{stat.sub}</p>
           </div>
         ))}
       </div>
@@ -987,8 +988,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           <div style={s.card}>
             <form onSubmit={handleCreateDynamicQr} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
               <div>
-                <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>Destination &amp; Slug</h2>
-                <p style={{ fontSize: "12px", color: "#999", margin: "4px 0 0" }}>
+                <h2 style={{ fontSize: "16px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>Destination &amp; Slug</h2>
+                <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: "4px 0 0" }}>
                   The QR code points to <span style={s.mono}>/q/[slug]</span>. You can change destination anytime.
                 </p>
               </div>
@@ -1034,8 +1035,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   onChange={(e) => setDestinationUrl(e.target.value)}
                   placeholder="https://example.com/summer-promo"
                   style={{ ...s.input, ...s.mono, fontSize: "13px" }}
-                  onFocus={(e) => (e.target.style.borderColor = "#2383e2")}
-                  onBlur={(e) => (e.target.style.borderColor = "#e8e8e8")}
+                  onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                  onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
 
@@ -1049,22 +1050,22 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="Product Launch 2026"
                     style={s.input}
-                    onFocus={(e) => (e.target.style.borderColor = "#2383e2")}
-                    onBlur={(e) => (e.target.style.borderColor = "#e8e8e8")}
+                    onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                    onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
                   />
                 </div>
                 <div>
                   <label style={s.label}>
-                    Custom Slug <span style={{ color: "#bbb", fontWeight: 400 }}>(optional)</span>
+                    Custom Slug <span style={{ color: "var(--muted-foreground)", fontWeight: 400 }}>(optional)</span>
                   </label>
-                  <div style={{ display: "flex", border: "1px solid #e8e8e8", borderRadius: "8px", overflow: "hidden" }}>
+                  <div style={{ display: "flex", border: "1px solid var(--border)", borderRadius: "8px", overflow: "hidden" }}>
                     <span
                       style={{
                         padding: "8px 10px",
-                        background: "#fafafa",
-                        borderRight: "1px solid #e8e8e8",
+                        background: "var(--surface-2)",
+                        borderRight: "1px solid var(--border)",
                         fontSize: "13px",
-                        color: "#999",
+                        color: "var(--muted-foreground)",
                         ...s.mono,
                         flexShrink: 0,
                       }}
@@ -1091,17 +1092,17 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   onChange={(e) => setCuteMessage(e.target.value)}
                   placeholder="You are being redirected, please wait 6 sec..."
                   style={s.input}
-                  onFocus={(e) => (e.target.style.borderColor = "#2383e2")}
-                  onBlur={(e) => (e.target.style.borderColor = "#e8e8e8")}
+                  onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                  onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
                 />
               </div>
 
               {/* Divider */}
-              <div style={{ height: "1px", background: "#f0f0f0" }} />
+              <div style={{ height: "1px", background: "var(--border)" }} />
 
               {/* QR Aesthetics Section */}
               <div>
-                <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>
+                <h2 style={{ fontSize: "16px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>
                   Vector Styling &amp; Shapes
                 </h2>
                 <p style={{ fontSize: "12px", color: "#999", margin: "4px 0 0" }}>
@@ -1181,11 +1182,12 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                         borderRadius: "8px",
                         fontSize: "12px",
                         fontWeight: 500,
-                        border: dotStyle === ds.value ? "1px solid #1a1a1a" : "1px solid #e8e8e8",
-                        background: dotStyle === ds.value ? "#1a1a1a" : "#fff",
-                        color: dotStyle === ds.value ? "#fff" : "#666",
+                        border: dotStyle === ds.value ? "1px solid var(--primary)" : "1px solid var(--border)",
+                        background: dotStyle === ds.value ? "var(--primary)" : "var(--surface-3)",
+                        color: dotStyle === ds.value ? "var(--primary-foreground)" : "var(--foreground)",
                         cursor: "pointer",
                         fontFamily: "inherit",
+                        transition: "all 0.15s",
                       }}
                     >
                       {ds.label}
@@ -1208,11 +1210,12 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                         borderRadius: "8px",
                         fontSize: "12px",
                         fontWeight: 500,
-                        border: cornerStyle === cs.value ? "1px solid #1a1a1a" : "1px solid #e8e8e8",
-                        background: cornerStyle === cs.value ? "#1a1a1a" : "#fff",
-                        color: cornerStyle === cs.value ? "#fff" : "#666",
+                        border: cornerStyle === cs.value ? "1px solid var(--primary)" : "1px solid var(--border)",
+                        background: cornerStyle === cs.value ? "var(--primary)" : "var(--surface-3)",
+                        color: cornerStyle === cs.value ? "var(--primary-foreground)" : "var(--foreground)",
                         cursor: "pointer",
                         fontFamily: "inherit",
+                        transition: "all 0.15s",
                       }}
                     >
                       {cs.label}
@@ -1225,12 +1228,12 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
               <div>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
                   <label style={{ ...s.label, margin: 0 }}>Center Brand Logo</label>
-                  <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", color: "#666", cursor: "pointer" }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "11px", color: "var(--muted-foreground)", cursor: "pointer" }}>
                     <input
                       type="checkbox"
                       checked={autoRemoveBg}
                       onChange={(e) => setAutoRemoveBg(e.target.checked)}
-                      style={{ accentColor: "#1a1a1a" }}
+                      style={{ accentColor: "var(--primary)" }}
                     />
                     <span>Auto-remove background</span>
                   </label>
@@ -1257,11 +1260,12 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                         borderRadius: "8px",
                         fontSize: "12px",
                         fontWeight: 500,
-                        border: logoType === lo.type ? "1px solid #1a1a1a" : "1px solid #e8e8e8",
-                        background: logoType === lo.type ? "#1a1a1a" : "#fff",
-                        color: logoType === lo.type ? "#fff" : "#666",
+                        border: logoType === lo.type ? "1px solid var(--primary)" : "1px solid var(--border)",
+                        background: logoType === lo.type ? "var(--primary)" : "var(--surface-3)",
+                        color: logoType === lo.type ? "var(--primary-foreground)" : "var(--foreground)",
                         cursor: "pointer",
                         fontFamily: "inherit",
+                        transition: "all 0.15s",
                       }}
                     >
                       {lo.label}
@@ -1270,7 +1274,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 </div>
 
                 {logoType === "custom" && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "10px", padding: "14px", background: "#fafafa", borderRadius: "8px", border: "1px solid #f0f0f0" }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "10px", padding: "14px", background: "var(--surface-2)", borderRadius: "8px", border: "1px solid var(--border)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
                       <button
                         type="button"
@@ -1296,7 +1300,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                           <img
                             src={customLogoUrl}
                             alt="Logo preview"
-                            style={{ width: "28px", height: "28px", objectFit: "contain", borderRadius: "6px", background: "#fff", border: "1px solid #e8e8e8", padding: "2px" }}
+                            style={{ width: "28px", height: "28px", objectFit: "contain", borderRadius: "6px", background: "var(--card)", border: "1px solid var(--border)", padding: "2px" }}
                           />
                           <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: 500 }}>
                             ✓ Cleaned &amp; hosted on CDN
@@ -1348,8 +1352,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           {/* Right Preview Card */}
           <div style={{ ...s.card, position: "sticky", top: "80px" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "12px" }}>
-              <p style={{ fontSize: "12px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>Live Preview</p>
-              <div style={{ display: "flex", gap: "2px", background: "#f5f5f5", borderRadius: "6px", padding: "2px" }}>
+              <p style={{ fontSize: "12px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>Live Preview</p>
+              <div style={{ display: "flex", gap: "2px", background: "var(--surface-3)", borderRadius: "6px", padding: "2px", border: "1px solid var(--border)" }}>
                 <button
                   type="button"
                   onClick={() => setPreviewTab("qr")}
@@ -1360,9 +1364,9 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     fontSize: "11px",
                     fontWeight: 500,
                     cursor: "pointer",
-                    background: previewTab === "qr" ? "#fff" : "transparent",
-                    color: previewTab === "qr" ? "#1a1a1a" : "#888",
-                    boxShadow: previewTab === "qr" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
+                    background: previewTab === "qr" ? "var(--card)" : "transparent",
+                    color: previewTab === "qr" ? "var(--foreground)" : "var(--muted-foreground)",
+                    boxShadow: previewTab === "qr" ? "0 1px 2px rgba(0,0,0,0.1)" : "none",
                   }}
                 >
                   QR Code
@@ -1377,9 +1381,9 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     fontSize: "11px",
                     fontWeight: 500,
                     cursor: "pointer",
-                    background: previewTab === "redirect" ? "#fff" : "transparent",
-                    color: previewTab === "redirect" ? "#1a1a1a" : "#888",
-                    boxShadow: previewTab === "redirect" ? "0 1px 2px rgba(0,0,0,0.06)" : "none",
+                    background: previewTab === "redirect" ? "var(--card)" : "transparent",
+                    color: previewTab === "redirect" ? "var(--foreground)" : "var(--muted-foreground)",
+                    boxShadow: previewTab === "redirect" ? "0 1px 2px rgba(0,0,0,0.1)" : "none",
                   }}
                 >
                   /q/ Redirect Screen
@@ -1394,9 +1398,9 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     display: "flex",
                     justifyContent: "center",
                     padding: "20px",
-                    background: "#fafafa",
+                    background: "var(--surface-2)",
                     borderRadius: "10px",
-                    border: "1px solid #f0f0f0",
+                    border: "1px solid var(--border)",
                   }}
                 >
                   <canvas ref={studioCanvasRef} style={{ width: "220px", height: "auto", aspectRatio: "1", borderRadius: "8px" }} />
@@ -1407,7 +1411,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   style={{
                     marginTop: "16px",
                     padding: "10px 12px",
-                    background: "#fafafa",
+                    background: "var(--surface-3)",
+                    border: "1px solid var(--border)",
                     borderRadius: "8px",
                     display: "flex",
                     alignItems: "center",
@@ -1415,13 +1420,13 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     gap: "8px",
                   }}
                 >
-                  <p style={{ fontSize: "12px", color: "#666", margin: 0, ...s.mono, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: 0, ...s.mono, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {previewDynamicUrl}
                   </p>
                   <button
                     type="button"
                     onClick={() => copyToClipboard(previewDynamicUrl, "preview")}
-                    style={{ background: "none", border: "none", cursor: "pointer", padding: "4px", color: "#999", flexShrink: 0 }}
+                    style={{ background: "none", border: "none", cursor: "pointer", padding: "4px", color: "var(--muted-foreground)", flexShrink: 0 }}
                   >
                     {copiedId === "preview" ? <Check className="w-3.5 h-3.5" style={{ color: "#16a34a" }} /> : <Copy className="w-3.5 h-3.5" />}
                   </button>
@@ -1448,72 +1453,66 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 </div>
               </>
             ) : (
-              /* Live Mini Preview of /q/ Redirect Page (UL0 x User Logo) */
+              /* Live Mini Preview of /q/ Redirect Page */
               <div
                 style={{
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
-                  padding: "20px 14px",
-                  background: "#ffffff",
+                  padding: "24px 14px",
+                  background: "var(--surface-2)",
                   borderRadius: "10px",
-                  border: "1px solid #f0f0f0",
+                  border: "1px solid var(--border)",
                   textAlign: "center",
-                  gap: "14px",
+                  gap: "16px",
                 }}
               >
-                {/* Visual of UL0 x User Logo */}
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
-                  <div style={{ position: "relative", width: "64px", height: "64px" }}>
-                    <svg width="64" height="64" style={{ position: "absolute", top: 0, left: 0, transform: "rotate(-90deg)" }}>
-                      <circle cx="32" cy="32" r="28" fill="none" stroke="#f0f0f0" strokeWidth="2.5" />
-                      <circle
-                        cx="32"
-                        cy="32"
-                        r="28"
-                        fill="none"
-                        stroke="#0B1412"
-                        strokeWidth="2.5"
-                        strokeDasharray={176}
-                        strokeDashoffset={45}
-                      />
-                    </svg>
-                    <div style={{ position: "absolute", inset: "5px", borderRadius: "50%", background: "#fafafa", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
-                      <img src="/ulo_4k.webp" alt="UL0" style={{ width: "42px", height: "42px", objectFit: "contain" }} />
-                    </div>
+                {/* Single Sleek Hero Circle with Progress Ring */}
+                <div style={{ position: "relative", width: "80px", height: "80px" }}>
+                  <svg width="80" height="80" style={{ position: "absolute", top: 0, left: 0, transform: "rotate(-90deg)" }}>
+                    <circle cx="40" cy="40" r="34" fill="none" stroke="var(--border)" strokeWidth="3" />
+                    <circle
+                      cx="40"
+                      cy="40"
+                      r="34"
+                      fill="none"
+                      stroke="var(--primary)"
+                      strokeWidth="3"
+                      strokeDasharray={213}
+                      strokeDashoffset={55}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: "6px",
+                      borderRadius: "50%",
+                      background: "var(--card)",
+                      border: "1px solid var(--border)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      overflow: "hidden",
+                      padding: customLogoUrl ? "8px" : "6px",
+                    }}
+                  >
+                    <img
+                      src={customLogoUrl || "/ulo_smooth.webp"}
+                      alt="Logo"
+                      style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                    />
                   </div>
-
-                  {customLogoUrl && (
-                    <>
-                      <span style={{ fontSize: "14px", color: "#bbb", userSelect: "none" }}>×</span>
-                      <div
-                        style={{
-                          width: "56px",
-                          height: "56px",
-                          borderRadius: "50%",
-                          background: "#fafafa",
-                          border: "1px solid #f0f0f0",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          overflow: "hidden",
-                          padding: "8px",
-                        }}
-                      >
-                        <img src={customLogoUrl} alt="Brand" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
-                      </div>
-                    </>
-                  )}
                 </div>
 
                 <div>
-                  <p style={{ fontSize: "12px", color: "#666", margin: "0 0 4px", fontWeight: 500 }}>
+                  <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: "0 0 4px", fontWeight: 500 }}>
                     {cuteMessage || "You're being redirected"}
                   </p>
-                  <p style={{ fontSize: "36px", fontWeight: 700, color: "#1a1a1a", margin: 0, ...s.mono, lineHeight: 1 }}>
+                  <p style={{ fontSize: "36px", fontWeight: 700, color: "var(--foreground)", margin: 0, ...s.mono, lineHeight: 1 }}>
                     6
                   </p>
-                  <p style={{ fontSize: "11px", color: "#aaa", margin: "3px 0 0" }}>seconds remaining</p>
+                  <p style={{ fontSize: "11px", color: "var(--muted-foreground)", margin: "3px 0 0" }}>seconds remaining</p>
                 </div>
 
                 <div
@@ -1522,14 +1521,15 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     alignItems: "center",
                     gap: "6px",
                     padding: "6px 12px",
-                    background: "#f7f7f7",
+                    background: "var(--surface-3)",
+                    border: "1px solid var(--border)",
                     borderRadius: "8px",
                     width: "100%",
                     justifyContent: "center",
                   }}
                 >
-                  <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34d399" }} />
-                  <span style={{ fontSize: "11px", color: "#666", ...s.mono, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                  <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#34d399", flexShrink: 0 }} />
+                  <span style={{ fontSize: "11px", color: "var(--foreground)", ...s.mono, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {previewDisplayDomain}
                   </span>
                 </div>
@@ -1538,8 +1538,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   style={{
                     width: "100%",
                     padding: "9px",
-                    background: "#1a1a1a",
-                    color: "#fff",
+                    background: "var(--primary)",
+                    color: "var(--primary-foreground)",
                     borderRadius: "8px",
                     fontSize: "12px",
                     fontWeight: 600,
@@ -1579,9 +1579,9 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
 
           {filteredLinks.length === 0 ? (
             <div style={{ ...s.card, textAlign: "center", padding: "60px 20px" }}>
-              <QrCode className="w-10 h-10 mx-auto" style={{ color: "#ddd", marginBottom: "12px" }} />
-              <p style={{ fontSize: "14px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>No QR codes found</p>
-              <p style={{ fontSize: "13px", color: "#999", margin: "4px 0 16px" }}>
+              <QrCode className="w-10 h-10 mx-auto" style={{ color: "var(--muted-foreground)", marginBottom: "12px", opacity: 0.5 }} />
+              <p style={{ fontSize: "14px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>No QR codes found</p>
+              <p style={{ fontSize: "13px", color: "var(--muted-foreground)", margin: "4px 0 16px" }}>
                 {searchQuery ? "No matches for your search." : "Create your first dynamic QR code."}
               </p>
               <button type="button" onClick={() => { setSearchQuery(""); setView("create") }} style={s.btnPrimary}>
@@ -1598,7 +1598,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   padding: "8px 16px",
                   fontSize: "11px",
                   fontWeight: 500,
-                  color: "#999",
+                  color: "var(--muted-foreground)",
                   textTransform: "uppercase",
                   letterSpacing: "0.04em",
                 }}
@@ -1622,10 +1622,10 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   }}
                 >
                   <div style={{ minWidth: 0 }}>
-                    <p style={{ fontSize: "13px", fontWeight: 600, color: "#1a1a1a", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--foreground)", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {item.title}
                     </p>
-                    <p style={{ fontSize: "11px", color: "#999", margin: "2px 0 0", ...s.mono }}>
+                    <p style={{ fontSize: "11px", color: "var(--muted-foreground)", margin: "2px 0 0", ...s.mono }}>
                       /q/{item.slug}
                     </p>
                   </div>
@@ -1633,7 +1633,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   <p
                     style={{
                       fontSize: "12px",
-                      color: "#666",
+                      color: "var(--muted-foreground)",
                       margin: 0,
                       ...s.mono,
                       overflow: "hidden",
@@ -1645,7 +1645,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     {item.long_url}
                   </p>
 
-                  <p style={{ fontSize: "16px", fontWeight: 700, color: "#1a1a1a", margin: 0, textAlign: "center", ...s.mono }}>
+                  <p style={{ fontSize: "16px", fontWeight: 700, color: "var(--foreground)", margin: 0, textAlign: "center", ...s.mono }}>
                     {item.clicks_count}
                   </p>
 
@@ -1702,10 +1702,10 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           <div style={s.card}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
               <div>
-                <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>
+                <h2 style={{ fontSize: "16px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>
                   Clicks & Scans Over Time
                 </h2>
-                <p style={{ fontSize: "12px", color: "#999", margin: "2px 0 0" }}>
+                <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: "2px 0 0" }}>
                   Direct traffic trends and scan timeline across all dynamic QR campaigns
                 </p>
               </div>
@@ -1728,6 +1728,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     axisLine={false}
                   />
                   <YAxis
+                    dataKey="count"
                     stroke="#888888"
                     fontSize={11}
                     tickLine={false}
@@ -1739,8 +1740,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     content={({ active, payload }) => {
                       if (active && payload && payload.length) {
                         return (
-                          <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", padding: "8px 12px", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", fontSize: "12px" }}>
-                            <p style={{ fontWeight: 600, color: "#1a1a1a", margin: 0 }}>{payload[0].payload.label}</p>
+                          <div style={{ background: "var(--card)", border: "1px solid var(--border)", borderRadius: "8px", padding: "8px 12px", boxShadow: "0 4px 12px rgba(0,0,0,0.25)", fontSize: "12px" }}>
+                            <p style={{ fontWeight: 600, color: "var(--foreground)", margin: 0 }}>{payload[0].payload.label}</p>
                             <p style={{ color: "#1FA087", fontFamily: "monospace", margin: "2px 0 0" }}>
                               Scans: <span style={{ fontWeight: 700 }}>{payload[0].value}</span>
                             </p>
@@ -1768,7 +1769,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
             {/* 1. Browsers */}
             <div style={s.card}>
               <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
-                <p style={{ fontSize: "13px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>Browsers</p>
+                <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>Browsers</p>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -1788,13 +1789,13 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                         <div style={{ width: "18px", height: "18px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                           {b.icon}
                         </div>
-                        <span style={{ fontSize: "12px", color: "#37352F", fontWeight: 500 }}>{b.name}</span>
+                        <span style={{ fontSize: "12px", color: "var(--foreground)", fontWeight: 500 }}>{b.name}</span>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <div style={{ width: "60px", height: "6px", background: "#f0f0f0", borderRadius: "3px", overflow: "hidden" }}>
+                        <div style={{ width: "60px", height: "6px", background: "var(--surface-3)", borderRadius: "3px", overflow: "hidden" }}>
                           <div style={{ width: `${pct}%`, height: "100%", background: "#1FA087", borderRadius: "3px" }} />
                         </div>
-                        <span style={{ fontSize: "11px", color: "#999", ...s.mono, width: "32px", textAlign: "right" }}>
+                        <span style={{ fontSize: "11px", color: "var(--muted-foreground)", ...s.mono, width: "32px", textAlign: "right" }}>
                           {pct}%
                         </span>
                       </div>
@@ -1807,7 +1808,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
             {/* 2. Operating Systems */}
             <div style={s.card}>
               <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
-                <p style={{ fontSize: "13px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>Operating Systems</p>
+                <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>Operating Systems</p>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -1826,13 +1827,13 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                         <div style={{ width: "18px", height: "18px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                           {o.icon}
                         </div>
-                        <span style={{ fontSize: "12px", color: "#37352F", fontWeight: 500 }}>{o.name}</span>
+                        <span style={{ fontSize: "12px", color: "var(--foreground)", fontWeight: 500 }}>{o.name}</span>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <div style={{ width: "60px", height: "6px", background: "#f0f0f0", borderRadius: "3px", overflow: "hidden" }}>
+                        <div style={{ width: "60px", height: "6px", background: "var(--surface-3)", borderRadius: "3px", overflow: "hidden" }}>
                           <div style={{ width: `${pct}%`, height: "100%", background: "#1FA087", borderRadius: "3px" }} />
                         </div>
-                        <span style={{ fontSize: "11px", color: "#999", ...s.mono, width: "32px", textAlign: "right" }}>
+                        <span style={{ fontSize: "11px", color: "var(--muted-foreground)", ...s.mono, width: "32px", textAlign: "right" }}>
                           {pct}%
                         </span>
                       </div>
@@ -1845,14 +1846,14 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
             {/* 3. Devices */}
             <div style={s.card}>
               <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "16px" }}>
-                <p style={{ fontSize: "13px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>Device Types</p>
+                <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>Device Types</p>
               </div>
 
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {[
-                  { name: "Mobile Phone", key: "mobile", icon: <Smartphone className="w-4 h-4 text-neutral-700" /> },
-                  { name: "Desktop", key: "desktop", icon: <Monitor className="w-4 h-4 text-neutral-700" /> },
-                  { name: "Tablet", key: "tablet", icon: <Tablet className="w-4 h-4 text-neutral-700" /> },
+                  { name: "Mobile Phone", key: "mobile", icon: <Smartphone className="w-4 h-4 text-foreground" /> },
+                  { name: "Desktop", key: "desktop", icon: <Monitor className="w-4 h-4 text-foreground" /> },
+                  { name: "Tablet", key: "tablet", icon: <Tablet className="w-4 h-4 text-foreground" /> },
                 ].map((d) => {
                   const count = analytics.deviceCounts[d.key] || 0
                   const total = Object.values(analytics.deviceCounts).reduce((a, c) => a + c, 0)
@@ -1863,13 +1864,13 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                         <div style={{ width: "18px", height: "18px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                           {d.icon}
                         </div>
-                        <span style={{ fontSize: "12px", color: "#37352F", fontWeight: 500 }}>{d.name}</span>
+                        <span style={{ fontSize: "12px", color: "var(--foreground)", fontWeight: 500 }}>{d.name}</span>
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                        <div style={{ width: "60px", height: "6px", background: "#f0f0f0", borderRadius: "3px", overflow: "hidden" }}>
+                        <div style={{ width: "60px", height: "6px", background: "var(--surface-3)", borderRadius: "3px", overflow: "hidden" }}>
                           <div style={{ width: `${pct}%`, height: "100%", background: "#1FA087", borderRadius: "3px" }} />
                         </div>
-                        <span style={{ fontSize: "11px", color: "#999", ...s.mono, width: "32px", textAlign: "right" }}>
+                        <span style={{ fontSize: "11px", color: "var(--muted-foreground)", ...s.mono, width: "32px", textAlign: "right" }}>
                           {pct}%
                         </span>
                       </div>
@@ -1892,25 +1893,25 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "rgba(0,0,0,0.3)",
+            background: "rgba(0,0,0,0.6)",
             backdropFilter: "blur(4px)",
             padding: "16px",
           }}
         >
-          <div style={{ ...s.card, maxWidth: "480px", width: "100%", boxShadow: "0 24px 48px rgba(0,0,0,0.12)" }}>
+          <div style={{ ...s.card, maxWidth: "480px", width: "100%", boxShadow: "0 24px 48px rgba(0,0,0,0.3)" }}>
             <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "20px" }}>
               <div>
-                <h3 style={{ fontSize: "16px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>
+                <h3 style={{ fontSize: "16px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>
                   Edit Dynamic Destination
                 </h3>
-                <p style={{ fontSize: "12px", color: "#999", margin: "4px 0 0" }}>
+                <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: "4px 0 0" }}>
                   Permanent QR slug: <span style={s.mono}>/q/{editingItem.slug}</span>
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setEditingItem(null)}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "#999", padding: "4px" }}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted-foreground)", padding: "4px" }}
               >
                 <X className="w-4 h-4" />
               </button>
@@ -1920,11 +1921,11 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
               <div
                 style={{
                   padding: "10px 14px",
-                  background: "#fef2f2",
-                  border: "1px solid #fecaca",
+                  background: "rgba(220, 38, 38, 0.1)",
+                  border: "1px solid rgba(220, 38, 38, 0.3)",
                   borderRadius: "8px",
                   fontSize: "13px",
-                  color: "#dc2626",
+                  color: "#ef4444",
                   marginBottom: "16px",
                 }}
               >
@@ -1990,30 +1991,30 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            background: "rgba(0,0,0,0.3)",
+            background: "rgba(0,0,0,0.6)",
             backdropFilter: "blur(4px)",
             padding: "16px",
           }}
         >
-          <div style={{ ...s.card, maxWidth: "380px", width: "100%", textAlign: "center", boxShadow: "0 24px 48px rgba(0,0,0,0.12)" }}>
+          <div style={{ ...s.card, maxWidth: "380px", width: "100%", textAlign: "center", boxShadow: "0 24px 48px rgba(0,0,0,0.3)" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-              <p style={{ fontSize: "14px", fontWeight: 600, color: "#1a1a1a", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              <p style={{ fontSize: "14px", fontWeight: 600, color: "var(--foreground)", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {previewItem.title}
               </p>
               <button
                 type="button"
                 onClick={() => setPreviewItem(null)}
-                style={{ background: "none", border: "none", cursor: "pointer", color: "#999", padding: "4px" }}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted-foreground)", padding: "4px" }}
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
-            <div style={{ display: "flex", justifyContent: "center", padding: "20px", background: "#fafafa", borderRadius: "10px", border: "1px solid #f0f0f0" }}>
+            <div style={{ display: "flex", justifyContent: "center", padding: "20px", background: "var(--surface-2)", borderRadius: "10px", border: "1px solid var(--border)" }}>
               <canvas ref={previewModalCanvasRef} style={{ width: "220px", height: "auto", aspectRatio: "1", borderRadius: "8px" }} />
             </div>
 
-            <p style={{ fontSize: "12px", color: "#666", margin: "14px 0", ...s.mono }}>{previewItem.dynamicUrl}</p>
+            <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: "14px 0", ...s.mono }}>{previewItem.dynamicUrl}</p>
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
               <button
