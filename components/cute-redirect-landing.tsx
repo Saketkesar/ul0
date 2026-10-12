@@ -55,37 +55,28 @@ export function CuteRedirectLanding({
   } catch {}
 
   // SVG progress ring
-  const radius = 54
+  const radius = 58
   const circumference = 2 * Math.PI * radius
   const strokeDashoffset = circumference - (progress / 100) * circumference
 
   return (
     <div
+      className="min-h-screen flex flex-col items-center justify-center bg-background text-foreground p-6 relative overflow-hidden select-none transition-colors"
       style={{
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#ffffff",
         fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
-        color: "#1a1a1a",
-        padding: "24px",
-        position: "relative",
-        overflow: "hidden",
       }}
     >
-      {/* Hidden background Ads: load and execute telemetry without disturbing user */}
+      {/* Background Ads: Loads and executes ad impressions invisibly without disturbing user */}
       <div
         style={{
-          opacity: 0,
-          pointerEvents: "none",
           position: "fixed",
-          bottom: "-9999px",
-          left: "-9999px",
-          width: 0,
-          height: 0,
-          overflow: "hidden",
+          top: "-3000px",
+          left: "-3000px",
+          width: "728px",
+          height: "90px",
+          opacity: 0.001,
+          pointerEvents: "none",
+          zIndex: -999,
         }}
         aria-hidden="true"
         tabIndex={-1}
@@ -94,12 +85,12 @@ export function CuteRedirectLanding({
         <AdBanner slot={2} type="small" />
       </div>
 
-      {/* Subtle background grain texture */}
+      {/* Subtle background glow */}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: "radial-gradient(circle at 50% 0%, rgba(0,0,0,0.015) 0%, transparent 70%)",
+          backgroundImage: "radial-gradient(circle at 50% 20%, rgba(22, 130, 112, 0.08) 0%, transparent 65%)",
           pointerEvents: "none",
         }}
       />
@@ -110,150 +101,78 @@ export function CuteRedirectLanding({
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "32px",
-          maxWidth: "380px",
+          gap: "28px",
+          maxWidth: "400px",
           width: "100%",
           textAlign: "center",
           position: "relative",
           zIndex: 1,
         }}
       >
-        {/* Animated Logo with Progress Ring */}
-        {brandLogoUrl ? (
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "16px" }}>
-            <div style={{ position: "relative", width: "110px", height: "110px" }}>
-              <svg
-                width="110"
-                height="110"
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  transform: "rotate(-90deg)",
-                }}
-              >
-                <circle cx="55" cy="55" r="48" fill="none" stroke="#f0f0f0" strokeWidth="3" />
-                <circle
-                  cx="55"
-                  cy="55"
-                  r="48"
-                  fill="none"
-                  stroke="#0B1412"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeDasharray={2 * Math.PI * 48}
-                  strokeDashoffset={(2 * Math.PI * 48) - (progress / 100) * (2 * Math.PI * 48)}
-                  style={{ transition: "stroke-dashoffset 0.1s linear" }}
-                />
-              </svg>
-              <div
-                style={{
-                  position: "absolute",
-                  inset: "8px",
-                  borderRadius: "50%",
-                  overflow: "hidden",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  background: "#fafafa",
-                }}
-              >
-                <img
-                  src="/ulo_4k.webp"
-                  alt="UL0"
-                  style={{ width: "72px", height: "72px", objectFit: "contain" }}
-                />
-              </div>
-            </div>
+        {/* Single Sleek Hero Circle with Progress Ring */}
+        <div style={{ position: "relative", width: "136px", height: "136px" }}>
+          {/* SVG Progress Ring */}
+          <svg
+            width="136"
+            height="136"
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              transform: "rotate(-90deg)",
+            }}
+          >
+            {/* Track */}
+            <circle
+              cx="68"
+              cy="68"
+              r={radius}
+              fill="none"
+              stroke="var(--border)"
+              strokeWidth="3.5"
+            />
+            {/* Animated Progress Indicator */}
+            <circle
+              cx="68"
+              cy="68"
+              r={radius}
+              fill="none"
+              stroke="var(--primary)"
+              strokeWidth="3.5"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              style={{ transition: "stroke-dashoffset 0.08s linear" }}
+            />
+          </svg>
 
-            <span style={{ fontSize: "16px", color: "#bbb", fontWeight: 400, userSelect: "none" }}>×</span>
-
-            <div
+          {/* Central Logo Container (No disjointed double circles with x!) */}
+          <div
+            style={{
+              position: "absolute",
+              inset: "8px",
+              borderRadius: "50%",
+              overflow: "hidden",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "var(--card)",
+              border: "1px solid var(--border)",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+              padding: brandLogoUrl ? "14px" : "8px",
+            }}
+          >
+            <img
+              src={brandLogoUrl || "/ulo_smooth.webp"}
+              alt={brandLogoUrl ? "Brand Logo" : "UL0"}
               style={{
-                width: "94px",
-                height: "94px",
-                borderRadius: "50%",
-                background: "#fafafa",
-                border: "1px solid #f0f0f0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                overflow: "hidden",
-                padding: "14px",
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
               }}
-            >
-              <img
-                src={brandLogoUrl}
-                alt="Brand Logo"
-                style={{ width: "100%", height: "100%", objectFit: "contain" }}
-              />
-            </div>
+            />
           </div>
-        ) : (
-          <div style={{ position: "relative", width: "140px", height: "140px" }}>
-            {/* SVG Progress Ring */}
-            <svg
-              width="140"
-              height="140"
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                transform: "rotate(-90deg)",
-              }}
-            >
-              {/* Track */}
-              <circle
-                cx="70"
-                cy="70"
-                r={radius}
-                fill="none"
-                stroke="#f0f0f0"
-                strokeWidth="3"
-              />
-              {/* Progress */}
-              <circle
-                cx="70"
-                cy="70"
-                r={radius}
-                fill="none"
-                stroke="#0B1412"
-                strokeWidth="3"
-                strokeLinecap="round"
-                strokeDasharray={circumference}
-                strokeDashoffset={strokeDashoffset}
-                style={{ transition: "stroke-dashoffset 0.1s linear" }}
-              />
-            </svg>
-
-            {/* UL0 Animated Logo */}
-            <div
-              style={{
-                position: "absolute",
-                top: "10px",
-                left: "10px",
-                width: "120px",
-                height: "120px",
-                borderRadius: "50%",
-                overflow: "hidden",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "#fafafa",
-              }}
-            >
-              <img
-                src="/ulo_4k.webp"
-                alt="UL0"
-                style={{
-                  width: "90px",
-                  height: "90px",
-                  objectFit: "contain",
-                }}
-              />
-            </div>
-          </div>
-        )}
+        </div>
 
         {/* Message */}
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -261,7 +180,7 @@ export function CuteRedirectLanding({
             style={{
               fontSize: "15px",
               fontWeight: 500,
-              color: "#666",
+              color: "var(--muted-foreground)",
               letterSpacing: "-0.01em",
               lineHeight: 1.5,
               margin: 0,
@@ -274,7 +193,7 @@ export function CuteRedirectLanding({
             style={{
               fontSize: "48px",
               fontWeight: 700,
-              color: "#1a1a1a",
+              color: "var(--foreground)",
               letterSpacing: "-0.04em",
               lineHeight: 1,
               margin: 0,
@@ -288,7 +207,7 @@ export function CuteRedirectLanding({
           <p
             style={{
               fontSize: "13px",
-              color: "#999",
+              color: "var(--muted-foreground)",
               margin: 0,
               letterSpacing: "-0.01em",
             }}
@@ -304,7 +223,8 @@ export function CuteRedirectLanding({
             alignItems: "center",
             gap: "8px",
             padding: "10px 16px",
-            background: "#f7f7f7",
+            background: "var(--surface-2)",
+            border: "1px solid var(--border)",
             borderRadius: "12px",
             width: "100%",
             justifyContent: "center",
@@ -322,7 +242,7 @@ export function CuteRedirectLanding({
           <span
             style={{
               fontSize: "13px",
-              color: "#666",
+              color: "var(--foreground)",
               fontFamily: "'SF Mono', 'Roboto Mono', monospace",
               overflow: "hidden",
               textOverflow: "ellipsis",
@@ -340,8 +260,8 @@ export function CuteRedirectLanding({
           style={{
             width: "100%",
             padding: "14px 24px",
-            background: "#1a1a1a",
-            color: "#fff",
+            background: "var(--primary)",
+            color: "var(--primary-foreground)",
             border: "none",
             borderRadius: "12px",
             fontSize: "14px",
@@ -352,11 +272,11 @@ export function CuteRedirectLanding({
             fontFamily: "inherit",
           }}
           onMouseOver={(e) => {
-            e.currentTarget.style.background = "#333"
+            e.currentTarget.style.opacity = "0.9"
             e.currentTarget.style.transform = "translateY(-1px)"
           }}
           onMouseOut={(e) => {
-            e.currentTarget.style.background = "#1a1a1a"
+            e.currentTarget.style.opacity = "1"
             e.currentTarget.style.transform = "translateY(0)"
           }}
         >
@@ -377,7 +297,7 @@ export function CuteRedirectLanding({
         <span
           style={{
             fontSize: "11px",
-            color: "#ccc",
+            color: "var(--muted-foreground)",
             letterSpacing: "0.05em",
             textTransform: "uppercase",
             fontWeight: 500,
