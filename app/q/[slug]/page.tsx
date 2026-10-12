@@ -78,12 +78,16 @@ export default async function DynamicQrRedirectPage({ params, searchParams }: Pr
   // Parse custom message or targeting controls
   let customMessage = "You are being redirected, please wait 6 sec..."
   let clicksLimit = 0
+  let customLogoUrl: string | null = null
 
   if (link.targeting_json) {
     try {
       const targeting = JSON.parse(link.targeting_json)
       if (targeting.cute_message) {
         customMessage = targeting.cute_message
+      }
+      if (targeting.qr_design?.customLogoUrl) {
+        customLogoUrl = targeting.qr_design.customLogoUrl
       }
       clicksLimit = Number(targeting.clicks_limit) || 0
     } catch {}
@@ -191,7 +195,7 @@ export default async function DynamicQrRedirectPage({ params, searchParams }: Pr
       longUrl={targetUrl}
       domain={link.meta_domain}
       customHost={isCustomDomain ? host : null}
-      brandLogoUrl={brandLogoUrl}
+      brandLogoUrl={customLogoUrl || brandLogoUrl}
       customMessage={customMessage}
     />
   )

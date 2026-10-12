@@ -31,6 +31,7 @@ const DEFAULT_ADMIN_EMAILS = [
   "kesarsaket607@gmail.com",
   "saketkesar.bcseiot2024@huroorkee.ac.in",
   "dev45144@gmail.com",
+  "subesh.sarkar1980@gmail.com",
 ]
 
 const ALL_ADMIN_IDS = Array.from(
@@ -49,18 +50,21 @@ export function isUserAdmin(userId: string | null, email?: string | null): boole
   if (ALL_ADMIN_IDS.includes(userId)) return true
   if (email) {
     const cleanEmail = email.toLowerCase().trim()
-    if (ALL_ADMIN_EMAILS.includes(cleanEmail) || cleanEmail.includes("kesarsaket607")) return true
+    if (ALL_ADMIN_EMAILS.includes(cleanEmail) || cleanEmail.includes("kesarsaket607") || cleanEmail.includes("subesh.sarkar1980@gmail.com")) return true
   }
   return false
 }
 
 /**
  * Access check for Dynamic QR Studio (/dashboard/qr-studio)
- * Explicitly grants access to kesarsaket607 and system admins.
+ * Explicitly grants access to kesarsaket607, subesh.sarkar1980@gmail.com and system admins.
  */
 export function isQrStudioAuthorized(userId: string | null, email?: string | null): boolean {
   if (!userId) return false
-  if (email && email.toLowerCase().includes("kesarsaket607")) return true
+  if (email) {
+    const cleanEmail = email.toLowerCase().trim()
+    if (cleanEmail.includes("kesarsaket607") || cleanEmail.includes("subesh.sarkar1980@gmail.com")) return true
+  }
   return isUserAdmin(userId, email)
 }
 

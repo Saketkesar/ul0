@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { auth, currentUser } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { isQrStudioAuthorized, isUserAdmin } from "@/lib/marketing-auth"
-import { getDynamicQrLinksByOwner } from "@/lib/appwrite/links"
+import { getDynamicQrLinksByOwner, listClicksByOwner } from "@/lib/appwrite/links"
 import { getDynamicQrUrl } from "@/lib/utils/link-url"
 import { QrStudioClient, type DynamicQrItem } from "@/components/dashboard/qr-studio-client"
 import { ShieldAlert, ArrowLeft } from "lucide-react"
@@ -53,6 +53,8 @@ export default async function DynamicQrStudioPage() {
   const isAdmin = isUserAdmin(userId, email)
   const rawLinks = await getDynamicQrLinksByOwner(userId, isAdmin)
 
+  const userClicks = await listClicksByOwner(userId, 2000).catch(() => [])
+
   const formattedLinks: DynamicQrItem[] = rawLinks.map((link) => {
     let targeting: any = undefined
     if (link.targeting_json) {
@@ -76,5 +78,5 @@ export default async function DynamicQrStudioPage() {
     }
   })
 
-  return <QrStudioClient initialLinks={formattedLinks} userEmail={email} />
+  return <QrStudioClient initialLinks={formattedLinks} initialClicks={userClicks} userEmail={email} />
 }
