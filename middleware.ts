@@ -98,8 +98,8 @@ export default clerkMiddleware(async (auth, req) => {
       return NextResponse.next()
     }
 
-    // 3. Allow /r/ slug resolution paths to load directly
-    if (path.startsWith("/r/")) {
+    // 3. Allow /r/ and /q/ slug resolution paths to load directly
+    if (path.startsWith("/r/") || path.startsWith("/q/")) {
       return NextResponse.next()
     }
 

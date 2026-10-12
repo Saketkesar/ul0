@@ -100,6 +100,13 @@ export function DashboardShell({
     } catch {
       setIsDark(document.documentElement.classList.contains("dark"))
     }
+
+    return () => {
+      // If user navigates away from the dashboard, ensure dark mode is stripped from public pages
+      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/dashboard")) {
+        document.documentElement.classList.remove("dark")
+      }
+    }
   }, [])
 
   const toggleTheme = () => {
@@ -212,8 +219,9 @@ export function DashboardShell({
     ...(isAdmin
       ? [
           {
-            group: "Admin",
+            group: "Exclusive",
             items: [
+              { name: "Dynamic QR Studio", href: "/dashboard/qr-studio", icon: QrCode, badge: "No Ads" },
               { name: "Marketing Engine", href: "/dashboard/marketing", icon: ShieldCheck, badge: "Admin" },
               { name: "SEO & Radar", href: "/dashboard/seo", icon: BarChart3, badge: "Admin" },
             ],

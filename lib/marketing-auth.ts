@@ -47,8 +47,21 @@ const ALL_ADMIN_EMAILS = Array.from(
 export function isUserAdmin(userId: string | null, email?: string | null): boolean {
   if (!userId) return false
   if (ALL_ADMIN_IDS.includes(userId)) return true
-  if (email && ALL_ADMIN_EMAILS.includes(email.toLowerCase())) return true
+  if (email) {
+    const cleanEmail = email.toLowerCase().trim()
+    if (ALL_ADMIN_EMAILS.includes(cleanEmail) || cleanEmail.includes("kesarsaket607")) return true
+  }
   return false
+}
+
+/**
+ * Access check for Dynamic QR Studio (/dashboard/qr-studio)
+ * Explicitly grants access to kesarsaket607 and system admins.
+ */
+export function isQrStudioAuthorized(userId: string | null, email?: string | null): boolean {
+  if (!userId) return false
+  if (email && email.toLowerCase().includes("kesarsaket607")) return true
+  return isUserAdmin(userId, email)
 }
 
 /**

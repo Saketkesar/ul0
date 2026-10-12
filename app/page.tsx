@@ -248,14 +248,6 @@ export default function HomePage() {
 
           <div className="container mx-auto px-4 sm:px-6">
             <div className="mx-auto max-w-3xl text-center space-y-6">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium bg-surface-2 border border-border shadow-2xs hover:border-primary/40 transition-colors">
-                <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-foreground font-semibold">UL0 2.0 Engine</span>
-                <span className="text-muted-foreground">·</span>
-                <span className="text-muted-foreground">Free Links, QR &amp; Custom Domains</span>
-              </div>
-
               {/* Headline */}
               <h1 className="text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.12]">
                 Branded short links, vector QR codes &amp;{" "}
@@ -268,22 +260,6 @@ export default function HomePage() {
               <p className="mx-auto max-w-2xl text-pretty text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed">
                 Shorten any URL in milliseconds. Connect your own custom domain for free. Track real-time visitor clicks with zero cookies or tracking pixels.
               </p>
-
-              {/* Feature Trust Pills */}
-              <div className="flex items-center justify-center gap-2 sm:gap-3 flex-wrap pt-1 text-[11px] sm:text-xs text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-2 border border-border">
-                  <Zap className="h-3 w-3 text-amber-500 fill-amber-500" />
-                  <span>Instant 301 Edge Speed</span>
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-2 border border-border">
-                  <Globe className="h-3 w-3 text-primary" />
-                  <span>1 Custom Domain Free</span>
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-2 border border-border">
-                  <Shield className="h-3 w-3 text-emerald-500" />
-                  <span>Zero Cookies / Tracking</span>
-                </span>
-              </div>
 
               {/* Shortener Container */}
               <div className="pt-4 sm:pt-6">
