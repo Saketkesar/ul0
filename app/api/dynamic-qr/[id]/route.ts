@@ -32,7 +32,11 @@ export async function PATCH(request: NextRequest, { params }: Context) {
     }
 
     // Must be owner or admin
-    if (link.owner_id !== userId && !email?.toLowerCase().includes("kesarsaket607")) {
+    const isSpecialAdmin =
+      email?.toLowerCase().includes("kesarsaket607") ||
+      email?.toLowerCase().includes("subesh.sarkar1980@gmail.com")
+
+    if (link.owner_id !== userId && !isSpecialAdmin) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 })
     }
 
