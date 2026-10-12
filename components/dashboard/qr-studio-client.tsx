@@ -776,7 +776,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
 
   const totalScans = links.reduce((sum, item) => sum + (item.clicks_count || 0), 0)
 
-  // Compute Analytics Data
+  // Compute Analytics Data strictly from dynamic QR links
   const analytics = useMemo(() => {
     // Generate dates for last 7 days
     const days: { date: string; label: string; count: number }[] = []
@@ -795,7 +795,11 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
 
     let totalRecorded = 0
 
-    initialClicks.forEach((c) => {
+    // Only count clicks belonging to dynamic QR links
+    const qrLinkIds = new Set(links.map((l) => l.id))
+    const validClicks = initialClicks.filter((c) => !c.link_id || qrLinkIds.has(c.link_id))
+
+    validClicks.forEach((c) => {
       totalRecorded++
       // Date count
       if (c.clicked_at) {
@@ -811,7 +815,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       else if (b.includes("safari")) browserCounts.safari++
       else if (b.includes("edge")) browserCounts.edge++
       else if (b.includes("firefox")) browserCounts.firefox++
-      else browserCounts.chrome++ // Fallback
+      else if (b) browserCounts.chrome++
 
       // OS
       const o = (c.os || "").toLowerCase()
@@ -819,16 +823,17 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       else if (o.includes("mac") || o.includes("ios") || o.includes("iphone") || o.includes("ipad")) osCounts.Apple++
       else if (o.includes("win")) osCounts.Windows++
       else if (o.includes("linux")) osCounts.Linux++
-      else osCounts.Android++ // Fallback
+      else if (o) osCounts.Android++
 
       // Device
       const dev = (c.device_type || "").toLowerCase()
       if (dev.includes("mobile")) deviceCounts.mobile++
       else if (dev.includes("tablet")) deviceCounts.tablet++
-      else deviceCounts.desktop++
+      else if (dev.includes("desktop")) deviceCounts.desktop++
+      else if (dev) deviceCounts.desktop++
     })
 
-    const maxDayCount = Math.max(...days.map((d) => d.count), 1)
+    const maxDayCount = Math.max(...days.map((d) => d.count), 0)
 
     return {
       days,
@@ -838,7 +843,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       deviceCounts,
       totalRecorded,
     }
-  }, [initialClicks])
+  }, [initialClicks, links])
 
   const filteredLinks = links.filter((item) => {
     const q = searchQuery.toLowerCase().trim()
@@ -1728,13 +1733,13 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     axisLine={false}
                   />
                   <YAxis
-                    dataKey="count"
                     stroke="#888888"
                     fontSize={11}
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={(val) => `${val}`}
                     allowDecimals={false}
+                    domain={[0, Math.max(analytics.maxDayCount + 1, 4)]}
                   />
                   <Tooltip
                     content={({ active, payload }) => {
