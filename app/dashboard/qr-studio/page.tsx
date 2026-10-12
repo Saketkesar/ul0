@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { auth, currentUser } from "@clerk/nextjs/server"
 import { redirect } from "next/navigation"
 import { isQrStudioAuthorized, isUserAdmin } from "@/lib/marketing-auth"
-import { getDynamicQrLinksByOwner, listClicksByOwner } from "@/lib/appwrite/links"
+import { getDynamicQrLinksByOwner, listClicksByOwner, listClicksByLink } from "@/lib/appwrite/links"
 import { getDynamicQrUrl } from "@/lib/utils/link-url"
 import { QrStudioClient, type DynamicQrItem } from "@/components/dashboard/qr-studio-client"
 import { ShieldAlert, ArrowLeft } from "lucide-react"
@@ -53,7 +53,21 @@ export default async function DynamicQrStudioPage() {
   const isAdmin = isUserAdmin(userId, email)
   const rawLinks = await getDynamicQrLinksByOwner(userId, isAdmin)
 
-  const userClicks = await listClicksByOwner(userId, 2000).catch(() => [])
+  // Fetch scan telemetry specifically for dynamic QR links (never pull unrelated short link clicks)
+  const qrLinkIds = new Set(rawLinks.map((l) => l.$id))
+  let qrClicks: any[] = []
+
+  if (rawLinks.length > 0) {
+    if (rawLinks.length <= 15) {
+      const clickBatches = await Promise.all(
+        rawLinks.map((l) => listClicksByLink(l.$id, 1000).catch(() => []))
+      )
+      qrClicks = clickBatches.flat()
+    } else {
+      const allOwnerClicks = await listClicksByOwner(userId, 5000).catch(() => [])
+      qrClicks = allOwnerClicks.filter((c) => qrLinkIds.has(c.link_id))
+    }
+  }
 
   const formattedLinks: DynamicQrItem[] = rawLinks.map((link) => {
     let targeting: any = undefined
@@ -78,5 +92,5 @@ export default async function DynamicQrStudioPage() {
     }
   })
 
-  return <QrStudioClient initialLinks={formattedLinks} initialClicks={userClicks} userEmail={email} />
+  return <QrStudioClient initialLinks={formattedLinks} initialClicks={qrClicks} userEmail={email} />
 }
