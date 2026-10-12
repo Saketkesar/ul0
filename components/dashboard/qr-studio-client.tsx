@@ -909,7 +909,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
         {[
           { label: "Dynamic QRs", value: links.length.toString(), sub: "Permanent slugs" },
           { label: "Total Scans", value: totalScans.toLocaleString(), sub: "Redirects completed" },
-          { label: "Monetization", value: "Stealth", sub: "Hidden background ads" },
+          { label: "Redirect Speed", value: "< 50ms", sub: "Global Edge Network" },
         ].map((stat) => (
           <div key={stat.label} style={{ ...s.card, padding: "16px 20px" }}>
             <p
