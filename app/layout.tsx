@@ -184,12 +184,17 @@ export default function RootLayout({
         {/* Google AdSense account verification */}
         <meta name="google-adsense-account" content="ca-pub-8018312015732327" />
 
-        {/* Immediate theme restoration to prevent flash and preserve dark/light preference */}
+        {/* Immediate theme restoration: Dark mode strictly allowed inside /dashboard only; rest of website is strictly clean white */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
+                  var path = window.location.pathname || '';
+                  if (!path.startsWith('/dashboard')) {
+                    document.documentElement.classList.remove('dark');
+                    return;
+                  }
                   var stored = localStorage.getItem('theme');
                   var cookieMatch = document.cookie.match(/(?:^|; )theme=([^;]*)/);
                   var cookieTheme = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null;

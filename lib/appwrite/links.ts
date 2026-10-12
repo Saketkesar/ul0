@@ -459,6 +459,65 @@ export async function updateLinkTargeting(
 }
 
 /**
+ * Update dynamic QR destination URL, metadata, and design targeting.
+ * Slug stays permanent while destination URL updates dynamically.
+ */
+export async function updateLinkDestination(
+  linkId: string,
+  updates: {
+    long_url: string
+    meta_title?: string | null
+    meta_domain?: string | null
+    targeting_json?: string | null
+  }
+): Promise<LinkDoc> {
+  const payload: Record<string, any> = {
+    long_url: updates.long_url,
+  }
+  if (updates.meta_title !== undefined) payload.meta_title = updates.meta_title
+  if (updates.meta_domain !== undefined) payload.meta_domain = updates.meta_domain
+  if (updates.targeting_json !== undefined) payload.targeting_json = updates.targeting_json
+
+  const doc = await db().updateDocument(DB, LINKS, linkId, payload)
+  return doc as unknown as LinkDoc
+}
+
+/**
+ * Fetch dynamic QR links for a user (or all if admin).
+ */
+export async function getDynamicQrLinksByOwner(
+  ownerId: string,
+  isAdmin: boolean = false
+): Promise<LinkDoc[]> {
+  try {
+    const queries = [
+      Query.orderDesc("created_at"),
+      Query.limit(100),
+    ]
+    if (!isAdmin) {
+      queries.push(Query.equal("owner_id", ownerId))
+    }
+
+    const { documents } = await db().listDocuments(DB, LINKS, queries)
+    const links = documents as unknown as LinkDoc[]
+
+    return links.filter((l) => {
+      if (l.link_type === "dynamic_qr") return true
+      if (l.targeting_json) {
+        try {
+          const parsed = JSON.parse(l.targeting_json)
+          if (parsed.is_dynamic_qr) return true
+        } catch {}
+      }
+      return false
+    })
+  } catch (err) {
+    console.error("Error fetching dynamic QR links:", err)
+    return []
+  }
+}
+
+/**
  * Delete a link document.
  * Verifies ownership beforehand.
  */

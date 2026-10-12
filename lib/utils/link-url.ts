@@ -36,3 +36,17 @@ export function getShortDisplayPrefix(host: string = DEFAULT_HOST): string {
   }
   return `${cleanHost}/`
 }
+
+/**
+ * Returns the canonical dynamic QR URL (/q/[slug]).
+ * Routes to the cute interstitial redirect with background ad telemetry.
+ */
+export function getDynamicQrUrl(host: string = DEFAULT_HOST, slug: string): string {
+  const cleanHost = (host || DEFAULT_HOST).toLowerCase().trim()
+  return `https://${cleanHost}/q/${slug}`
+}
+
+export function getDynamicQrDisplayPrefix(host: string = DEFAULT_HOST): string {
+  const cleanHost = (host || DEFAULT_HOST).toLowerCase().trim()
+  return `${cleanHost}/q/`
+}

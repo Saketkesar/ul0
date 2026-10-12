@@ -46,8 +46,6 @@ import {
   ShieldCheck,
   Tag,
   Wifi,
-  Sun,
-  Moon,
   MessageCircle,
 } from "lucide-react"
 import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs"
@@ -55,50 +53,13 @@ import { SignInButton, SignUpButton, UserButton, Show } from "@clerk/nextjs"
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState("")
-  const [isDark, setIsDark] = useState(false)
 
+  // Public website is strictly clean white/light mode (dark mode is exclusively for /dashboard)
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("theme")
-      const cookieMatch = document.cookie.match(/(?:^|; )theme=([^;]*)/)
-      const cookieTheme = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null
-      const theme = stored || cookieTheme
-      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-      const isDarkMode = theme === "dark" || (!theme && prefersDark) || document.documentElement.classList.contains("dark")
-      setIsDark(isDarkMode)
-    } catch {
-      setIsDark(document.documentElement.classList.contains("dark"))
-    }
-
-    const handleThemeChange = (e: Event) => {
-      const custom = e as CustomEvent<{ theme: string }>
-      if (custom.detail?.theme) {
-        setIsDark(custom.detail.theme === "dark")
-      } else {
-        setIsDark(document.documentElement.classList.contains("dark"))
-      }
-    }
-
-    window.addEventListener("theme-change", handleThemeChange)
-    return () => window.removeEventListener("theme-change", handleThemeChange)
+      document.documentElement.classList.remove("dark")
+    } catch {}
   }, [])
-
-  const toggleTheme = () => {
-    const nextDark = !isDark
-    setIsDark(nextDark)
-    try {
-      if (nextDark) {
-        document.documentElement.classList.add("dark")
-        localStorage.setItem("theme", "dark")
-        document.cookie = "theme=dark; path=/; max-age=31536000; SameSite=Lax"
-      } else {
-        document.documentElement.classList.remove("dark")
-        localStorage.setItem("theme", "light")
-        document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax"
-      }
-      window.dispatchEvent(new CustomEvent("theme-change", { detail: { theme: nextDark ? "dark" : "light" } }))
-    } catch (e) {}
-  }
 
   const allNavLinks = useMemo(
     () => [
@@ -366,17 +327,6 @@ export function Header() {
               />
             </div>
           </Show>
-
-          {/* Theme Switcher */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label="Toggle theme"
-            className="rounded-lg h-8 w-8 flex items-center justify-center text-muted-foreground hover:bg-accent hover:text-foreground transition-colors border border-border/60"
-            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-          >
-            {isDark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
-          </button>
 
           {/* Mobile Menu Trigger via Sheet */}
           <div className="xl:hidden flex items-center">
