@@ -56,16 +56,43 @@ export async function POST(request: NextRequest) {
       slug = `q-${Math.random().toString(36).substring(2, 8)}`
     }
 
+    // Ensure customLogoUrl does not contain raw base64 data URI to prevent Appwrite row attribute size overflow
+    const cleanQrDesign = {
+      darkColor: "#0B1412",
+      lightColor: "#ffffff",
+      dotStyle: "rounded",
+      logoType: "ul0",
+      ...(qr_design || {}),
+    }
+
+    if (cleanQrDesign.customLogoUrl && typeof cleanQrDesign.customLogoUrl === "string" && cleanQrDesign.customLogoUrl.startsWith("data:")) {
+      try {
+        let cleanBase64 = cleanQrDesign.customLogoUrl.replace(/^data:image\/[a-zA-Z0-9+.-]+;base64,/, "")
+        const uploadFormData = new FormData()
+        uploadFormData.append("key", "6d207e02198a847aa98d0a2a901485a5")
+        uploadFormData.append("action", "upload")
+        uploadFormData.append("format", "json")
+        uploadFormData.append("source", cleanBase64)
+        const uploadRes = await fetch("https://freeimage.host/api/1/upload", {
+          method: "POST",
+          body: uploadFormData,
+        })
+        const uploadJson = await uploadRes.json()
+        if (uploadRes.ok && uploadJson.image?.url) {
+          cleanQrDesign.customLogoUrl = uploadJson.image.url
+        } else {
+          delete cleanQrDesign.customLogoUrl
+        }
+      } catch {
+        delete cleanQrDesign.customLogoUrl
+      }
+    }
+
     const targetingData = {
       is_dynamic_qr: true,
       title: (title || "").trim() || "Dynamic QR Link",
       cute_message: (cute_message || "").trim() || "You are being redirected, please wait 6 sec...",
-      qr_design: qr_design || {
-        darkColor: "#0B1412",
-        lightColor: "#ffffff",
-        dotStyle: "rounded",
-        logoType: "ul0",
-      },
+      qr_design: cleanQrDesign,
     }
 
     let attempts = 0
@@ -99,7 +126,7 @@ export async function POST(request: NextRequest) {
             targeting: targetingData,
           },
         })
-      } catch (err) {
+      } catch (err: any) {
         if (isConflictError(err)) {
           if (isCustomSlug) {
             return NextResponse.json(
@@ -112,14 +139,17 @@ export async function POST(request: NextRequest) {
           attempts++
         } else {
           console.error("Create dynamic QR error:", err)
-          return NextResponse.json({ error: "Failed to generate dynamic QR." }, { status: 500 })
+          return NextResponse.json(
+            { error: err?.message || "Failed to generate dynamic QR." },
+            { status: 500 }
+          )
         }
       }
     }
 
     return NextResponse.json({ error: "Failed to generate a unique slug. Please try again." }, { status: 500 })
-  } catch (err) {
+  } catch (err: any) {
     console.error("Dynamic QR API error:", err)
-    return NextResponse.json({ error: "Internal server error." }, { status: 500 })
+    return NextResponse.json({ error: err?.message || "Internal server error." }, { status: 500 })
   }
 }

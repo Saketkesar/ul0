@@ -114,7 +114,14 @@ const CLICKS = COLLECTIONS.clicks
 export function isConflictError(err: unknown): boolean {
   if (!err || typeof err !== "object") return false
   const e = err as Record<string, unknown>
-  return e.code === 409 || e.type === "document_already_exists"
+  const msg = typeof e.message === "string" ? e.message.toLowerCase() : ""
+  return (
+    e.code === 409 ||
+    e.type === "document_already_exists" ||
+    msg.includes("already exists") ||
+    msg.includes("duplicate") ||
+    msg.includes("unique")
+  )
 }
 
 // ---------------------------------------------------------------------------
