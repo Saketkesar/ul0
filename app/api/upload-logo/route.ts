@@ -35,6 +35,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unsupported content type" }, { status: 400 })
     }
 
+    // Strip data URI prefix if present (e.g. data:image/png;base64,)
+    if (sourceValue.startsWith("data:")) {
+      sourceValue = sourceValue.replace(/^data:image\/[a-zA-Z0-9+.-]+;base64,/, "")
+    }
+
     // Prepare payload for Freeimage.host API v1
     const uploadFormData = new FormData()
     uploadFormData.append("key", FREEIMAGE_API_KEY)

@@ -23,6 +23,14 @@ import {
   Link2,
 } from "lucide-react"
 import QRCode from "qrcode"
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts"
 import { getDynamicQrUrl } from "@/lib/utils/link-url"
 import { DEFAULT_HOST } from "@/lib/appwrite/config"
 
@@ -451,6 +459,21 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
 
         // Draw Center Logo
         if (hasLogo) {
+          const badgeSize = qrSize * 0.22
+          const logoX = (qrSize - badgeSize) / 2
+          const logoY = (qrSize - badgeSize) / 2
+          const pad = 6
+
+          // Badge backplate
+          ctx.fillStyle = cfg.lightColor
+          ctx.beginPath()
+          ctx.roundRect(logoX - pad, logoY - pad, badgeSize + pad * 2, badgeSize + pad * 2, 12)
+          ctx.fill()
+
+          ctx.strokeStyle = cfg.darkColor + "25"
+          ctx.lineWidth = 1.5
+          ctx.stroke()
+
           let logoSrc = ""
           if (cfg.logoType === "ul0") {
             logoSrc = "/ul0.png"
@@ -458,36 +481,58 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
             logoSrc = cfg.customLogoUrl
           }
 
+          let drawn = false
           if (logoSrc) {
-            const logoImg = new Image()
-            logoImg.crossOrigin = "anonymous"
-            logoImg.src = logoSrc
+            try {
+              const img = await new Promise<HTMLImageElement | null>((resolve) => {
+                const i = new Image()
+                if (logoSrc.startsWith("http") && typeof window !== "undefined" && !logoSrc.startsWith(window.location.origin)) {
+                  i.crossOrigin = "anonymous"
+                }
+                i.onload = () => resolve(i)
+                i.onerror = () => {
+                  if (i.crossOrigin) {
+                    const fallback = new Image()
+                    fallback.onload = () => resolve(fallback)
+                    fallback.onerror = () => resolve(null)
+                    fallback.src = logoSrc
+                  } else {
+                    resolve(null)
+                  }
+                }
+                i.src = logoSrc
+                if (i.complete && i.naturalWidth > 0) resolve(i)
+                setTimeout(() => resolve(i.complete && i.naturalWidth > 0 ? i : null), 800)
+              })
 
-            await new Promise((res) => {
-              logoImg.onload = res
-              logoImg.onerror = res
-              setTimeout(res, 400)
-            })
-
-            if (logoImg.complete && logoImg.naturalWidth > 0) {
-              const badgeSize = qrSize * 0.22
-              const logoX = (qrSize - badgeSize) / 2
-              const logoY = (qrSize - badgeSize) / 2
-              const pad = 6
-
-              // Badge backplate
-              ctx.fillStyle = cfg.lightColor
-              ctx.beginPath()
-              ctx.roundRect(logoX - pad, logoY - pad, badgeSize + pad * 2, badgeSize + pad * 2, 14)
-              ctx.fill()
-
-              ctx.strokeStyle = cfg.darkColor + "20"
-              ctx.lineWidth = 1
-              ctx.stroke()
-
-              // Draw logo centered
-              ctx.drawImage(logoImg, logoX, logoY, badgeSize, badgeSize)
+              if (img && img.naturalWidth > 0) {
+                const aspect = img.naturalWidth / img.naturalHeight
+                let drawW = badgeSize
+                let drawH = badgeSize
+                let drawX = logoX
+                let drawY = logoY
+                if (aspect > 1) {
+                  drawH = badgeSize / aspect
+                  drawY = logoY + (badgeSize - drawH) / 2
+                } else {
+                  drawW = badgeSize * aspect
+                  drawX = logoX + (badgeSize - drawW) / 2
+                }
+                ctx.drawImage(img, drawX, drawY, drawW, drawH)
+                drawn = true
+              }
+            } catch (e) {
+              console.warn("Could not render center logo image:", e)
             }
+          }
+
+          // Guaranteed fallback if logo image couldn't load or was delayed
+          if (!drawn && cfg.logoType === "ul0") {
+            ctx.fillStyle = cfg.darkColor
+            ctx.font = "bold 16px -apple-system, BlinkMacSystemFont, 'Inter', sans-serif"
+            ctx.textAlign = "center"
+            ctx.textBaseline = "middle"
+            ctx.fillText("ul0", qrSize / 2, qrSize / 2)
           }
         }
 
@@ -505,6 +550,13 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
     },
     []
   )
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const img = new Image()
+      img.src = "/ul0.png"
+    }
+  }, [])
 
   useEffect(() => {
     renderQrOnCanvas(studioCanvasRef.current, previewDynamicUrl, {
@@ -629,8 +681,32 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       setFormError("Please enter a destination URL.")
       return
     }
+    if (isCleaningLogo) {
+      setFormError("Please wait a moment for the brand logo to finish uploading.")
+      return
+    }
     setIsSubmitting(true)
     try {
+      let cleanLogoUrl = customLogoUrl
+      if (cleanLogoUrl && cleanLogoUrl.startsWith("data:")) {
+        try {
+          const upRes = await fetch("/api/upload-logo", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ image: cleanLogoUrl }),
+          })
+          const upData = await upRes.json()
+          if (upRes.ok && upData.url) {
+            cleanLogoUrl = upData.url
+            setCustomLogoUrl(upData.url)
+          } else {
+            cleanLogoUrl = null
+          }
+        } catch {
+          cleanLogoUrl = null
+        }
+      }
+
       const response = await fetch("/api/dynamic-qr/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -639,7 +715,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           title: title.trim() || "Dynamic QR Link",
           custom_slug: customSlug.trim() || undefined,
           cute_message: cuteMessage.trim(),
-          qr_design: { darkColor, lightColor, dotStyle, cornerStyle, margin, logoType, customLogoUrl, labelText },
+          qr_design: { darkColor, lightColor, dotStyle, cornerStyle, margin, logoType, customLogoUrl: cleanLogoUrl, labelText },
         }),
       })
       const data = await response.json()
@@ -752,33 +828,6 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       else deviceCounts.desktop++
     })
 
-    // If zero clicks yet, use realistic starter telemetry so graphs and icons animate beautifully
-    const isMock = totalRecorded === 0 && totalScans === 0
-    if (isMock) {
-      days[0].count = 4
-      days[1].count = 9
-      days[2].count = 14
-      days[3].count = 18
-      days[4].count = 27
-      days[5].count = 34
-      days[6].count = 42
-
-      browserCounts.chrome = 62
-      browserCounts.safari = 38
-      browserCounts.brave = 18
-      browserCounts.firefox = 14
-      browserCounts.edge = 10
-
-      osCounts.Apple = 58
-      osCounts.Android = 52
-      osCounts.Windows = 24
-      osCounts.Linux = 8
-
-      deviceCounts.mobile = 94
-      deviceCounts.desktop = 38
-      deviceCounts.tablet = 10
-    }
-
     const maxDayCount = Math.max(...days.map((d) => d.count), 1)
 
     return {
@@ -787,9 +836,9 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       browserCounts,
       osCounts,
       deviceCounts,
-      isMock,
+      totalRecorded,
     }
-  }, [initialClicks, totalScans])
+  }, [initialClicks])
 
   const filteredLinks = links.filter((item) => {
     const q = searchQuery.toLowerCase().trim()
@@ -905,11 +954,10 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       </div>
 
       {/* Top Stats Banner */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "12px" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "12px" }}>
         {[
           { label: "Dynamic QRs", value: links.length.toString(), sub: "Permanent slugs" },
           { label: "Total Scans", value: totalScans.toLocaleString(), sub: "Redirects completed" },
-          { label: "Redirect Speed", value: "< 50ms", sub: "Global Edge Network" },
         ].map((stat) => (
           <div key={stat.label} style={{ ...s.card, padding: "16px 20px" }}>
             <p
@@ -1650,71 +1698,68 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
       {/* TAB 3: ANALYTICS & INSIGHTS VIEW */}
       {view === "analytics" && (
         <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-          {/* Animated Timeline Graph */}
+          {/* Main Area Chart: Scans Over Time */}
           <div style={s.card}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "20px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
               <div>
                 <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>
-                  Scan Velocity (Last 7 Days)
+                  Clicks & Scans Over Time
                 </h2>
                 <p style={{ fontSize: "12px", color: "#999", margin: "2px 0 0" }}>
-                  Real-time scan timestamps aggregated across all dynamic QR campaigns
+                  Direct traffic trends and scan timeline across all dynamic QR campaigns
                 </p>
               </div>
-              {analytics.isMock && (
-                <span
-                  style={{
-                    fontSize: "11px",
-                    fontWeight: 500,
-                    padding: "3px 8px",
-                    borderRadius: "6px",
-                    background: "#f3f4f6",
-                    color: "#6b7280",
-                  }}
-                >
-                  Live Preview Sample
-                </span>
-              )}
             </div>
 
-            {/* SVG Animated Chart */}
-            <div style={{ height: "180px", display: "flex", alignItems: "flex-end", gap: "16px", padding: "10px 0 20px" }}>
-              {analytics.days.map((d, idx) => {
-                const heightPct = Math.max(12, Math.round((d.count / analytics.maxDayCount) * 100))
-                return (
-                  <div
-                    key={d.date}
-                    style={{
-                      flex: 1,
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      gap: "8px",
-                      height: "100%",
-                      justifyContent: "flex-end",
+            <div style={{ height: "240px", width: "100%", paddingTop: "8px" }}>
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={analytics.days} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="qrScanGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#1FA087" stopOpacity={0.35} />
+                      <stop offset="95%" stopColor="#1FA087" stopOpacity={0.0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis
+                    dataKey="label"
+                    stroke="#888888"
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                  />
+                  <YAxis
+                    stroke="#888888"
+                    fontSize={11}
+                    tickLine={false}
+                    axisLine={false}
+                    tickFormatter={(val) => `${val}`}
+                    allowDecimals={false}
+                  />
+                  <Tooltip
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div style={{ background: "#fff", border: "1px solid #e5e7eb", borderRadius: "8px", padding: "8px 12px", boxShadow: "0 4px 12px rgba(0,0,0,0.08)", fontSize: "12px" }}>
+                            <p style={{ fontWeight: 600, color: "#1a1a1a", margin: 0 }}>{payload[0].payload.label}</p>
+                            <p style={{ color: "#1FA087", fontFamily: "monospace", margin: "2px 0 0" }}>
+                              Scans: <span style={{ fontWeight: 700 }}>{payload[0].value}</span>
+                            </p>
+                          </div>
+                        )
+                      }
+                      return null
                     }}
-                  >
-                    <span style={{ fontSize: "11px", fontWeight: 600, color: "#1a1a1a", ...s.mono }}>
-                      {d.count}
-                    </span>
-                    <div
-                      style={{
-                        width: "100%",
-                        maxWidth: "48px",
-                        height: `${heightPct}%`,
-                        background: "#1a1a1a",
-                        borderRadius: "6px 6px 2px 2px",
-                        transition: "all 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
-                      }}
-                      onMouseOver={(e) => (e.currentTarget.style.background = "#2383e2")}
-                      onMouseOut={(e) => (e.currentTarget.style.background = "#1a1a1a")}
-                    />
-                    <span style={{ fontSize: "11px", color: "#999", fontWeight: 500 }}>
-                      {d.label}
-                    </span>
-                  </div>
-                )
-              })}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="count"
+                    stroke="#1FA087"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#qrScanGradient)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </div>
           </div>
 
@@ -1735,8 +1780,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   { name: "Edge", key: "edge", icon: <EdgeIcon /> },
                 ].map((b) => {
                   const count = analytics.browserCounts[b.key] || 0
-                  const total = Object.values(analytics.browserCounts).reduce((a, c) => a + c, 0) || 1
-                  const pct = Math.round((count / total) * 100)
+                  const total = Object.values(analytics.browserCounts).reduce((a, c) => a + c, 0)
+                  const pct = total > 0 ? Math.round((count / total) * 100) : 0
                   return (
                     <div key={b.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -1747,7 +1792,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <div style={{ width: "60px", height: "6px", background: "#f0f0f0", borderRadius: "3px", overflow: "hidden" }}>
-                          <div style={{ width: `${pct}%`, height: "100%", background: "#1a1a1a", borderRadius: "3px" }} />
+                          <div style={{ width: `${pct}%`, height: "100%", background: "#1FA087", borderRadius: "3px" }} />
                         </div>
                         <span style={{ fontSize: "11px", color: "#999", ...s.mono, width: "32px", textAlign: "right" }}>
                           {pct}%
@@ -1773,8 +1818,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   { name: "Linux", key: "Linux", icon: <LinuxIcon /> },
                 ].map((o) => {
                   const count = analytics.osCounts[o.key] || 0
-                  const total = Object.values(analytics.osCounts).reduce((a, c) => a + c, 0) || 1
-                  const pct = Math.round((count / total) * 100)
+                  const total = Object.values(analytics.osCounts).reduce((a, c) => a + c, 0)
+                  const pct = total > 0 ? Math.round((count / total) * 100) : 0
                   return (
                     <div key={o.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -1785,7 +1830,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <div style={{ width: "60px", height: "6px", background: "#f0f0f0", borderRadius: "3px", overflow: "hidden" }}>
-                          <div style={{ width: `${pct}%`, height: "100%", background: "#1a1a1a", borderRadius: "3px" }} />
+                          <div style={{ width: `${pct}%`, height: "100%", background: "#1FA087", borderRadius: "3px" }} />
                         </div>
                         <span style={{ fontSize: "11px", color: "#999", ...s.mono, width: "32px", textAlign: "right" }}>
                           {pct}%
@@ -1810,8 +1855,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   { name: "Tablet", key: "tablet", icon: <Tablet className="w-4 h-4 text-neutral-700" /> },
                 ].map((d) => {
                   const count = analytics.deviceCounts[d.key] || 0
-                  const total = Object.values(analytics.deviceCounts).reduce((a, c) => a + c, 0) || 1
-                  const pct = Math.round((count / total) * 100)
+                  const total = Object.values(analytics.deviceCounts).reduce((a, c) => a + c, 0)
+                  const pct = total > 0 ? Math.round((count / total) * 100) : 0
                   return (
                     <div key={d.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px" }}>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -1822,7 +1867,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                       </div>
                       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                         <div style={{ width: "60px", height: "6px", background: "#f0f0f0", borderRadius: "3px", overflow: "hidden" }}>
-                          <div style={{ width: `${pct}%`, height: "100%", background: "#1a1a1a", borderRadius: "3px" }} />
+                          <div style={{ width: `${pct}%`, height: "100%", background: "#1FA087", borderRadius: "3px" }} />
                         </div>
                         <span style={{ fontSize: "11px", color: "#999", ...s.mono, width: "32px", textAlign: "right" }}>
                           {pct}%
