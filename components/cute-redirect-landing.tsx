@@ -9,6 +9,7 @@ interface CuteRedirectLandingProps {
   customHost?: string | null
   brandLogoUrl?: string | null
   customMessage?: string | null
+  countdownSeconds?: number
 }
 
 export function CuteRedirectLanding({
@@ -17,17 +18,19 @@ export function CuteRedirectLanding({
   customHost,
   brandLogoUrl,
   customMessage,
+  countdownSeconds = 5,
 }: CuteRedirectLandingProps) {
-  const [countdown, setCountdown] = useState(6)
+  const initialSeconds = Math.max(1, Math.min(10, countdownSeconds))
+  const [countdown, setCountdown] = useState(initialSeconds)
   const [progress, setProgress] = useState(0)
 
   const redirect = useCallback(() => {
     window.location.href = longUrl
   }, [longUrl])
 
-  // 6 second timer countdown
+  // Timer countdown
   useEffect(() => {
-    const totalTime = 6
+    const totalTime = initialSeconds
     const startTime = Date.now()
 
     const interval = setInterval(() => {
@@ -45,7 +48,7 @@ export function CuteRedirectLanding({
     }, 50)
 
     return () => clearInterval(interval)
-  }, [redirect])
+  }, [redirect, initialSeconds])
 
   // Extract friendly display domain
   let displayDomain = domain || "destination"

@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import { after } from "next/server"
 import { headers } from "next/headers"
 import { CuteRedirectLanding } from "@/components/cute-redirect-landing"
@@ -76,9 +76,10 @@ export default async function DynamicQrRedirectPage({ params, searchParams }: Pr
   }
 
   // Parse custom message or targeting controls
-  let customMessage = "You are being redirected, please wait 6 sec..."
+  let customMessage = "You are being redirected, please wait..."
   let clicksLimit = 0
   let customLogoUrl: string | null = null
+  let redirectTimer = 0 // 0 = Instant redirect (< 50ms)
 
   if (link.targeting_json) {
     try {
@@ -88,6 +89,9 @@ export default async function DynamicQrRedirectPage({ params, searchParams }: Pr
       }
       if (targeting.qr_design?.customLogoUrl) {
         customLogoUrl = targeting.qr_design.customLogoUrl
+      }
+      if (typeof targeting.redirect_timer === "number") {
+        redirectTimer = Math.max(0, Math.min(10, targeting.redirect_timer))
       }
       clicksLimit = Number(targeting.clicks_limit) || 0
     } catch {}
@@ -190,6 +194,11 @@ export default async function DynamicQrRedirectPage({ params, searchParams }: Pr
     }
   })
 
+  // 0s Instant Mode: bypass waiting screen completely with lightning edge redirect (< 50ms)
+  if (redirectTimer === 0) {
+    redirect(targetUrl)
+  }
+
   return (
     <CuteRedirectLanding
       longUrl={targetUrl}
@@ -197,6 +206,7 @@ export default async function DynamicQrRedirectPage({ params, searchParams }: Pr
       customHost={isCustomDomain ? host : null}
       brandLogoUrl={customLogoUrl || brandLogoUrl}
       customMessage={customMessage}
+      countdownSeconds={redirectTimer}
     />
   )
 }
