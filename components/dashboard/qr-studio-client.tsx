@@ -46,6 +46,7 @@ export interface DynamicQrItem {
     is_dynamic_qr?: boolean
     title?: string
     cute_message?: string
+    redirect_timer?: number
     qr_design?: QrDesignConfig
   }
 }
@@ -275,7 +276,9 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
   const [destinationUrl, setDestinationUrl] = useState("")
   const [title, setTitle] = useState("")
   const [customSlug, setCustomSlug] = useState("")
-  const [cuteMessage, setCuteMessage] = useState("You are being redirected, please wait 6 sec...")
+  const [cuteMessage, setCuteMessage] = useState("You are being redirected, please wait...")
+  const [timerMode, setTimerMode] = useState<"instant" | "custom">("instant")
+  const [timerSeconds, setTimerSeconds] = useState(5)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
   const [formSuccess, setFormSuccess] = useState<string | null>(null)
@@ -297,6 +300,8 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
   const [editDestinationUrl, setEditDestinationUrl] = useState("")
   const [editTitle, setEditTitle] = useState("")
   const [editCuteMessage, setEditCuteMessage] = useState("")
+  const [editTimerMode, setEditTimerMode] = useState<"instant" | "custom">("instant")
+  const [editTimerSeconds, setEditTimerSeconds] = useState(5)
   const [isUpdating, setIsUpdating] = useState(false)
   const [editError, setEditError] = useState<string | null>(null)
 
@@ -715,6 +720,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           title: title.trim() || "Dynamic QR Link",
           custom_slug: customSlug.trim() || undefined,
           cute_message: cuteMessage.trim(),
+          redirect_timer: timerMode === "instant" ? 0 : timerSeconds,
           qr_design: { darkColor, lightColor, dotStyle, cornerStyle, margin, logoType, customLogoUrl: cleanLogoUrl, labelText },
         }),
       })
@@ -750,6 +756,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           long_url: editDestinationUrl.trim(),
           title: editTitle.trim(),
           cute_message: editCuteMessage.trim(),
+          redirect_timer: editTimerMode === "instant" ? 0 : editTimerSeconds,
         }),
       })
       const data = await response.json()
@@ -1090,18 +1097,116 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
               </div>
 
               {/* Redirect Message */}
+              {/* Redirection Speed & Countdown Timer Control */}
               <div>
-                <label style={s.label}>Redirect Screen Message</label>
-                <input
-                  type="text"
-                  value={cuteMessage}
-                  onChange={(e) => setCuteMessage(e.target.value)}
-                  placeholder="You are being redirected, please wait 6 sec..."
-                  style={s.input}
-                  onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
-                  onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
-                />
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
+                  <label style={s.label}>Redirection Speed &amp; Countdown Mode</label>
+                  <span style={{ fontSize: "11px", color: timerMode === "instant" ? "#10b981" : "var(--primary)", fontWeight: 600, ...s.mono }}>
+                    {timerMode === "instant" ? "⚡ Instant (< 50ms edge redirect)" : `⏱️ ${timerSeconds}s countdown`}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => setTimerMode("instant")}
+                    style={{
+                      padding: "10px 14px",
+                      borderRadius: "8px",
+                      border: timerMode === "instant" ? "2px solid #10b981" : "1px solid var(--border)",
+                      background: timerMode === "instant" ? "rgba(16, 185, 129, 0.08)" : "var(--surface-3)",
+                      color: timerMode === "instant" ? "var(--foreground)" : "var(--muted-foreground)",
+                      cursor: "pointer",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      gap: "2px",
+                      fontFamily: "inherit",
+                      textAlign: "left",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, fontSize: "13px" }}>
+                      <span>⚡ Instant Bypass (0s)</span>
+                    </div>
+                    <span style={{ fontSize: "11px", color: "var(--muted-foreground)" }}>
+                      Skips waiting screen completely. Direct to destination.
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setTimerMode("custom")}
+                    style={{
+                      padding: "10px 14px",
+                      borderRadius: "8px",
+                      border: timerMode === "custom" ? "2px solid var(--primary)" : "1px solid var(--border)",
+                      background: timerMode === "custom" ? "rgba(31, 160, 135, 0.08)" : "var(--surface-3)",
+                      color: timerMode === "custom" ? "var(--foreground)" : "var(--muted-foreground)",
+                      cursor: "pointer",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                      gap: "2px",
+                      fontFamily: "inherit",
+                      textAlign: "left",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, fontSize: "13px" }}>
+                      <span>⏱️ Custom Delay (1s – 10s)</span>
+                    </div>
+                    <span style={{ fontSize: "11px", color: "var(--muted-foreground)" }}>
+                      Displays branded redirect screen with progress ring.
+                    </span>
+                  </button>
+                </div>
+
+                {timerMode === "custom" ? (
+                  <div style={{ padding: "12px 14px", background: "var(--surface-2)", borderRadius: "8px", border: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: "8px", marginBottom: "12px" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <span style={{ fontSize: "12px", fontWeight: 500, color: "var(--foreground)" }}>Countdown Duration</span>
+                      <span style={{ fontSize: "13px", fontWeight: 700, color: "var(--primary)", ...s.mono }}>{timerSeconds} seconds</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={1}
+                      max={10}
+                      step={1}
+                      value={timerSeconds}
+                      onChange={(e) => setTimerSeconds(Number(e.target.value))}
+                      style={{ width: "100%", accentColor: "var(--primary)", cursor: "pointer" }}
+                    />
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "10px", color: "var(--muted-foreground)", ...s.mono }}>
+                      <span>1s (Ultra-fast)</span>
+                      <span>5s (Standard)</span>
+                      <span>10s (Extended)</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ padding: "8px 12px", background: "rgba(16, 185, 129, 0.08)", border: "1px solid rgba(16, 185, 129, 0.2)", borderRadius: "8px", marginBottom: "12px" }}>
+                    <p style={{ fontSize: "12px", color: "#10b981", margin: 0, fontWeight: 500 }}>
+                      ⚡ Instant Mode Active: Scans bypass any interstitial waiting screen with &lt; 50ms edge redirection.
+                    </p>
+                  </div>
+                )}
               </div>
+
+              {/* Redirect Message (Only needed when delay > 0s) */}
+              {timerMode === "custom" && (
+                <div>
+                  <label style={s.label}>Redirect Screen Message</label>
+                  <input
+                    type="text"
+                    value={cuteMessage}
+                    onChange={(e) => setCuteMessage(e.target.value)}
+                    placeholder="You are being redirected, please wait..."
+                    style={s.input}
+                    onFocus={(e) => (e.target.style.borderColor = "var(--primary)")}
+                    onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
+                  />
+                </div>
+              )}
 
               {/* Divider */}
               <div style={{ height: "1px", background: "var(--border)" }} />
@@ -1511,15 +1616,26 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   </div>
                 </div>
 
-                <div>
-                  <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: "0 0 4px", fontWeight: 500 }}>
-                    {cuteMessage || "You're being redirected"}
-                  </p>
-                  <p style={{ fontSize: "36px", fontWeight: 700, color: "var(--foreground)", margin: 0, ...s.mono, lineHeight: 1 }}>
-                    6
-                  </p>
-                  <p style={{ fontSize: "11px", color: "var(--muted-foreground)", margin: "3px 0 0" }}>seconds remaining</p>
-                </div>
+                {timerMode === "instant" ? (
+                  <div style={{ padding: "8px 12px", background: "rgba(16, 185, 129, 0.1)", borderRadius: "8px", border: "1px solid rgba(16, 185, 129, 0.25)" }}>
+                    <p style={{ fontSize: "12px", fontWeight: 600, color: "#10b981", margin: 0 }}>
+                      ⚡ Instant Mode Active
+                    </p>
+                    <p style={{ fontSize: "11px", color: "var(--muted-foreground)", margin: "2px 0 0" }}>
+                      Scans bypass this screen (&lt; 50ms)
+                    </p>
+                  </div>
+                ) : (
+                  <div>
+                    <p style={{ fontSize: "12px", color: "var(--muted-foreground)", margin: "0 0 4px", fontWeight: 500 }}>
+                      {cuteMessage || "You're being redirected"}
+                    </p>
+                    <p style={{ fontSize: "36px", fontWeight: 700, color: "var(--foreground)", margin: 0, ...s.mono, lineHeight: 1 }}>
+                      {timerSeconds}
+                    </p>
+                    <p style={{ fontSize: "11px", color: "var(--muted-foreground)", margin: "3px 0 0" }}>seconds remaining</p>
+                  </div>
+                )}
 
                 <div
                   style={{
@@ -1628,9 +1744,30 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--foreground)", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                       {item.title}
                     </p>
-                    <p style={{ fontSize: "11px", color: "var(--muted-foreground)", margin: "2px 0 0", ...s.mono }}>
-                      /q/{item.slug}
-                    </p>
+                    <div style={{ display: "flex", alignItems: "center", gap: "6px", marginTop: "2px" }}>
+                      <span style={{ fontSize: "11px", color: "var(--muted-foreground)", ...s.mono }}>
+                        /q/{item.slug}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: "10px",
+                          fontWeight: 600,
+                          padding: "1px 6px",
+                          borderRadius: "4px",
+                          background: item.targeting?.redirect_timer === 0 || (!item.targeting?.redirect_timer && !item.targeting?.cute_message)
+                            ? "rgba(16, 185, 129, 0.12)"
+                            : "rgba(31, 160, 135, 0.12)",
+                          color: item.targeting?.redirect_timer === 0 || (!item.targeting?.redirect_timer && !item.targeting?.cute_message)
+                            ? "#10b981"
+                            : "var(--primary)",
+                          letterSpacing: "0.02em",
+                        }}
+                      >
+                        {item.targeting?.redirect_timer === 0 || (!item.targeting?.redirect_timer && !item.targeting?.cute_message)
+                          ? "⚡ Instant (0s)"
+                          : `⏱️ ${item.targeting?.redirect_timer || 6}s delay`}
+                      </span>
+                    </div>
                   </div>
 
                   <p
@@ -1671,6 +1808,14 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                         setEditDestinationUrl(item.long_url)
                         setEditTitle(item.title)
                         setEditCuteMessage(item.targeting?.cute_message || "")
+                        const t = typeof item.targeting?.redirect_timer === "number" ? item.targeting.redirect_timer : (item.targeting?.cute_message ? 6 : 0)
+                        if (t === 0) {
+                          setEditTimerMode("instant")
+                          setEditTimerSeconds(5)
+                        } else {
+                          setEditTimerMode("custom")
+                          setEditTimerSeconds(t)
+                        }
                       }}
                       style={{ ...s.btnSecondary, padding: "6px 8px", fontSize: "11px" }}
                       title="Edit Destination URL"
@@ -1959,15 +2104,87 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   style={s.input}
                 />
               </div>
+              {/* Redirection Timer Control in Edit Modal */}
               <div>
-                <label style={s.label}>Redirect Message</label>
-                <input
-                  type="text"
-                  value={editCuteMessage}
-                  onChange={(e) => setEditCuteMessage(e.target.value)}
-                  style={s.input}
-                />
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+                  <label style={s.label}>Redirection Speed</label>
+                  <span style={{ fontSize: "11px", color: editTimerMode === "instant" ? "#10b981" : "var(--primary)", fontWeight: 600, ...s.mono }}>
+                    {editTimerMode === "instant" ? "⚡ Instant (0s)" : `⏱️ ${editTimerSeconds}s delay`}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 mb-2">
+                  <button
+                    type="button"
+                    onClick={() => setEditTimerMode("instant")}
+                    style={{
+                      padding: "8px 10px",
+                      borderRadius: "6px",
+                      border: editTimerMode === "instant" ? "2px solid #10b981" : "1px solid var(--border)",
+                      background: editTimerMode === "instant" ? "rgba(16, 185, 129, 0.08)" : "var(--surface-3)",
+                      color: editTimerMode === "instant" ? "var(--foreground)" : "var(--muted-foreground)",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      fontFamily: "inherit",
+                      textAlign: "center",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    ⚡ Instant (0s)
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setEditTimerMode("custom")}
+                    style={{
+                      padding: "8px 10px",
+                      borderRadius: "6px",
+                      border: editTimerMode === "custom" ? "2px solid var(--primary)" : "1px solid var(--border)",
+                      background: editTimerMode === "custom" ? "rgba(31, 160, 135, 0.08)" : "var(--surface-3)",
+                      color: editTimerMode === "custom" ? "var(--foreground)" : "var(--muted-foreground)",
+                      cursor: "pointer",
+                      fontSize: "12px",
+                      fontWeight: 600,
+                      fontFamily: "inherit",
+                      textAlign: "center",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    ⏱️ Custom Delay
+                  </button>
+                </div>
+
+                {editTimerMode === "custom" && (
+                  <div style={{ padding: "10px 12px", background: "var(--surface-2)", borderRadius: "8px", border: "1px solid var(--border)", display: "flex", flexDirection: "column", gap: "6px", marginTop: "6px" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <span style={{ fontSize: "12px", color: "var(--foreground)" }}>Countdown Seconds</span>
+                      <span style={{ fontSize: "12px", fontWeight: 700, color: "var(--primary)", ...s.mono }}>{editTimerSeconds}s</span>
+                    </div>
+                    <input
+                      type="range"
+                      min={1}
+                      max={10}
+                      step={1}
+                      value={editTimerSeconds}
+                      onChange={(e) => setEditTimerSeconds(Number(e.target.value))}
+                      style={{ width: "100%", accentColor: "var(--primary)", cursor: "pointer" }}
+                    />
+                  </div>
+                )}
               </div>
+
+              {editTimerMode === "custom" && (
+                <div>
+                  <label style={s.label}>Redirect Message</label>
+                  <input
+                    type="text"
+                    value={editCuteMessage}
+                    onChange={(e) => setEditCuteMessage(e.target.value)}
+                    style={s.input}
+                  />
+                </div>
+              )}
 
               <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end", paddingTop: "8px" }}>
                 <button type="button" onClick={() => setEditingItem(null)} style={s.btnSecondary}>

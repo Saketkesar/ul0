@@ -41,7 +41,7 @@ export async function PATCH(request: NextRequest, { params }: Context) {
     }
 
     const body = await request.json().catch(() => ({}))
-    const { long_url, title, cute_message, qr_design } = body
+    const { long_url, title, cute_message, qr_design, redirect_timer } = body
 
     if (!long_url || typeof long_url !== "string") {
       return NextResponse.json({ error: "New destination URL is required." }, { status: 400 })
@@ -68,6 +68,7 @@ export async function PATCH(request: NextRequest, { params }: Context) {
       title: title !== undefined ? String(title).trim() : existingTargeting.title || link.meta_title,
       cute_message: cute_message !== undefined ? String(cute_message).trim() : existingTargeting.cute_message,
       qr_design: qr_design !== undefined ? qr_design : existingTargeting.qr_design,
+      redirect_timer: redirect_timer !== undefined && typeof redirect_timer === "number" ? Math.max(0, Math.min(10, redirect_timer)) : (existingTargeting.redirect_timer ?? 0),
       updated_at: new Date().toISOString(),
     }
 

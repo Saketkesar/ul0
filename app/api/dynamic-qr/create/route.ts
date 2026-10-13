@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json().catch(() => ({}))
-    const { long_url, title, custom_slug, cute_message, qr_design } = body
+    const { long_url, title, custom_slug, cute_message, qr_design, redirect_timer } = body
 
     if (!long_url || typeof long_url !== "string") {
       return NextResponse.json({ error: "Destination URL is required." }, { status: 400 })
@@ -88,10 +88,13 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    const timerSeconds = typeof redirect_timer === "number" ? Math.max(0, Math.min(10, redirect_timer)) : 0
+
     const targetingData = {
       is_dynamic_qr: true,
       title: (title || "").trim() || "Dynamic QR Link",
-      cute_message: (cute_message || "").trim() || "You are being redirected, please wait 6 sec...",
+      cute_message: (cute_message || "").trim() || (timerSeconds > 0 ? `You are being redirected, please wait ${timerSeconds} sec...` : "Redirecting immediately..."),
+      redirect_timer: timerSeconds,
       qr_design: cleanQrDesign,
     }
 
