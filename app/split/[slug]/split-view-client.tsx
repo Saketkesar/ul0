@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useRef, useState, useEffect, useMemo, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { 
@@ -9,14 +9,21 @@ import {
   QrCode, 
   Clock, 
   Users, 
-  Receipt,
-  ExternalLink,
-  Copy,
-  Check,
-  Calendar,
-  Wallet,
-  Smartphone,
-  CreditCard
+  Receipt, 
+  ExternalLink, 
+  Copy, 
+  Check, 
+  Calendar, 
+  Wallet, 
+  Smartphone, 
+  CreditCard,
+  Share2,
+  CheckCircle2,
+  Hourglass,
+  ArrowUpRight,
+  ArrowDownLeft,
+  RefreshCw,
+  Sparkles
 } from "lucide-react"
 import QRCode from "qrcode"
 import html2canvas from "html2canvas"
@@ -24,14 +31,13 @@ import { jsPDF } from "jspdf"
 import { 
   SiPaypal, 
   SiCashapp, 
-  SiRevolut,
-  SiWise,
-  SiPaytm,
-  SiGooglepay
+  SiRevolut, 
+  SiWise, 
+  SiPaytm, 
+  SiGooglepay 
 } from "react-icons/si"
 import { FaMoneyBillTransfer } from "react-icons/fa6"
 import { BsBank2 } from "react-icons/bs"
-import { AdBanner } from "@/components/ad-banner"
 
 // Payment methods configuration
 const PAYMENT_METHODS = {
@@ -50,7 +56,6 @@ const PAYMENT_METHODS = {
 
 type PaymentMethod = keyof typeof PAYMENT_METHODS
 
-// Payment method icons component
 const PaymentIcon = ({ method, className = "h-4 w-4" }: { method: PaymentMethod; className?: string }) => {
   switch (method) {
     case 'upi':
@@ -85,7 +90,7 @@ interface Member {
   name: string
   paymentMethod?: PaymentMethod
   paymentId?: string
-  upiId?: string // Legacy support
+  upiId?: string
 }
 
 interface Expense {
@@ -102,6 +107,8 @@ interface Settlement {
   from: string
   to: string
   amount: number
+  paid?: boolean
+  paid_at?: string | null
 }
 
 interface SplitSession {
@@ -122,15 +129,44 @@ interface Props {
   slug: string
 }
 
-export function SplitViewClient({ session, slug }: Props) {
+// Avatar color generator for Splitwise look
+const AVATAR_BG_COLORS = [
+  "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+  "bg-blue-500/15 text-blue-600 dark:text-blue-400 border-blue-500/20",
+  "bg-amber-500/15 text-amber-600 dark:text-amber-400 border-amber-500/20",
+  "bg-purple-500/15 text-purple-600 dark:text-purple-400 border-purple-500/20",
+  "bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/20",
+  "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400 border-cyan-500/20",
+]
+
+function getAvatarColor(name: string) {
+  let hash = 0
+  for (let i = 0; i < name.length; i++) {
+    hash = name.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  return AVATAR_BG_COLORS[Math.abs(hash) % AVATAR_BG_COLORS.length]
+}
+
+function getInitials(name: string) {
+  const parts = name.trim().split(" ")
+  if (parts.length >= 2) {
+    return `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+  }
+  return name.slice(0, 2).toUpperCase()
+}
+
+export function SplitViewClient({ session: initialSession, slug }: Props) {
   const contentRef = useRef<HTMLDivElement>(null)
+  const [session, setSession] = useState<SplitSession>(initialSession)
+  const [settlements, setSettlements] = useState<Settlement[]>(initialSession.settlements || [])
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [copiedShareLink, setCopiedShareLink] = useState<boolean>(false)
   const [qrCodes, setQrCodes] = useState<Record<string, string>>({})
+  const [activeQrIndex, setActiveQrIndex] = useState<number | null>(null)
+  const [updatingIdx, setUpdatingIdx] = useState<number | null>(null)
 
   const getMemberName = (id: string) => session.members.find(m => m.id === id)?.name || "Unknown"
   const getMember = (id: string) => session.members.find(m => m.id === id)
-  
-  // Get payment ID - support both old (upiId) and new (paymentId) formats
   const getPaymentId = (member: Member) => member.paymentId || member.upiId || ""
   const getPaymentMethod = (member: Member): PaymentMethod => member.paymentMethod || "upi"
 
@@ -138,11 +174,117 @@ export function SplitViewClient({ session, slug }: Props) {
   const hoursLeft = Math.max(0, Math.floor((expiresAt.getTime() - Date.now()) / (1000 * 60 * 60)))
   const minutesLeft = Math.max(0, Math.floor(((expiresAt.getTime() - Date.now()) % (1000 * 60 * 60)) / (1000 * 60)))
 
-  // Generate payment link based on payment method
+  // Calculate Net Balances per Member (Splitwise style)
+  const memberBalances = useMemo(() => {
+    const balances: Record<string, { totalPaid: number; totalShare: number; net: number }> = {}
+
+    session.members.forEach((m) => {
+      balances[m.id] = { totalPaid: 0, totalShare: 0, net: 0 }
+    })
+
+    session.expenses.forEach((exp) => {
+      if (balances[exp.paidBy]) {
+        balances[exp.paidBy].totalPaid += exp.amount
+      }
+
+      if (exp.splits && exp.splits.length > 0) {
+        exp.splits.forEach((sp) => {
+          if (balances[sp.memberId]) {
+            balances[sp.memberId].totalShare += sp.amount
+          }
+        })
+      } else {
+        // Equal split fallback
+        const splitAmount = exp.amount / (session.members.length || 1)
+        session.members.forEach((m) => {
+          if (balances[m.id]) {
+            balances[m.id].totalShare += splitAmount
+          }
+        })
+      }
+    })
+
+    Object.keys(balances).forEach((id) => {
+      balances[id].net = balances[id].totalPaid - balances[id].totalShare
+    })
+
+    return balances
+  }, [session.members, session.expenses])
+
+  // Settlement Progress Calculation
+  const totalSettlementAmount = useMemo(() => {
+    return settlements.reduce((sum, s) => sum + s.amount, 0)
+  }, [settlements])
+
+  const settledAmount = useMemo(() => {
+    return settlements.reduce((sum, s) => sum + (s.paid ? s.amount : 0), 0)
+  }, [settlements])
+
+  const progressPercent = useMemo(() => {
+    if (totalSettlementAmount === 0) return 100
+    return Math.min(100, Math.round((settledAmount / totalSettlementAmount) * 100))
+  }, [settledAmount, totalSettlementAmount])
+
+  const isAllSettled = progressPercent === 100
+
+  // Polling to keep both parties in sync in real-time
+  const refreshSession = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/split/${slug}`)
+      if (!res.ok) return
+      const data = await res.json()
+      if (data.session) {
+        setSession(data.session)
+        if (data.session.settlements) {
+          setSettlements(data.session.settlements)
+        }
+      }
+    } catch {}
+  }, [slug])
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (typeof document !== "undefined" && !document.hidden) {
+        refreshSession()
+      }
+    }, 8000)
+    return () => clearInterval(interval)
+  }, [refreshSession])
+
+  // Toggle Settlement Paid status
+  const handleTogglePaid = async (index: number) => {
+    const current = settlements[index]
+    const nextPaid = !current.paid
+
+    // Optimistic update
+    const updated = settlements.map((s, i) => (i === index ? { ...s, paid: nextPaid, paid_at: nextPaid ? new Date().toISOString() : null } : s))
+    setSettlements(updated)
+    setUpdatingIdx(index)
+
+    try {
+      const res = await fetch(`/api/split/${slug}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ settlementIndex: index, paid: nextPaid }),
+      })
+      if (!res.ok) throw new Error("Failed to update status")
+      const data = await res.json()
+      if (data.session?.settlements) {
+        setSettlements(data.session.settlements)
+      }
+    } catch {
+      // Revert on error
+      setSettlements(settlements)
+    } finally {
+      setUpdatingIdx(null)
+    }
+  }
+
+  // Payment Link generator
   const getPaymentLink = (member: Member, amount: number): string => {
     const paymentId = getPaymentId(member)
     const method = getPaymentMethod(member)
-    const note = encodeURIComponent(`${session.title} - Split payment`)
+    const note = encodeURIComponent(`${session.title} - Split`)
     
     switch (method) {
       case 'upi':
@@ -164,43 +306,42 @@ export function SplitViewClient({ session, slug }: Props) {
     }
   }
 
-  // Legacy UPI link for backward compatibility
-  const getUPILink = (upiId: string, name: string, amount: number) => {
-    const note = encodeURIComponent(`${session.title} - Split payment`)
-    return `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${amount.toFixed(2)}&tn=${note}`
-  }
+  const toggleQR = async (settlement: Settlement, idx: number) => {
+    if (activeQrIndex === idx) {
+      setActiveQrIndex(null)
+      return
+    }
 
-  const generateQR = async (settlement: Settlement, idx: number) => {
     const toMember = session.members.find(m => m.id === settlement.to)
     if (!toMember) return
     const paymentMethod = getPaymentMethod(toMember)
     const paymentId = getPaymentId(toMember)
 
-    // For UPI, prefer server-generated PNG for better compatibility
-    if (paymentMethod === 'upi' && paymentId) {
-      try {
-        const params = new URLSearchParams({ upi: paymentId, name: toMember.name || '', amount: settlement.amount.toFixed(2) })
-        const resp = await fetch(`/api/upi/qr?${params.toString()}`)
-        if (!resp.ok) throw new Error('QR fetch failed')
-        const blob = await resp.blob()
-        const url = URL.createObjectURL(blob)
-        setQrCodes(prev => ({ ...prev, [idx.toString()]: url }))
-        return
-      } catch (err) {
-        console.error('Server QR generation failed, falling back to client QR:', err)
-        // fallthrough to client QR generation
+    if (!qrCodes[idx.toString()]) {
+      if (paymentMethod === 'upi' && paymentId) {
+        try {
+          const params = new URLSearchParams({ upi: paymentId, name: toMember.name || '', amount: settlement.amount.toFixed(2) })
+          const resp = await fetch(`/api/upi/qr?${params.toString()}`)
+          if (resp.ok) {
+            const blob = await resp.blob()
+            const url = URL.createObjectURL(blob)
+            setQrCodes(prev => ({ ...prev, [idx.toString()]: url }))
+            setActiveQrIndex(idx)
+            return
+          }
+        } catch {}
+      }
+
+      const paymentLink = getPaymentLink(toMember, settlement.amount)
+      if (paymentLink) {
+        try {
+          const qrDataUrl = await QRCode.toDataURL(paymentLink, { width: 220, margin: 2 })
+          setQrCodes(prev => ({ ...prev, [idx.toString()]: qrDataUrl }))
+        } catch {}
       }
     }
 
-    const paymentLink = getPaymentLink(toMember, settlement.amount)
-    if (!paymentLink) return
-
-    try {
-      const qrDataUrl = await QRCode.toDataURL(paymentLink, { width: 200, margin: 2 })
-      setQrCodes(prev => ({ ...prev, [idx.toString()]: qrDataUrl }))
-    } catch (err) {
-      console.error("QR generation failed:", err)
-    }
+    setActiveQrIndex(idx)
   }
 
   const copyPaymentId = async (paymentId: string) => {
@@ -209,13 +350,17 @@ export function SplitViewClient({ session, slug }: Props) {
     setTimeout(() => setCopiedId(null), 2000)
   }
 
+  const copyShareLink = async () => {
+    const url = typeof window !== "undefined" ? window.location.href : `https://ul0.site/split/${slug}`
+    await navigator.clipboard.writeText(url)
+    setCopiedShareLink(true)
+    setTimeout(() => setCopiedShareLink(false), 2000)
+  }
+
   const downloadPDF = async () => {
     if (!contentRef.current) return
-    
     try {
       const element = contentRef.current
-      
-      // Create canvas from HTML element  
       const canvas = await (html2canvas as Function)(element, {
         useCORS: true,
         allowTaint: true,
@@ -223,351 +368,409 @@ export function SplitViewClient({ session, slug }: Props) {
         windowWidth: element.scrollWidth,
         windowHeight: element.scrollHeight
       })
-      
       const imgData = canvas.toDataURL('image/png')
-      
-      // Calculate dimensions
-      const imgWidth = 210 // A4 width in mm
-      const pageHeight = 297 // A4 height in mm
+      const imgWidth = 210
+      const pageHeight = 297
       const imgHeight = (canvas.height * imgWidth) / canvas.width
-      
       const pdf = new jsPDF('p', 'mm', 'a4')
       let heightLeft = imgHeight
       let position = 0
-      
-      // Add first page
+
       pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
       heightLeft -= pageHeight
-      
-      // Add more pages if needed
+
       while (heightLeft > 0) {
         position = heightLeft - imgHeight
         pdf.addPage()
         pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight)
         heightLeft -= pageHeight
       }
-      
-      pdf.save(`${session.title.replace(/\s+/g, "-")}-split.pdf`)
-    } catch (error) {
-      console.error("PDF generation failed:", error)
-      // Fallback: open print dialog
+      pdf.save(`${session.title.replace(/\s+/g, "-")}-receipt.pdf`)
+    } catch {
       window.print()
     }
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Top Ad Banner - Large */}
-      <AdBanner slot={1} type="large" />
-
-      {/* Header */}
-      <header className="border-b border-border bg-card px-4 py-3">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center">
-            <img
-              src="/ul0.png"
-              alt="ul0 logo"
-              className="h-7 w-auto object-contain"
-            />
+    <div className="min-h-screen bg-[var(--background)] text-[var(--foreground)] py-6 sm:py-10 px-4 selection:bg-emerald-500/20">
+      <div className="max-w-2xl mx-auto space-y-6">
+        
+        {/* Top Header Bar */}
+        <div className="flex items-center justify-between gap-3 text-xs text-[var(--muted-foreground)]">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-[var(--foreground)] tracking-tight">ul0 split</span>
+            <span>·</span>
+            <span className="font-mono">{session.members.length} members</span>
           </div>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Clock className="h-4 w-4" />
-            <span>Expires in {hoursLeft}h {minutesLeft}m</span>
+
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 font-mono text-[11px] bg-[var(--surface-3)] px-2.5 py-1 rounded-full border border-[var(--border)]">
+              <Clock className="w-3.5 h-3.5 text-amber-500" />
+              <span>{hoursLeft}h {minutesLeft}m left</span>
+            </div>
+
+            <button
+              type="button"
+              onClick={copyShareLink}
+              className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-[var(--surface-3)] hover:bg-[var(--surface-2)] border border-[var(--border)] text-[var(--foreground)] transition-colors cursor-pointer"
+              title="Copy bill link"
+            >
+              {copiedShareLink ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Share2 className="w-3.5 h-3.5" />}
+              <span>{copiedShareLink ? "Copied" : "Share"}</span>
+            </button>
           </div>
         </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
-        <div className="mx-auto max-w-2xl">
-          {/* Small Ad Banner */}
-          <AdBanner slot={2} type="small" />
-          {/* PDF Content Area */}
-          <div ref={contentRef} className="space-y-4">
-            {/* Title Card */}
-            <Card>
-              <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">
+        {/* Content Container (PDF printable) */}
+        <div ref={contentRef} className="space-y-6">
+
+          {/* 1. Main Bill Header Card */}
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-6 sm:p-8 space-y-5 shadow-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <span className="text-[11px] font-mono font-semibold uppercase tracking-wider text-emerald-500 bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/20">
+                  Shared Bill
+                </span>
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--foreground)] mt-2">
                   {session.title}
-                </CardTitle>
-                <CardDescription className="flex flex-wrap gap-3 text-sm">
-                  <span className="flex items-center gap-1">
-                    <Wallet className="h-4 w-4" />
-                    ₹{session.total_amount.toFixed(2)} total
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Users className="h-4 w-4" />
-                    {session.members.length} people
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <Receipt className="h-4 w-4" />
-                    {session.expenses.length} expenses
-                  </span>
-                </CardDescription>
-              </CardHeader>
-            </Card>
+                </h1>
+                <p className="text-xs text-[var(--muted-foreground)] mt-1">
+                  Created {session.created_at ? new Date(session.created_at).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) : "recently"}
+                </p>
+              </div>
 
-            {/* Members */}
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Users className="h-5 w-5 text-primary" />
-                  Members
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {session.members.map(member => (
-                    <div key={member.id} className="flex items-center justify-between rounded-lg bg-muted/20 p-3">
-                      <div>
-                        <p className="font-medium text-sm">{member.name}</p>
-                        <p className="text-xs text-muted-foreground">{getPaymentId(member)}</p>
-                      </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => copyPaymentId(getPaymentId(member))}
-                      >
-                        {copiedId === getPaymentId(member) ? (
-                          <Check className="h-4 w-4 text-green-500" />
-                        ) : (
-                          <Copy className="h-4 w-4" />
-                        )}
-                      </Button>
-                    </div>
-                  ))}
+              <div className="sm:text-right">
+                <span className="text-[11px] font-mono text-[var(--muted-foreground)] block uppercase">Total Bill</span>
+                <span className="text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--foreground)]">
+                  ₹{session.total_amount.toFixed(2)}
+                </span>
+              </div>
+            </div>
+
+            {/* Live Settlement Progress Bar (Splitkaro / Splitwise inspired 100% tracker) */}
+            <div className="pt-2 border-t border-[var(--border)] space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5 font-medium">
+                  {isAllSettled ? (
+                    <span className="text-emerald-500 flex items-center gap-1 font-semibold">
+                      <CheckCircle2 className="w-4 h-4" />
+                      100% Settled Up
+                    </span>
+                  ) : (
+                    <span>
+                      ₹{settledAmount.toFixed(0)} of ₹{totalSettlementAmount.toFixed(0)} settled
+                    </span>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
+                <span className="font-mono font-bold text-xs" style={{ color: isAllSettled ? "#10b981" : "inherit" }}>
+                  {progressPercent}%
+                </span>
+              </div>
 
-            {/* Expenses - Grouped by Date */}
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Receipt className="h-5 w-5 text-primary" />
-                  Expenses
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {(() => {
-                  // Group expenses by date
-                  const groupedExpenses: Record<string, typeof session.expenses> = {}
-                  
-                  session.expenses.forEach(exp => {
-                    const dateKey = exp.date || 'No Date'
-                    if (!groupedExpenses[dateKey]) {
-                      groupedExpenses[dateKey] = []
-                    }
-                    groupedExpenses[dateKey].push(exp)
-                  })
+              {/* Progress Track */}
+              <div className="w-full h-2.5 rounded-full bg-[var(--surface-3)] overflow-hidden p-0.5 border border-[var(--border)]">
+                <div
+                  className="h-full rounded-full transition-all duration-500 ease-out"
+                  style={{
+                    width: `${progressPercent}%`,
+                    background: isAllSettled ? "#10b981" : "linear-gradient(90deg, #1FA087 0%, #10b981 100%)",
+                  }}
+                />
+              </div>
 
-                  // Sort dates (oldest first - chronological order)
-                  const sortedDates = Object.keys(groupedExpenses).sort((a, b) => {
-                    if (a === 'No Date') return 1
-                    if (b === 'No Date') return -1
-                    return new Date(a).getTime() - new Date(b).getTime()
-                  })
-
-                  return sortedDates.map(dateKey => {
-                    const dateExpenses = groupedExpenses[dateKey]
-                    const dateTotal = dateExpenses.reduce((sum, e) => sum + e.amount, 0)
-                    const formattedDate = dateKey === 'No Date' 
-                      ? 'No Date' 
-                      : new Date(dateKey).toLocaleDateString('en-IN', { 
-                          weekday: 'short',
-                          day: 'numeric', 
-                          month: 'short', 
-                          year: 'numeric' 
-                        })
-
-                    return (
-                      <div key={dateKey} className="space-y-2">
-                        {/* Date Header */}
-                        <div className="flex items-center justify-between bg-muted/40 rounded-lg px-3 py-2">
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 text-primary" />
-                            <span className="font-medium text-sm">{formattedDate}</span>
-                          </div>
-                          <span className="text-sm text-muted-foreground">₹{dateTotal.toFixed(2)}</span>
-                        </div>
-                        
-                        {/* Expenses for this date */}
-                        <div className="space-y-1 pl-2 border-l-2 border-muted ml-2">
-                          {dateExpenses.map((exp) => (
-                            <div key={exp.id} className="flex items-center justify-between rounded-lg bg-muted/20 p-3">
-                              <div className="flex-1">
-                                <p className="font-medium text-sm">{exp.title}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  Paid by {getMemberName(exp.paidBy)}
-                                </p>
-                              </div>
-                              <span className="font-semibold">₹{exp.amount.toFixed(2)}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )
-                  })
-                })()}
-                
-                <div className="flex items-center justify-between rounded-lg bg-primary/10 p-3 mt-3">
-                  <span className="font-medium">Total</span>
-                  <span className="font-bold text-lg text-primary">₹{session.total_amount.toFixed(2)}</span>
+              {isAllSettled && (
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-xs font-semibold flex items-center justify-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>All payments have been settled between everyone!</span>
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Settlements */}
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <ArrowRight className="h-5 w-5 text-primary" />
-                  Who Owes Who
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {session.settlements.length === 0 ? (
-                  <div className="rounded-lg bg-green-500/10 p-4 text-center text-sm text-green-600">
-                    Everyone is settled up! 🎉
-                  </div>
-                ) : (
-                  session.settlements.map((settlement, idx) => {
-                    const toMember = getMember(settlement.to)
-                    const paymentLink = toMember ? getPaymentLink(toMember, settlement.amount) : ""
-                    const paymentId = toMember ? getPaymentId(toMember) : ""
-                    const paymentMethod = toMember ? getPaymentMethod(toMember) : "upi"
-                    const methodInfo = PAYMENT_METHODS[paymentMethod]
-
-                    return (
-                      <div key={idx} className="rounded-lg border border-border bg-muted/20 p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium">{getMemberName(settlement.from)}</span>
-                            <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                            <span className="font-medium">{getMemberName(settlement.to)}</span>
-                          </div>
-                          <span className="font-bold text-lg text-primary">{settlement.amount.toFixed(2)}</span>
-                        </div>
-
-                        {/* Payment method info */}
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span className="font-mono bg-muted px-1.5 py-0.5 rounded text-xs flex items-center gap-1">
-                            <PaymentIcon method={paymentMethod} className="h-3 w-3" />
-                            {methodInfo.name}
-                          </span>
-                          <span className="truncate">{paymentId}</span>
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-2">
-                          {/* Pay Button - only show if payment link is available */}
-                          {paymentLink && (
-                            <Button asChild size="sm" className="gap-1">
-                              <a href={paymentLink} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-3 w-3" />
-                                Pay Now
-                              </a>
-                            </Button>
-                          )}
-                          
-                          {/* QR Code Button - only for methods that support deep links */}
-                          {paymentLink && (
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              className="gap-1"
-                              onClick={() => generateQR(settlement, idx)}
-                            >
-                              <QrCode className="h-3 w-3" />
-                              Show QR
-                            </Button>
-                          )}
-                          
-                          {/* Copy Payment ID */}
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="gap-1"
-                            onClick={() => copyPaymentId(paymentId)}
-                          >
-                            {copiedId === paymentId ? (
-                              <Check className="h-3 w-3 text-green-500" />
-                            ) : (
-                              <Copy className="h-3 w-3" />
-                            )}
-                            Copy {methodInfo.name} ID
-                          </Button>
-                        </div>
-
-                        {/* QR Code Display */}
-                        {qrCodes[idx.toString()] && (
-                          <div className="flex justify-center pt-2">
-                            <div className="rounded-lg bg-white p-2">
-                              <img 
-                                src={qrCodes[idx.toString()]} 
-                                alt="Payment QR Code" 
-                                className="h-40 w-40"
-                              />
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )
-                  })
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Powered By - for PDF */}
-            <div className="flex items-center justify-center gap-2 py-4">
-              <span className="text-sm text-muted-foreground">Powered by</span>
-              <img
-                src="/ul0.png"
-                alt="ul0"
-                className="h-6 w-auto object-contain"
-              />
+              )}
             </div>
           </div>
 
-          {/* Download PDF Button */}
-          <div className="mt-6 space-y-4">
-            <Button 
-              onClick={downloadPDF} 
-              className="w-full gap-2"
-              size="lg"
-            >
-              <Download className="h-4 w-4" />
-              Download as PDF
-            </Button>
+          {/* 2. Who Owes Who (Core Settlement Action Cards) */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between px-1">
+              <h2 className="text-sm font-bold tracking-tight text-[var(--foreground)] uppercase font-mono text-xs">
+                Settlements ({settlements.length})
+              </h2>
+              <span className="text-[11px] text-[var(--muted-foreground)]">
+                Mark as paid once transferred
+              </span>
+            </div>
 
-            <Button 
-              variant="outline" 
-              className="w-full gap-2 bg-transparent"
-              asChild
-            >
-              <a href="/split">
-                <ExternalLink className="h-4 w-4" />
-                Create Your Own Split
-              </a>
-            </Button>
+            {settlements.length === 0 ? (
+              <div className="p-6 rounded-xl border border-[var(--border)] bg-[var(--card)] text-center text-xs text-[var(--muted-foreground)]">
+                Everyone is completely even! No settlements required.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {settlements.map((settlement, idx) => {
+                  const fromMember = getMember(settlement.from)
+                  const toMember = getMember(settlement.to)
+                  const fromName = fromMember?.name || "Member"
+                  const toName = toMember?.name || "Member"
+                  const isPaid = Boolean(settlement.paid)
+                  const paymentLink = toMember ? getPaymentLink(toMember, settlement.amount) : ""
+                  const paymentId = toMember ? getPaymentId(toMember) : ""
+                  const paymentMethod = toMember ? getPaymentMethod(toMember) : "upi"
+                  const isQrOpen = activeQrIndex === idx
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`rounded-2xl border transition-all duration-200 p-4 sm:p-5 ${
+                        isPaid
+                          ? "bg-emerald-500/[0.04] border-emerald-500/30"
+                          : "bg-[var(--card)] border-[var(--border)] hover:border-[var(--muted-foreground)]/30"
+                      }`}
+                    >
+                      {/* Top Row: Flow and Amount */}
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        {/* Member Avatars and Arrow */}
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold border ${getAvatarColor(fromName)}`}>
+                            {getInitials(fromName)}
+                          </div>
+
+                          <div className="flex flex-col">
+                            <span className="text-xs text-[var(--muted-foreground)] font-mono">owes</span>
+                            <span className="text-sm font-bold text-[var(--foreground)]">{fromName}</span>
+                          </div>
+
+                          <div className="flex items-center px-1 text-[var(--muted-foreground)] opacity-50">
+                            <ArrowRight className="w-4 h-4" />
+                          </div>
+
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold border ${getAvatarColor(toName)}`}>
+                            {getInitials(toName)}
+                          </div>
+
+                          <div className="flex flex-col">
+                            <span className="text-xs text-[var(--muted-foreground)] font-mono">receives</span>
+                            <span className="text-sm font-bold text-[var(--foreground)]">{toName}</span>
+                          </div>
+                        </div>
+
+                        {/* Amount & Status Badge */}
+                        <div className="flex items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-none border-[var(--border)]">
+                          <div className="text-right">
+                            <span className="text-xl sm:text-2xl font-extrabold text-[var(--foreground)] block">
+                              ₹{settlement.amount.toFixed(2)}
+                            </span>
+                            <span className="text-[10px] text-[var(--muted-foreground)] font-mono">
+                              {paymentId ? `${PAYMENT_METHODS[paymentMethod]?.name}: ${paymentId}` : "Direct settlement"}
+                            </span>
+                          </div>
+
+                          <div className="flex-shrink-0">
+                            {isPaid ? (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                                <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                                <span>Paid</span>
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                                <Hourglass className="w-3.5 h-3.5" />
+                                <span>Pending</span>
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons Row */}
+                      <div className="mt-4 pt-3 border-t border-[var(--border)] flex flex-wrap items-center justify-between gap-2 text-xs">
+                        {/* Left: Pay buttons (only if not yet paid) */}
+                        <div className="flex flex-wrap items-center gap-2">
+                          {!isPaid && paymentLink && (
+                            <a
+                              href={paymentLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-all shadow-xs cursor-pointer"
+                            >
+                              <PaymentIcon method={paymentMethod} className="w-3.5 h-3.5" />
+                              <span>Pay ₹{settlement.amount.toFixed(0)}</span>
+                              <ExternalLink className="w-3 h-3 opacity-70" />
+                            </a>
+                          )}
+
+                          {!isPaid && (paymentLink || paymentId) && (
+                            <button
+                              type="button"
+                              onClick={() => toggleQR(settlement, idx)}
+                              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface-3)] hover:bg-[var(--surface-2)] text-[var(--foreground)] font-medium transition-colors cursor-pointer"
+                            >
+                              <QrCode className="w-3.5 h-3.5" />
+                              <span>{isQrOpen ? "Hide QR" : "Show QR"}</span>
+                            </button>
+                          )}
+
+                          {paymentId && (
+                            <button
+                              type="button"
+                              onClick={() => copyPaymentId(paymentId)}
+                              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[var(--border)] bg-[var(--surface-3)] hover:bg-[var(--surface-2)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors cursor-pointer"
+                              title="Copy ID"
+                            >
+                              {copiedId === paymentId ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+                              <span>{copiedId === paymentId ? "Copied" : "Copy ID"}</span>
+                            </button>
+                          )}
+                        </div>
+
+                        {/* Right: Mark as Paid toggle */}
+                        <button
+                          type="button"
+                          disabled={updatingIdx === idx}
+                          onClick={() => handleTogglePaid(idx)}
+                          className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                            isPaid
+                              ? "border border-[var(--border)] bg-[var(--surface-3)] text-[var(--muted-foreground)] hover:text-rose-500 hover:border-rose-500/30"
+                              : "bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 shadow-xs"
+                          }`}
+                        >
+                          {updatingIdx === idx ? (
+                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          ) : isPaid ? (
+                            <span>Undo (Mark Pending)</span>
+                          ) : (
+                            <>
+                              <Check className="w-3.5 h-3.5" />
+                              <span>Mark as Paid</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Expandable QR Code Drawer */}
+                      {isQrOpen && qrCodes[idx.toString()] && (
+                        <div className="mt-4 pt-4 border-t border-[var(--border)] flex flex-col items-center justify-center p-4 bg-white rounded-xl">
+                          <img
+                            src={qrCodes[idx.toString()]}
+                            alt="Payment QR"
+                            className="w-44 h-44 object-contain"
+                          />
+                          <p className="text-[11px] text-zinc-600 font-mono mt-2 text-center">
+                            Scan with GPay, PhonePe, Paytm or BHIM to pay <strong>₹{settlement.amount.toFixed(2)}</strong> to {toName}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
-          {/* Bottom Ad Banners */}
-          <div className="mt-6 space-y-4">
-            <AdBanner slot={3} type="large" />
-            <AdBanner slot={4} type="small" />
+          {/* 3. Member Balances (Splitkaro/Splitwise net breakdown) */}
+          <div className="space-y-3">
+            <h2 className="text-sm font-bold tracking-tight text-[var(--foreground)] uppercase font-mono text-xs px-1">
+              Member Breakdown ({session.members.length})
+            </h2>
+
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] divide-y divide-[var(--border)] overflow-hidden">
+              {session.members.map((member) => {
+                const bal = memberBalances[member.id] || { totalPaid: 0, totalShare: 0, net: 0 }
+                const isPositive = bal.net > 0.01
+                const isNegative = bal.net < -0.01
+
+                return (
+                  <div key={member.id} className="p-4 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold border ${getAvatarColor(member.name)}`}>
+                        {getInitials(member.name)}
+                      </div>
+                      <div>
+                        <div className="text-sm font-semibold text-[var(--foreground)]">{member.name}</div>
+                        <div className="text-xs text-[var(--muted-foreground)] font-mono">
+                          Paid ₹{bal.totalPaid.toFixed(2)} · Share ₹{bal.totalShare.toFixed(2)}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="text-right">
+                      {isPositive ? (
+                        <span className="inline-flex items-center gap-1 text-xs font-bold font-mono text-emerald-500 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                          <ArrowDownLeft className="w-3 h-3" />
+                          <span>Gets +₹{bal.net.toFixed(2)}</span>
+                        </span>
+                      ) : isNegative ? (
+                        <span className="inline-flex items-center gap-1 text-xs font-bold font-mono text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
+                          <ArrowUpRight className="w-3 h-3" />
+                          <span>Owes -₹{Math.abs(bal.net).toFixed(2)}</span>
+                        </span>
+                      ) : (
+                        <span className="text-xs font-mono text-[var(--muted-foreground)] bg-[var(--surface-3)] px-2.5 py-1 rounded-full">
+                          Settled
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          {/* 4. Itemized Expenses List */}
+          <div className="space-y-3">
+            <h2 className="text-sm font-bold tracking-tight text-[var(--foreground)] uppercase font-mono text-xs px-1">
+              Expenses ({session.expenses.length})
+            </h2>
+
+            <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] divide-y divide-[var(--border)] overflow-hidden">
+              {session.expenses.map((exp) => (
+                <div key={exp.id} className="p-4 flex items-center justify-between gap-3">
+                  <div>
+                    <div className="text-sm font-semibold text-[var(--foreground)]">{exp.title}</div>
+                    <div className="text-xs text-[var(--muted-foreground)] flex items-center gap-2 mt-0.5">
+                      <span>Paid by {getMemberName(exp.paidBy)}</span>
+                      {exp.date && (
+                        <>
+                          <span>·</span>
+                          <span className="font-mono">{new Date(exp.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="text-right font-extrabold text-base text-[var(--foreground)] font-mono">
+                    ₹{exp.amount.toFixed(2)}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* PDF Receipt Footer Branding */}
+          <div className="py-2 text-center text-xs text-[var(--muted-foreground)] opacity-60">
+            Split calculated and verified via ul0.site
           </div>
         </div>
-      </main>
 
-      {/* Footer */}
-      <footer className="border-t border-border bg-muted/30 px-4 py-4 mt-8">
-        <div className="container mx-auto text-center">
-          <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <span>Made with ❤️ by stablersleet</span>
-          </div>
+        {/* Action Controls */}
+        <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+          <Button
+            type="button"
+            onClick={downloadPDF}
+            className="w-full sm:w-1/2 h-11 rounded-xl gap-2 font-semibold bg-[var(--surface-3)] hover:bg-[var(--surface-2)] text-[var(--foreground)] border border-[var(--border)] cursor-pointer"
+          >
+            <Download className="w-4 h-4" />
+            <span>Download PDF Receipt</span>
+          </Button>
+
+          <Button
+            type="button"
+            asChild
+            className="w-full sm:w-1/2 h-11 rounded-xl gap-2 font-semibold bg-[var(--primary)] text-white hover:opacity-90 cursor-pointer"
+          >
+            <a href="/split">
+              <span>Create New Split</span>
+              <ArrowRight className="w-4 h-4" />
+            </a>
+          </Button>
         </div>
-      </footer>
+      </div>
     </div>
   )
 }
