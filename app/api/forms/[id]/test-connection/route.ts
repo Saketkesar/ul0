@@ -76,6 +76,7 @@ export async function POST(request: NextRequest, { params }: Context) {
         {
           ok: false,
           error: message,
+          message: message,
           code: res.error || "failed",
           missing: res.missing,
         },

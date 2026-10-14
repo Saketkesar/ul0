@@ -3,6 +3,7 @@ import { auth, currentUser } from "@clerk/nextjs/server"
 import { redirect, notFound } from "next/navigation"
 import { isUserAdmin } from "@/lib/marketing-auth"
 import { getFormDocById } from "@/lib/appwrite/forms"
+import { decryptSecret } from "@/lib/forms/crypto"
 import { FormBuilderClient } from "@/components/dashboard/form-builder-client"
 
 interface PageProps {
@@ -30,5 +31,12 @@ export default async function FormStudioPage({ params }: PageProps) {
     notFound()
   }
 
-  return <FormBuilderClient initialForm={form} userEmail={email} />
+  let secret = ""
+  if (form.script_secret_enc) {
+    try {
+      secret = decryptSecret(form.script_secret_enc)
+    } catch {}
+  }
+
+  return <FormBuilderClient initialForm={form} initialSecret={secret} userEmail={email} />
 }
