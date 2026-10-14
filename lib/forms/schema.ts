@@ -127,15 +127,17 @@ export function buildSubmissionSchema(fields: FormField[]) {
       case "email":
         s = z.string().email("Please enter a valid email address.")
         break
-      case "number":
+      case "number": {
+        let numSchema = z.number({ invalid_type_error: "Must be a number" })
+        if (f.min !== undefined) numSchema = numSchema.min(f.min)
+        if (f.max !== undefined) numSchema = numSchema.max(f.max)
         s = z.preprocess((val) => {
           if (val === "" || val === null || val === undefined) return undefined
           const num = Number(val)
           return isNaN(num) ? val : num
-        }, z.number({ invalid_type_error: "Must be a number" }))
-        if (f.min !== undefined) s = (s as z.ZodNumber).min(f.min)
-        if (f.max !== undefined) s = (s as z.ZodNumber).max(f.max)
+        }, numSchema)
         break
+      }
       case "url":
         s = z.string().url("Please enter a valid website URL.")
         break
