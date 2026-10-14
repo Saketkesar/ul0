@@ -42,6 +42,7 @@ import {
 
 interface FormBuilderClientProps {
   initialForm: FormDoc
+  initialSecret?: string
   userEmail: string | null
 }
 
@@ -55,7 +56,7 @@ const WIZARD_STEPS = [
   { id: 7, label: "Share", icon: Share2 },
 ]
 
-export function FormBuilderClient({ initialForm, userEmail }: FormBuilderClientProps) {
+export function FormBuilderClient({ initialForm, initialSecret, userEmail }: FormBuilderClientProps) {
   const router = useRouter()
   const [form, setForm] = useState<FormDoc>(initialForm)
   const [currentStep, setCurrentStep] = useState<number>(initialForm.step || 1)
@@ -83,7 +84,7 @@ export function FormBuilderClient({ initialForm, userEmail }: FormBuilderClientP
   const [permissions, setPermissions] = useState(
     form.permissions || { read: true, edit: false, delete: false }
   )
-  const [rawSecret, setRawSecret] = useState<string>("••••••••••••••••••••••••••••••••")
+  const [rawSecret, setRawSecret] = useState<string>(initialSecret || "")
   const [isRegeneratingSecret, setIsRegeneratingSecret] = useState(false)
   const [scriptCopied, setScriptCopied] = useState(false)
 
@@ -1042,7 +1043,7 @@ export function FormBuilderClient({ initialForm, userEmail }: FormBuilderClientP
                   <div className="font-semibold text-sm mb-1">
                     {testResult.ok ? "✓ Connection Verified!" : "Connection Failed"}
                   </div>
-                  <div>{testResult.message}</div>
+                  <div>{testResult.message || (testResult as any).error}</div>
                 </div>
               )}
             </div>
