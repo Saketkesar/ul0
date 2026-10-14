@@ -29,6 +29,7 @@ import {
   Sparkles,
   AlertTriangle,
   FolderOpen,
+  FileSpreadsheet,
 } from "lucide-react"
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
@@ -221,6 +222,7 @@ export function DashboardShell({
           {
             group: "Exclusive",
             items: [
+              { name: "Forms → Sheets", href: "/dashboard/forms", icon: FileSpreadsheet, badge: "Sheets" },
               { name: "Dynamic QR Studio", href: "/dashboard/qr-studio", icon: QrCode, badge: "No Ads" },
               { name: "Marketing Engine", href: "/dashboard/marketing", icon: ShieldCheck, badge: "Admin" },
               { name: "SEO & Radar", href: "/dashboard/seo", icon: BarChart3, badge: "Admin" },
