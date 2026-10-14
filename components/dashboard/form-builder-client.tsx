@@ -775,6 +775,14 @@ export function FormBuilderClient({ initialForm, userEmail }: FormBuilderClientP
               </p>
             </div>
 
+            <div className="p-3 bg-[var(--surface-3)] border border-[var(--border)] rounded-xl flex items-center justify-center">
+              <img
+                src="/ul0-forms-sheets-clear.webp"
+                alt="Form to Google Sheet diagram"
+                className="max-h-48 w-auto object-contain rounded-lg"
+              />
+            </div>
+
             <div className="p-4 bg-[var(--surface-3)] border border-[var(--border)] rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <div className="text-sm font-bold text-[var(--foreground)] flex items-center gap-2">

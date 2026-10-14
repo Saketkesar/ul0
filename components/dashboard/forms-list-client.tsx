@@ -95,11 +95,42 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
         </Link>
       </div>
 
+      {/* Architecture Banner */}
+      <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="space-y-1.5 max-w-md">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-xs font-bold uppercase tracking-wider text-[var(--foreground)] font-mono">
+              Privacy-First Architecture
+            </span>
+          </div>
+          <h2 className="text-sm sm:text-base font-bold text-[var(--foreground)]">
+            Answers write directly to your Google Sheet
+          </h2>
+          <p className="text-xs text-[var(--muted-foreground)] leading-relaxed">
+            Submissions made at <code className="font-mono text-[var(--foreground)]">ul0.site/e/[slug]</code> are encrypted and relayed straight to your own spreadsheet via Google Apps Script. Zero responses are stored in UL0's database.
+          </p>
+        </div>
+        <div className="w-full md:w-auto max-w-[320px] flex-shrink-0">
+          <img
+            src="/ul0-forms-sheets-clear.webp"
+            alt="UL0 Forms flow diagram"
+            className="w-full h-auto object-contain rounded-lg border border-[var(--border)] bg-white/5 p-2"
+          />
+        </div>
+      </div>
+
       {/* Forms List Table or Empty State */}
       {forms.length === 0 ? (
-        <div className="text-center py-20 px-4 rounded-xl border border-[var(--border)] bg-[var(--card)]">
-          <FileSpreadsheet className="w-10 h-10 mx-auto text-[var(--muted-foreground)] opacity-40 mb-3" />
-          <h3 className="text-base font-semibold text-[var(--foreground)] mb-1">
+        <div className="text-center py-14 px-6 rounded-xl border border-[var(--border)] bg-[var(--card)]">
+          <div className="max-w-sm mx-auto mb-5 p-2 rounded-xl bg-white/5 border border-[var(--border)]">
+            <img
+              src="/ul0-forms-sheets-clear.webp"
+              alt="UL0 Forms to Google Sheets"
+              className="w-full h-auto object-contain rounded-lg"
+            />
+          </div>
+          <h3 className="text-base font-bold text-[var(--foreground)] mb-1">
             No forms created yet
           </h3>
           <p className="text-xs text-[var(--muted-foreground)] max-w-sm mx-auto mb-5 leading-relaxed">
