@@ -3,8 +3,8 @@ import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
 import { Autotag } from "@/components/autotag"
+import { ConditionalAnalytics } from "@/components/conditional-analytics"
 import { hreflangAlternates } from "@/lib/i18n"
-import Script from "next/script"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -217,25 +217,7 @@ export default function RootLayout({
             {children}
           </div>
           <Autotag />
-          {/* Simple Analytics - Privacy-friendly cookieless analytics */}
-          <Script 
-            src="https://scripts.simpleanalyticscdn.com/latest.js"
-            strategy="afterInteractive"
-            data-collect-dnt="true"
-          />
-          <noscript>
-            <img 
-              src="https://queue.simpleanalyticscdn.com/noscript.gif?collect-dnt=true" 
-              alt="Simple Analytics Privacy-Friendly Visitor Tracking Pixel" 
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </noscript>
-          {/* Google AdSense - LazyOnload to prevent INP blocking */}
-          <Script 
-            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8018312015732327"
-            crossOrigin="anonymous"
-            strategy="lazyOnload"
-          />
+          <ConditionalAnalytics />
         </ClerkProvider>
       </body>
     </html>
