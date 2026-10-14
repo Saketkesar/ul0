@@ -1,4 +1,6 @@
-import "server-only"
+if (typeof window !== "undefined") {
+  throw new Error("lib/forms/client.ts is server-only and cannot be imported by client components.")
+}
 
 /**
  * Strict SSRF allowlist regex for Google Apps Script Web App endpoints.
