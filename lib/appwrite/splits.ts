@@ -117,3 +117,24 @@ export async function createSplitSession(
 
   return inflate(doc as unknown as SplitSessionDoc)
 }
+
+/**
+ * Update the settlements array for a split session (e.g. marking settlements as paid/unpaid).
+ */
+export async function updateSplitSettlements(
+  slug: string,
+  settlements: unknown[],
+): Promise<SplitSession | null> {
+  const { documents } = await db().listDocuments(DB, COL, [
+    Query.equal("slug", slug),
+    Query.limit(1),
+  ])
+
+  if (documents.length === 0) return null
+  const doc = documents[0] as unknown as SplitSessionDoc
+  const updatedDoc = await db().updateDocument(DB, COL, doc.$id, {
+    settlements_json: JSON.stringify(settlements),
+  })
+
+  return inflate(updatedDoc as unknown as SplitSessionDoc)
+}
