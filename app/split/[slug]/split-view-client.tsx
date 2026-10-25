@@ -397,11 +397,18 @@ export function SplitViewClient({ session: initialSession, slug }: Props) {
         
         {/* Top Header Bar */}
         <div className="flex items-center justify-between gap-3 text-xs text-[var(--muted-foreground)]">
-          <div className="flex items-center gap-2">
+          <a
+            href="/split"
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+            title="Create your own free bill split"
+          >
             <span className="font-semibold text-[var(--foreground)] tracking-tight">ul0 split</span>
+            <span className="hidden sm:inline-block text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-full font-mono font-medium">
+              Free • No App
+            </span>
             <span>·</span>
             <span className="font-mono">{session.members.length} members</span>
-          </div>
+          </a>
 
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1 font-mono text-[11px] bg-[var(--surface-3)] px-2.5 py-1 rounded-full border border-[var(--border)]">
@@ -769,6 +776,33 @@ export function SplitViewClient({ session: initialSession, slug }: Props) {
               <ArrowRight className="w-4 h-4" />
             </a>
           </Button>
+        </div>
+
+        {/* Viral Conversion Box — Turn every shared bill into new users */}
+        <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 text-center sm:text-left flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+          <div className="space-y-1">
+            <div className="flex items-center justify-center sm:justify-start gap-1.5 text-xs font-semibold text-primary uppercase tracking-wider font-mono">
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>Free Online Bill Splitter • No App Needed</span>
+            </div>
+            <h3 className="text-sm font-bold text-[var(--foreground)]">
+              Tired of Splitwise wait timers & daily limits?
+            </h3>
+            <p className="text-xs text-[var(--muted-foreground)] max-w-md">
+              Split dinners, trips, and flat expenses with friends instantly on the web. Zero signup, instant UPI QR codes, 100% free.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+            <Button
+              asChild
+              className="w-full sm:w-auto h-9 px-4 rounded-xl text-xs font-semibold bg-primary text-white hover:opacity-90 cursor-pointer"
+            >
+              <a href="/split">
+                <span>Try UL0 Split Free</span>
+                <ArrowRight className="w-3.5 h-3.5 ml-1" />
+              </a>
+            </Button>
+          </div>
         </div>
       </div>
     </div>

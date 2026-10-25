@@ -16,6 +16,8 @@ import {
   Facebook,
   Twitter,
   X as XIcon,
+  Sparkles,
+  ArrowRight,
 } from "lucide-react"
 import { AdBanner } from "@/components/ad-banner"
 
@@ -297,6 +299,49 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
           <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/20 px-4 py-3 rounded-xl border border-border/50 max-w-md w-full justify-center">
             <ExternalLink className="h-4 w-4 flex-shrink-0" />
             <span className="truncate">{longUrl}</span>
+          </div>
+
+          {/* Viral Conversion Card for Link Visitors */}
+          <div className="w-full max-w-md rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/10 via-background to-background p-4 text-left shadow-xs transition-all">
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>Created with UL0</span>
+              </div>
+              <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+                100% Free • No Signup
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed mb-3">
+              Shorten links with custom domains, generate dynamic QR codes, or split bills with friends in seconds.
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <a
+                href="https://ul0.site"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:opacity-90 px-3.5 py-1.5 rounded-lg transition-all"
+              >
+                <span>Create Free Link</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+              <a
+                href="https://ul0.site/split"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted px-3 py-1.5 rounded-lg transition-colors border border-border/50"
+              >
+                <span>Split a Bill</span>
+              </a>
+              <a
+                href="https://ul0.site/whatsapp"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted px-3 py-1.5 rounded-lg transition-colors border border-border/50"
+              >
+                <span>WhatsApp Link</span>
+              </a>
+            </div>
           </div>
 
           {/* 4. Center Content Ads (2 Banners - Responsive) */}
