@@ -138,12 +138,12 @@ const TOOL_CATEGORIES = [
     description: "Browser-based utilities running client-side with zero data storage.",
     tools: [
       {
-        title: "JSON Formatter & Validator",
-        slug: "json",
-        href: "/json",
-        icon: <FileJson className="h-5 w-5 text-indigo-500" />,
-        badge: "Client-Side",
-        description: "Prettify, minify, and validate JSON payloads with syntax error detection and copyable formatting.",
+        title: "Files & PDF Suite (Installable Web App)",
+        slug: "files",
+        href: "/files",
+        icon: <Scissors className="h-5 w-5 text-indigo-500" />,
+        badge: "PWA App",
+        description: "Complete in-browser file suite: Split PDF, Merge PDFs, Image to PDF, PDF to Images, Document Scanner, and Compress. 100% private, works offline.",
       },
       {
         title: "PDF Page Splitter & Extractor",

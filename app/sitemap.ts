@@ -55,6 +55,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Free SEO & Web Developer Tools
   const toolPages = [
     "/tools",
+    "/files",
     "/tools/pdf-splitter",
     "/tools/redirect-checker",
     "/tools/url-expander",
@@ -63,13 +64,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/split",
     "/pdf",
     "/wifi",
-    "/json",
-    "/pomodoro",
-    "/clock",
-    "/worldclock",
-    "/ambient",
-    "/countdown",
-    "/quotes",
+    "/whatsapp",
   ]
 
   // Blog posts with actual publish dates

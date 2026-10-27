@@ -239,30 +239,25 @@ export default function HomePage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section id="shortener" className="relative overflow-hidden pt-12 pb-16 sm:pt-20 sm:pb-24 lg:pt-24 lg:pb-28">
-          {/* Ambient aurora lighting mesh */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[500px] pointer-events-none -z-10">
-            <div className="absolute top-[-10%] left-1/4 w-[350px] sm:w-[500px] h-[350px] sm:h-[500px] bg-primary/15 rounded-full blur-[100px] sm:blur-[140px]" />
-            <div className="absolute top-[10%] right-1/4 w-[300px] sm:w-[450px] h-[300px] sm:h-[450px] bg-emerald-500/10 rounded-full blur-[90px] sm:blur-[120px]" />
-          </div>
-
+        <section id="shortener" className="pt-10 pb-14 sm:pt-16 sm:pb-20">
           <div className="container mx-auto px-4 sm:px-6">
-            <div className="mx-auto max-w-3xl text-center space-y-6">
+            <div className="mx-auto max-w-3xl text-center space-y-4">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-border/80 bg-muted/40 text-xs font-mono text-muted-foreground">
+                <span>Free URL Shortener &amp; File Utilities</span>
+              </div>
+
               {/* Headline */}
-              <h1 className="text-balance text-3xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.12]">
-                Branded short links, vector QR codes &amp;{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-500 to-teal-400">
-                  privacy analytics
-                </span>
+              <h1 className="text-balance text-3xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.12]">
+                Shorten links. Generate QR codes. Free forever.
               </h1>
 
               {/* Subheadline */}
-              <p className="mx-auto max-w-2xl text-pretty text-sm sm:text-base lg:text-lg text-muted-foreground leading-relaxed">
-                Shorten any URL in milliseconds. Connect your own custom domain for free. Track real-time visitor clicks with zero cookies or tracking pixels.
+              <p className="mx-auto max-w-xl text-pretty text-xs sm:text-sm lg:text-base text-muted-foreground leading-relaxed">
+                Create branded short links with custom domains, track clicks with privacy-friendly analytics, and split expenses online. No credit card or signup required.
               </p>
 
               {/* Shortener Container */}
-              <div className="pt-4 sm:pt-6">
+              <div className="pt-2 sm:pt-4">
                 <LinkShortenerForm />
               </div>
             </div>
@@ -270,55 +265,55 @@ export default function HomePage() {
         </section>
 
         {/* How it works */}
-        <section className="py-16 sm:py-20 border-y border-border bg-surface-2/60 relative">
+        <section className="py-14 sm:py-16 border-y border-border/80 bg-muted/20">
           <div className="container mx-auto px-4 sm:px-6">
-            <div className="max-w-4xl mx-auto space-y-10">
-              <div className="text-center space-y-2">
-                <span className="text-xs font-mono font-semibold text-primary uppercase tracking-wider">
+            <div className="max-w-4xl mx-auto space-y-8">
+              <div className="text-center space-y-1">
+                <span className="text-xs font-mono font-medium text-muted-foreground uppercase tracking-wider">
                   Workflow
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
                   How UL0 Works
                 </h2>
-                <p className="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto">
-                  Streamlined three-step process to shorten, brand, and track any destination URL.
+                <p className="text-xs text-muted-foreground max-w-md mx-auto">
+                  Three simple steps to shorten, brand, and track any link.
                 </p>
               </div>
 
-              <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-3">
-                <div className="rounded-2xl border border-border bg-surface-1 p-6 space-y-3 relative overflow-hidden group hover:border-primary/40 transition-colors">
-                  <div className="font-mono text-2xl font-black text-primary/30 group-hover:text-primary transition-colors">
+              <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+                <div className="rounded-lg border border-border/80 bg-card p-5 space-y-2.5 hover:border-foreground/30 transition-colors">
+                  <div className="font-mono text-xs font-bold text-muted-foreground bg-muted/60 w-6 h-6 rounded flex items-center justify-center">
                     01
                   </div>
-                  <h3 className="font-bold text-sm sm:text-base text-foreground">
+                  <h3 className="font-semibold text-sm text-foreground">
                     Paste Your Link
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Drop any long, messy, or UTM-tagged URL into the shortener box above.
+                    Drop any long URL or UTM link into the shortener box above.
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-border bg-surface-1 p-6 space-y-3 relative overflow-hidden group hover:border-primary/40 transition-colors">
-                  <div className="font-mono text-2xl font-black text-primary/30 group-hover:text-primary transition-colors">
+                <div className="rounded-lg border border-border/80 bg-card p-5 space-y-2.5 hover:border-foreground/30 transition-colors">
+                  <div className="font-mono text-xs font-bold text-muted-foreground bg-muted/60 w-6 h-6 rounded flex items-center justify-center">
                     02
                   </div>
-                  <h3 className="font-bold text-sm sm:text-base text-foreground">
+                  <h3 className="font-semibold text-sm text-foreground">
                     Generate &amp; Brand
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Instantly receive your lightning-fast 301 short link with dynamic QR code preview.
+                    Instantly receive your permanent 301 short link with dynamic QR code preview.
                   </p>
                 </div>
 
-                <div className="rounded-2xl border border-border bg-surface-1 p-6 space-y-3 relative overflow-hidden group hover:border-primary/40 transition-colors">
-                  <div className="font-mono text-2xl font-black text-primary/30 group-hover:text-primary transition-colors">
+                <div className="rounded-lg border border-border/80 bg-card p-5 space-y-2.5 hover:border-foreground/30 transition-colors">
+                  <div className="font-mono text-xs font-bold text-muted-foreground bg-muted/60 w-6 h-6 rounded flex items-center justify-center">
                     03
                   </div>
-                  <h3 className="font-bold text-sm sm:text-base text-foreground">
-                    Monitor Telemetry
+                  <h3 className="font-semibold text-sm text-foreground">
+                    Share &amp; Analyze
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Inspect visitor device breakdown, geographical locations, and referrers with full privacy.
+                    Inspect visitor device breakdown, country locations, and referrers with full privacy.
                   </p>
                 </div>
               </div>
@@ -330,156 +325,156 @@ export default function HomePage() {
         <FeaturesSection />
 
         {/* Pricing Teaser */}
-        <section className="py-16 sm:py-24 border-t border-border bg-surface-2/40">
+        <section className="py-14 sm:py-20 border-t border-border/80">
           <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
-            <div className="text-center space-y-3 mb-12 sm:mb-16">
-              <span className="text-xs font-mono font-semibold text-primary uppercase tracking-wider">
+            <div className="text-center space-y-2 mb-10 sm:mb-12">
+              <span className="text-xs font-mono font-medium text-muted-foreground uppercase tracking-wider">
                 Transparent Plans
               </span>
-              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-foreground">
+              <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-foreground">
                 Free forever. Upgrade when your brand grows.
               </h2>
-              <p className="text-xs sm:text-base text-muted-foreground max-w-xl mx-auto">
-                No surprises. One custom domain included on every account. Upgrade for high-volume limits.
+              <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
+                No surprises. One custom domain included on every account.
               </p>
             </div>
 
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-3 items-stretch">
+            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-3 items-stretch">
               {/* Free */}
-              <div className="rounded-2xl border border-border bg-surface-1 p-6 sm:p-7 flex flex-col justify-between space-y-6">
+              <div className="rounded-lg border border-border/80 bg-card p-5 sm:p-6 flex flex-col justify-between space-y-6">
                 <div className="space-y-4">
                   <div>
                     <span className="text-xs font-mono font-semibold text-muted-foreground uppercase">Hobby</span>
-                    <div className="text-3xl font-extrabold text-foreground mt-1">$0</div>
-                    <p className="text-xs text-muted-foreground mt-1">Free public link management</p>
+                    <div className="text-3xl font-bold text-foreground mt-1">$0</div>
+                    <p className="text-xs text-muted-foreground mt-0.5">Free public link management</p>
                   </div>
                   <ul className="space-y-2 text-xs text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
                       <span>Unlimited short links on ul0.site</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
                       <span>1 custom domain connection</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
                       <span>Standard dynamic QR codes</span>
                     </li>
                   </ul>
                 </div>
                 <Link
                   href="/sign-up"
-                  className="w-full text-center py-2.5 rounded-xl border border-border bg-surface-2 hover:bg-surface-3 text-xs font-semibold text-foreground transition-colors"
+                  className="w-full text-center py-2 rounded-md border border-border/80 bg-muted/40 hover:bg-muted text-xs font-medium text-foreground transition-colors"
                 >
                   Get Started Free
                 </Link>
               </div>
 
               {/* Pro (Highlighted) */}
-              <div className="rounded-2xl border-2 border-primary bg-surface-1 p-6 sm:p-7 flex flex-col justify-between space-y-6 relative shadow-lg shadow-primary/10">
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider">
+              <div className="rounded-lg border-2 border-foreground bg-card p-5 sm:p-6 flex flex-col justify-between space-y-6 relative shadow-xs">
+                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-foreground text-background px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider">
                   Most Popular
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <span className="text-xs font-mono font-semibold text-primary uppercase">Pro Marketer</span>
-                    <div className="text-3xl font-extrabold text-foreground mt-1">
+                    <span className="text-xs font-mono font-semibold text-foreground uppercase">Pro Marketer</span>
+                    <div className="text-3xl font-bold text-foreground mt-1">
                       $3<span className="text-xs font-normal text-muted-foreground">/mo</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">For creators &amp; small startups</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">For creators &amp; small startups</p>
                   </div>
                   <ul className="space-y-2 text-xs text-foreground">
-                    <li className="flex items-center gap-2 font-medium">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
+                    <li className="flex items-center gap-2">
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
                       <span>3 custom branded domains</span>
                     </li>
-                    <li className="flex items-center gap-2 font-medium">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
+                    <li className="flex items-center gap-2">
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
                       <span>100 custom domain links</span>
                     </li>
-                    <li className="flex items-center gap-2 font-medium">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
+                    <li className="flex items-center gap-2">
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
                       <span>Real-time click &amp; country analytics</span>
                     </li>
-                    <li className="flex items-center gap-2 font-medium">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
+                    <li className="flex items-center gap-2">
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
                       <span>Custom UTM parameters</span>
                     </li>
                   </ul>
                 </div>
                 <Link
                   href="/pricing"
-                  className="w-full text-center py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold shadow-md transition-all"
+                  className="w-full text-center py-2 rounded-md bg-foreground text-background hover:bg-foreground/90 text-xs font-medium transition-all"
                 >
-                  Upgrade to Pro →
+                  Upgrade to Pro
                 </Link>
               </div>
 
               {/* Business */}
-              <div className="rounded-2xl border border-border bg-surface-1 p-6 sm:p-7 flex flex-col justify-between space-y-6">
+              <div className="rounded-lg border border-border/80 bg-card p-5 sm:p-6 flex flex-col justify-between space-y-6">
                 <div className="space-y-4">
                   <div>
                     <span className="text-xs font-mono font-semibold text-muted-foreground uppercase">Business</span>
-                    <div className="text-3xl font-extrabold text-foreground mt-1">
+                    <div className="text-3xl font-bold text-foreground mt-1">
                       $9<span className="text-xs font-normal text-muted-foreground">/mo</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1">For agencies &amp; high volume teams</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">For agencies &amp; teams</p>
                   </div>
                   <ul className="space-y-2 text-xs text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
                       <span>10 custom branded domains</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
                       <span>Unlimited domain links</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
                       <span>Full API access &amp; webhook relay</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-4 w-4 text-primary shrink-0" />
-                      <span>Priority 24/7 developer support</span>
+                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
+                      <span>Priority developer support</span>
                     </li>
                   </ul>
                 </div>
                 <Link
                   href="/pricing"
-                  className="w-full text-center py-2.5 rounded-xl border border-border bg-surface-2 hover:bg-surface-3 text-xs font-semibold text-foreground transition-colors"
+                  className="w-full text-center py-2 rounded-md border border-border/80 bg-muted/40 hover:bg-muted text-xs font-medium text-foreground transition-colors"
                 >
                   View Business Plan
                 </Link>
               </div>
             </div>
 
-            <div className="mt-8 text-center">
-              <Link href="/pricing" className="text-xs sm:text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1">
+            <div className="mt-6 text-center">
+              <Link href="/pricing" className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
                 <span>Compare all tier features and limits</span>
-                <ChevronRight className="h-3.5 w-3.5" />
+                <ChevronRight className="h-3 w-3" />
               </Link>
             </div>
           </div>
         </section>
 
         {/* FAQ Section */}
-        <section className="py-16 sm:py-20 border-t border-border">
-          <div className="container mx-auto px-4 sm:px-6 max-w-3xl">
-            <div className="text-center space-y-2 mb-10">
-              <span className="text-xs font-mono font-semibold text-primary uppercase tracking-wider">
-                Support
+        <section className="py-14 sm:py-16 border-t border-border/80 bg-muted/10">
+          <div className="container mx-auto px-4 sm:px-6 max-w-2xl">
+            <div className="text-center space-y-1 mb-8">
+              <span className="text-xs font-mono font-medium text-muted-foreground uppercase tracking-wider">
+                FAQ
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
                 Frequently Asked Questions
               </h2>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5">
               {[
                 {
                   q: "Is UL0 completely free to use?",
-                  a: "Yes. The public shortener on ul0.site is 100% free to use with permanent link durability and zero credit card required. Upgrading unlocks custom domains, detailed geo analytics, and UTM builders.",
+                  a: "Yes. The public shortener on ul0.site is 100% free with permanent links and zero credit card required. Upgrading unlocks custom domains, detailed geo analytics, and UTM builders.",
                 },
                 {
                   q: "Do shortened links ever expire?",
@@ -487,32 +482,28 @@ export default function HomePage() {
                 },
                 {
                   q: "Can I connect my own branded domain?",
-                  a: "Yes! You can connect your domain (like link.yourbrand.com or yourcompany.to) with 1 free custom domain included on every account with automated SSL.",
+                  a: "Yes. You can connect your domain (like link.yourbrand.com) with 1 free custom domain included on every account with automated SSL.",
                 },
                 {
-                  q: "Does UL0 use tracking cookies or sell visitor data?",
-                  a: "No. UL0 is privacy-first. Our analytics engine records aggregate country, device, and referrer counts without cookies, IP storage, or personal telemetry tracking.",
+                  q: "Are the file tools really 100% private?",
+                  a: "Yes. All file and PDF tools (splitting, merging, image conversion, scanning) process locally inside your browser using WebAssembly. Your files are never uploaded to any server.",
                 },
                 {
-                  q: "Can I generate high-res QR codes for print?",
-                  a: "Yes. Every link has a companion vector QR code studio supporting custom colors, embedded center icons, and high-DPI downloads for packaging, print flyers, and billboards.",
-                },
-                {
-                  q: "Is there a developer REST API?",
-                  a: "Yes. You can create, inspect, and delete links programmatically using standard JSON endpoints and API tokens from your dashboard.",
+                  q: "Can I install UL0 as an app on my phone?",
+                  a: "Yes. On the Files page (/files), tap 'Add to Home Screen' (or tap Share > Add to Home Screen in Safari) to install it directly onto your phone without an app store.",
                 },
               ].map((faq) => (
                 <details
                   key={faq.q}
-                  className="group rounded-2xl border border-border bg-surface-2 p-4 sm:p-5 transition-all [&_summary::-webkit-details-marker]:hidden"
+                  className="group rounded-md border border-border/80 bg-card p-4 transition-all [&_summary::-webkit-details-marker]:hidden"
                 >
-                  <summary className="text-xs sm:text-sm font-bold text-foreground cursor-pointer flex items-center justify-between select-none">
+                  <summary className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer flex items-center justify-between select-none">
                     <span>{faq.q}</span>
-                    <span className="ml-4 flex h-6 w-6 items-center justify-center rounded-lg bg-surface-3 text-muted-foreground transition-transform group-open:rotate-45 shrink-0 text-base">
+                    <span className="ml-4 text-xs font-mono text-muted-foreground transition-transform group-open:rotate-45">
                       +
                     </span>
                   </summary>
-                  <p className="mt-3 text-xs sm:text-sm text-muted-foreground leading-relaxed pr-6">
+                  <p className="mt-2.5 text-xs text-muted-foreground leading-relaxed pr-4">
                     {faq.a}
                   </p>
                 </details>
@@ -522,28 +513,26 @@ export default function HomePage() {
         </section>
 
         {/* Bottom CTA Banner */}
-        <section className="py-16 sm:py-24 border-t border-border relative overflow-hidden bg-gradient-to-b from-surface-2/60 to-background">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-primary/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
-
-          <div className="container mx-auto px-4 sm:px-6 max-w-2xl text-center space-y-6">
-            <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-              Ready to elevate your link presence?
+        <section className="py-14 sm:py-20 border-t border-border/80">
+          <div className="container mx-auto px-4 sm:px-6 max-w-xl text-center space-y-4">
+            <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-foreground">
+              Ready to shorten your first link?
             </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto">
-              Join thousands of creators, founders, and developers using UL0 for clean, branded short links and instant QR codes.
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              Join thousands of creators, founders, and developers using UL0 for clean, branded short links, vector QR codes, and private document utilities.
             </p>
-            <div className="flex items-center justify-center gap-3 flex-wrap">
+            <div className="flex items-center justify-center gap-3 pt-2">
               <a
                 href="#shortener"
-                className="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-xs sm:text-sm font-bold text-primary-foreground hover:bg-primary/90 transition-all shadow-md hover:scale-[1.02] cursor-pointer"
+                className="inline-flex items-center justify-center rounded-md bg-foreground text-background px-5 py-2 text-xs font-medium hover:bg-foreground/90 transition-all cursor-pointer"
               >
-                <span>Shorten a Link Now ↑</span>
+                <span>Shorten a Link</span>
               </a>
               <Link
-                href="/sign-up"
-                className="inline-flex items-center justify-center rounded-xl border border-border bg-surface-1 px-6 py-3 text-xs sm:text-sm font-semibold text-foreground hover:bg-surface-2 transition-all cursor-pointer"
+                href="/files"
+                className="inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-xs font-medium text-foreground hover:bg-muted transition-all cursor-pointer"
               >
-                <span>Create Free Account</span>
+                <span>Open Files &amp; PDF</span>
               </Link>
             </div>
           </div>
