@@ -4,15 +4,21 @@ import { Footer } from "@/components/footer"
 import { FilesWorkspace } from "./files-workspace"
 
 export const metadata: Metadata = {
-  title: "Free Files & PDF Suite — Split, Merge, Image to PDF & Scan | UL0",
+  title: "Free Files & PDF Suite — Resize Images, Split, Merge & Convert | UL0",
   description:
-    "Free, private client-side document and PDF suite. Split PDF pages, merge multiple documents, convert images to PDF, extract pages, and scan documents from your phone. Install as an app, zero signup, 100% private.",
+    "Free, private client-side document and file suite. Resize & convert images, compress file size, split PDF pages, merge documents, rotate PDFs, convert text to PDF, and scan with your camera. Install as an app on your phone, 100% private.",
   keywords: [
     "free pdf tools",
     "pdf splitter online free",
     "merge pdf files free",
     "image to pdf converter free",
     "pdf to image converter",
+    "image resizer free online",
+    "image converter png to jpg",
+    "convert webp to png free",
+    "compress image size free",
+    "rotate pdf pages online free",
+    "text to pdf converter online",
     "document scanner app",
     "private pdf tools no upload",
     "client side pdf tools",
