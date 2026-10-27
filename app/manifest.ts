@@ -2,15 +2,15 @@ import type { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "ul0 — Free URL Shortener, QR Codes & Tools",
-    short_name: "ul0",
+    name: "UL0 — Fast URL Shortener & File Tools",
+    short_name: "UL0",
     description:
-      "Free URL shortener with QR codes, click analytics, UTM tools, expense splitting, and more. No signup required.",
-    start_url: "/",
+      "Free URL shortener, branded custom domains, dynamic QR codes, bill splitter, and private client-side PDF file tools.",
+    start_url: "/files",
     display: "standalone",
-    background_color: "#0a0a0a",
-    theme_color: "#000000",
-    orientation: "portrait-primary",
+    background_color: "#ffffff",
+    theme_color: "#18181b",
+    orientation: "any",
     categories: ["utilities", "productivity"],
     icons: [
       {

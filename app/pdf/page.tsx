@@ -1,7 +1,7 @@
 import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { PdfTools } from "@/components/pdf-tools"
+import { FilesWorkspace } from "@/app/files/files-workspace"
 import { Badge } from "@/components/ui/badge"
 import {
   FileText,
@@ -200,7 +200,7 @@ export default function PdfPage() {
           </div>
 
           {/* Main tool */}
-          <PdfTools />
+          <FilesWorkspace />
 
           {/* SEO content section */}
           <section className="mt-16 space-y-8 max-w-3xl mx-auto">

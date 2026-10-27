@@ -1,0 +1,1063 @@
+"use client"
+
+import React, { useState, useEffect, useRef, useCallback } from "react"
+import { PDFDocument } from "pdf-lib"
+import { jsPDF } from "jspdf"
+import JSZip from "jszip"
+import {
+  Scissors,
+  FileStack,
+  ImageIcon,
+  ScanLine,
+  Download,
+  Upload,
+  Trash2,
+  Plus,
+  Smartphone,
+  Share2,
+  Check,
+  ArrowRight,
+  ShieldCheck,
+  MoveUp,
+  MoveDown,
+  Info,
+  Loader2,
+  Camera,
+  X,
+  FileDown,
+  Layers,
+  Sparkles,
+  HelpCircle,
+} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { PdfSplitterClient } from "@/app/tools/pdf-splitter/pdf-splitter-client"
+
+type ToolTab = "split" | "merge" | "img-to-pdf" | "pdf-to-img" | "scanner"
+
+interface MergeItem {
+  id: string
+  file: File
+  name: string
+  pageCount: number
+}
+
+interface ImageToPdfItem {
+  id: string
+  file: File
+  previewUrl: string
+  name: string
+  sizeBytes: number
+}
+
+interface ScannedDocPage {
+  id: string
+  dataUrl: string
+}
+
+export function FilesWorkspace() {
+  const [activeTab, setActiveTab] = useState<ToolTab>("split")
+
+  // PWA / Add to home screen state
+  const [installPrompt, setInstallPrompt] = useState<any>(null)
+  const [isInstalled, setIsInstalled] = useState(false)
+  const [showIosGuide, setShowIosGuide] = useState(false)
+  const [isIos, setIsIos] = useState(false)
+
+  // Listen for PWA install prompt
+  useEffect(() => {
+    // Check if already in standalone display mode
+    if (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      (window.navigator as any).standalone === true
+    ) {
+      setIsInstalled(true)
+    }
+
+    // Detect iOS
+    const userAgent = window.navigator.userAgent.toLowerCase()
+    if (/iphone|ipad|ipod/.test(userAgent) && !(window as any).MSStream) {
+      setIsIos(true)
+    }
+
+    const handleBeforeInstall = (e: Event) => {
+      e.preventDefault()
+      setInstallPrompt(e)
+    }
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstall)
+    window.addEventListener("appinstalled", () => setIsInstalled(true))
+
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstall)
+    }
+  }, [])
+
+  const handleInstallClick = async () => {
+    if (installPrompt) {
+      installPrompt.prompt()
+      const { outcome } = await installPrompt.userChoice
+      if (outcome === "accepted") {
+        setIsInstalled(true)
+      }
+      setInstallPrompt(null)
+    } else if (isIos) {
+      setShowIosGuide(true)
+    } else {
+      setShowIosGuide(true)
+    }
+  }
+
+  /* =========================================================================
+   * 1. MERGE PDF STATE & ACTIONS
+   * ========================================================================= */
+  const [mergeFiles, setMergeFiles] = useState<MergeItem[]>([])
+  const [isMerging, setIsMerging] = useState(false)
+  const mergeInputRef = useRef<HTMLInputElement>(null)
+
+  const handleMergeFilesSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files
+    if (!selected || selected.length === 0) return
+
+    const newItems: MergeItem[] = []
+    for (let i = 0; i < selected.length; i++) {
+      const f = selected[i]
+      if (f.type !== "application/pdf" && !f.name.endsWith(".pdf")) continue
+      try {
+        const buf = await f.arrayBuffer()
+        const pdf = await PDFDocument.load(buf, { ignoreEncryption: true })
+        newItems.push({
+          id: `merge_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+          file: f,
+          name: f.name,
+          pageCount: pdf.getPageCount(),
+        })
+      } catch (err) {
+        console.warn("Failed reading PDF page count for merge:", err)
+      }
+    }
+    setMergeFiles((prev) => [...prev, ...newItems])
+    if (mergeInputRef.current) mergeInputRef.current.value = ""
+  }
+
+  const moveMergeItem = (idx: number, dir: -1 | 1) => {
+    const targetIdx = idx + dir
+    if (targetIdx < 0 || targetIdx >= mergeFiles.length) return
+    setMergeFiles((prev) => {
+      const copy = [...prev]
+      const temp = copy[idx]
+      copy[idx] = copy[targetIdx]
+      copy[targetIdx] = temp
+      return copy
+    })
+  }
+
+  const removeMergeItem = (id: string) => {
+    setMergeFiles((prev) => prev.filter((item) => item.id !== id))
+  }
+
+  const handleExecuteMerge = async () => {
+    if (mergeFiles.length < 2) {
+      alert("Please upload at least 2 PDF files to merge.")
+      return
+    }
+
+    try {
+      setIsMerging(true)
+      const mergedPdf = await PDFDocument.create()
+
+      for (const item of mergeFiles) {
+        const buf = await item.file.arrayBuffer()
+        const srcPdf = await PDFDocument.load(buf, { ignoreEncryption: true })
+        const copiedPages = await mergedPdf.copyPages(srcPdf, srcPdf.getPageIndices())
+        copiedPages.forEach((p) => mergedPdf.addPage(p))
+      }
+
+      const mergedBytes = await mergedPdf.save()
+      const blob = new Blob([mergedBytes as any], { type: "application/pdf" })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `merged_${Date.now()}.pdf`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      alert("Error merging PDF files. Please verify the files are valid and unencrypted.")
+    } finally {
+      setIsMerging(false)
+    }
+  }
+
+  /* =========================================================================
+   * 2. IMAGE TO PDF STATE & ACTIONS
+   * ========================================================================= */
+  const [imageItems, setImageItems] = useState<ImageToPdfItem[]>([])
+  const [isConvertingImages, setIsConvertingImages] = useState(false)
+  const imageInputRef = useRef<HTMLInputElement>(null)
+
+  const handleImageFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = e.target.files
+    if (!selected || selected.length === 0) return
+
+    const newItems: ImageToPdfItem[] = []
+    for (let i = 0; i < selected.length; i++) {
+      const f = selected[i]
+      if (!f.type.startsWith("image/")) continue
+      newItems.push({
+        id: `img_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`,
+        file: f,
+        previewUrl: URL.createObjectURL(f),
+        name: f.name,
+        sizeBytes: f.size,
+      })
+    }
+    setImageItems((prev) => [...prev, ...newItems])
+    if (imageInputRef.current) imageInputRef.current.value = ""
+  }
+
+  const moveImageItem = (idx: number, dir: -1 | 1) => {
+    const targetIdx = idx + dir
+    if (targetIdx < 0 || targetIdx >= imageItems.length) return
+    setImageItems((prev) => {
+      const copy = [...prev]
+      const temp = copy[idx]
+      copy[idx] = copy[targetIdx]
+      copy[targetIdx] = temp
+      return copy
+    })
+  }
+
+  const removeImageItem = (id: string) => {
+    setImageItems((prev) => {
+      const item = prev.find((x) => x.id === id)
+      if (item) URL.revokeObjectURL(item.previewUrl)
+      return prev.filter((x) => x.id !== id)
+    })
+  }
+
+  const handleExecuteImageToPdf = async () => {
+    if (imageItems.length === 0) {
+      alert("Please upload at least one image.")
+      return
+    }
+
+    try {
+      setIsConvertingImages(true)
+      const pdf = new jsPDF()
+
+      for (let i = 0; i < imageItems.length; i++) {
+        if (i > 0) pdf.addPage()
+
+        const item = imageItems[i]
+        const dataUrl = await new Promise<string>((resolve) => {
+          const reader = new FileReader()
+          reader.onload = () => resolve(reader.result as string)
+          reader.readAsDataURL(item.file)
+        })
+
+        // Determine orientation based on natural dimensions
+        const img = new Image()
+        await new Promise((resolve) => {
+          img.onload = resolve
+          img.src = dataUrl
+        })
+
+        const pageWidth = pdf.internal.pageSize.getWidth()
+        const pageHeight = pdf.internal.pageSize.getHeight()
+
+        const imgWidth = img.naturalWidth || 800
+        const imgHeight = img.naturalHeight || 600
+        const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight) * 0.92
+
+        const renderWidth = imgWidth * ratio
+        const renderHeight = imgHeight * ratio
+        const xOffset = (pageWidth - renderWidth) / 2
+        const yOffset = (pageHeight - renderHeight) / 2
+
+        const format = item.file.type.includes("png") ? "PNG" : "JPEG"
+        pdf.addImage(dataUrl, format, xOffset, yOffset, renderWidth, renderHeight)
+      }
+
+      pdf.save(`images_${Date.now()}.pdf`)
+    } catch (err) {
+      alert("Error converting images to PDF.")
+    } finally {
+      setIsConvertingImages(false)
+    }
+  }
+
+  /* =========================================================================
+   * 3. PDF TO IMAGES STATE & ACTIONS
+   * ========================================================================= */
+  const [pdfForImages, setPdfForImages] = useState<File | null>(null)
+  const [extractedImages, setExtractedImages] = useState<{ page: number; url: string }[]>([])
+  const [isExtractingImages, setIsExtractingImages] = useState(false)
+  const [isDownloadingAllZip, setIsDownloadingAllZip] = useState(false)
+  const pdfToImageInputRef = useRef<HTMLInputElement>(null)
+
+  const handlePdfToImageFileSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || file.type !== "application/pdf") {
+      alert("Please select a valid PDF file.")
+      return
+    }
+
+    setPdfForImages(file)
+    setExtractedImages([])
+    setIsExtractingImages(true)
+
+    try {
+      // Load PDF.js if available
+      let pdfjs = (window as any).pdfjsLib
+      if (!pdfjs) {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script")
+          script.src = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+          script.async = true
+          script.onload = () => {
+            pdfjs = (window as any).pdfjsLib
+            if (pdfjs) {
+              pdfjs.GlobalWorkerOptions.workerSrc =
+                "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"
+              resolve(true)
+            } else {
+              reject(new Error("pdfjs not loaded"))
+            }
+          }
+          script.onerror = reject
+          document.body.appendChild(script)
+        })
+      }
+
+      const buffer = await file.arrayBuffer()
+      const loadingTask = pdfjs.getDocument({ data: buffer })
+      const doc = await loadingTask.promise
+      const total = doc.numPages
+
+      const results: { page: number; url: string }[] = []
+
+      for (let p = 1; p <= total; p++) {
+        const page = await doc.getPage(p)
+        const viewport = page.getViewport({ scale: 1.5 })
+        const canvas = document.createElement("canvas")
+        const ctx = canvas.getContext("2d")
+        canvas.width = viewport.width
+        canvas.height = viewport.height
+
+        if (ctx) {
+          await page.render({ canvasContext: ctx, viewport }).promise
+          const dataUrl = canvas.toDataURL("image/png")
+          results.push({ page: p, url: dataUrl })
+        }
+      }
+
+      setExtractedImages(results)
+    } catch (err) {
+      alert("Could not render PDF pages to images. Ensure the file is not password-protected.")
+    } finally {
+      setIsExtractingImages(false)
+      if (pdfToImageInputRef.current) pdfToImageInputRef.current.value = ""
+    }
+  }
+
+  const handleDownloadAllImagesZip = async () => {
+    if (extractedImages.length === 0) return
+    try {
+      setIsDownloadingAllZip(true)
+      const zip = new JSZip()
+      extractedImages.forEach((item) => {
+        const base64Data = item.url.replace(/^data:image\/png;base64,/, "")
+        zip.file(`page_${item.page}.png`, base64Data, { base64: true })
+      })
+
+      const content = await zip.generateAsync({ type: "blob" })
+      const link = document.createElement("a")
+      link.href = URL.createObjectURL(content)
+      link.download = `${pdfForImages?.name.replace(/\.pdf$/i, "") || "pdf"}_pages.zip`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+    } catch (err) {
+      alert("Error packaging images into ZIP.")
+    } finally {
+      setIsDownloadingAllZip(false)
+    }
+  }
+
+  /* =========================================================================
+   * 4. DOCUMENT SCANNER (CAMERA) STATE & ACTIONS
+   * ========================================================================= */
+  const [scannerPages, setScannerPages] = useState<ScannedDocPage[]>([])
+  const [isCameraActive, setIsCameraActive] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "environment", width: { ideal: 1920 }, height: { ideal: 1080 } },
+      })
+      streamRef.current = stream
+      setIsCameraActive(true)
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream
+        videoRef.current.play()
+      }
+    } catch (err) {
+      alert("Could not access camera. Please allow camera permissions in your browser.")
+    }
+  }
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop())
+      streamRef.current = null
+    }
+    setIsCameraActive(false)
+  }
+
+  const capturePhoto = () => {
+    if (!videoRef.current) return
+    const video = videoRef.current
+    const canvas = document.createElement("canvas")
+    canvas.width = video.videoWidth || 1280
+    canvas.height = video.videoHeight || 720
+    const ctx = canvas.getContext("2d")
+    if (ctx) {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+      const dataUrl = canvas.toDataURL("image/jpeg", 0.9)
+      setScannerPages((prev) => [
+        ...prev,
+        { id: `scan_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`, dataUrl },
+      ])
+    }
+  }
+
+  const exportScannedPdf = () => {
+    if (scannerPages.length === 0) return
+    const pdf = new jsPDF()
+    scannerPages.forEach((page, i) => {
+      if (i > 0) pdf.addPage()
+      const pageWidth = pdf.internal.pageSize.getWidth()
+      const pageHeight = pdf.internal.pageSize.getHeight()
+      pdf.addImage(page.dataUrl, "JPEG", 5, 5, pageWidth - 10, pageHeight - 10)
+    })
+    pdf.save(`scan_${Date.now()}.pdf`)
+  }
+
+  useEffect(() => {
+    return () => {
+      stopCamera()
+    }
+  }, [])
+
+  return (
+    <div className="w-full max-w-5xl mx-auto px-4 py-8 sm:py-12 space-y-8">
+      {/* Notion-Style Header */}
+      <div className="space-y-4 border-b border-border/80 pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="space-y-1">
+            <div className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground uppercase tracking-wider">
+              <span>Client-Side Workspace</span>
+              <span>•</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                <ShieldCheck className="h-3.5 w-3.5" /> 100% Private
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+              Files &amp; PDF Tools
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-xl leading-relaxed">
+              Split, merge, convert, and scan documents directly inside your browser. No files are
+              ever uploaded to a server.
+            </p>
+          </div>
+
+          {/* Add to Home Screen Button */}
+          <div className="flex items-center gap-2 shrink-0">
+            {isInstalled ? (
+              <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-md border border-emerald-500/20">
+                <Check className="h-3.5 w-3.5" />
+                <span>App Installed</span>
+              </div>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleInstallClick}
+                className="gap-2 text-xs font-medium border-border/80 hover:bg-muted cursor-pointer"
+                title="Install UL0 Files as an app on your phone or desktop"
+              >
+                <Smartphone className="h-4 w-4 text-foreground/80" />
+                <span>Add to Home Screen</span>
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* Notion-style Tab Navigation Bar */}
+        <div className="flex items-center gap-1 overflow-x-auto pt-2 scrollbar-none">
+          <button
+            onClick={() => setActiveTab("split")}
+            className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === "split"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <Scissors className="h-3.5 w-3.5" />
+            <span>Split PDF</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("merge")}
+            className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === "merge"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <FileStack className="h-3.5 w-3.5" />
+            <span>Merge PDFs</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("img-to-pdf")}
+            className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === "img-to-pdf"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <ImageIcon className="h-3.5 w-3.5" />
+            <span>Image to PDF</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("pdf-to-img")}
+            className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === "pdf-to-img"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <FileDown className="h-3.5 w-3.5" />
+            <span>PDF to Images</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab("scanner")}
+            className={`inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium rounded-md transition-colors whitespace-nowrap cursor-pointer ${
+              activeTab === "scanner"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            }`}
+          >
+            <ScanLine className="h-3.5 w-3.5" />
+            <span>Document Scanner</span>
+          </button>
+        </div>
+      </div>
+
+      {/* iOS / Mobile Install Guide Modal */}
+      {showIosGuide && (
+        <div className="rounded-lg border border-border bg-card p-4 space-y-3 shadow-xs">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2 font-semibold text-xs text-foreground">
+              <Smartphone className="h-4 w-4" />
+              <span>How to install UL0 Files on your phone</span>
+            </div>
+            <button
+              onClick={() => setShowIosGuide(false)}
+              className="text-muted-foreground hover:text-foreground cursor-pointer"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-muted-foreground pt-1">
+            <div className="p-2.5 rounded-md bg-muted/50 border border-border/50">
+              <div className="font-semibold text-foreground mb-0.5">1. Open Safari / Chrome</div>
+              <div>Navigate to this page in your mobile browser.</div>
+            </div>
+            <div className="p-2.5 rounded-md bg-muted/50 border border-border/50">
+              <div className="font-semibold text-foreground mb-0.5">2. Tap Share / Menu</div>
+              <div>Tap the browser Share icon (or three dots menu on Android).</div>
+            </div>
+            <div className="p-2.5 rounded-md bg-muted/50 border border-border/50">
+              <div className="font-semibold text-foreground mb-0.5">3. Add to Home Screen</div>
+              <div>Select &ldquo;Add to Home Screen&rdquo; to launch as a standalone app anytime.</div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+       * TAB 1: SPLIT PDF
+       * ========================================================================= */}
+      {activeTab === "split" && (
+        <div className="space-y-6">
+          <div className="rounded-lg border border-border bg-card p-4 sm:p-6 space-y-4">
+            <div className="space-y-1">
+              <h2 className="text-base font-semibold text-foreground">PDF Page Splitter</h2>
+              <p className="text-xs text-muted-foreground">
+                Extract individual pages, split by custom page ranges, preview every page, and
+                download as single PDFs or a ZIP package.
+              </p>
+            </div>
+            <PdfSplitterClient />
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+       * TAB 2: MERGE PDFS
+       * ========================================================================= */}
+      {activeTab === "merge" && (
+        <div className="rounded-lg border border-border bg-card p-4 sm:p-6 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h2 className="text-base font-semibold text-foreground">Merge Multiple PDFs</h2>
+              <p className="text-xs text-muted-foreground">
+                Combine separate PDF documents into a single file in the exact order you choose.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                ref={mergeInputRef}
+                type="file"
+                multiple
+                accept=".pdf,application/pdf"
+                className="hidden"
+                onChange={handleMergeFilesSelected}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => mergeInputRef.current?.click()}
+                className="gap-1.5 text-xs font-medium cursor-pointer"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>Add PDFs</span>
+              </Button>
+
+              {mergeFiles.length >= 2 && (
+                <Button
+                  size="sm"
+                  onClick={handleExecuteMerge}
+                  disabled={isMerging}
+                  className="gap-1.5 text-xs font-medium bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
+                >
+                  {isMerging ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Download className="h-3.5 w-3.5" />
+                  )}
+                  <span>Merge {mergeFiles.length} PDFs</span>
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {mergeFiles.length === 0 ? (
+            <div
+              onClick={() => mergeInputRef.current?.click()}
+              className="border-2 border-dashed border-border/80 rounded-lg p-10 text-center space-y-3 cursor-pointer hover:border-foreground/30 hover:bg-muted/30 transition-colors"
+            >
+              <FileStack className="h-8 w-8 mx-auto text-muted-foreground/60" />
+              <div className="space-y-1">
+                <div className="text-sm font-medium text-foreground">Click to select PDF files</div>
+                <div className="text-xs text-muted-foreground">
+                  Select 2 or more PDF documents to merge into one file
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-muted-foreground px-1">
+                Reorder documents (top will be merged first):
+              </div>
+              <div className="divide-y divide-border border border-border rounded-md overflow-hidden bg-background">
+                {mergeFiles.map((item, idx) => (
+                  <div
+                    key={item.id}
+                    className="p-3 flex items-center justify-between gap-3 text-xs hover:bg-muted/40 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="font-mono text-muted-foreground w-5 text-center">
+                        {idx + 1}.
+                      </span>
+                      <span className="font-medium text-foreground truncate max-w-xs sm:max-w-md">
+                        {item.name}
+                      </span>
+                      <span className="text-[11px] text-muted-foreground font-mono bg-muted px-2 py-0.5 rounded">
+                        {item.pageCount} {item.pageCount === 1 ? "page" : "pages"}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        disabled={idx === 0}
+                        onClick={() => moveMergeItem(idx, -1)}
+                        className="p-1 rounded text-muted-foreground hover:text-foreground disabled:opacity-30 cursor-pointer"
+                        title="Move Up"
+                      >
+                        <MoveUp className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        disabled={idx === mergeFiles.length - 1}
+                        onClick={() => moveMergeItem(idx, 1)}
+                        className="p-1 rounded text-muted-foreground hover:text-foreground disabled:opacity-30 cursor-pointer"
+                        title="Move Down"
+                      >
+                        <MoveDown className="h-3.5 w-3.5" />
+                      </button>
+                      <button
+                        onClick={() => removeMergeItem(item.id)}
+                        className="p-1 rounded text-muted-foreground hover:text-rose-500 cursor-pointer"
+                        title="Remove"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* =========================================================================
+       * TAB 3: IMAGE TO PDF
+       * ========================================================================= */}
+      {activeTab === "img-to-pdf" && (
+        <div className="rounded-lg border border-border bg-card p-4 sm:p-6 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h2 className="text-base font-semibold text-foreground">Convert Images to PDF</h2>
+              <p className="text-xs text-muted-foreground">
+                Convert JPG, PNG, and WebP images into a clean multi-page PDF document.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                ref={imageInputRef}
+                type="file"
+                multiple
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageFilesSelected}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => imageInputRef.current?.click()}
+                className="gap-1.5 text-xs font-medium cursor-pointer"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>Add Images</span>
+              </Button>
+
+              {imageItems.length > 0 && (
+                <Button
+                  size="sm"
+                  onClick={handleExecuteImageToPdf}
+                  disabled={isConvertingImages}
+                  className="gap-1.5 text-xs font-medium bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
+                >
+                  {isConvertingImages ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Download className="h-3.5 w-3.5" />
+                  )}
+                  <span>Export PDF ({imageItems.length})</span>
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {imageItems.length === 0 ? (
+            <div
+              onClick={() => imageInputRef.current?.click()}
+              className="border-2 border-dashed border-border/80 rounded-lg p-10 text-center space-y-3 cursor-pointer hover:border-foreground/30 hover:bg-muted/30 transition-colors"
+            >
+              <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground/60" />
+              <div className="space-y-1">
+                <div className="text-sm font-medium text-foreground">Click to select photos</div>
+                <div className="text-xs text-muted-foreground">
+                  Supports JPG, PNG, and WebP formats. Processed locally in your browser.
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-3">
+              {imageItems.map((item, idx) => (
+                <div
+                  key={item.id}
+                  className="group relative rounded-md border border-border bg-background p-2 space-y-2 text-xs"
+                >
+                  <div className="aspect-square w-full rounded bg-muted/40 overflow-hidden flex items-center justify-center">
+                    <img
+                      src={item.previewUrl}
+                      alt={item.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="truncate font-medium text-[11px] text-foreground">
+                    {idx + 1}. {item.name}
+                  </div>
+                  <div className="flex items-center justify-between text-[10px] text-muted-foreground">
+                    <span>{(item.sizeBytes / 1024).toFixed(0)} KB</span>
+                    <div className="flex items-center gap-1">
+                      <button
+                        disabled={idx === 0}
+                        onClick={() => moveImageItem(idx, -1)}
+                        className="hover:text-foreground disabled:opacity-30 cursor-pointer"
+                        title="Move Left"
+                      >
+                        <MoveUp className="h-3 w-3 rotate-[-90deg]" />
+                      </button>
+                      <button
+                        disabled={idx === imageItems.length - 1}
+                        onClick={() => moveImageItem(idx, 1)}
+                        className="hover:text-foreground disabled:opacity-30 cursor-pointer"
+                        title="Move Right"
+                      >
+                        <MoveDown className="h-3 w-3 rotate-[-90deg]" />
+                      </button>
+                      <button
+                        onClick={() => removeImageItem(item.id)}
+                        className="hover:text-rose-500 cursor-pointer"
+                        title="Delete"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* =========================================================================
+       * TAB 4: PDF TO IMAGES
+       * ========================================================================= */}
+      {activeTab === "pdf-to-img" && (
+        <div className="rounded-lg border border-border bg-card p-4 sm:p-6 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h2 className="text-base font-semibold text-foreground">Extract PDF to PNG Images</h2>
+              <p className="text-xs text-muted-foreground">
+                Render every page of your PDF into crisp, downloadable PNG images.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <input
+                ref={pdfToImageInputRef}
+                type="file"
+                accept=".pdf,application/pdf"
+                className="hidden"
+                onChange={handlePdfToImageFileSelected}
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => pdfToImageInputRef.current?.click()}
+                className="gap-1.5 text-xs font-medium cursor-pointer"
+              >
+                <Upload className="h-3.5 w-3.5" />
+                <span>Upload PDF</span>
+              </Button>
+
+              {extractedImages.length > 0 && (
+                <Button
+                  size="sm"
+                  onClick={handleDownloadAllImagesZip}
+                  disabled={isDownloadingAllZip}
+                  className="gap-1.5 text-xs font-medium bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
+                >
+                  {isDownloadingAllZip ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <Download className="h-3.5 w-3.5" />
+                  )}
+                  <span>Download All as ZIP</span>
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {isExtractingImages ? (
+            <div className="p-12 text-center space-y-2 text-xs text-muted-foreground">
+              <Loader2 className="h-6 w-6 animate-spin mx-auto text-foreground" />
+              <div>Rendering PDF pages to PNG images in browser...</div>
+            </div>
+          ) : extractedImages.length === 0 ? (
+            <div
+              onClick={() => pdfToImageInputRef.current?.click()}
+              className="border-2 border-dashed border-border/80 rounded-lg p-10 text-center space-y-3 cursor-pointer hover:border-foreground/30 hover:bg-muted/30 transition-colors"
+            >
+              <FileDown className="h-8 w-8 mx-auto text-muted-foreground/60" />
+              <div className="space-y-1">
+                <div className="text-sm font-medium text-foreground">Click to select PDF document</div>
+                <div className="text-xs text-muted-foreground">
+                  Each page will be rendered into a high-resolution PNG image
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {extractedImages.map((item) => (
+                <div
+                  key={item.page}
+                  className="rounded-md border border-border bg-background p-2 space-y-2 text-xs flex flex-col justify-between"
+                >
+                  <div className="aspect-[3/4] w-full rounded bg-muted/20 overflow-hidden border border-border/40">
+                    <img
+                      src={item.url}
+                      alt={`Page ${item.page}`}
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <span className="font-mono text-muted-foreground text-[11px]">
+                      Page {item.page}
+                    </span>
+                    <a
+                      href={item.url}
+                      download={`page_${item.page}.png`}
+                      className="inline-flex items-center gap-1 text-[11px] font-medium text-foreground hover:underline"
+                    >
+                      <Download className="h-3 w-3" />
+                      <span>PNG</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* =========================================================================
+       * TAB 5: DOCUMENT SCANNER (CAMERA)
+       * ========================================================================= */}
+      {activeTab === "scanner" && (
+        <div className="rounded-lg border border-border bg-card p-4 sm:p-6 space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h2 className="text-base font-semibold text-foreground">Mobile Document Scanner</h2>
+              <p className="text-xs text-muted-foreground">
+                Capture pages directly with your camera and compile into a single PDF.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              {!isCameraActive ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={startCamera}
+                  className="gap-1.5 text-xs font-medium cursor-pointer"
+                >
+                  <Camera className="h-3.5 w-3.5" />
+                  <span>Start Camera</span>
+                </Button>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={stopCamera}
+                  className="gap-1.5 text-xs font-medium text-rose-500 cursor-pointer"
+                >
+                  <X className="h-3.5 w-3.5" />
+                  <span>Stop Camera</span>
+                </Button>
+              )}
+
+              {scannerPages.length > 0 && (
+                <Button
+                  size="sm"
+                  onClick={exportScannedPdf}
+                  className="gap-1.5 text-xs font-medium bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  <span>Export PDF ({scannerPages.length})</span>
+                </Button>
+              )}
+            </div>
+          </div>
+
+          {/* Active Camera Viewfinder */}
+          {isCameraActive && (
+            <div className="space-y-3">
+              <div className="relative rounded-lg overflow-hidden bg-black max-w-md mx-auto aspect-[4/3]">
+                <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
+                <div className="absolute inset-4 border border-white/30 rounded pointer-events-none" />
+              </div>
+              <div className="text-center">
+                <Button
+                  size="sm"
+                  onClick={capturePhoto}
+                  className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer font-medium"
+                >
+                  <Camera className="h-4 w-4" />
+                  <span>Capture Page ({scannerPages.length + 1})</span>
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {/* Captured Pages List */}
+          {scannerPages.length > 0 && (
+            <div className="space-y-2">
+              <div className="text-xs font-medium text-muted-foreground">Captured Pages:</div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {scannerPages.map((pg, idx) => (
+                  <div
+                    key={pg.id}
+                    className="rounded border border-border p-2 space-y-1.5 bg-background text-xs"
+                  >
+                    <div className="aspect-[4/3] rounded overflow-hidden bg-muted">
+                      <img src={pg.dataUrl} alt={`Scan ${idx + 1}`} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] text-muted-foreground">
+                      <span>Page {idx + 1}</span>
+                      <button
+                        onClick={() =>
+                          setScannerPages((prev) => prev.filter((p) => p.id !== pg.id))
+                        }
+                        className="hover:text-rose-500 cursor-pointer"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Notion Callout Box: Privacy & Offline Guarantee */}
+      <div className="rounded-lg border border-border bg-muted/30 p-4 flex items-start gap-3 text-xs text-muted-foreground">
+        <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+        <div className="space-y-1 leading-relaxed">
+          <div className="font-semibold text-foreground">Why UL0 Files is 100% Private</div>
+          <div>
+            Unlike standard online PDF converters that send your personal documents to unknown remote
+            servers, all processing on this page runs locally in your browser using WebAssembly and
+            native JavaScript. Your files never touch our servers or the cloud.
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
