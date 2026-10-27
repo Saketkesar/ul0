@@ -9,34 +9,104 @@ import { hreflangAlternates } from "@/lib/i18n"
 import { Sparkles, ArrowRight, Check, Zap, Globe, BarChart3, QrCode, Shield, Layers, ChevronRight } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "UL0 — Free branded short links, QR codes and click analytics",
+  title: "Free URL Shortener 2026 - Shorten Links Instantly | ul0",
   description:
-    "Create short links on your own domain, generate QR codes and track clicks with privacy-friendly analytics. Free to start, no credit card.",
+    "ul0 is the best free URL shortener of 2026. Shorten links instantly — no signup required. Includes free QR codes, branded custom domain short links, click analytics, UTM campaign tools, and private file tools.",
+  keywords: [
+    // Branded & Custom Domain transactional keywords
+    "custom domain short link free",
+    "free custom domain link shortener",
+    "cheapest custom domain link shortener",
+    "branded url shortener free",
+    "short link with custom domain free",
+    "own domain link shortener cheapest",
+    "personal domain url shortener free",
+    "connect domain link shortener free",
+    "custom domain redirect free",
+    "cheap branded short links",
+    "dub co cheap alternative",
+    "bitly alternative custom domain",
+
+    // Primary High-Volume Search Keywords
+    "url shortener",
+    "free url shortener",
+    "link shortener",
+    "shorten url",
+    "short link",
+    "short url",
+    "url shortener free",
+    "link shortener free",
+    "shorten link",
+    "shorten url free",
+    "free link shortener",
+    "online url shortener",
+    "best url shortener",
+
+    // Competitor Alternatives
+    "bitly alternative",
+    "bitly alternative free",
+    "tinyurl alternative",
+    "tiny url alternative",
+    "bit.ly alternative",
+    "rebrandly alternative",
+    "ow.ly alternative",
+    "short.io alternative",
+    "t.co alternative",
+    "cutt.ly alternative",
+
+    // No Signup Keywords (Highest conversion)
+    "url shortener no signup",
+    "link shortener no signup",
+    "shorten url without signup",
+    "url shortener without registration",
+    "link shortener without login",
+    "free url shortener no account",
+    "anonymous url shortener",
+    "url shortener no login",
+
+    // Year-based Keywords
+    "best url shortener 2026",
+    "free url shortener 2026",
+    "top link shortener 2026",
+    "url shortener 2026",
+
+    // Feature Keywords
+    "custom short url",
+    "custom url shortener",
+    "branded link shortener",
+    "qr code url shortener",
+    "url shortener with qr code",
+    "link shortener with analytics",
+    "permanent short url",
+    "free pdf tools",
+  ],
   alternates: {
     canonical: "https://ul0.site",
     languages: hreflangAlternates,
   },
   openGraph: {
-    title: "UL0 — Free branded short links, QR codes and click analytics",
+    title: "Free URL Shortener 2026 - Shorten Links Instantly | ul0",
     description:
-      "Create short links on your own domain, generate QR codes and track clicks with privacy-friendly analytics. Free to start, no credit card.",
+      "ul0 is the best free URL shortener of 2026. Shorten links instantly with no signup required. Includes free QR codes, branded custom domains, and click analytics.",
     url: "https://ul0.site",
     type: "website",
-    siteName: "UL0",
+    siteName: "ul0",
     locale: "en_US",
-    images: [{
-      url: "https://ul0.site/social-card.png",
-      width: 1376,
-      height: 768,
-      alt: "UL0 — Free branded short links, QR codes and click analytics",
-      type: "image/png",
-    }],
+    images: [
+      {
+        url: "https://ul0.site/social-card.png",
+        width: 1376,
+        height: 768,
+        alt: "ul0 — Free URL Shortener, QR Codes & Custom Domains",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "UL0 — Free branded short links, QR codes and click analytics",
+    title: "Free URL Shortener 2026 - Shorten Links Instantly | ul0",
     description:
-      "Create short links on your own domain, generate QR codes and track clicks with privacy-friendly analytics. Free to start, no credit card.",
+      "Shorten links instantly with no signup required. Includes free QR codes, branded custom domains, and click analytics.",
     images: ["https://ul0.site/social-card.png"],
   },
   robots: {
@@ -45,9 +115,9 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
     },
   },
 }
@@ -454,6 +524,88 @@ export default function HomePage() {
                 <span>Compare all tier features and limits</span>
                 <ChevronRight className="h-3 w-3" />
               </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* Competitor Comparison Matrix (High-Ranking SEO Anchor) */}
+        <section className="py-14 sm:py-16 border-t border-border/80">
+          <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
+            <div className="text-center space-y-1 mb-8">
+              <span className="text-xs font-mono font-medium text-muted-foreground uppercase tracking-wider">
+                Feature Comparison
+              </span>
+              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+                Compare URL Shorteners: ul0 vs Alternatives
+              </h2>
+              <p className="text-xs text-muted-foreground max-w-md mx-auto">
+                See why creators and businesses choose ul0 over Bitly and TinyURL.
+              </p>
+            </div>
+
+            <div className="overflow-x-auto rounded-lg border border-border/80 bg-card">
+              <table className="w-full text-left border-collapse text-xs">
+                <thead>
+                  <tr className="bg-muted/40 border-b border-border/80 text-muted-foreground">
+                    <th className="p-3 font-semibold text-foreground">Feature</th>
+                    <th className="p-3 font-semibold text-foreground">ul0</th>
+                    <th className="p-3 font-medium">Bitly</th>
+                    <th className="p-3 font-medium">TinyURL</th>
+                    <th className="p-3 font-medium">Rebrandly</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/60">
+                  <tr>
+                    <td className="p-3 font-medium text-foreground">Free Links Limit</td>
+                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">Unlimited</td>
+                    <td className="p-3 text-muted-foreground">5 links/mo</td>
+                    <td className="p-3 text-muted-foreground">Limited</td>
+                    <td className="p-3 text-muted-foreground">Limited</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-medium text-foreground">No Signup Required</td>
+                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">Yes</td>
+                    <td className="p-3 text-muted-foreground">No</td>
+                    <td className="p-3 text-muted-foreground">Yes</td>
+                    <td className="p-3 text-muted-foreground">No</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-medium text-foreground">Custom Domains</td>
+                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">1 Free on all plans</td>
+                    <td className="p-3 text-muted-foreground">$35/mo required</td>
+                    <td className="p-3 text-muted-foreground">$12.99/mo</td>
+                    <td className="p-3 text-muted-foreground">Paid only</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-medium text-foreground">Dynamic Vector QR Codes</td>
+                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">Free</td>
+                    <td className="p-3 text-muted-foreground">Paid only</td>
+                    <td className="p-3 text-muted-foreground">Paid only</td>
+                    <td className="p-3 text-muted-foreground">Paid only</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-medium text-foreground">Private File Tools (PWA)</td>
+                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">Yes (100% Free)</td>
+                    <td className="p-3 text-muted-foreground">No</td>
+                    <td className="p-3 text-muted-foreground">No</td>
+                    <td className="p-3 text-muted-foreground">No</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-medium text-foreground">Group Expense Splitter</td>
+                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">Yes (Free UPI)</td>
+                    <td className="p-3 text-muted-foreground">No</td>
+                    <td className="p-3 text-muted-foreground">No</td>
+                    <td className="p-3 text-muted-foreground">No</td>
+                  </tr>
+                  <tr>
+                    <td className="p-3 font-medium text-foreground">Starting Price</td>
+                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">100% Free</td>
+                    <td className="p-3 text-muted-foreground">From $8/mo</td>
+                    <td className="p-3 text-muted-foreground">From $12.99/mo</td>
+                    <td className="p-3 text-muted-foreground">From $13/mo</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
