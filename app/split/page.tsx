@@ -510,36 +510,40 @@ export default function SplitExpensePage() {
 
         <main className="flex-1 py-6 sm:py-8">
           <div className="container mx-auto px-4">
-            <div className="mb-6 text-center sm:mb-8">
-              <h1 className="mb-2 text-2xl font-bold text-foreground sm:text-3xl">Split Expenses</h1>
-              <p className="text-sm text-muted-foreground sm:text-base">
-                Add members, track expenses, and settle up in INR or USD
+            <div className="mb-6 text-center sm:mb-8 space-y-1">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">Split Expenses</h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                Add members, itemize expenses, and calculate exact settlements without downloading an app.
               </p>
             </div>
 
-            {/* Progress Steps */}
-          <div className="mx-auto mb-6 flex max-w-2xl items-center justify-center gap-2 sm:mb-8">
-            <div className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-              step === "members" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-            }`}>
-              <Users className="h-4 w-4" />
-              <span className="hidden sm:inline">Members</span>
+            {/* Dub-style Progress Steps */}
+            <div className="mx-auto mb-8 flex max-w-md items-center justify-center p-1 rounded-lg border border-border bg-card shadow-2xs">
+              <div
+                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-mono font-medium transition-colors ${
+                  step === "members" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Users className="h-3.5 w-3.5" />
+                <span>1. Members</span>
+              </div>
+              <div
+                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-mono font-medium transition-colors ${
+                  step === "expenses" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Receipt className="h-3.5 w-3.5" />
+                <span>2. Expenses</span>
+              </div>
+              <div
+                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-mono font-medium transition-colors ${
+                  step === "summary" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <Calculator className="h-3.5 w-3.5" />
+                <span>3. Summary</span>
+              </div>
             </div>
-            <ArrowRight className="h-4 w-4 text-muted-foreground" />
-            <div className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-              step === "expenses" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-            }`}>
-              <Receipt className="h-4 w-4" />
-              <span className="hidden sm:inline">Expenses</span>
-            </div>
-            <ArrowRight className="h-4 w-4 text-muted-foreground" />
-            <div className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-              step === "summary" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-            }`}>
-              <Calculator className="h-4 w-4" />
-              <span className="hidden sm:inline">Summary</span>
-            </div>
-          </div>
 
           <div className="mx-auto max-w-2xl">
             {/* Step 1: Members */}
