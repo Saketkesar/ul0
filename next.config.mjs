@@ -36,12 +36,7 @@ const nextConfig = {
       },
       {
         source: '/compare/ul0-vs-bitly',
-        destination: '/blog/bitly-alternative-free',
-        permanent: true,
-      },
-      {
-        source: '/compare/:path*',
-        destination: '/blog',
+        destination: '/compare/bitly',
         permanent: true,
       },
       {
