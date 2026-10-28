@@ -4,25 +4,27 @@ import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { COMPETITORS } from "@/lib/comparisons"
-import { Check, X, ArrowRight, ExternalLink, ShieldCheck, ArrowLeft } from "lucide-react"
+import { Check, X, ArrowRight, ExternalLink, ArrowLeft } from "lucide-react"
 
 interface Props {
   params: Promise<{ competitor: string }>
 }
 
 export async function generateStaticParams() {
-  return Object.keys(COMPETITORS).map((competitor) => ({
+  const slugs = Object.keys(COMPETITORS)
+  return [...slugs, "short"].map((competitor) => ({
     competitor,
   }))
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { competitor } = await params
-  const data = COMPETITORS[competitor]
+  const key = competitor === "short" ? "short-io" : competitor
+  const data = COMPETITORS[key]
   if (!data) return {}
 
-  const title = `UL0 vs ${data.name} (2026 Comparison)`
-  const description = `Detailed comparison: UL0 vs ${data.name}. Features, free tier limits, custom domains, pricing, and when to choose each platform.`
+  const title = `UL0 vs ${data.name} — Feature & Pricing Comparison`
+  const description = `Factual comparison between UL0 and ${data.name}. Compare free limits, custom domain pricing, click analytics, and redirect infrastructure.`
 
   return {
     title,
@@ -31,29 +33,23 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: `https://ul0.site/compare/${data.slug}`,
     },
     openGraph: {
-      title: `${title} | UL0`,
+      title,
       description,
       url: `https://ul0.site/compare/${data.slug}`,
       type: "article",
-      images: [{
-        url: "https://ul0.site/social-card.png",
-        width: 1376,
-        height: 768,
-        alt: `UL0 vs ${data.name}`,
-      }],
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | UL0`,
+      title,
       description,
-      images: ["https://ul0.site/social-card.png"],
     },
   }
 }
 
 export default async function CompetitorComparePage({ params }: Props) {
   const { competitor } = await params
-  const data = COMPETITORS[competitor]
+  const key = competitor === "short" ? "short-io" : competitor
+  const data = COMPETITORS[key]
   if (!data) notFound()
 
   const faqSchema = {
@@ -70,67 +66,113 @@ export default async function CompetitorComparePage({ params }: Props) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background text-foreground antialiased selection:bg-neutral-200 dark:selection:bg-neutral-800">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <Header />
+
       <main className="flex-1">
-        {/* Breadcrumb / Back */}
-        <div className="border-b bg-muted/10 py-3">
-          <div className="container mx-auto px-4 max-w-4xl flex items-center gap-2 text-xs text-muted-foreground">
-            <Link href="/compare" className="hover:text-foreground inline-flex items-center gap-1">
+        {/* Navigation Breadcrumb */}
+        <div className="border-b border-border">
+          <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2 text-xs text-muted-foreground">
+            <Link href="/compare" className="hover:text-foreground inline-flex items-center gap-1 transition-colors">
               <ArrowLeft className="h-3 w-3" />
-              <span>All Comparisons</span>
+              <span>Comparisons</span>
             </Link>
-            <span>/</span>
+            <span className="text-muted-foreground/40">/</span>
             <span className="text-foreground font-medium">UL0 vs {data.name}</span>
           </div>
         </div>
 
-        {/* Hero */}
-        <section className="py-12 sm:py-16 border-b bg-muted/20">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary mb-4">
-              <span>Verified Fact Sheet</span>
-              <span className="text-muted-foreground">•</span>
-              <span>Last verified: {data.verifiedDate}</span>
+        {/* Hero Section */}
+        <section className="py-14 sm:py-20 border-b border-border bg-card/20">
+          <div className="max-w-4xl mx-auto px-4 text-center space-y-4">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-[11px] font-mono text-muted-foreground">
+              <span>Fact-checked</span>
+              <span className="text-muted-foreground/40">•</span>
+              <span>Updated {data.verifiedDate}</span>
             </div>
-            <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+
+            <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-foreground">
               UL0 vs {data.name}
             </h1>
-            <p className="mt-4 text-base text-muted-foreground sm:text-lg leading-relaxed max-w-2xl">
-              A factual, side-by-side comparison between UL0 and {data.name}. Explore feature differences, free tier caps, custom domain support, and pricing.
+
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+              An objective, side-by-side comparison of features, custom domain pricing, free-tier limits, and infrastructure speed.
             </p>
+
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Link
+                href="/"
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-foreground text-background px-6 h-10 text-xs font-semibold hover:opacity-90 transition-opacity"
+              >
+                Create a short link free
+              </Link>
+              <Link
+                href="/pricing"
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-border bg-card px-6 h-10 text-xs font-semibold text-foreground hover:bg-muted/50 transition-colors"
+              >
+                View pricing plans
+              </Link>
+            </div>
           </div>
         </section>
 
-        {/* Overview Cards */}
-        <section className="py-10 border-b">
-          <div className="container mx-auto px-4 max-w-4xl">
+        {/* Executive Summary Cards */}
+        <section className="py-12 border-b border-border">
+          <div className="max-w-4xl mx-auto px-4">
             <div className="grid gap-6 sm:grid-cols-2">
-              <div className="rounded-xl border border-primary/30 bg-primary/5 p-6">
-                <span className="text-xs font-semibold uppercase tracking-wider text-primary">Overview</span>
-                <h2 className="text-xl font-semibold text-foreground mt-1 mb-2">UL0</h2>
-                <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-                  Modern branded link management with free custom domains, dynamic vector QR codes, cookieless analytics, and flat $3 Pro / $9 Business pricing.
-                </p>
-                <div className="text-xs space-y-1.5 text-muted-foreground border-t border-primary/10 pt-3">
-                  <div><strong>Free tier:</strong> 1 custom domain, unlimited public short links</div>
-                  <div><strong>Pro price:</strong> $3 / mo ($24/yr)</div>
+              {/* UL0 Card */}
+              <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Platform</span>
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-md border border-border bg-muted/30 text-foreground font-semibold">
+                    1 Free Domain
+                  </span>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-foreground">UL0</h2>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                    Fast link management with instant 307 temporary redirects, free custom domain connections, vector QR codes, cookieless analytics, and zero ads.
+                  </p>
+                </div>
+                <div className="pt-3 border-t border-border space-y-2 text-xs font-mono">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Free plan:</span>
+                    <span className="text-foreground font-semibold">1 domain, unlimited links</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Paid plan:</span>
+                    <span className="text-foreground font-semibold">$3 / mo ($24 / yr)</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-border bg-card p-6">
-                <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Overview</span>
-                <h2 className="text-xl font-semibold text-foreground mt-1 mb-2">{data.name}</h2>
-                <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-                  {data.whoItsFor}
-                </p>
-                <div className="text-xs space-y-1.5 text-muted-foreground border-t border-border pt-3">
-                  <div><strong>Free tier:</strong> {data.freePlan}</div>
-                  <div><strong>Starting paid:</strong> {data.paidStartPrice}</div>
+              {/* Competitor Card */}
+              <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-mono uppercase tracking-wider text-muted-foreground">Alternative</span>
+                  <span className="text-[11px] font-mono px-2 py-0.5 rounded-md border border-border bg-muted/30 text-muted-foreground">
+                    Benchmark
+                  </span>
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-foreground">{data.name}</h2>
+                  <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                    {data.whoItsFor}
+                  </p>
+                </div>
+                <div className="pt-3 border-t border-border space-y-2 text-xs font-mono">
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Free plan:</span>
+                    <span className="text-foreground truncate max-w-[180px]">{data.freePlan}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">Starting paid:</span>
+                    <span className="text-foreground font-semibold">{data.paidStartPrice}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -138,78 +180,84 @@ export default async function CompetitorComparePage({ params }: Props) {
         </section>
 
         {/* Feature Comparison Table */}
-        <section className="py-12">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Feature Comparison</h2>
-            <div className="rounded-xl border border-border bg-card overflow-hidden shadow-xs">
+        <section className="py-12 border-b border-border">
+          <div className="max-w-4xl mx-auto px-4 space-y-4">
+            <div>
+              <h2 className="text-lg font-bold tracking-tight text-foreground">
+                Feature Breakdown
+              </h2>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Side-by-side specifications checked against public documentation.
+              </p>
+            </div>
+
+            <div className="rounded-xl border border-border bg-card overflow-hidden">
               <table className="w-full text-xs text-left border-collapse">
                 <thead>
                   <tr className="bg-muted/40 border-b border-border">
                     <th className="p-4 font-semibold text-foreground w-2/5">Feature</th>
-                    <th className="p-4 font-semibold text-center w-3/10 bg-primary/5 text-primary">UL0</th>
-                    <th className="p-4 font-semibold text-center w-3/10 text-foreground">{data.name}</th>
+                    <th className="p-4 font-semibold text-foreground w-3/10 bg-muted/30">UL0</th>
+                    <th className="p-4 font-semibold text-muted-foreground w-3/10">{data.name}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border text-muted-foreground">
+                <tbody className="divide-y divide-border">
                   {data.featuresTable.map((row) => (
-                    <tr key={row.feature} className="hover:bg-muted/10 transition-colors">
+                    <tr key={row.feature} className="hover:bg-muted/20 transition-colors">
                       <td className="p-4 font-medium text-foreground">{row.feature}</td>
-                      <td className="p-4 text-center bg-primary/5 font-semibold text-primary">{row.ul0}</td>
-                      <td className="p-4 text-center">{row.competitor}</td>
+                      <td className="p-4 font-semibold text-foreground bg-muted/10 font-mono text-[11px]">{row.ul0}</td>
+                      <td className="p-4 text-muted-foreground font-mono text-[11px]">{row.competitor}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
-            <div className="mt-3 flex items-center justify-between text-[11px] text-muted-foreground">
-              <span>Last verified: {data.verifiedDate}</span>
+
+            <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-1">
+              <span>Verified as of {data.verifiedDate}</span>
               <a
                 href={data.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 hover:text-foreground hover:underline"
+                className="inline-flex items-center gap-1 hover:text-foreground underline underline-offset-4"
               >
-                <span>Official source: {data.name} Pricing</span>
+                <span>{data.name} public pricing page</span>
                 <ExternalLink className="h-3 w-3" />
               </a>
             </div>
           </div>
         </section>
 
-        {/* Balanced "When Competitor is Better" & "When UL0 is Better" */}
-        <section className="py-12 border-t bg-muted/10">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-xl font-semibold text-foreground mb-8 text-center">Honest Recommendations</h2>
+        {/* When to Choose Which */}
+        <section className="py-12 border-b border-border bg-card/10">
+          <div className="max-w-4xl mx-auto px-4 space-y-6">
+            <h2 className="text-lg font-bold tracking-tight text-foreground">
+              When to choose which platform
+            </h2>
+
             <div className="grid gap-6 sm:grid-cols-2">
-              <div className="rounded-xl border border-border bg-card p-6">
-                <h3 className="text-base font-semibold text-foreground mb-2 flex items-center gap-2">
-                  <span>When {data.name} is the better choice</span>
+              <div className="rounded-xl border border-border bg-card p-6 space-y-3">
+                <h3 className="text-sm font-semibold text-foreground">
+                  Choose UL0 if:
                 </h3>
-                <p className="text-xs text-muted-foreground mb-4">
-                  Choose {data.name} if your business needs align with these requirements:
-                </p>
-                <ul className="space-y-2 text-xs text-muted-foreground">
-                  {data.whenCompetitorBetter.map((item, idx) => (
+                <ul className="space-y-2.5 text-xs text-muted-foreground">
+                  {data.whenUl0Better.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2">
-                      <span className="text-muted-foreground/60 mt-0.5">•</span>
-                      <span>{item}</span>
+                      <Check className="h-3.5 w-3.5 text-foreground mt-0.5 shrink-0" />
+                      <span className="leading-relaxed">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="rounded-xl border border-primary/30 bg-primary/5 p-6">
-                <h3 className="text-base font-semibold text-primary mb-2 flex items-center gap-2">
-                  <span>When UL0 is the better choice</span>
+              <div className="rounded-xl border border-border bg-card p-6 space-y-3">
+                <h3 className="text-sm font-semibold text-foreground">
+                  Choose {data.name} if:
                 </h3>
-                <p className="text-xs text-muted-foreground mb-4">
-                  Choose UL0 if your priorities include:
-                </p>
-                <ul className="space-y-2 text-xs text-muted-foreground">
-                  {data.whenUl0Better.map((item, idx) => (
+                <ul className="space-y-2.5 text-xs text-muted-foreground">
+                  {data.whenCompetitorBetter.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2">
-                      <Check className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
-                      <span>{item}</span>
+                      <span className="text-muted-foreground/60 mt-0.5">•</span>
+                      <span className="leading-relaxed">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -218,13 +266,14 @@ export default async function CompetitorComparePage({ params }: Props) {
           </div>
         </section>
 
-        {/* Migration Guide */}
-        <section className="py-12 border-t">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-xl font-semibold text-foreground mb-4">
-              How to Migrate from {data.name} to UL0
+        {/* Migration Steps */}
+        <section className="py-12 border-b border-border">
+          <div className="max-w-4xl mx-auto px-4 space-y-4">
+            <h2 className="text-lg font-bold tracking-tight text-foreground">
+              How to migrate from {data.name} to UL0
             </h2>
-            <div className="rounded-xl border border-border bg-card p-6 space-y-4">
+
+            <div className="rounded-xl border border-border bg-card p-6">
               <ol className="space-y-3 text-xs text-muted-foreground list-decimal list-inside">
                 {data.migrationSteps.map((step, idx) => (
                   <li key={idx} className="leading-relaxed">
@@ -236,14 +285,17 @@ export default async function CompetitorComparePage({ params }: Props) {
           </div>
         </section>
 
-        {/* FAQ Section */}
-        <section className="py-12 border-t bg-muted/10">
-          <div className="container mx-auto px-4 max-w-4xl">
-            <h2 className="text-xl font-semibold text-foreground mb-6">Frequently Asked Questions</h2>
-            <div className="space-y-4">
+        {/* FAQs */}
+        <section className="py-12 border-b border-border bg-card/20">
+          <div className="max-w-4xl mx-auto px-4 space-y-6">
+            <h2 className="text-lg font-bold tracking-tight text-foreground">
+              Frequently Asked Questions
+            </h2>
+
+            <div className="space-y-3">
               {data.faqs.map((faq) => (
-                <div key={faq.q} className="rounded-xl border border-border bg-card p-5">
-                  <h3 className="text-sm font-semibold text-foreground mb-1.5">{faq.q}</h3>
+                <div key={faq.q} className="rounded-xl border border-border bg-card p-5 space-y-1.5">
+                  <h3 className="text-sm font-semibold text-foreground">{faq.q}</h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">{faq.a}</p>
                 </div>
               ))}
@@ -251,32 +303,33 @@ export default async function CompetitorComparePage({ params }: Props) {
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-14 border-t">
-          <div className="container mx-auto px-4 max-w-xl text-center">
-            <h2 className="text-2xl font-semibold text-foreground mb-3">
-              Try UL0 today for free
+        {/* Bottom CTA */}
+        <section className="py-16">
+          <div className="max-w-xl mx-auto px-4 text-center space-y-4">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground">
+              Ready to create branded links?
             </h2>
-            <p className="text-sm text-muted-foreground mb-6">
-              Create short links without signup or connect 1 custom domain for free.
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              Start with 1 free custom domain and unlimited short links. No credit card required.
             </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <Link
                 href="/"
-                className="w-full sm:w-auto inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-[#136759] transition-colors"
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-md bg-foreground text-background px-6 h-10 text-xs font-semibold hover:opacity-90 transition-opacity"
               >
-                Shorten a link now
+                Create a link
               </Link>
               <Link
-                href="/pricing"
-                className="w-full sm:w-auto inline-flex items-center justify-center rounded-lg border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                href="/compare"
+                className="w-full sm:w-auto inline-flex items-center justify-center rounded-md border border-border bg-card px-6 h-10 text-xs font-semibold text-foreground hover:bg-muted/50 transition-colors"
               >
-                View pricing plans
+                Browse all comparisons
               </Link>
             </div>
           </div>
         </section>
       </main>
+
       <Footer />
     </div>
   )

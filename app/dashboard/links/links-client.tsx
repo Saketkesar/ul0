@@ -256,14 +256,16 @@ export function LinksClient({
 
     if (isExpired) {
       chips.push(
-        <span key="expired" className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-500/10 text-red-500 border border-red-500/20">
-          Expired
+        <span key="expired" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono border border-border bg-card text-muted-foreground">
+          <span className="w-1.5 h-1.5 rounded-full bg-muted-foreground/60" />
+          <span>Expired</span>
         </span>
       )
     } else {
       chips.push(
-        <span key="active" className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-          Active
+        <span key="active" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono border border-border bg-card text-foreground">
+          <span className="w-1.5 h-1.5 rounded-full bg-foreground" />
+          <span>Active</span>
         </span>
       )
     }
@@ -273,15 +275,17 @@ export function LinksClient({
         const t = JSON.parse(link.targeting_json)
         if (t.password) {
           chips.push(
-            <span key="pw" className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-500 border border-amber-500/20 flex items-center gap-0.5">
-              <Lock className="h-2.5 w-2.5" /> PW
+            <span key="pw" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono border border-border bg-card text-muted-foreground">
+              <Lock className="h-2.5 w-2.5" />
+              <span>Password</span>
             </span>
           )
         }
         if (t.ab_rules?.length) {
           chips.push(
-            <span key="ab" className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-purple-500/10 text-purple-500 border border-purple-500/20 flex items-center gap-0.5">
-              <Layers className="h-2.5 w-2.5" /> A/B
+            <span key="ab" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono border border-border bg-card text-muted-foreground">
+              <Layers className="h-2.5 w-2.5" />
+              <span>A/B</span>
             </span>
           )
         }
@@ -468,8 +472,11 @@ export function LinksClient({
                       </td>
 
                       {/* Clicks */}
-                      <td className="py-3 px-4 text-right font-mono font-bold text-foreground">
-                        {link.clicks_count?.toLocaleString() || 0}
+                      <td className="py-3 px-4 text-right">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-border bg-muted/30 font-mono text-xs font-semibold text-foreground">
+                          <BarChart3 className="w-3 h-3 text-muted-foreground" />
+                          <span>{link.clicks_count?.toLocaleString() || 0}</span>
+                        </span>
                       </td>
 
                       {/* Status chips */}
@@ -480,7 +487,7 @@ export function LinksClient({
                       </td>
 
                       {/* Created date */}
-                      <td className="py-3 px-4 text-muted-foreground font-mono">
+                      <td className="py-3 px-4 text-muted-foreground font-mono text-[11px]">
                         {link.created_at
                           ? new Date(link.created_at).toLocaleDateString("en-US", {
                               month: "short",
@@ -495,7 +502,7 @@ export function LinksClient({
                           <button
                             type="button"
                             onClick={() => setQrModalLink(link)}
-                            className="p-1.5 rounded-md hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors"
+                            className="p-1.5 rounded-md border border-border bg-card text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                             title="View QR Code"
                           >
                             <QrCode className="h-3.5 w-3.5" />
@@ -503,7 +510,7 @@ export function LinksClient({
 
                           <Link
                             href={`/dashboard/links/${link.$id}`}
-                            className="p-1.5 rounded-md hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors"
+                            className="p-1.5 rounded-md border border-border bg-card text-muted-foreground hover:text-foreground transition-colors"
                             title="View Analytics"
                           >
                             <BarChart3 className="h-3.5 w-3.5" />
