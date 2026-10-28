@@ -102,12 +102,7 @@ export function DashboardShell({
       setIsDark(document.documentElement.classList.contains("dark"))
     }
 
-    return () => {
-      // If user navigates away from the dashboard, ensure dark mode is stripped from public pages
-      if (typeof window !== "undefined" && !window.location.pathname.startsWith("/dashboard")) {
-        document.documentElement.classList.remove("dark")
-      }
-    }
+    // Theme initialized
   }, [])
 
   const toggleTheme = () => {
@@ -200,6 +195,7 @@ export function DashboardShell({
       items: [
         { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
         { name: "Links", href: "/dashboard/links", icon: Link2 },
+        { name: "QR Codes", href: "/dashboard/qr-studio", icon: QrCode },
         { name: "Domains", href: "/dashboard/domains", icon: Globe },
         { name: "Campaigns", href: "/dashboard/campaigns", icon: Megaphone },
       ],
@@ -222,8 +218,6 @@ export function DashboardShell({
           {
             group: "Exclusive",
             items: [
-              { name: "Forms → Sheets", href: "/dashboard/forms", icon: FileSpreadsheet, badge: "Sheets" },
-              { name: "Dynamic QR Studio", href: "/dashboard/qr-studio", icon: QrCode, badge: "No Ads" },
               { name: "Marketing Engine", href: "/dashboard/marketing", icon: ShieldCheck, badge: "Admin" },
               { name: "SEO & Radar", href: "/dashboard/seo", icon: BarChart3, badge: "Admin" },
             ],

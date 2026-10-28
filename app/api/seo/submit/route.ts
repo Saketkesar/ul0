@@ -13,6 +13,7 @@ const CORE_PATHS = [
   "/qr",
   "/split",
   "/utm",
+  "/forms",
   "/tools",
   "/tools/pdf-splitter",
   "/tools/redirect-checker",

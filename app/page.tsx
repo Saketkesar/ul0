@@ -1,661 +1,494 @@
+import React from "react"
+import type { Metadata } from "next"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
-import { FeaturesSection } from "@/components/features-section"
-import { Metadata } from "next"
-import Link from "next/link"
-import Image from "next/image"
-import { hreflangAlternates } from "@/lib/i18n"
-import { Sparkles, ArrowRight, Check, Zap, Globe, BarChart3, QrCode, Shield, Layers, ChevronRight } from "lucide-react"
+import { CodeBlock } from "@/components/code-block"
+import {
+  Link2,
+  QrCode,
+  Globe,
+  BarChart3,
+  Code,
+  ShieldCheck,
+  Check,
+  ArrowRight,
+  ExternalLink,
+  ChevronRight,
+  GitBranch,
+} from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Free URL Shortener 2026 - Shorten Links Instantly | ul0",
+  title: "UL0 - URL Shortener, QR Codes and Custom Domains",
   description:
-    "ul0 is the best free URL shortener of 2026. Shorten links instantly — no signup required. Includes free QR codes, branded custom domain short links, click analytics, UTM campaign tools, and private file tools.",
-  keywords: [
-    // Branded & Custom Domain transactional keywords
-    "custom domain short link free",
-    "free custom domain link shortener",
-    "cheapest custom domain link shortener",
-    "branded url shortener free",
-    "short link with custom domain free",
-    "own domain link shortener cheapest",
-    "personal domain url shortener free",
-    "connect domain link shortener free",
-    "custom domain redirect free",
-    "cheap branded short links",
-    "dub co cheap alternative",
-    "bitly alternative custom domain",
-
-    // Primary High-Volume Search Keywords
-    "url shortener",
-    "free url shortener",
-    "link shortener",
-    "shorten url",
-    "short link",
-    "short url",
-    "url shortener free",
-    "link shortener free",
-    "shorten link",
-    "shorten url free",
-    "free link shortener",
-    "online url shortener",
-    "best url shortener",
-
-    // Competitor Alternatives
-    "bitly alternative",
-    "bitly alternative free",
-    "tinyurl alternative",
-    "tiny url alternative",
-    "bit.ly alternative",
-    "rebrandly alternative",
-    "ow.ly alternative",
-    "short.io alternative",
-    "t.co alternative",
-    "cutt.ly alternative",
-
-    // No Signup Keywords (Highest conversion)
-    "url shortener no signup",
-    "link shortener no signup",
-    "shorten url without signup",
-    "url shortener without registration",
-    "link shortener without login",
-    "free url shortener no account",
-    "anonymous url shortener",
-    "url shortener no login",
-
-    // Year-based Keywords
-    "best url shortener 2026",
-    "free url shortener 2026",
-    "top link shortener 2026",
-    "url shortener 2026",
-
-    // Feature Keywords
-    "custom short url",
-    "custom url shortener",
-    "branded link shortener",
-    "qr code url shortener",
-    "url shortener with qr code",
-    "link shortener with analytics",
-    "permanent short url",
-    "free pdf tools",
-  ],
+    "Shorten links, generate dynamic vector QR codes, and connect branded custom domains with privacy-first click analytics. Free to use with no account required.",
   alternates: {
     canonical: "https://ul0.site",
-    languages: hreflangAlternates,
-  },
-  openGraph: {
-    title: "Free URL Shortener 2026 - Shorten Links Instantly | ul0",
-    description:
-      "ul0 is the best free URL shortener of 2026. Shorten links instantly with no signup required. Includes free QR codes, branded custom domains, and click analytics.",
-    url: "https://ul0.site",
-    type: "website",
-    siteName: "ul0",
-    locale: "en_US",
-    images: [
-      {
-        url: "https://ul0.site/social-card.png",
-        width: 1376,
-        height: 768,
-        alt: "ul0 — Free URL Shortener, QR Codes & Custom Domains",
-        type: "image/png",
-      },
-    ],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Free URL Shortener 2026 - Shorten Links Instantly | ul0",
-    description:
-      "Shorten links instantly with no signup required. Includes free QR codes, branded custom domains, and click analytics.",
-    images: ["https://ul0.site/social-card.png"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
   },
 }
 
-// JSON-LD Schema for Homepage
-const homePageSchema = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "Organization",
-      "@id": "https://ul0.site/#organization",
-      name: "UL0",
-      alternateName: "ul0.site",
-      url: "https://ul0.site",
-      logo: {
-        "@type": "ImageObject",
-        url: "https://ul0.site/ul0.png",
-        width: 512,
-        height: 512
-      },
-      description: "Free branded short links, custom domain management, dynamic QR codes, and click analytics.",
-      foundingDate: "2024",
-      email: "getul0site@gmail.com",
-      sameAs: [
-        "https://x.com/ul0site",
-        "https://twitter.com/ul0site",
-        "https://github.com/Saketkesar/ul0",
-        "https://www.linkedin.com/company/ul0",
-        "https://www.youtube.com/@ul0site",
-        "https://www.instagram.com/ul0site",
-        "https://www.facebook.com/ul0site",
-      ],
-      contactPoint: {
-        "@type": "ContactPoint",
-        contactType: "customer support",
-        email: "getul0site@gmail.com",
-        url: "https://ul0.site/contact",
-        availableLanguage: ["English", "Hindi"]
-      }
-    },
-    {
-      "@type": "WebSite",
-      "@id": "https://ul0.site/#website",
-      url: "https://ul0.site",
-      name: "UL0",
-      alternateName: "ul0.site",
-      publisher: { "@id": "https://ul0.site/#organization" },
-      inLanguage: "en-US"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "@id": "https://ul0.site/#software",
-      name: "UL0",
-      applicationCategory: "BusinessApplication",
-      operatingSystem: "All (Web)",
-      offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "USD"
-      },
-      description: "Free branded short links, custom domains, dynamic QR codes, and click analytics.",
-      url: "https://ul0.site"
-    },
-    {
-      "@type": "WebPage",
-      "@id": "https://ul0.site/#webpage",
-      url: "https://ul0.site",
-      name: "UL0 — Free branded short links, QR codes and click analytics",
-      description: "Create short links on your own domain, generate QR codes and track clicks with privacy-friendly analytics. Free to start, no credit card.",
-      isPartOf: { "@id": "https://ul0.site/#website" },
-      primaryImageOfPage: {
-        "@type": "ImageObject",
-        url: "https://ul0.site/ul0.png"
-      },
-      datePublished: "2024-01-01",
-      dateModified: "2026-10-11",
-      inLanguage: "en-US",
-    },
-    {
-      "@type": "HowTo",
-      "@id": "https://ul0.site/#howto",
-      name: "How to Shorten a URL for Free",
-      description: "Shorten any long URL into a short, shareable link in 3 steps. No signup required.",
-      totalTime: "PT30S",
-      estimatedCost: {
-        "@type": "MonetaryAmount",
-        currency: "USD",
-        value: "0"
-      },
-      tool: [
-        {
-          "@type": "HowToTool",
-          name: "Web browser"
-        }
-      ],
-      step: [
-        {
-          "@type": "HowToStep",
-          position: 1,
-          name: "Paste your URL",
-          text: "Copy the long URL and paste it into the input box on ul0.site",
-          url: "https://ul0.site/#step1"
-        },
-        {
-          "@type": "HowToStep",
-          position: 2,
-          name: "Click Shorten",
-          text: "Click the Shorten URL button to generate your short link",
-          url: "https://ul0.site/#step2"
-        },
-        {
-          "@type": "HowToStep",
-          position: 3,
-          name: "Copy and share",
-          text: "Copy your new short URL and share it anywhere",
-          url: "https://ul0.site/#step3"
-        },
-      ],
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://ul0.site/#homepage-faq",
-      mainEntity: [
-        {
-          "@type": "Question",
-          name: "Is ul0 really free?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Yes. The public shortener on ul0.site is free to use without signup. Paid plans add custom domains, full analytics, and link management features."
-          }
-        },
-        {
-          "@type": "Question",
-          name: "How do I shorten a URL?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Paste your long URL in the box on ul0.site and click Shorten URL. You get a short link instantly — no account needed."
-          }
-        },
-        {
-          "@type": "Question",
-          name: "Do shortened URLs expire?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "No. Short URLs created on ul0 are permanent and will keep working."
-          }
-        },
-        {
-          "@type": "Question",
-          name: "Can I use my own domain?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Yes. Connect a custom domain (like link.yourbrand.com) via CNAME and create branded short links. One domain is included free on every plan."
-          }
-        },
-        {
-          "@type": "Question",
-          name: "Does ul0 track clicks?",
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: "Yes. ul0 provides privacy-friendly click analytics — country, device, browser, and referrer — without cookies or personal data collection."
-          }
-        },
-      ]
-    },
-    {
-      "@type": "BreadcrumbList",
-      "@id": "https://ul0.site/#breadcrumb-home",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Home",
-          item: "https://ul0.site"
-        }
-      ]
-    }
-  ],
-}
+const FAQS = [
+  {
+    q: "Are short links created on UL0 permanent?",
+    a: "Yes. Short links created on ul0.site do not have an automated expiration date and will redirect reliably as long as they comply with our Acceptable Use Policy.",
+  },
+  {
+    q: "Why do you use 307 redirects instead of 301?",
+    a: "Standard 301 redirects are cached permanently by web browsers, which causes repeat clicks to bypass the server (resulting in inaccurate click counts) and prevents destination URL edits from taking effect. We use 307 temporary redirects to ensure every visitor click is counted and destinations can be updated in real time.",
+  },
+  {
+    q: "Do you use advertising or tracking cookies?",
+    a: "No. UL0 does not set any advertising or third-party behavioral cookies. Click analytics are aggregated using edge request headers without tracking individuals across sites.",
+  },
+  {
+    q: "How does the free custom domain feature work?",
+    a: "Every UL0 account includes 1 custom domain connection for free. You point a CNAME DNS record from your domain or subdomain (e.g., link.yourbrand.com) to cname.ul0.site. SSL certificates are issued and renewed automatically.",
+  },
+  {
+    q: "What happens to abusive or phishing links?",
+    a: "All destination URLs are screened against threat intelligence feeds. Links reported through our abuse portal or detected distributing malware are deactivated immediately.",
+  },
+  {
+    q: "Can I manage links programmatically via API?",
+    a: "Yes. Every account can generate secret API keys to shorten URLs, attach custom aliases, and query click metrics using standardized JSON REST endpoints.",
+  },
+]
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground transition-colors duration-200">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homePageSchema) }}
-      />
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
 
       <main className="flex-1">
-        {/* Hero Section */}
-        <section id="shortener" className="pt-10 pb-14 sm:pt-16 sm:pb-20">
-          <div className="container mx-auto px-4 sm:px-6">
-            <div className="mx-auto max-w-3xl text-center space-y-4">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-border/80 bg-muted/40 text-xs font-mono text-muted-foreground">
-                <span>Free URL Shortener &amp; File Utilities</span>
-              </div>
+        {/* 1. Hero Section */}
+        <section id="shortener" className="pt-14 pb-16 sm:pt-20 sm:pb-24 border-b border-border bg-card/20">
+          <div className="container mx-auto px-4 sm:px-6 max-w-4xl text-center space-y-5">
+            <h1 className="text-3xl sm:text-5xl font-semibold tracking-tight text-foreground leading-[1.15]">
+              Short links, QR codes and custom domains.
+            </h1>
+            <p className="mx-auto max-w-xl text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              Create branded short links on your own domain, generate printable vector QR codes,
+              and measure traffic with privacy-first click analytics.
+            </p>
 
-              {/* Headline */}
-              <h1 className="text-balance text-3xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.12]">
-                Shorten links. Generate QR codes. Free forever.
-              </h1>
-
-              {/* Subheadline */}
-              <p className="mx-auto max-w-xl text-pretty text-xs sm:text-sm lg:text-base text-muted-foreground leading-relaxed">
-                Create branded short links with custom domains, track clicks with privacy-friendly analytics, and split expenses online. No credit card or signup required.
-              </p>
-
-              {/* Shortener Container */}
-              <div className="pt-2 sm:pt-4">
-                <LinkShortenerForm />
-              </div>
+            {/* Creator Tool Inline */}
+            <div className="pt-2">
+              <LinkShortenerForm />
             </div>
           </div>
         </section>
 
-        {/* How it works */}
-        <section className="py-14 sm:py-16 border-y border-border/80 bg-muted/20">
-          <div className="container mx-auto px-4 sm:px-6">
-            <div className="max-w-4xl mx-auto space-y-8">
-              <div className="text-center space-y-1">
-                <span className="text-xs font-mono font-medium text-muted-foreground uppercase tracking-wider">
-                  Workflow
-                </span>
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                  How UL0 Works
-                </h2>
-                <p className="text-xs text-muted-foreground max-w-md mx-auto">
-                  Three simple steps to shorten, brand, and track any link.
+        {/* 2. Trust Strip */}
+        <section className="border-b border-border bg-muted/20 py-4">
+          <div className="container mx-auto px-4 max-w-6xl">
+            <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-xs text-muted-foreground">
+              <Link href="/status" className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+                <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                <span>99.98% Edge Uptime</span>
+              </Link>
+              <Link href="/security" className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+                <ShieldCheck className="h-3.5 w-3.5 text-primary" />
+                <span>Automated Threat Screening</span>
+              </Link>
+              <Link href="/privacy" className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+                <span>Zero Tracking Cookies</span>
+              </Link>
+              <a
+                href="https://github.com/Saketkesar/ul0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors"
+              >
+                <GitBranch className="h-3.5 w-3.5" />
+                <span>Open Source on GitHub</span>
+              </a>
+              <Link href="/report-abuse" className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors text-destructive">
+                <span>Report Abuse</span>
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        {/* 3. How It Works (Product UI preview, no icon cards) */}
+        <section className="py-16 sm:py-24 border-b border-border">
+          <div className="container mx-auto px-4 sm:px-6 max-w-5xl space-y-12">
+            <div className="max-w-xl space-y-2">
+              <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
+                How link shortening works
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Three straightforward steps to shorten, brand, and measure any URL.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="rounded-lg border border-border bg-card p-5 space-y-3">
+                <span className="text-xs font-mono font-semibold text-primary">01</span>
+                <h3 className="text-sm font-semibold text-foreground">Paste and shorten</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Enter any long URL or UTM link. Choose an optional custom slug or generate a random short back-half.
                 </p>
               </div>
 
-              <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-                <div className="rounded-lg border border-border/80 bg-card p-5 space-y-2.5 hover:border-foreground/30 transition-colors">
-                  <div className="font-mono text-xs font-bold text-muted-foreground bg-muted/60 w-6 h-6 rounded flex items-center justify-center">
-                    01
-                  </div>
-                  <h3 className="font-semibold text-sm text-foreground">
-                    Paste Your Link
-                  </h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Drop any long URL or UTM link into the shortener box above.
-                  </p>
-                </div>
+              <div className="rounded-lg border border-border bg-card p-5 space-y-3">
+                <span className="text-xs font-mono font-semibold text-primary">02</span>
+                <h3 className="text-sm font-semibold text-foreground">Brand your domain</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Connect your custom domain (such as link.yourbrand.com) via CNAME. SSL certificates are issued automatically.
+                </p>
+              </div>
 
-                <div className="rounded-lg border border-border/80 bg-card p-5 space-y-2.5 hover:border-foreground/30 transition-colors">
-                  <div className="font-mono text-xs font-bold text-muted-foreground bg-muted/60 w-6 h-6 rounded flex items-center justify-center">
-                    02
-                  </div>
-                  <h3 className="font-semibold text-sm text-foreground">
-                    Generate &amp; Brand
-                  </h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Instantly receive your permanent 301 short link with dynamic QR code preview.
-                  </p>
-                </div>
-
-                <div className="rounded-lg border border-border/80 bg-card p-5 space-y-2.5 hover:border-foreground/30 transition-colors">
-                  <div className="font-mono text-xs font-bold text-muted-foreground bg-muted/60 w-6 h-6 rounded flex items-center justify-center">
-                    03
-                  </div>
-                  <h3 className="font-semibold text-sm text-foreground">
-                    Share &amp; Analyze
-                  </h3>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    Inspect visitor device breakdown, country locations, and referrers with full privacy.
-                  </p>
-                </div>
+              <div className="rounded-lg border border-border bg-card p-5 space-y-3">
+                <span className="text-xs font-mono font-semibold text-primary">03</span>
+                <h3 className="text-sm font-semibold text-foreground">Inspect performance</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Track visits by country, device, browser, and referring website in real time without cookies.
+                </p>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Features Bento Grid */}
-        <FeaturesSection />
+        {/* 4. Product Deep-Dives (Alternating real UI representations) */}
+        <section className="py-16 sm:py-24 border-b border-border space-y-20">
+          <div className="container mx-auto px-4 sm:px-6 max-w-5xl space-y-20">
+            {/* Feature 1: Fast redirects & editing */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              <div className="space-y-4">
+                <div className="h-8 w-8 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+                  <Link2 className="h-4 w-4" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
+                  Edge redirection that never locks you in
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  UL0 uses 307 temporary redirects to ensure repeat clicks always register on the server.
+                  If your target landing page changes or a campaign expires, edit the destination anytime
+                  without breaking existing links.
+                </p>
+                <Link href="/docs" className="text-xs font-medium text-primary hover:underline inline-flex items-center gap-1">
+                  <span>Learn about redirect behavior</span>
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
+              </div>
 
-        {/* Pricing Teaser */}
-        <section className="py-14 sm:py-20 border-t border-border/80">
-          <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
-            <div className="text-center space-y-2 mb-10 sm:mb-12">
-              <span className="text-xs font-mono font-medium text-muted-foreground uppercase tracking-wider">
-                Transparent Plans
-              </span>
-              <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-foreground">
-                Free forever. Upgrade when your brand grows.
+              {/* Real UI Screen: Link Card */}
+              <div className="rounded-lg border border-border bg-card p-5 space-y-3 shadow-xs">
+                <div className="flex items-center justify-between border-b border-border pb-3">
+                  <span className="font-mono text-xs font-semibold text-foreground">ul0.site/r/launch</span>
+                  <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">Active</span>
+                </div>
+                <div className="space-y-1 text-xs">
+                  <span className="text-muted-foreground text-[11px]">Destination</span>
+                  <p className="font-mono text-xs text-muted-foreground truncate">
+                    https://example.com/products/summer-sale?utm_source=twitter
+                  </p>
+                </div>
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-border text-center text-xs">
+                  <div className="p-2 rounded bg-muted/30">
+                    <span className="text-muted-foreground text-[10px] block">Clicks</span>
+                    <span className="font-semibold text-foreground">1,420</span>
+                  </div>
+                  <div className="p-2 rounded bg-muted/30">
+                    <span className="text-muted-foreground text-[10px] block">Top Country</span>
+                    <span className="font-semibold text-foreground">US (64%)</span>
+                  </div>
+                  <div className="p-2 rounded bg-muted/30">
+                    <span className="text-muted-foreground text-[10px] block">Mobile</span>
+                    <span className="font-semibold text-foreground">78%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature 2: Vector QR Studio */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              <div className="order-2 lg:order-1 rounded-lg border border-border bg-card p-5 space-y-4 shadow-xs">
+                <div className="flex items-center justify-between border-b border-border pb-3">
+                  <span className="text-xs font-semibold text-foreground">Vector QR Code Generator</span>
+                  <span className="text-[11px] font-mono text-muted-foreground">SVG + PNG</span>
+                </div>
+                <div className="flex items-center justify-center p-4 bg-background rounded border border-border">
+                  <div className="w-32 h-32 bg-foreground text-background flex items-center justify-center font-mono text-[10px] text-center p-2 rounded">
+                    [High-Resolution Dynamic QR]
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="p-2 rounded border border-border bg-muted/20">
+                    <span className="text-[10px] text-muted-foreground block">Error Correction</span>
+                    <span className="font-semibold text-foreground">Level H (30%)</span>
+                  </div>
+                  <div className="p-2 rounded border border-border bg-muted/20">
+                    <span className="text-[10px] text-muted-foreground block">Color Contrast</span>
+                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">18:1 (Optimal)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="order-1 lg:order-2 space-y-4">
+                <div className="h-8 w-8 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+                  <QrCode className="h-4 w-4" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
+                  Dynamic QR codes ready for print
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Export vector SVG codes that stay sharp at any print scale. Because codes point to a
+                  dynamic short link, you can change the target URL anytime without reprinting menus,
+                  packaging, or promotional cards.
+                </p>
+                <Link href="/qr" className="text-xs font-medium text-primary hover:underline inline-flex items-center gap-1">
+                  <span>Open QR Code Studio</span>
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Feature 3: Custom Domains */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              <div className="space-y-4">
+                <div className="h-8 w-8 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+                  <Globe className="h-4 w-4" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
+                  Branded short links on your own domain
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Branded domains improve click-through rates by establishing brand recognition.
+                  Connect your subdomain in minutes with automatic SSL certificate provisioning and
+                  zero maintenance overhead.
+                </p>
+                <Link href="/custom-domain-landing" className="text-xs font-medium text-primary hover:underline inline-flex items-center gap-1">
+                  <span>View DNS setup guide</span>
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
+              </div>
+
+              {/* Real DNS UI card */}
+              <div className="rounded-lg border border-border bg-card p-5 space-y-3 shadow-xs">
+                <div className="flex items-center justify-between border-b border-border pb-3">
+                  <span className="text-xs font-semibold text-foreground">DNS Record Configuration</span>
+                  <span className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400">Verified</span>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead>
+                      <tr className="text-muted-foreground border-b border-border/60">
+                        <th className="py-1.5 font-medium">Type</th>
+                        <th className="py-1.5 font-medium">Name</th>
+                        <th className="py-1.5 font-medium">Target</th>
+                      </tr>
+                    </thead>
+                    <tbody className="font-mono text-[11px] text-foreground">
+                      <tr>
+                        <td className="py-1.5">CNAME</td>
+                        <td className="py-1.5">link</td>
+                        <td className="py-1.5 text-primary">cname.ul0.site</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="pt-2 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+                  <span>SSL: Automated Let&apos;s Encrypt</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-medium">Active</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Feature 4: Developer REST API */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+              <div className="order-2 lg:order-1">
+                <CodeBlock
+                  title="Shorten URL via REST API"
+                  language="bash"
+                  code={`curl -X POST https://ul0.site/api/shorten \\
+  -H "Authorization: Bearer ul0_live_••••••••" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "longUrl": "https://example.com/product/123",
+    "customSlug": "my-promo"
+  }'`}
+                />
+              </div>
+
+              <div className="order-1 lg:order-2 space-y-4">
+                <div className="h-8 w-8 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+                  <Code className="h-4 w-4" />
+                </div>
+                <h3 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
+                  A simple REST API for developers
+                </h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Integrate link generation and analytics into your internal workflows, CI/CD jobs, or
+                  applications. All endpoints accept JSON and return predictable responses.
+                </p>
+                <Link href="/docs" className="text-xs font-medium text-primary hover:underline inline-flex items-center gap-1">
+                  <span>Explore Developer Documentation</span>
+                  <ChevronRight className="h-3 w-3" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. Pricing Summary (3 columns with exact numbers, linking to /pricing) */}
+        <section className="py-16 sm:py-24 border-b border-border bg-card/10">
+          <div className="container mx-auto px-4 sm:px-6 max-w-5xl space-y-12">
+            <div className="text-center space-y-2 max-w-xl mx-auto">
+              <h2 className="text-xl sm:text-3xl font-semibold tracking-tight text-foreground">
+                Predictable, transparent plans
               </h2>
-              <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto">
-                No surprises. One custom domain included on every account.
+              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                Start free. Upgrade only when you require additional custom domains or higher API throughput.
               </p>
             </div>
 
-            <div className="grid gap-4 sm:gap-6 grid-cols-1 md:grid-cols-3 items-stretch">
-              {/* Free */}
-              <div className="rounded-lg border border-border/80 bg-card p-5 sm:p-6 flex flex-col justify-between space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+              {/* Free Plan */}
+              <div className="rounded-lg border border-border bg-card p-6 flex flex-col justify-between space-y-6">
                 <div className="space-y-4">
                   <div>
-                    <span className="text-xs font-mono font-semibold text-muted-foreground uppercase">Hobby</span>
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Free</h3>
                     <div className="text-3xl font-bold text-foreground mt-1">$0</div>
-                    <p className="text-xs text-muted-foreground mt-0.5">Free public link management</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">Free forever, no card needed</p>
                   </div>
                   <ul className="space-y-2 text-xs text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
-                      <span>Unlimited short links on ul0.site</span>
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Unlimited links on ul0.site</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
-                      <span>1 custom domain connection</span>
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>1 custom branded domain</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
-                      <span>Standard dynamic QR codes</span>
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Dynamic vector QR codes</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Real-time click count analytics</span>
                     </li>
                   </ul>
                 </div>
-                <Link
-                  href="/sign-up"
-                  className="w-full text-center py-2 rounded-md border border-border/80 bg-muted/40 hover:bg-muted text-xs font-medium text-foreground transition-colors"
-                >
-                  Get Started Free
-                </Link>
+                <Button asChild variant="outline" size="sm" className="w-full text-xs font-semibold">
+                  <Link href="/sign-up">Start free</Link>
+                </Button>
               </div>
 
-              {/* Pro (Highlighted) */}
-              <div className="rounded-lg border-2 border-foreground bg-card p-5 sm:p-6 flex flex-col justify-between space-y-6 relative shadow-xs">
-                <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-foreground text-background px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider">
-                  Most Popular
-                </div>
+              {/* Pro Plan (Subtle border highlight) */}
+              <div className="rounded-lg border-2 border-primary bg-card p-6 flex flex-col justify-between space-y-6 relative">
                 <div className="space-y-4">
                   <div>
-                    <span className="text-xs font-mono font-semibold text-foreground uppercase">Pro Marketer</span>
+                    <h3 className="text-xs font-semibold text-primary uppercase tracking-wider">Pro</h3>
                     <div className="text-3xl font-bold text-foreground mt-1">
                       $3<span className="text-xs font-normal text-muted-foreground">/mo</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">For creators &amp; small startups</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">For creators &amp; independent builders</p>
                   </div>
                   <ul className="space-y-2 text-xs text-foreground">
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
                       <span>3 custom branded domains</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
                       <span>100 custom domain links</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
-                      <span>Real-time click &amp; country analytics</span>
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Geo, device &amp; referrer breakdown</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
-                      <span>Custom UTM parameters</span>
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Password protection &amp; click limits</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>60 API requests / minute</span>
                     </li>
                   </ul>
                 </div>
-                <Link
-                  href="/pricing"
-                  className="w-full text-center py-2 rounded-md bg-foreground text-background hover:bg-foreground/90 text-xs font-medium transition-all"
-                >
-                  Upgrade to Pro
-                </Link>
+                <Button asChild size="sm" className="w-full text-xs font-semibold">
+                  <Link href="/pricing">Upgrade to Pro</Link>
+                </Button>
               </div>
 
-              {/* Business */}
-              <div className="rounded-lg border border-border/80 bg-card p-5 sm:p-6 flex flex-col justify-between space-y-6">
+              {/* Business Plan */}
+              <div className="rounded-lg border border-border bg-card p-6 flex flex-col justify-between space-y-6">
                 <div className="space-y-4">
                   <div>
-                    <span className="text-xs font-mono font-semibold text-muted-foreground uppercase">Business</span>
+                    <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Business</h3>
                     <div className="text-3xl font-bold text-foreground mt-1">
                       $9<span className="text-xs font-normal text-muted-foreground">/mo</span>
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">For agencies &amp; teams</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">For agencies and growing teams</p>
                   </div>
                   <ul className="space-y-2 text-xs text-muted-foreground">
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
                       <span>10 custom branded domains</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
                       <span>Unlimited domain links</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
-                      <span>Full API access &amp; webhook relay</span>
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>CSV data exports &amp; link archiving</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground shrink-0" />
-                      <span>Priority developer support</span>
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>300 API requests / minute</span>
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <Check className="h-3.5 w-3.5 text-primary shrink-0" />
+                      <span>Priority support</span>
                     </li>
                   </ul>
                 </div>
-                <Link
-                  href="/pricing"
-                  className="w-full text-center py-2 rounded-md border border-border/80 bg-muted/40 hover:bg-muted text-xs font-medium text-foreground transition-colors"
-                >
-                  View Business Plan
-                </Link>
+                <Button asChild variant="outline" size="sm" className="w-full text-xs font-semibold">
+                  <Link href="/pricing">View Business Plan</Link>
+                </Button>
               </div>
             </div>
 
-            <div className="mt-6 text-center">
-              <Link href="/pricing" className="text-xs font-medium text-muted-foreground hover:text-foreground inline-flex items-center gap-1">
-                <span>Compare all tier features and limits</span>
+            <div className="text-center pt-2">
+              <Link href="/compare" className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 font-medium">
+                <span>See side-by-side comparison against Bitly, Short.io, and Dub</span>
                 <ChevronRight className="h-3 w-3" />
               </Link>
             </div>
           </div>
         </section>
 
-        {/* Competitor Comparison Matrix (High-Ranking SEO Anchor) */}
-        <section className="py-14 sm:py-16 border-t border-border/80">
-          <div className="container mx-auto px-4 sm:px-6 max-w-4xl">
-            <div className="text-center space-y-1 mb-8">
-              <span className="text-xs font-mono font-medium text-muted-foreground uppercase tracking-wider">
-                Feature Comparison
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                Compare URL Shorteners: ul0 vs Alternatives
+        {/* 6. FAQ Section (Accordion) */}
+        <section className="py-16 sm:py-24 border-b border-border">
+          <div className="container mx-auto px-4 sm:px-6 max-w-3xl space-y-8">
+            <div className="text-center space-y-2 max-w-lg mx-auto">
+              <h2 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
+                Frequently Asked Questions
               </h2>
-              <p className="text-xs text-muted-foreground max-w-md mx-auto">
-                See why creators and businesses choose ul0 over Bitly and TinyURL.
+              <p className="text-xs text-muted-foreground">
+                Literal, factual answers about redirection, privacy, and limits.
               </p>
             </div>
 
-            <div className="overflow-x-auto rounded-lg border border-border/80 bg-card">
-              <table className="w-full text-left border-collapse text-xs">
-                <thead>
-                  <tr className="bg-muted/40 border-b border-border/80 text-muted-foreground">
-                    <th className="p-3 font-semibold text-foreground">Feature</th>
-                    <th className="p-3 font-semibold text-foreground">ul0</th>
-                    <th className="p-3 font-medium">Bitly</th>
-                    <th className="p-3 font-medium">TinyURL</th>
-                    <th className="p-3 font-medium">Rebrandly</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/60">
-                  <tr>
-                    <td className="p-3 font-medium text-foreground">Free Links Limit</td>
-                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">Unlimited</td>
-                    <td className="p-3 text-muted-foreground">5 links/mo</td>
-                    <td className="p-3 text-muted-foreground">Limited</td>
-                    <td className="p-3 text-muted-foreground">Limited</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-medium text-foreground">No Signup Required</td>
-                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">Yes</td>
-                    <td className="p-3 text-muted-foreground">No</td>
-                    <td className="p-3 text-muted-foreground">Yes</td>
-                    <td className="p-3 text-muted-foreground">No</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-medium text-foreground">Custom Domains</td>
-                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">1 Free on all plans</td>
-                    <td className="p-3 text-muted-foreground">$35/mo required</td>
-                    <td className="p-3 text-muted-foreground">$12.99/mo</td>
-                    <td className="p-3 text-muted-foreground">Paid only</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-medium text-foreground">Dynamic Vector QR Codes</td>
-                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">Free</td>
-                    <td className="p-3 text-muted-foreground">Paid only</td>
-                    <td className="p-3 text-muted-foreground">Paid only</td>
-                    <td className="p-3 text-muted-foreground">Paid only</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-medium text-foreground">Private File Tools (PWA)</td>
-                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">Yes (100% Free)</td>
-                    <td className="p-3 text-muted-foreground">No</td>
-                    <td className="p-3 text-muted-foreground">No</td>
-                    <td className="p-3 text-muted-foreground">No</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-medium text-foreground">Group Expense Splitter</td>
-                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">Yes (Free UPI)</td>
-                    <td className="p-3 text-muted-foreground">No</td>
-                    <td className="p-3 text-muted-foreground">No</td>
-                    <td className="p-3 text-muted-foreground">No</td>
-                  </tr>
-                  <tr>
-                    <td className="p-3 font-medium text-foreground">Starting Price</td>
-                    <td className="p-3 font-semibold text-emerald-600 dark:text-emerald-400">100% Free</td>
-                    <td className="p-3 text-muted-foreground">From $8/mo</td>
-                    <td className="p-3 text-muted-foreground">From $12.99/mo</td>
-                    <td className="p-3 text-muted-foreground">From $13/mo</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ Section */}
-        <section className="py-14 sm:py-16 border-t border-border/80 bg-muted/10">
-          <div className="container mx-auto px-4 sm:px-6 max-w-2xl">
-            <div className="text-center space-y-1 mb-8">
-              <span className="text-xs font-mono font-medium text-muted-foreground uppercase tracking-wider">
-                FAQ
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                Frequently Asked Questions
-              </h2>
-            </div>
-
-            <div className="space-y-2.5">
-              {[
-                {
-                  q: "Is UL0 completely free to use?",
-                  a: "Yes. The public shortener on ul0.site is 100% free with permanent links and zero credit card required. Upgrading unlocks custom domains, detailed geo analytics, and UTM builders.",
-                },
-                {
-                  q: "Do shortened links ever expire?",
-                  a: "Never. Short URLs created on UL0 are permanent and will reliably redirect forever.",
-                },
-                {
-                  q: "Can I connect my own branded domain?",
-                  a: "Yes. You can connect your domain (like link.yourbrand.com) with 1 free custom domain included on every account with automated SSL.",
-                },
-                {
-                  q: "Are the file tools really 100% private?",
-                  a: "Yes. All file and PDF tools (splitting, merging, image conversion, scanning) process locally inside your browser using WebAssembly. Your files are never uploaded to any server.",
-                },
-                {
-                  q: "Can I install UL0 as an app on my phone?",
-                  a: "Yes. On the Files page (/files), tap 'Add to Home Screen' (or tap Share > Add to Home Screen in Safari) to install it directly onto your phone without an app store.",
-                },
-              ].map((faq) => (
+            <div className="space-y-3">
+              {FAQS.map((faq) => (
                 <details
                   key={faq.q}
-                  className="group rounded-md border border-border/80 bg-card p-4 transition-all [&_summary::-webkit-details-marker]:hidden"
+                  className="group rounded-md border border-border bg-card p-4 transition-colors [&_summary::-webkit-details-marker]:hidden"
                 >
                   <summary className="text-xs sm:text-sm font-semibold text-foreground cursor-pointer flex items-center justify-between select-none">
                     <span>{faq.q}</span>
-                    <span className="ml-4 text-xs font-mono text-muted-foreground transition-transform group-open:rotate-45">
+                    <span className="text-xs font-mono text-muted-foreground group-open:rotate-45 transition-transform">
                       +
                     </span>
                   </summary>
-                  <p className="mt-2.5 text-xs text-muted-foreground leading-relaxed pr-4">
+                  <p className="mt-2.5 text-xs text-muted-foreground leading-relaxed pr-6">
                     {faq.a}
                   </p>
                 </details>
@@ -664,27 +497,27 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Bottom CTA Banner */}
-        <section className="py-14 sm:py-20 border-t border-border/80">
-          <div className="container mx-auto px-4 sm:px-6 max-w-xl text-center space-y-4">
-            <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-foreground">
-              Ready to shorten your first link?
+        {/* 7. Final Call to Action */}
+        <section className="py-16 sm:py-20 text-center">
+          <div className="container mx-auto px-4 max-w-xl space-y-4">
+            <h2 className="text-xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              Create your first short link or QR code.
             </h2>
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-              Join thousands of creators, founders, and developers using UL0 for clean, branded short links, vector QR codes, and private document utilities.
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Free to start. No credit card required. Connect a custom domain in minutes.
             </p>
-            <div className="flex items-center justify-center gap-3 pt-2">
+            <div className="pt-2 flex items-center justify-center gap-3">
               <a
                 href="#shortener"
-                className="inline-flex items-center justify-center rounded-md bg-foreground text-background px-5 py-2 text-xs font-medium hover:bg-foreground/90 transition-all cursor-pointer"
+                className="inline-flex items-center justify-center rounded-md bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               >
-                <span>Shorten a Link</span>
+                Shorten a link now
               </a>
               <Link
-                href="/files"
-                className="inline-flex items-center justify-center rounded-md border border-border px-4 py-2 text-xs font-medium text-foreground hover:bg-muted transition-all cursor-pointer"
+                href="/pricing"
+                className="inline-flex items-center justify-center rounded-md border border-border bg-card px-4 py-2.5 text-xs font-medium text-foreground hover:bg-muted transition-colors"
               >
-                <span>Open Files &amp; PDF</span>
+                View plan details
               </Link>
             </div>
           </div>

@@ -1,55 +1,46 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Home, Link2, ArrowLeft } from "lucide-react"
+import { Link2, Search, ArrowRight } from "lucide-react"
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-      <div className="text-center space-y-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground px-4 py-16">
+      <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-center space-y-6">
         <div className="flex justify-center">
           <Image
             src="/ul0.png"
-            alt="ul0 logo"
-            width={120}
-            height={40}
-            className="h-10 w-auto object-contain"
+            alt="UL0"
+            width={72}
+            height={26}
+            className="h-6 w-auto object-contain"
+            priority
           />
         </div>
-        
-        <div className="space-y-2">
-          <h1 className="text-6xl font-bold text-primary">404</h1>
-          <h2 className="text-2xl font-semibold text-foreground sm:text-3xl">
-            Page Not Found
-          </h2>
-          <p className="text-muted-foreground max-w-md mx-auto">
-            Oops! The page you&apos;re looking for doesn&apos;t exist or has been moved.
+
+        <div className="space-y-1.5">
+          <span className="font-mono text-xs font-semibold text-primary">404 — Not Found</span>
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">
+            Page or Link Not Found
+          </h1>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            The page or short link you requested does not exist, has been moved, or was removed by its creator.
           </p>
         </div>
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Button asChild size="lg">
+        <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-border">
+          <Button asChild size="sm" className="flex-1 text-xs font-semibold">
             <Link href="/">
-              <Home className="mr-2 h-4 w-4" />
-              Go Home
+              <Link2 className="h-3.5 w-3.5 mr-1" />
+              <span>Shorten a link</span>
             </Link>
           </Button>
-          <Button variant="outline" asChild size="lg">
-            <Link href="/split">
-              <Link2 className="mr-2 h-4 w-4" />
-              Split Expenses
+          <Button asChild variant="outline" size="sm" className="flex-1 text-xs">
+            <Link href="/tools">
+              <Search className="h-3.5 w-3.5 mr-1" />
+              <span>Browse tools</span>
             </Link>
           </Button>
-        </div>
-
-        <div className="pt-8">
-          <Link 
-            href="/" 
-            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="mr-1 h-4 w-4" />
-            Back to homepage
-          </Link>
         </div>
       </div>
     </div>

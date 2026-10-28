@@ -1,155 +1,220 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState, useEffect, Suspense } from "react"
+import { useSearchParams } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Flag, ShieldCheck, CheckCircle2, AlertTriangle, Send, Loader2 } from "lucide-react"
+import { Flag, CheckCircle2, AlertTriangle, Shield, Clock } from "lucide-react"
 import Link from "next/link"
 
-export default function ReportAbusePage() {
+function ReportAbuseContent() {
+  const searchParams = useSearchParams()
   const [shortUrl, setShortUrl] = useState("")
   const [reason, setReason] = useState("phishing")
   const [description, setDescription] = useState("")
   const [email, setEmail] = useState("")
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    const urlParam = searchParams.get("url")
+    if (urlParam) {
+      setShortUrl(urlParam)
+    }
+  }, [searchParams])
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!shortUrl.trim()) return
+    if (!shortUrl.trim()) {
+      setError("Please enter the short link URL in question.")
+      return
+    }
 
     setLoading(true)
-    // Simulate submission / send email
-    setTimeout(() => {
-      setLoading(false)
+    setError(null)
+
+    try {
+      const res = await fetch("/api/report-abuse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          shortUrl: shortUrl.trim(),
+          reason,
+          description: description.trim(),
+          email: email.trim(),
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to submit abuse report.")
+      }
+
       setSubmitted(true)
-    }, 600)
+    } catch (err: any) {
+      setError(err.message || "An unexpected error occurred. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <Header />
+    <div className="container mx-auto px-4 max-w-2xl py-12 sm:py-16 space-y-8">
+      {/* Header */}
+      <div className="border-b border-border pb-6 space-y-2">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-medium border border-border bg-muted/40 text-muted-foreground">
+          <Flag className="h-3 w-3 text-destructive" />
+          <span>Trust &amp; Safety</span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+          Report an Abusive or Malicious Short Link
+        </h1>
+        <p className="text-xs sm:text-sm text-muted-foreground">
+          We maintain zero tolerance for phishing, malware, scam redirects, and illegal content.
+          Verified malicious links are deactivated immediately.
+        </p>
+      </div>
 
-      <main className="flex-1 py-10 sm:py-16">
-        <div className="container mx-auto px-4 max-w-2xl">
-          {/* Header */}
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-rose-500/10 text-rose-600 dark:text-rose-400 mb-4">
-              <Flag className="h-4 w-4" />
-              Abuse &amp; Phishing Report Portal
-            </div>
-            <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-              Report a Malicious Short Link
-            </h1>
-            <p className="mt-3 text-sm text-muted-foreground sm:text-base max-w-xl mx-auto">
-              We have zero tolerance for phishing, malware, scam redirects, or illegal material. Submit suspicious links below for immediate inspection and takedown.
+      {submitted ? (
+        <div className="rounded-lg border border-border bg-card p-6 sm:p-8 text-center space-y-4">
+          <div className="mx-auto h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+            <CheckCircle2 className="h-5 w-5" />
+          </div>
+          <div className="space-y-1">
+            <h2 className="text-base font-semibold text-foreground">Report Received</h2>
+            <p className="text-xs text-muted-foreground max-w-md mx-auto">
+              Our automated scanning pipeline and safety reviewers have logged this report for{" "}
+              <strong className="font-mono text-foreground">{shortUrl}</strong>. Confirmed policy
+              violations will be neutralized.
             </p>
           </div>
-
-          {submitted ? (
-            <Card className="border-emerald-500/30 bg-emerald-500/5 text-center p-8 space-y-4">
-              <div className="mx-auto h-12 w-12 rounded-full bg-emerald-500/20 text-emerald-600 flex items-center justify-center">
-                <CheckCircle2 className="h-6 w-6" />
-              </div>
-              <h2 className="text-xl font-bold text-foreground">Abuse Report Received</h2>
-              <p className="text-sm text-muted-foreground max-w-md mx-auto">
-                Thank you for helping keep the web safe. Our automated security scanners and trust team have logged the link <strong>{shortUrl}</strong> and will deactivate it if policy violations are confirmed.
-              </p>
-              <div className="pt-2">
-                <Button onClick={() => { setSubmitted(false); setShortUrl(""); }} variant="outline" className="text-xs">
-                  Report Another Link
-                </Button>
-              </div>
-            </Card>
-          ) : (
-            <Card className="border-border shadow-md">
-              <CardHeader className="pb-4">
-                <CardTitle className="text-lg">Abuse Report Form</CardTitle>
-                <CardDescription className="text-xs">Provide details about the violating short link.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <Label htmlFor="sUrl" className="text-xs font-semibold">
-                      Short Link in Question <span className="text-destructive">*</span>
-                    </Label>
-                    <Input
-                      id="sUrl"
-                      placeholder="e.g. https://ul0.site/r/xyz"
-                      value={shortUrl}
-                      onChange={(e) => setShortUrl(e.target.value)}
-                      required
-                      className="mt-1 text-sm font-mono text-xs"
-                    />
-                  </div>
-
-                  <div>
-                    <Label className="text-xs font-semibold">Reason for Violation</Label>
-                    <Select value={reason} onValueChange={setReason}>
-                      <SelectTrigger className="mt-1 text-sm">
-                        <SelectValue placeholder="Select Reason" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="phishing">Phishing / Brand Impersonation / Credential Theft</SelectItem>
-                        <SelectItem value="malware">Malware / Virus / Ransomware Distribution</SelectItem>
-                        <SelectItem value="spam">Spam / Deceptive Advertising</SelectItem>
-                        <SelectItem value="illegal">Illegal Goods / Services</SelectItem>
-                        <SelectItem value="copyright">Copyright or Trademark Infringement</SelectItem>
-                        <SelectItem value="other">Other Policy Violation</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div>
-                    <Label htmlFor="desc" className="text-xs font-semibold">Additional Details / Evidence (Optional)</Label>
-                    <Textarea
-                      id="desc"
-                      placeholder="Explain how this link was received or why it is fraudulent..."
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      rows={3}
-                      className="mt-1 text-sm"
-                    />
-                  </div>
-
-                  <div>
-                    <Label htmlFor="contactEmail" className="text-xs font-semibold">Your Email (Optional, for follow-up)</Label>
-                    <Input
-                      id="contactEmail"
-                      type="email"
-                      placeholder="you@domain.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className="mt-1 text-sm"
-                    />
-                  </div>
-
-                  <div className="pt-2">
-                    <Button type="submit" disabled={loading || !shortUrl.trim()} className="w-full h-11 font-semibold gap-2">
-                      {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                      Submit Abuse Report
-                    </Button>
-                  </div>
-
-                  <p className="text-center text-[11px] text-muted-foreground pt-2">
-                    You can also email our security team directly at{" "}
-                    <a href="mailto:getul0site@gmail.com" className="text-primary underline">
-                      getul0site@gmail.com
-                    </a>
-                  </p>
-                </form>
-              </CardContent>
-            </Card>
-          )}
+          <div className="pt-2">
+            <Button
+              onClick={() => {
+                setSubmitted(false)
+                setShortUrl("")
+                setDescription("")
+              }}
+              variant="outline"
+              size="sm"
+              className="text-xs"
+            >
+              Report another link
+            </Button>
+          </div>
         </div>
-      </main>
+      ) : (
+        <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-card p-6 sm:p-8 space-y-5">
+          {error && (
+            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
 
+          <div className="space-y-1.5">
+            <label htmlFor="shortUrl" className="text-xs font-semibold text-foreground">
+              Short Link in Question <span className="text-destructive">*</span>
+            </label>
+            <Input
+              id="shortUrl"
+              type="text"
+              value={shortUrl}
+              onChange={(e) => setShortUrl(e.target.value)}
+              placeholder="https://ul0.site/r/example or slug"
+              className="font-mono text-xs"
+              required
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label htmlFor="reason" className="text-xs font-semibold text-foreground">
+              Violation Category <span className="text-destructive">*</span>
+            </label>
+            <select
+              id="reason"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring"
+            >
+              <option value="phishing">Phishing / Deceptive clone of a legitimate site</option>
+              <option value="malware">Malware / Virus distribution</option>
+              <option value="scam">Scam / Financial fraud / Counterfeit</option>
+              <option value="spam">Spam / Unsolicited bulk messaging</option>
+              <option value="illegal">Illegal content or copyright violation</option>
+              <option value="other">Other policy violation</option>
+            </select>
+          </div>
+
+          <div className="space-y-1.5">
+            <label htmlFor="description" className="text-xs font-semibold text-foreground">
+              Additional Details (optional)
+            </label>
+            <Textarea
+              id="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Describe what occurs when visiting the link or provide the destination URL if known."
+              rows={3}
+              className="text-xs"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label htmlFor="email" className="text-xs font-semibold text-foreground">
+              Your Email Address (optional, for follow-up only)
+            </label>
+            <Input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="text-xs"
+            />
+          </div>
+
+          <div className="pt-2 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+              <Clock className="h-3.5 w-3.5" />
+              <span>Review time: usually under 2 hours for high-risk phishing</span>
+            </div>
+            <Button type="submit" size="sm" disabled={loading} className="text-xs w-full sm:w-auto">
+              {loading ? "Submitting..." : "Submit Abuse Report"}
+            </Button>
+          </div>
+        </form>
+      )}
+
+      {/* Safety Policy summary */}
+      <div className="rounded-lg border border-border bg-muted/20 p-5 space-y-2 text-xs text-muted-foreground">
+        <span className="font-semibold text-foreground flex items-center gap-1.5">
+          <Shield className="h-3.5 w-3.5 text-primary" />
+          Automated Threat Screening
+        </span>
+        <p className="leading-relaxed">
+          Every destination URL shortened on UL0 is evaluated against public threat feeds and blocklists.
+          If you are a security researcher, law enforcement agency, or domain registrar, you may also email
+          direct urgent takedown requests to <strong className="text-foreground font-mono">abuse@ul0.site</strong>.
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default function ReportAbusePage() {
+  return (
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <Header />
+      <main className="flex-1">
+        <Suspense fallback={<div className="container mx-auto px-4 py-16 text-center text-xs text-muted-foreground">Loading...</div>}>
+          <ReportAbuseContent />
+        </Suspense>
+      </main>
       <Footer />
     </div>
   )

@@ -1,11 +1,13 @@
 import type { Metadata } from "next"
 import { auth, currentUser } from "@clerk/nextjs/server"
+import { cookies } from "next/headers"
 import { redirect } from "next/navigation"
 import { getActivePlan } from "@/lib/plan.server"
 import { isUserAdmin } from "@/lib/marketing-auth"
 import { getAccountByClerkId } from "@/lib/appwrite/accounts"
 import { getDomainsByOwner } from "@/lib/appwrite/domains"
 import { getUserLinksStats } from "@/lib/appwrite/links"
+import { verifyClaimToken, claimLinkForUser } from "@/lib/claim-token"
 import { DashboardShell } from "@/components/dashboard/dashboard-shell"
 
 export const metadata: Metadata = {
@@ -26,6 +28,20 @@ export default async function DashboardLayout({
 
   if (!userId) {
     redirect("/sign-in")
+  }
+
+  // Claim any pending anonymous link created before sign-in
+  try {
+    const cookieStore = await cookies()
+    const claimToken = cookieStore.get("ul0_claim_token")?.value
+    if (claimToken) {
+      const payload = verifyClaimToken(claimToken)
+      if (payload?.linkId) {
+        await claimLinkForUser(payload.linkId, userId)
+      }
+    }
+  } catch (err) {
+    console.error("Error claiming anonymous link:", err)
   }
 
   const [user, accountDoc, domains, linkStats] = await Promise.all([

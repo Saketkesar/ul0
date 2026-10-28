@@ -1,540 +1,335 @@
 "use client"
 
-import { useState, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
+import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { QrCode, Download, Link2, Mail, Phone, Wifi, MessageSquare, Copy, Check } from "lucide-react"
+import { CopyField } from "@/components/copy-field"
+import {
+  QrCode,
+  Download,
+  Link2,
+  Sliders,
+  ShieldCheck,
+  AlertTriangle,
+  Sparkles,
+  ArrowRight,
+  Check,
+} from "lucide-react"
 import QRCode from "qrcode"
+import { toast } from "sonner"
 
-export default function QRCodeGeneratorPage() {
-  const [qrDataUrl, setQrDataUrl] = useState<string>("")
-  const [copied, setCopied] = useState(false)
-  const [generating, setGenerating] = useState(false)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+export default function QrPage() {
+  const [content, setContent] = useState("https://ul0.site")
+  const [fgColor, setFgColor] = useState("#0B1412")
+  const [bgColor, setBgColor] = useState("#FFFFFF")
+  const [errorLevel, setErrorLevel] = useState<"L" | "M" | "Q" | "H">("M")
+  const [qrSize, setQrSize] = useState(400)
+  const [isTrackable, setIsTrackable] = useState(false)
+  const [trackableShortUrl, setTrackableShortUrl] = useState<string | null>(null)
+  const [isCreatingTrackable, setIsCreatingTrackable] = useState(false)
+  const [qrPngUrl, setQrPngUrl] = useState<string>("")
+  const [qrSvgString, setQrSvgString] = useState<string>("")
 
-  // Form states
-  const [urlInput, setUrlInput] = useState("")
-  const [textInput, setTextInput] = useState("")
-  const [emailTo, setEmailTo] = useState("")
-  const [emailSubject, setEmailSubject] = useState("")
-  const [phoneNumber, setPhoneNumber] = useState("")
-  const [wifiSsid, setWifiSsid] = useState("")
-  const [wifiPassword, setWifiPassword] = useState("")
-  const [wifiEncryption, setWifiEncryption] = useState("WPA")
-  const [smsNumber, setSmsNumber] = useState("")
-  const [smsMessage, setSmsMessage] = useState("")
+  // Calculate approximate contrast ratio
+  const calculateLuminance = (hex: string) => {
+    const clean = hex.replace("#", "")
+    if (clean.length !== 6) return 0.5
+    const r = parseInt(clean.substring(0, 2), 16) / 255
+    const g = parseInt(clean.substring(2, 4), 16) / 255
+    const b = parseInt(clean.substring(4, 6), 16) / 255
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+  }
 
-  const generateQR = async (data: string) => {
-    if (!data.trim()) return
-    setGenerating(true)
-    const startTime = Date.now()
+  const lumFg = calculateLuminance(fgColor)
+  const lumBg = calculateLuminance(bgColor)
+  const contrastRatio =
+    (Math.max(lumFg, lumBg) + 0.05) / (Math.min(lumFg, lumBg) + 0.05)
+  const isLowContrast = contrastRatio < 3.0
+
+  // Regenerate QR on parameters change
+  useEffect(() => {
+    const targetContent = trackableShortUrl || content
+    if (!targetContent.trim()) return
+
     try {
-      const canvas = canvasRef.current
-      if (canvas) {
-        // High error correction 'H' is required when center is obscured by a logo
-        await QRCode.toCanvas(canvas, data, {
-          width: 400,
-          margin: 2,
-          errorCorrectionLevel: "H",
-          color: {
-            dark: "#000000",
-            light: "#ffffff",
-          },
-        })
+      QRCode.toDataURL(targetContent, {
+        width: qrSize,
+        margin: 2,
+        errorCorrectionLevel: errorLevel,
+        color: { dark: fgColor, light: bgColor },
+      }).then(setQrPngUrl)
 
-        const ctx = canvas.getContext("2d")
-        if (ctx) {
-          const logoImg = new Image()
-          logoImg.src = "/favicon.png"
-          await new Promise((resolve) => {
-            logoImg.onload = resolve
-            logoImg.onerror = resolve
-          })
-
-          if (logoImg.complete && logoImg.naturalWidth > 0) {
-            const logoSize = canvas.width * 0.20
-            const x = (canvas.width - logoSize) / 2
-            const y = (canvas.height - logoSize) / 2
-
-            // Draw white rounded card behind the logo
-            ctx.fillStyle = "#ffffff"
-            ctx.beginPath()
-            const padding = 6
-            ctx.roundRect(x - padding, y - padding, logoSize + padding * 2, logoSize + padding * 2, 6)
-            ctx.fill()
-
-            // Draw the logo image
-            ctx.drawImage(logoImg, x, y, logoSize, logoSize)
-          }
-        }
-
-        const url = canvas.toDataURL("image/png")
-        // Ensure the QR generation WebP animation (/ulo_qr_logo.webp) displays for at least 1500ms
-        const elapsed = Date.now() - startTime
-        if (elapsed < 1600) {
-          await new Promise((resolve) => setTimeout(resolve, 1600 - elapsed))
-        }
-        setQrDataUrl(url)
-      } else {
-        const url = await QRCode.toDataURL(data, {
-          width: 400,
-          margin: 2,
-          errorCorrectionLevel: "H",
-          color: {
-            dark: "#000000",
-            light: "#ffffff",
-          },
-        })
-        const elapsed = Date.now() - startTime
-        if (elapsed < 1600) {
-          await new Promise((resolve) => setTimeout(resolve, 1600 - elapsed))
-        }
-        setQrDataUrl(url)
-      }
+      QRCode.toString(targetContent, {
+        type: "svg",
+        margin: 2,
+        errorCorrectionLevel: errorLevel,
+        color: { dark: fgColor, light: bgColor },
+      }).then(setQrSvgString)
     } catch (err) {
-      console.error("Error generating QR code:", err)
+      console.error("QR generation error:", err)
+    }
+  }, [content, fgColor, bgColor, errorLevel, qrSize, trackableShortUrl])
+
+  const handleCreateTrackable = async () => {
+    if (!content.trim()) return
+    setIsCreatingTrackable(true)
+
+    try {
+      let target = content.trim()
+      if (!/^https?:\/\//i.test(target)) {
+        target = `https://${target}`
+      }
+
+      const res = await fetch("/api/shorten", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ longUrl: target }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || "Failed to create trackable link")
+
+      setTrackableShortUrl(data.shortUrl)
+      setIsTrackable(true)
+      toast.success("Trackable short link created for QR code")
+    } catch (err: any) {
+      toast.error(err.message || "Failed to create trackable link")
     } finally {
-      setGenerating(false)
+      setIsCreatingTrackable(false)
     }
   }
 
-  const downloadQR = () => {
-    if (!qrDataUrl) return
-    const link = document.createElement("a")
-    link.download = "qr-code.png"
-    link.href = qrDataUrl
-    link.click()
-  }
-
-  const copyQR = async () => {
-    if (!qrDataUrl) return
-    try {
-      const blob = await fetch(qrDataUrl).then(r => r.blob())
-      await navigator.clipboard.write([
-        new ClipboardItem({ "image/png": blob })
-      ])
-      if (typeof navigator !== "undefined" && typeof navigator.vibrate === "function") {
-        navigator.vibrate(10)
-      }
-      setCopied(true)
-      setTimeout(() => setCopied(false), 1600)
-    } catch (err) {
-      console.error("Error copying:", err)
-    }
-  }
-
-  const generateUrlQR = () => {
-    let url = urlInput.trim()
-    if (url && !url.startsWith("http://") && !url.startsWith("https://")) {
-      url = "https://" + url
-    }
-    generateQR(url)
-  }
-
-  const generateEmailQR = () => {
-    const mailto = `mailto:${emailTo}?subject=${encodeURIComponent(emailSubject)}`
-    generateQR(mailto)
-  }
-
-  const generatePhoneQR = () => {
-    generateQR(`tel:${phoneNumber}`)
-  }
-
-  const generateWifiQR = () => {
-    const wifiString = `WIFI:T:${wifiEncryption};S:${wifiSsid};P:${wifiPassword};;`
-    generateQR(wifiString)
-  }
-
-  const generateSmsQR = () => {
-    generateQR(`sms:${smsNumber}?body=${encodeURIComponent(smsMessage)}`)
+  const downloadSvg = () => {
+    if (!qrSvgString) return
+    const blob = new Blob([qrSvgString], { type: "image/svg+xml" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `ul0-qr.svg`
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
-      
-      <main className="flex-1 py-8 sm:py-12">
-        <div className="container mx-auto px-4">
-          {/* Hero */}
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-              <QrCode className="h-4 w-4" />
-              100% Free QR Code Generator
-            </div>
-            <h1 className="text-3xl font-bold mb-4 sm:text-4xl lg:text-5xl">
-              Free QR Code Generator
+
+      <main className="flex-1 py-12 sm:py-16">
+        <div className="container mx-auto px-4 sm:px-6 max-w-5xl space-y-12">
+          {/* Header */}
+          <div className="border-b border-border pb-6 space-y-2">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              Vector QR Code Studio
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
-              Create QR codes for URLs, WiFi, Email, Phone, SMS and more. 
-              No signup required. Download instantly in high quality PNG format.
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Create high-resolution PNG and SVG vector QR codes. Processed client-side in your browser.
             </p>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-2 max-w-5xl mx-auto">
-            {/* Generator */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Generate QR Code</CardTitle>
-                <CardDescription>Select type and enter your data</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Tabs defaultValue="url" className="w-full">
-                  <TabsList className="grid grid-cols-3 sm:grid-cols-6 mb-4">
-                    <TabsTrigger value="url" className="text-xs">
-                      <Link2 className="h-4 w-4 sm:mr-1" />
-                      <span className="hidden sm:inline">URL</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="text" className="text-xs">
-                      <MessageSquare className="h-4 w-4 sm:mr-1" />
-                      <span className="hidden sm:inline">Text</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="email" className="text-xs">
-                      <Mail className="h-4 w-4 sm:mr-1" />
-                      <span className="hidden sm:inline">Email</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="phone" className="text-xs">
-                      <Phone className="h-4 w-4 sm:mr-1" />
-                      <span className="hidden sm:inline">Phone</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="wifi" className="text-xs">
-                      <Wifi className="h-4 w-4 sm:mr-1" />
-                      <span className="hidden sm:inline">WiFi</span>
-                    </TabsTrigger>
-                    <TabsTrigger value="sms" className="text-xs">
-                      <MessageSquare className="h-4 w-4 sm:mr-1" />
-                      <span className="hidden sm:inline">SMS</span>
-                    </TabsTrigger>
-                  </TabsList>
+          {/* Working Tool Above The Fold */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            {/* Left Controls Column (7 cols) */}
+            <div className="lg:col-span-7 rounded-lg border border-border bg-card p-5 sm:p-6 space-y-5">
+              {/* Target Input */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-semibold text-foreground">
+                  Target URL or Content
+                </label>
+                <Input
+                  type="text"
+                  value={content}
+                  onChange={(e) => {
+                    setContent(e.target.value)
+                    setTrackableShortUrl(null)
+                    setIsTrackable(false)
+                  }}
+                  placeholder="https://example.com/menu or your message"
+                  className="font-mono text-xs"
+                />
+              </div>
 
-                  <TabsContent value="url" className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="url">Website URL</Label>
-                      <Input
-                        id="url"
-                        placeholder="https://example.com"
-                        value={urlInput}
-                        onChange={(e) => setUrlInput(e.target.value)}
-                      />
-                    </div>
-                    <Button onClick={generateUrlQR} className="w-full" disabled={generating}>
-                      {generating ? "Generating..." : "Generate QR Code"}
-                    </Button>
-                  </TabsContent>
-
-                  <TabsContent value="text" className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="text">Text Content</Label>
-                      <Input
-                        id="text"
-                        placeholder="Enter any text..."
-                        value={textInput}
-                        onChange={(e) => setTextInput(e.target.value)}
-                      />
-                    </div>
-                    <Button onClick={() => generateQR(textInput)} className="w-full" disabled={generating}>
-                      {generating ? "Generating..." : "Generate QR Code"}
-                    </Button>
-                  </TabsContent>
-
-                  <TabsContent value="email" className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="email-to">Email Address</Label>
-                      <Input
-                        id="email-to"
-                        type="email"
-                        placeholder="example@email.com"
-                        value={emailTo}
-                        onChange={(e) => setEmailTo(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email-subject">Subject (optional)</Label>
-                      <Input
-                        id="email-subject"
-                        placeholder="Email subject"
-                        value={emailSubject}
-                        onChange={(e) => setEmailSubject(e.target.value)}
-                      />
-                    </div>
-                    <Button onClick={generateEmailQR} className="w-full" disabled={generating}>
-                      {generating ? "Generating..." : "Generate QR Code"}
-                    </Button>
-                  </TabsContent>
-
-                  <TabsContent value="phone" className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="phone">Phone Number</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="+1234567890"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                      />
-                    </div>
-                    <Button onClick={generatePhoneQR} className="w-full" disabled={generating}>
-                      {generating ? "Generating..." : "Generate QR Code"}
-                    </Button>
-                  </TabsContent>
-
-                  <TabsContent value="wifi" className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="ssid">Network Name (SSID)</Label>
-                      <Input
-                        id="ssid"
-                        placeholder="Your WiFi name"
-                        value={wifiSsid}
-                        onChange={(e) => setWifiSsid(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="wifi-password">Password</Label>
-                      <Input
-                        id="wifi-password"
-                        type="password"
-                        placeholder="WiFi password"
-                        value={wifiPassword}
-                        onChange={(e) => setWifiPassword(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="encryption">Encryption</Label>
-                      <Select value={wifiEncryption} onValueChange={setWifiEncryption}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="WPA">WPA/WPA2</SelectItem>
-                          <SelectItem value="WEP">WEP</SelectItem>
-                          <SelectItem value="nopass">None</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <Button onClick={generateWifiQR} className="w-full" disabled={generating}>
-                      {generating ? "Generating..." : "Generate QR Code"}
-                    </Button>
-                  </TabsContent>
-
-                  <TabsContent value="sms" className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="sms-number">Phone Number</Label>
-                      <Input
-                        id="sms-number"
-                        type="tel"
-                        placeholder="+1234567890"
-                        value={smsNumber}
-                        onChange={(e) => setSmsNumber(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="sms-message">Message (optional)</Label>
-                      <Input
-                        id="sms-message"
-                        placeholder="Pre-filled message"
-                        value={smsMessage}
-                        onChange={(e) => setSmsMessage(e.target.value)}
-                      />
-                    </div>
-                    <Button onClick={generateSmsQR} className="w-full" disabled={generating}>
-                      {generating ? "Generating..." : "Generate QR Code"}
-                    </Button>
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
-
-            {/* Preview */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Your QR Code</CardTitle>
-                <CardDescription>Scan with any QR code reader app</CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-col items-center">
-                <div className="w-[300px] h-[300px] border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/30 mb-4 overflow-hidden p-2">
-                  {generating ? (
-                    <div className="flex flex-col items-center justify-center p-3 text-center animate-in fade-in duration-200">
-                      <img
-                        src="/ulo_qr_logo.webp"
-                        alt="Generating QR Code Animation"
-                        className="w-44 h-44 object-contain mb-2"
-                      />
-                      <p className="text-xs font-semibold text-primary flex items-center gap-1.5">
-                        <span className="h-2 w-2 rounded-full bg-primary animate-ping" />
-                        <span>Generating Vector QR Code...</span>
-                      </p>
-                    </div>
-                  ) : qrDataUrl ? (
-                    <img key={qrDataUrl} src={qrDataUrl} alt="Generated QR Code" className="w-full h-full animate-qr-wave rounded-md object-contain" />
-                  ) : (
-                    <div className="flex flex-col items-center justify-center p-3 text-center text-muted-foreground">
-                      <img src="/ulo_qr_logo.webp" alt="UL0 Branded QR Code" className="w-44 h-44 object-contain mb-2 rounded-lg shadow-xs" />
-                      <p className="text-xs font-medium">Sample Preview • Enter data to generate</p>
-                    </div>
-                  )}
+              {/* Trackable Link Button */}
+              <div className="p-3.5 rounded-md border border-border bg-muted/20 space-y-2 text-xs">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-semibold text-foreground">Dynamic Trackable QR</h4>
+                    <p className="text-muted-foreground text-[11px] mt-0.5">
+                      Points your code to a short link so you can update the destination anytime without reprinting.
+                    </p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant={isTrackable ? "secondary" : "outline"}
+                    size="sm"
+                    onClick={handleCreateTrackable}
+                    disabled={isCreatingTrackable || !content.trim()}
+                    className="text-xs shrink-0"
+                  >
+                    {isCreatingTrackable ? "Connecting..." : isTrackable ? "Connected" : "Make Trackable"}
+                  </Button>
                 </div>
-                <canvas ref={canvasRef} className="hidden" />
-                
-                {qrDataUrl && (
-                  <div className="flex gap-2 w-full">
-                    <Button onClick={downloadQR} className="flex-1">
-                      <Download className="h-4 w-4 mr-2" />
-                      Download PNG
-                    </Button>
-                    <Button onClick={copyQR} variant="outline" className="flex-1">
-                      {copied ? (
-                        <>
-                          <Check className="h-4 w-4 mr-2" />
-                          Copied!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-4 w-4 mr-2" />
-                          Copy
-                        </>
-                      )}
-                    </Button>
+                {trackableShortUrl && (
+                  <CopyField value={trackableShortUrl} label="Short Link" size="sm" />
+                )}
+              </div>
+
+              {/* Color Customization */}
+              <div className="grid grid-cols-2 gap-4 pt-1">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Foreground Color</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={fgColor}
+                      onChange={(e) => setFgColor(e.target.value)}
+                      className="h-8 w-10 rounded border border-border cursor-pointer bg-transparent"
+                    />
+                    <Input
+                      type="text"
+                      value={fgColor}
+                      onChange={(e) => setFgColor(e.target.value)}
+                      className="font-mono text-xs uppercase"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Background Color</label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="color"
+                      value={bgColor}
+                      onChange={(e) => setBgColor(e.target.value)}
+                      className="h-8 w-10 rounded border border-border cursor-pointer bg-transparent"
+                    />
+                    <Input
+                      type="text"
+                      value={bgColor}
+                      onChange={(e) => setBgColor(e.target.value)}
+                      className="font-mono text-xs uppercase"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Error Correction Level */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Error Correction</label>
+                  <select
+                    value={errorLevel}
+                    onChange={(e) => setErrorLevel(e.target.value as any)}
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring"
+                  >
+                    <option value="L">Level L (7% recovery, best density)</option>
+                    <option value="M">Level M (15% recovery, recommended)</option>
+                    <option value="Q">Level Q (25% recovery, high durability)</option>
+                    <option value="H">Level H (30% recovery, maximum safety)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-foreground">Export Resolution</label>
+                  <select
+                    value={qrSize}
+                    onChange={(e) => setQrSize(Number(e.target.value))}
+                    className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring"
+                  >
+                    <option value={300}>300 x 300 px (Digital / Screen)</option>
+                    <option value={600}>600 x 600 px (Standard Print)</option>
+                    <option value={1200}>1200 x 1200 px (High-DPI Packaging)</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Contrast Warning */}
+              {isLowContrast && (
+                <div className="p-3 rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4 shrink-0" />
+                  <span>
+                    Contrast ratio is {contrastRatio.toFixed(1)}:1 (minimum 3:1 recommended). Low contrast can prevent phone cameras from scanning.
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Right Preview Column (5 cols) */}
+            <div className="lg:col-span-5 rounded-lg border border-border bg-card p-5 sm:p-6 space-y-5 text-center">
+              <div className="text-xs font-semibold text-foreground text-left">Real-Time Vector Preview</div>
+
+              <div className="flex items-center justify-center p-6 bg-muted/30 rounded-lg border border-border">
+                {qrPngUrl ? (
+                  <img
+                    src={qrPngUrl}
+                    alt="Generated QR code"
+                    className="w-52 h-52 object-contain rounded"
+                  />
+                ) : (
+                  <div className="w-52 h-52 flex items-center justify-center text-xs text-muted-foreground font-mono">
+                    Generating...
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    asChild
+                    size="sm"
+                    className="w-full text-xs font-semibold gap-1.5"
+                    disabled={!qrPngUrl}
+                  >
+                    <a href={qrPngUrl} download="ul0-qr.png">
+                      <Download className="h-3.5 w-3.5" />
+                      <span>Download PNG</span>
+                    </a>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={downloadSvg}
+                    disabled={!qrSvgString}
+                    className="w-full text-xs font-semibold gap-1.5"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    <span>Download SVG</span>
+                  </Button>
+                </div>
+                <p className="text-[11px] text-muted-foreground">
+                  SVG format scales infinitely without pixelation. Ideal for Adobe Illustrator, menus, and billboards.
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* SEO Content */}
-          <section className="mt-16 max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6 text-center">
-              Why Use Our Free QR Code Generator?
-            </h2>
-            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="text-center p-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <QrCode className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold mb-2">Multiple QR Types</h3>
-                <p className="text-sm text-muted-foreground">
-                  Create QR codes for URLs, WiFi, Email, Phone, SMS, and plain text.
-                </p>
-              </div>
-              <div className="text-center p-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Download className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold mb-2">High Quality Download</h3>
-                <p className="text-sm text-muted-foreground">
-                  Download your QR code in high-resolution PNG format for print or digital use.
-                </p>
-              </div>
-              <div className="text-center p-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Check className="h-6 w-6 text-primary" />
-                </div>
-                <h3 className="font-semibold mb-2">No Signup Required</h3>
-                <p className="text-sm text-muted-foreground">
-                  Generate unlimited QR codes instantly without creating an account.
-                </p>
-              </div>
-            </div>
-          </section>
-
-          {/* Comprehensive Guide & Educational Content */}
-          <section className="mt-16 max-w-4xl mx-auto space-y-12">
-            <div>
-              <h2 className="text-2xl font-bold mb-4">Complete Guide to QR Codes: Technology, Use Cases & Best Practices</h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Quick Response (QR) codes have transformed how businesses and individuals bridge physical objects with online experiences. Originally invented in 1994 by Masahiro Hara at Denso Wave for automotive parts tracking, QR codes are now ubiquitous in marketing, contactless payments, digital menus, event ticketing, and WiFi authentication.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                Unlike traditional 1D barcodes that store up to 20 numerical characters, 2D QR codes can store thousands of alphanumeric characters in a matrix pattern, making them versatile for embedding complex URLs, WiFi credentials, vCards, and encrypted transaction signatures.
+          {/* Explanatory Sections */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-border">
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-foreground">Print &amp; Vector Clarity</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                When printing QR codes on business cards, menus, or posters, always prefer vector SVG
+                exports to avoid fuzzy edges caused by raster image scaling.
               </p>
             </div>
-
-            <div className="grid gap-6 md:grid-cols-2">
-              <div className="border border-border p-6 rounded-xl bg-card">
-                <h3 className="text-lg font-semibold mb-3">Understanding QR Error Correction Levels</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                  QR codes utilize Reed-Solomon Error Correction algorithms. This mathematical capability allows scanning devices to accurately read codes even if parts of the graphic are smudged, torn, or obscured by custom branding logos.
-                </p>
-                <ul className="text-xs text-muted-foreground space-y-1.5 list-disc list-inside">
-                  <li><strong>Level L (Low):</strong> Recovers up to 7% of lost data</li>
-                  <li><strong>Level M (Medium):</strong> Recovers up to 15% of lost data</li>
-                  <li><strong>Level Q (Quartile):</strong> Recovers up to 25% of lost data</li>
-                  <li><strong>Level H (High):</strong> Recovers up to 30% of lost data (Used by ul0 for custom logos)</li>
-                </ul>
-              </div>
-
-              <div className="border border-border p-6 rounded-xl bg-card">
-                <h3 className="text-lg font-semibold mb-3">Static vs Dynamic QR Codes Explained</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                  Understanding the difference between Static and Dynamic QR codes is crucial when planning offline marketing campaigns:
-                </p>
-                <ul className="text-xs text-muted-foreground space-y-2">
-                  <li><strong>Static QR Codes:</strong> Data is encoded directly into the pattern. They never expire and require no server hosting, but the target destination URL cannot be edited after printing.</li>
-                  <li><strong>Dynamic QR Codes:</strong> The QR code embeds a short redirect URL (e.g. using ul0). This allows you to update the final destination website anytime without re-printing posters or packaging.</li>
-                </ul>
-              </div>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-bold mb-4">Best Practices for Printing and Displaying QR Codes</h2>
-              <div className="space-y-4 text-sm text-muted-foreground leading-relaxed">
-                <div className="p-4 bg-muted/20 rounded-lg">
-                  <h4 className="font-semibold text-foreground mb-1">1. Maintain Sufficient Contrast & Sizing</h4>
-                  <p>Always print dark code modules on a bright, high-contrast background (typically black pattern on white cardstock). For distance scanning on flyers or tabletop stands, ensure the code is at least 2cm x 2cm (0.8 inches) in dimension.</p>
-                </div>
-                <div className="p-4 bg-muted/20 rounded-lg">
-                  <h4 className="font-semibold text-foreground mb-1">2. Provide a Clear Call-to-Action (CTA)</h4>
-                  <p>Don't print a naked QR code without context. Add a clear headline such as &quot;Scan for Digital Menu&quot; or &quot;Scan to Connect to Guest WiFi&quot; so users know what benefit to expect before launching their mobile camera.</p>
-                </div>
-                <div className="p-4 bg-muted/20 rounded-lg">
-                  <h4 className="font-semibold text-foreground mb-1">3. Test Across Multiple Mobile Operating Systems</h4>
-                  <p>Before sending graphics to production printers, test your generated code using both iOS Native Camera and Android Lens/Scanner apps under varying light conditions.</p>
-                </div>
-              </div>
-            </div>
-
-            <div>
-              <h2 className="text-xl font-bold mb-4">Frequently Asked Questions (FAQ)</h2>
-              <div className="space-y-4 text-sm">
-                <div className="border-b border-border pb-4">
-                  <h3 className="font-semibold text-foreground mb-1">Do QR codes generated on ul0 expire?</h3>
-                  <p className="text-muted-foreground">No. All static QR codes generated on ul0 encode your destination parameters directly and remain operational indefinitely with no subscription fees or scan limits.</p>
-                </div>
-                <div className="border-b border-border pb-4">
-                  <h3 className="font-semibold text-foreground mb-1">Is any personal data stored when generating a QR code?</h3>
-                  <p className="text-muted-foreground">No. Our QR code generator executes client-side within your browser runtime environment. We do not store or track the payload text, credentials, or URLs you encode into codes.</p>
-                </div>
-                <div className="border-b border-border pb-4">
-                  <h3 className="font-semibold text-foreground mb-1">Can I use generated QR codes for commercial printing?</h3>
-                  <p className="text-muted-foreground">Yes. The high-resolution PNG image output provided by ul0 is completely royalty-free for use across commercial packaging, marketing flyers, business cards, and store signages.</p>
-                </div>
-                <div>
-                  <h3 className="font-semibold text-foreground mb-1">How can I track scans or change the destination URL after printing?</h3>
-                  <p className="text-muted-foreground">To make your QR code dynamic, shorten your destination URL first with ul0 before generating the QR code. You can then change the destination redirect anytime and track scan counts, countries, and devices without ever reprinting your materials.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Dynamic QR Code Soft CTA */}
-            <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-background to-primary/5 p-6 text-center">
-              <h3 className="text-lg font-bold text-foreground mb-2">Want Dynamic QR Codes with Custom Domain Branding?</h3>
-              <p className="text-sm text-muted-foreground max-w-xl mx-auto mb-4">
-                Shorten your link with ul0 first to make any QR code permanently editable. Track real-time scan metrics and host short links on your own custom domain — 100% free, no credit card required.
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-foreground">Error Correction Levels</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Level M (15%) is optimal for digital displays. Level H (30%) is recommended for outdoor
+                surfaces or stickers that may suffer from scratches, dirt, or partial occlusion.
               </p>
-              <div className="flex flex-wrap justify-center gap-3">
-                <Button asChild size="sm">
-                  <a href="/">Shorten Link &amp; Make Dynamic QR</a>
-                </Button>
-                <Button asChild variant="outline" size="sm">
-                  <a href="/custom-domain-landing">Free Custom Domain Shortener &rarr;</a>
-                </Button>
-              </div>
             </div>
-          </section>
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold text-foreground">Static vs Dynamic Codes</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Static codes encode the full raw URL directly and cannot be modified. Dynamic codes route
+                through a short link, allowing you to update the destination URL without reprinting.
+              </p>
+            </div>
+          </div>
         </div>
       </main>
 

@@ -290,7 +290,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
         <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link
-              href="/dashboard/forms"
+              href="/forms"
               className="p-1.5 rounded-md hover:bg-[var(--surface-3)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
               title="Back to all forms"
             >
@@ -370,7 +370,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
             )}
 
             <Link
-              href={`/dashboard/forms/${form.id}/entries`}
+              href={`/forms/${form.id}/entries`}
               className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
             >
               <FileSpreadsheet className="w-3.5 h-3.5" />
@@ -1320,7 +1320,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
               </button>
 
               <Link
-                href={`/dashboard/forms/${form.id}/entries`}
+                href={`/forms/${form.id}/entries`}
                 className="px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
               >
                 View Sheet Responses →

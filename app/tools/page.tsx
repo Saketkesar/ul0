@@ -1,279 +1,277 @@
-import { Metadata } from "next"
+"use client"
+
+import React, { useState, useMemo } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { Input } from "@/components/ui/input"
 import {
-  LinkIcon,
+  Link2,
   QrCode,
+  Search,
   ExternalLink,
   ShieldCheck,
-  Search,
-  Code2,
-  Share2,
-  FileJson,
-  ScanLine,
-  Wifi,
-  Sparkles,
-  ArrowRight,
   TrendingUp,
   Eye,
-  Scissors,
+  Code2,
+  FileText,
+  Users,
   MessageCircle,
+  Wifi,
+  Scissors,
+  FileSpreadsheet,
 } from "lucide-react"
 
-export const metadata: Metadata = {
-  title: "Free Link Tools: Redirect Checker, UTM, OG Preview",
-  description: "Free developer and marketer tools: HTTP redirect checker, URL expander, OpenGraph previewer, UTM campaign builder, QR code generator, and Meta tag generator.",
-  alternates: {
-    canonical: "https://ul0.site/tools",
-  },
-  openGraph: {
-    title: "Free Link Tools: Redirect Checker, UTM, OG Preview | UL0",
-    description: "High-performance tools for link inspection, SEO metadata, QR generation, and campaign tracking.",
-    url: "https://ul0.site/tools",
-    type: "website",
-    images: [{
-      url: "https://ul0.site/social-card.png",
-      width: 1376,
-      height: 768,
-      alt: "UL0 Free Web & Developer Tools Suite",
-    }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Free Link Tools: Redirect Checker, UTM, OG Preview | UL0",
-    description: "High-performance tools for link inspection, SEO metadata, QR generation, and campaign tracking.",
-    images: ["https://ul0.site/social-card.png"],
-  },
+type ToolCategory = "all" | "links" | "qr" | "documents" | "utilities"
+
+interface ToolItem {
+  id: string
+  name: string
+  description: string
+  href: string
+  category: "links" | "qr" | "documents" | "utilities"
+  privacy: string
+  icon: React.ComponentType<{ className?: string }>
 }
 
-const TOOL_CATEGORIES = [
+const TOOLS: ToolItem[] = [
   {
-    category: "Link & SEO Utilities",
-    description: "Inspect redirects, audit short link security, and optimize campaign attribution.",
-    tools: [
-      {
-        title: "WhatsApp Link & QR Generator",
-        slug: "whatsapp-link",
-        href: "/whatsapp",
-        icon: <MessageCircle className="h-5 w-5 text-emerald-500" />,
-        badge: "Popular",
-        description: "Create wa.me click-to-chat links with custom pre-filled messages, trackable short URLs, and printable QR codes.",
-      },
-      {
-        title: "HTTP Redirect Checker",
-        slug: "redirect-checker",
-        href: "/tools/redirect-checker",
-        icon: <TrendingUp className="h-5 w-5 text-emerald-500" />,
-        badge: "New",
-        description: "Trace 301, 302, and 307 redirect chains, view response headers, and audit landing page latency.",
-      },
-      {
-        title: "URL Expander & Safety Checker",
-        slug: "url-expander",
-        href: "/tools/url-expander",
-        icon: <Search className="h-5 w-5 text-blue-500" />,
-        badge: "Popular",
-        description: "Unshorten any short link (bit.ly, t.co, tinyurl), preview the destination, and inspect safety status.",
-      },
-      {
-        title: "UTM Campaign Builder",
-        slug: "utm-builder",
-        href: "/utm",
-        icon: <LinkIcon className="h-5 w-5 text-purple-500" />,
-        badge: "Essential",
-        description: "Generate standardized Google Analytics 4 (GA4) campaign tracking links with sanitized UTM parameters.",
-      },
-      {
-        title: "OpenGraph & Social Previewer",
-        slug: "og-preview",
-        href: "/tools/og-preview",
-        icon: <Eye className="h-5 w-5 text-cyan-500" />,
-        badge: "New",
-        description: "Test how your link looks when shared on X (Twitter), LinkedIn, Facebook, and Discord.",
-      },
-      {
-        title: "Meta Tag Generator",
-        slug: "meta-tag-generator",
-        href: "/tools/meta-tag-generator",
-        icon: <Code2 className="h-5 w-5 text-amber-500" />,
-        badge: "SEO Tool",
-        description: "Generate standard HTML meta tags, OpenGraph markup, and Twitter card code for any webpage.",
-      },
-      {
-        title: "Free URL Shortener",
-        slug: "shortener",
-        href: "/",
-        icon: <Share2 className="h-5 w-5 text-primary" />,
-        badge: "Core",
-        description: "Shorten links instantly with permanent 301 redirects, click analytics, and zero required registration.",
-      },
-    ],
+    id: "forms-sheets",
+    name: "Forms to Google Sheets",
+    description: "Create public forms that save responses straight to your Google Sheet without database storage.",
+    href: "/forms",
+    category: "utilities",
+    privacy: "Direct to Google Sheets (Zero-DB)",
+    icon: FileSpreadsheet,
   },
   {
-    category: "QR Code & Connectivity",
-    description: "Generate high-resolution vector codes for physical marketing, restaurants, and wireless access.",
-    tools: [
-      {
-        title: "QR Code Generator",
-        slug: "qr-generator",
-        href: "/qr",
-        icon: <QrCode className="h-5 w-5 text-emerald-500" />,
-        badge: "Vector High-Res",
-        description: "Create crisp, high-resolution QR codes for websites, social profiles, menus, and business flyers.",
-      },
-      {
-        title: "WiFi QR Code Generator",
-        slug: "wifi-qr",
-        href: "/wifi",
-        icon: <Wifi className="h-5 w-5 text-blue-500" />,
-        badge: "No Typing",
-        description: "Generate a scan-to-connect Wi-Fi QR code for homes, offices, cafes, and event spaces.",
-      },
-    ],
+    id: "shortener",
+    name: "URL Shortener",
+    description: "Shorten links with custom back-halves and 307 temporary redirects.",
+    href: "/",
+    category: "links",
+    privacy: "Processed at edge",
+    icon: Link2,
   },
   {
-    category: "Developer & Document Utilities",
-    description: "Browser-based utilities running client-side with zero data storage.",
-    tools: [
-      {
-        title: "Files & PDF Suite (Installable Web App)",
-        slug: "files",
-        href: "/files",
-        icon: <Scissors className="h-5 w-5 text-indigo-500" />,
-        badge: "PWA App",
-        description: "Complete in-browser file suite: Split PDF, Merge PDFs, Image to PDF, PDF to Images, Document Scanner, and Compress. 100% private, works offline.",
-      },
-      {
-        title: "PDF Page Splitter & Extractor",
-        slug: "pdf-splitter",
-        href: "/tools/pdf-splitter",
-        icon: <Scissors className="h-5 w-5 text-indigo-500" />,
-        badge: "New",
-        description: "Upload multi-page PDFs, preview every page line-by-line, rename files, and download pages separately or as ZIP.",
-      },
-      {
-        title: "PDF Tools & Scanner",
-        slug: "pdf",
-        href: "/pdf",
-        icon: <ScanLine className="h-5 w-5 text-rose-500" />,
-        badge: "Private",
-        description: "Scan documents, convert images to PDF, and merge or reorder files entirely inside your browser.",
-      },
-      {
-        title: "Free Backlink Directory",
-        slug: "backlinks",
-        href: "/backlinks",
-        icon: <Sparkles className="h-5 w-5 text-emerald-400" />,
-        badge: "SEO Exchange",
-        description: "Earn a permanent verified partner backlink from ul0.site by embedding a verified safety badge.",
-      },
-    ],
+    id: "redirect-checker",
+    name: "HTTP Redirect Checker",
+    description: "Inspect 301, 302, and 307 redirect hops, headers, and status codes.",
+    href: "/tools/redirect-checker",
+    category: "links",
+    privacy: "Server inspection query",
+    icon: TrendingUp,
+  },
+  {
+    id: "url-expander",
+    name: "URL Expander",
+    description: "Reveal the final destination of shortened or obfuscated links before clicking.",
+    href: "/tools/url-expander",
+    category: "links",
+    privacy: "Safety screened query",
+    icon: Search,
+  },
+  {
+    id: "utm-builder",
+    name: "UTM Campaign Builder",
+    description: "Standardize Google Analytics 4 tracking parameters with clean URLs.",
+    href: "/utm",
+    category: "links",
+    privacy: "Processed in your browser",
+    icon: Link2,
+  },
+  {
+    id: "og-preview",
+    name: "OpenGraph Previewer",
+    description: "Inspect metadata previews for X, LinkedIn, Discord, and Facebook cards.",
+    href: "/tools/og-preview",
+    category: "links",
+    privacy: "Fetched on demand",
+    icon: Eye,
+  },
+  {
+    id: "qr-studio",
+    name: "Vector QR Generator",
+    description: "Create printable PNG and SVG vector QR codes with contrast verification.",
+    href: "/qr",
+    category: "qr",
+    privacy: "Processed in your browser",
+    icon: QrCode,
+  },
+  {
+    id: "wifi-qr",
+    name: "WiFi QR Code Generator",
+    description: "Generate instant camera connect codes for WPA/WPA2 networks.",
+    href: "/wifi",
+    category: "qr",
+    privacy: "Processed in your browser",
+    icon: Wifi,
+  },
+  {
+    id: "whatsapp-link",
+    name: "WhatsApp Link & QR",
+    description: "Create click-to-chat links with pre-filled messages and QR codes.",
+    href: "/whatsapp",
+    category: "utilities",
+    privacy: "Processed in your browser",
+    icon: MessageCircle,
+  },
+  {
+    id: "split-bill",
+    name: "Split Bill Calculator",
+    description: "Divide group dinner and travel expenses with shareable summary links.",
+    href: "/split",
+    category: "utilities",
+    privacy: "No app download required",
+    icon: Users,
+  },
+  {
+    id: "pdf-tools",
+    name: "PDF Suite (Split, Merge, Convert)",
+    description: "Split pages, merge documents, and convert images to PDF entirely in your browser.",
+    href: "/files",
+    category: "documents",
+    privacy: "100% client-side (no uploads)",
+    icon: Scissors,
+  },
+  {
+    id: "pdf-splitter",
+    name: "PDF Page Splitter",
+    description: "Extract specific page ranges from PDF files without uploading them.",
+    href: "/tools/pdf-splitter",
+    category: "documents",
+    privacy: "100% client-side (no uploads)",
+    icon: FileText,
+  },
+  {
+    id: "meta-tag-generator",
+    name: "Meta Tag Generator",
+    description: "Generate valid HTML SEO, OpenGraph, and Twitter card tags.",
+    href: "/tools/meta-tag-generator",
+    category: "utilities",
+    privacy: "Processed in your browser",
+    icon: Code2,
   },
 ]
 
-export default function ToolsIndexPage() {
+export default function ToolsHubPage() {
+  const [selectedCategory, setSelectedCategory] = useState<ToolCategory>("all")
+  const [searchQuery, setSearchQuery] = useState("")
+
+  const filteredTools = useMemo(() => {
+    return TOOLS.filter((tool) => {
+      const matchesCategory =
+        selectedCategory === "all" || tool.category === selectedCategory
+      const query = searchQuery.toLowerCase().trim()
+      const matchesSearch =
+        !query ||
+        tool.name.toLowerCase().includes(query) ||
+        tool.description.toLowerCase().includes(query)
+      return matchesCategory && matchesSearch
+    })
+  }, [selectedCategory, searchQuery])
+
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
 
       <main className="flex-1 py-12 sm:py-16">
-        <div className="container mx-auto px-4 max-w-6xl">
+        <div className="container mx-auto px-4 sm:px-6 max-w-6xl space-y-10">
           {/* Header */}
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-4">
-              <Code2 className="h-3.5 w-3.5" />
-              100% Free Online Web Utilities
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
-              Developer &amp; Link Marketing Tool Suite
+          <div className="border-b border-border pb-6 space-y-2">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              Web &amp; Link Tools
             </h1>
-            <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Fast, privacy-conscious tools for webmasters, digital marketers, and software engineers. No paywalls, no mandatory signups, and zero data selling.
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Lightweight utilities for link management, vector QR codes, and client-side document processing.
             </p>
           </div>
 
-          {/* Ecosystem Visual Banner */}
-          <div className="mb-16 overflow-hidden rounded-2xl sm:rounded-3xl border border-border shadow-lg bg-card/50">
-            <Image
-              src="/githubbanner.png"
-              alt="UL0 Tools Ecosystem — A collection of free tools for everyone"
-              width={1600}
-              height={500}
-              className="w-full h-auto object-cover"
-              priority
-            />
-          </div>
+          {/* Search & Category Filter Bar */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+            {/* Filter buttons */}
+            <div className="flex flex-wrap items-center gap-1.5 p-1 rounded-md bg-muted/40 border border-border">
+              {(
+                [
+                  { id: "all", label: "All Tools" },
+                  { id: "links", label: "Links" },
+                  { id: "qr", label: "QR Codes" },
+                  { id: "documents", label: "Documents" },
+                  { id: "utilities", label: "Utilities" },
+                ] as const
+              ).map((cat) => (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`px-3 py-1.5 text-xs font-semibold rounded transition-colors ${
+                    selectedCategory === cat.id
+                      ? "bg-background text-foreground shadow-2xs"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
 
-          {/* Categories */}
-          <div className="space-y-16">
-            {TOOL_CATEGORIES.map((cat, idx) => (
-              <div key={idx}>
-                <div className="mb-6 border-b border-border pb-4">
-                  <h2 className="text-xl sm:text-2xl font-bold text-foreground">{cat.category}</h2>
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-1">{cat.description}</p>
-                </div>
-
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                  {cat.tools.map((tool) => (
-                    <Link
-                      key={tool.slug}
-                      href={tool.href}
-                      className="group rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md transition-all hover:border-primary/50 flex flex-col justify-between"
-                    >
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-4">
-                          <div className="rounded-xl bg-muted p-2.5 group-hover:scale-105 transition-transform">
-                            {tool.icon}
-                          </div>
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
-                            {tool.badge}
-                          </span>
-                        </div>
-
-                        <h3 className="text-base font-bold text-foreground group-hover:text-primary transition-colors mb-2">
-                          {tool.title}
-                        </h3>
-                        <p className="text-xs text-muted-foreground leading-relaxed mb-4">
-                          {tool.description}
-                        </p>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-primary group-hover:underline">
-                        <span>Launch tool</span>
-                        <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA Banner */}
-          <div className="mt-20 rounded-3xl border border-primary/20 bg-primary/5 p-8 sm:p-12 text-center max-w-4xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-3">
-              Need custom branded links with real-time analytics?
-            </h2>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto mb-6">
-              Connect your own custom domain, monitor link clicks by country and device, and protect your URLs with UL0.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <Link
-                href="/"
-                className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
-              >
-                Create a Free Short Link
-              </Link>
-              <Link
-                href="/pricing"
-                className="rounded-xl border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
-              >
-                View Plans &amp; Custom Domains
-              </Link>
+            {/* Search Input */}
+            <div className="relative w-full sm:w-72">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <Input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search tools..."
+                className="pl-9 h-9 text-xs"
+              />
             </div>
           </div>
+
+          {/* Tools Grid */}
+          {filteredTools.length === 0 ? (
+            <div className="p-12 text-center rounded-lg border border-dashed border-border text-xs text-muted-foreground">
+              No tools matching &ldquo;{searchQuery}&rdquo;.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredTools.map((t) => {
+                const Icon = t.icon
+                return (
+                  <Link
+                    key={t.id}
+                    href={t.href}
+                    className="rounded-lg border border-border bg-card p-5 space-y-3 hover:border-foreground/40 transition-colors flex flex-col justify-between"
+                  >
+                    <div className="space-y-2.5">
+                      <div className="flex items-center justify-between">
+                        <div className="h-8 w-8 rounded-md border border-border bg-muted/30 flex items-center justify-center text-primary">
+                          <Icon className="h-4 w-4" />
+                        </div>
+                        <span className="text-[10px] font-mono text-muted-foreground border border-border/60 bg-muted/30 px-2 py-0.5 rounded">
+                          {t.category}
+                        </span>
+                      </div>
+                      <h2 className="text-sm font-semibold text-foreground">{t.name}</h2>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {t.description}
+                      </p>
+                    </div>
+
+                    <div className="pt-3 border-t border-border flex items-center justify-between text-[11px] text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        <ShieldCheck className="h-3 w-3 text-primary" />
+                        {t.privacy}
+                      </span>
+                      <span className="font-semibold text-foreground hover:underline">
+                        Open tool →
+                      </span>
+                    </div>
+                  </Link>
+                )
+              })}
+            </div>
+          )}
         </div>
       </main>
 

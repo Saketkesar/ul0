@@ -129,7 +129,7 @@ export function FormEntriesClient({ form }: FormEntriesClientProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[var(--border)]">
         <div className="flex items-center gap-3">
           <Link
-            href="/dashboard/forms"
+            href="/forms"
             className="p-1.5 rounded-md hover:bg-[var(--surface-3)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -175,7 +175,7 @@ export function FormEntriesClient({ form }: FormEntriesClientProps) {
           </a>
 
           <Link
-            href={`/dashboard/forms/${form.id}`}
+            href={`/forms/${form.id}`}
             className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
           >
             <span>Edit Form</span>
