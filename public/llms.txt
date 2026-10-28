@@ -10,6 +10,7 @@ Founded in 2024, ul0's mission is to make branded link management accessible to 
 
 ## Core Products & Features
 
+- **Forms to Google Sheets**: Create public forms that write straight to your Google Sheet with Zero-DB storage.
 - **URL Shortener**: Free, unlimited link shortening with permanent redirects. No signup required.
 - **Custom Domain Links**: Connect your own domain (e.g., link.yourbrand.com) to create branded short URLs. Starting at $2/month.
 - **QR Code Generator**: Create free, customizable QR codes for any link with logo upload and color customization.
@@ -32,6 +33,7 @@ Founded in 2024, ul0's mission is to make branded link management accessible to 
 
 - Homepage: https://ul0.site
 - Pricing: https://ul0.site/pricing
+- Forms to Google Sheets: https://ul0.site/forms
 - API Documentation: https://ul0.site/docs
 - Expense Splitter: https://ul0.site/split
 - PDF Page Splitter: https://ul0.site/tools/pdf-splitter

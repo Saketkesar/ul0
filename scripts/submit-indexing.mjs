@@ -34,6 +34,7 @@ const TOOL_PATHS = [
   "/backlinks",
   "/qr",
   "/utm",
+  "/forms",
   "/tools",
   "/tools/pdf-splitter",
   "/tools/redirect-checker",
