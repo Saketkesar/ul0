@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { auth, currentUser } from "@clerk/nextjs/server"
-import { isUserAdmin } from "@/lib/marketing-auth"
+import { auth } from "@clerk/nextjs/server"
 import { getFormDocById, updateFormDoc, deleteFormDoc, getFormDocBySlug } from "@/lib/appwrite/forms"
 import { validateFormSlug } from "@/lib/forms/slug"
 
@@ -12,12 +11,6 @@ export async function GET(request: NextRequest, { params }: Context) {
   const { id } = await params
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-
-  const user = await currentUser().catch(() => null)
-  const email = user?.emailAddresses?.[0]?.emailAddress ?? null
-  if (!isUserAdmin(userId, email)) {
-    return NextResponse.json({ error: "Forbidden: Admin access only." }, { status: 403 })
-  }
 
   const form = await getFormDocById(id)
   if (!form || form.owner_id !== userId) {
@@ -31,12 +24,6 @@ export async function PATCH(request: NextRequest, { params }: Context) {
   const { id } = await params
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-
-  const user = await currentUser().catch(() => null)
-  const email = user?.emailAddresses?.[0]?.emailAddress ?? null
-  if (!isUserAdmin(userId, email)) {
-    return NextResponse.json({ error: "Forbidden: Admin access only." }, { status: 403 })
-  }
 
   const existing = await getFormDocById(id)
   if (!existing || existing.owner_id !== userId) {
@@ -86,10 +73,9 @@ export async function DELETE(request: NextRequest, { params }: Context) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const user = await currentUser().catch(() => null)
-  const email = user?.emailAddresses?.[0]?.emailAddress ?? null
-  if (!isUserAdmin(userId, email)) {
-    return NextResponse.json({ error: "Forbidden: Admin access only." }, { status: 403 })
+  const existing = await getFormDocById(id)
+  if (!existing || existing.owner_id !== userId) {
+    return NextResponse.json({ error: "Form not found" }, { status: 404 })
   }
 
   await deleteFormDoc(id, userId)

@@ -1,255 +1,436 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Check, Copy, Eye, EyeOff, Key, RefreshCw, Trash2, ShieldAlert, ChevronRight } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
+import {
+  Key,
+  Plus,
+  Copy,
+  Check,
+  Trash2,
+  ExternalLink,
+  ShieldAlert,
+  Clock,
+  Activity,
+  AlertTriangle,
+} from "lucide-react"
+import { toast } from "sonner"
 
-interface ApiKeysClientProps {
-  initialApiKey: string | null
-  plan: string
+interface ApiKeyItem {
+  id: string
+  name: string
+  prefix: string
+  created_at: string
+  last_used_at: string | null
 }
 
-export function ApiKeysClient({ initialApiKey, plan }: ApiKeysClientProps) {
-  const [apiKey, setApiKey] = useState<string | null>(initialApiKey)
-  const [revealed, setRevealed] = useState(false)
-  const [copied, setCopied] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+interface ApiKeysClientProps {
+  initialKeys: ApiKeyItem[]
+  planSlug: string
+}
 
-  const handleGenerateKey = async () => {
-    if (apiKey && !confirm("Generating a new API key will invalidate your existing key immediately. Are you sure you want to proceed?")) {
-      return
-    }
+export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
+  const [keys, setKeys] = useState<ApiKeyItem[]>(initialKeys)
+  const [createDialogOpen, setCreateDialogOpen] = useState(false)
+  const [keyName, setKeyName] = useState("")
+  const [isCreating, setIsCreating] = useState(false)
+  const [createdSecret, setCreatedSecret] = useState<string | null>(null)
+  const [copiedSecret, setCopiedSecret] = useState(false)
+  const [copiedSnippet, setCopiedSnippet] = useState(false)
+  const [revokeModalKey, setRevokeModalKey] = useState<ApiKeyItem | null>(null)
+  const [isRevoking, setIsRevoking] = useState(false)
 
-    setLoading(true)
-    setError(null)
+  const isFreePlan = planSlug === "free_user"
+  const rateLimitLabel =
+    planSlug === "business_user"
+      ? "300 requests / minute"
+      : planSlug === "pro_user"
+      ? "60 requests / minute"
+      : "10 requests / minute (Sandbox)"
+
+  const handleOpenCreate = () => {
+    setKeyName("")
+    setCreatedSecret(null)
+    setCopiedSecret(false)
+    setCreateDialogOpen(true)
+  }
+
+  const handleCreateKey = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsCreating(true)
+
     try {
-      const res = await fetch("/api/keys", { method: "POST" })
+      const res = await fetch("/api/keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: keyName.trim() || "Default API Key" }),
+      })
+
       const data = await res.json()
-      if (res.ok) {
-        setApiKey(data.apiKey)
-        setRevealed(true)
-      } else {
-        setError(data.error || "Failed to generate key")
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to create API key")
       }
-    } catch {
-      setError("An unexpected error occurred. Please try again.")
+
+      setKeys((prev) => [data.key, ...prev])
+      setCreatedSecret(data.secretKey)
+      toast.success("API key generated")
+    } catch (err: any) {
+      toast.error(err.message || "Failed to generate API key")
     } finally {
-      setLoading(false)
+      setIsCreating(false)
     }
   }
 
-  const handleDeleteKey = async () => {
-    if (!confirm("Are you sure you want to delete your API key? All programmatic tools using this key will fail immediately.")) {
-      return
-    }
-
-    setLoading(true)
-    setError(null)
+  const handleCopySecret = async () => {
+    if (!createdSecret) return
     try {
-      const res = await fetch("/api/keys", { method: "DELETE" })
-      if (res.ok) {
-        setApiKey(null)
-        setRevealed(false)
-      } else {
+      await navigator.clipboard.writeText(createdSecret)
+      setCopiedSecret(true)
+      toast.success("API key copied to clipboard")
+      setTimeout(() => setCopiedSecret(false), 2000)
+    } catch {
+      toast.error("Failed to copy to clipboard")
+    }
+  }
+
+  const handleRevokeKey = async () => {
+    if (!revokeModalKey) return
+    setIsRevoking(true)
+
+    try {
+      const res = await fetch(`/api/keys?id=${encodeURIComponent(revokeModalKey.id)}`, {
+        method: "DELETE",
+      })
+
+      if (!res.ok) {
         const data = await res.json()
-        setError(data.error || "Failed to delete key")
+        throw new Error(data.error || "Failed to revoke key")
       }
-    } catch {
-      setError("An unexpected error occurred. Please try again.")
+
+      setKeys((prev) => prev.filter((k) => k.id !== revokeModalKey.id))
+      toast.success("API key revoked")
+      setRevokeModalKey(null)
+    } catch (err: any) {
+      toast.error(err.message || "Failed to revoke key")
     } finally {
-      setLoading(false)
+      setIsRevoking(false)
     }
   }
 
-  const handleCopy = async () => {
-    if (!apiKey) return
+  const curlSnippet = `curl -X POST https://ul0.site/api/shorten \\
+  -H "Authorization: Bearer ${keys[0]?.prefix ? "YOUR_API_KEY" : "YOUR_API_KEY"}" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "longUrl": "https://example.com/long-page-url",
+    "customSlug": "summer-promo"
+  }'`
+
+  const handleCopySnippet = async () => {
     try {
-      await navigator.clipboard.writeText(apiKey)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      await navigator.clipboard.writeText(curlSnippet)
+      setCopiedSnippet(true)
+      setTimeout(() => setCopiedSnippet(false), 2000)
     } catch {}
   }
 
-  const maskedKey = apiKey
-    ? `${apiKey.slice(0, 9)}••••••••••••••••••••${apiKey.slice(-4)}`
-    : ""
-
-  const rateLimitDesc = plan === "business_user"
-    ? "300 requests per minute"
-    : "60 requests per minute"
-
   return (
     <div className="space-y-6">
-      {/* API Key Panel */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Your API Credentials</CardTitle>
-          <CardDescription>
-            Use this key to authorize API requests. Do not share this key with anyone.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {error && (
-            <Alert variant="destructive">
-              <ShieldAlert className="h-4 w-4" />
-              <AlertTitle>Error</AlertTitle>
-              <AlertDescription>{error}</AlertDescription>
-            </Alert>
-          )}
+      {/* Rate limit status tile */}
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="rounded-lg border border-border bg-card p-4 space-y-1">
+          <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+            <Activity className="h-3.5 w-3.5 text-primary" />
+            Rate Limit Quota
+          </span>
+          <p className="text-sm font-semibold text-foreground">{rateLimitLabel}</p>
+        </div>
+        <div className="rounded-lg border border-border bg-card p-4 space-y-1">
+          <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+            <Key className="h-3.5 w-3.5 text-primary" />
+            Active Keys
+          </span>
+          <p className="text-sm font-semibold text-foreground">{keys.length} of 5</p>
+        </div>
+        <div className="rounded-lg border border-border bg-card p-4 space-y-1">
+          <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+            <Clock className="h-3.5 w-3.5 text-primary" />
+            Authentication Scheme
+          </span>
+          <p className="text-sm font-mono font-semibold text-foreground">Bearer Token</p>
+        </div>
+      </div>
 
-          {apiKey ? (
-            <div className="space-y-3">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                <div className="flex-1 font-mono text-sm border border-border bg-muted/50 rounded-lg p-3 select-all overflow-x-auto min-h-[44px] flex items-center">
-                  {revealed ? apiKey : maskedKey}
-                </div>
-                <div className="flex gap-2">
+      {/* Main Keys List Card */}
+      <div className="rounded-lg border border-border bg-card overflow-hidden">
+        <div className="p-4 sm:p-5 flex items-center justify-between border-b border-border">
+          <div>
+            <h2 className="text-sm font-semibold text-foreground">Active API Keys</h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Secret keys allow programmatic access to shorten links and inspect analytics.
+            </p>
+          </div>
+          <Button onClick={handleOpenCreate} size="sm" className="gap-1.5 text-xs">
+            <Plus className="h-3.5 w-3.5" />
+            <span>Create key</span>
+          </Button>
+        </div>
+
+        {keys.length === 0 ? (
+          <div className="p-8 text-center space-y-3">
+            <div className="mx-auto h-9 w-9 rounded-md border border-border bg-muted/40 flex items-center justify-center text-muted-foreground">
+              <Key className="h-4 w-4" />
+            </div>
+            <div className="space-y-1 max-w-sm mx-auto">
+              <h3 className="text-xs font-semibold text-foreground">No API keys generated</h3>
+              <p className="text-xs text-muted-foreground">
+                Generate an API key to integrate URL shortening into your command-line tools or backend applications.
+              </p>
+            </div>
+            <Button onClick={handleOpenCreate} size="sm" variant="outline" className="text-xs gap-1.5">
+              <Plus className="h-3.5 w-3.5" />
+              <span>Generate your first key</span>
+            </Button>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="bg-muted/40 border-b border-border text-muted-foreground">
+                  <th className="px-4 py-3 font-semibold text-foreground">Name</th>
+                  <th className="px-4 py-3 font-semibold text-foreground">Key Prefix</th>
+                  <th className="px-4 py-3 font-semibold text-foreground">Created</th>
+                  <th className="px-4 py-3 font-semibold text-foreground">Last Used</th>
+                  <th className="px-4 py-3 font-semibold text-right text-foreground">Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {keys.map((k) => (
+                  <tr key={k.id} className="hover:bg-muted/20 transition-colors">
+                    <td className="px-4 py-3 font-medium text-foreground">
+                      <span className="flex items-center gap-1.5">
+                        <Key className="h-3 w-3 text-muted-foreground shrink-0" />
+                        {k.name}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 font-mono text-muted-foreground select-all">
+                      {k.prefix}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {new Date(k.created_at).toLocaleDateString(undefined, {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      {k.last_used_at
+                        ? new Date(k.last_used_at).toLocaleDateString(undefined, {
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : "Never"}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <Button
+                        onClick={() => setRevokeModalKey(k)}
+                        variant="ghost"
+                        size="sm"
+                        className="h-7 px-2 text-destructive hover:text-destructive hover:bg-destructive/10 text-xs"
+                      >
+                        <Trash2 className="h-3 w-3 mr-1" />
+                        <span>Revoke</span>
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Code Snippet Card */}
+      <div className="rounded-lg border border-border bg-card p-4 sm:p-5 space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-xs font-semibold text-foreground">Example Request</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Send a JSON POST request with your API key to shorten links.
+            </p>
+          </div>
+          <Button
+            onClick={handleCopySnippet}
+            variant="outline"
+            size="sm"
+            className="h-7 text-xs gap-1"
+          >
+            {copiedSnippet ? <Check className="h-3 w-3 text-primary" /> : <Copy className="h-3 w-3" />}
+            <span>{copiedSnippet ? "Copied" : "Copy curl"}</span>
+          </Button>
+        </div>
+
+        <pre className="p-3 rounded-md bg-muted/60 border border-border font-mono text-xs overflow-x-auto text-foreground">
+          {curlSnippet}
+        </pre>
+
+        <div className="pt-1 flex items-center justify-between text-xs text-muted-foreground">
+          <span>Accepts JSON payloads. Supports custom back-half aliases and connected domains.</span>
+          <Link
+            href="/docs"
+            className="text-primary hover:underline font-medium inline-flex items-center gap-1"
+          >
+            <span>Full API Reference</span>
+            <ExternalLink className="h-3 w-3" />
+          </Link>
+        </div>
+      </div>
+
+      {/* Create Key Dialog */}
+      <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>
+              {createdSecret ? "API Key Created" : "Create New API Key"}
+            </DialogTitle>
+            <DialogDescription className="text-xs">
+              {createdSecret
+                ? "Copy this secret key immediately. For security, you will not be able to view it again."
+                : "Give your key a descriptive name to track its usage across your tools."}
+            </DialogDescription>
+          </DialogHeader>
+
+          {createdSecret ? (
+            <div className="space-y-4 py-2">
+              <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 flex items-start gap-2 text-xs text-amber-700 dark:text-amber-400">
+                <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                <span>
+                  Save this key in a password manager or secure environment variable. It cannot be recovered once this dialog is closed.
+                </span>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="text-xs font-medium text-foreground">Secret Key</label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={createdSecret}
+                    readOnly
+                    className="font-mono text-xs bg-muted/50 select-all"
+                  />
                   <Button
-                    onClick={() => setRevealed(!revealed)}
-                    variant="outline"
-                    size="icon"
-                    title={revealed ? "Hide key" : "Show key"}
+                    onClick={handleCopySecret}
+                    size="sm"
+                    className="gap-1.5 shrink-0 text-xs"
                   >
-                    {revealed ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                  <Button
-                    onClick={handleCopy}
-                    variant="outline"
-                    size="icon"
-                    title="Copy key"
-                  >
-                    {copied ? <Check className="h-4 w-4 text-green-500" /> : <Copy className="h-4 w-4" />}
-                  </Button>
-                  <Button
-                    onClick={handleDeleteKey}
-                    variant="destructive"
-                    size="icon"
-                    disabled={loading}
-                    title="Revoke key"
-                  >
-                    <Trash2 className="h-4 w-4" />
+                    {copiedSecret ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                    <span>{copiedSecret ? "Copied" : "Copy"}</span>
                   </Button>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 text-xs text-muted-foreground bg-blue-500/5 border border-blue-500/10 rounded-md p-3">
-                <RefreshCw className="h-3.5 w-3.5 animate-spin text-blue-500 shrink-0" style={{ animationDuration: '4s' }} />
-                <span>Your API key is active. Rate limits: **{rateLimitDesc}** based on your plan level.</span>
-              </div>
+              <DialogFooter>
+                <Button onClick={() => setCreateDialogOpen(false)} size="sm" className="w-full text-xs">
+                  I have copied my key
+                </Button>
+              </DialogFooter>
             </div>
           ) : (
-            <div className="text-center py-6 border border-dashed border-border rounded-lg bg-muted/20">
-              <Key className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-              <h3 className="text-sm font-semibold">No API Key Generated</h3>
-              <p className="text-xs text-muted-foreground max-w-xs mx-auto mt-1 mb-4">
-                You haven&apos;t generated an API key yet. Click below to create your credentials.
-              </p>
-              <Button onClick={handleGenerateKey} disabled={loading} className="gap-2">
-                {loading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <PlusIcon className="h-4 w-4" />}
-                Generate API Key
-              </Button>
-            </div>
+            <form onSubmit={handleCreateKey} className="space-y-4 py-2">
+              <div className="space-y-1.5">
+                <label htmlFor="keyName" className="text-xs font-medium text-foreground">
+                  Key Name
+                </label>
+                <Input
+                  id="keyName"
+                  value={keyName}
+                  onChange={(e) => setKeyName(e.target.value)}
+                  placeholder="e.g. GitHub Actions, Zapier, Local CLI"
+                  maxLength={50}
+                  className="text-xs"
+                  autoFocus
+                />
+              </div>
+
+              {isFreePlan && (
+                <p className="text-[11px] text-muted-foreground">
+                  Free plan includes sandbox access (10 req/min). Upgrade to Pro for 60 req/min and production webhooks.
+                </p>
+              )}
+
+              <DialogFooter className="gap-2 sm:gap-0">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCreateDialogOpen(false)}
+                  disabled={isCreating}
+                  className="text-xs"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  size="sm"
+                  disabled={isCreating}
+                  className="text-xs"
+                >
+                  {isCreating ? "Generating..." : "Generate Key"}
+                </Button>
+              </DialogFooter>
+            </form>
           )}
+        </DialogContent>
+      </Dialog>
 
-          {apiKey && (
-            <div className="pt-2 flex justify-start">
-              <Button
-                onClick={handleGenerateKey}
-                disabled={loading}
-                variant="outline"
-                className="gap-2 text-xs"
-              >
-                {loading ? <RefreshCw className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
-                Roll / Regenerate API Key
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* API Documentation */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Programmatic Integration Guide</CardTitle>
-          <CardDescription>
-            Learn how to use your API key to shorten URLs programmatically.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <h3 className="text-sm font-semibold">1. Standard Shortening (ul0.site)</h3>
-            <p className="text-xs text-muted-foreground">
-              Send a POST request to create links. Pass your API key in the <code>Authorization: Bearer</code> header.
-            </p>
-            <pre className="text-xs font-mono bg-muted p-4 rounded-lg overflow-x-auto border">
-{`curl -X POST https://ul0.site/api/shorten \\
-  -H "Authorization: Bearer ${apiKey || "YOUR_API_KEY"}" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "longUrl": "https://example.com/some-long-product-link",
-    "customSlug": "summer-promo"
-  }'`}
-            </pre>
-          </div>
-
-          <div className="space-y-2 pt-2">
-            <h3 className="text-sm font-semibold">2. Shortening on your Connected Custom Domain</h3>
-            <p className="text-xs text-muted-foreground">
-              To shorten links on your connected domain, include the <code>"host"</code> parameter in the request body.
-            </p>
-            <pre className="text-xs font-mono bg-muted p-4 rounded-lg overflow-x-auto border">
-{`curl -X POST https://ul0.site/api/shorten \\
-  -H "Authorization: Bearer ${apiKey || "YOUR_API_KEY"}" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "longUrl": "https://example.com/another-link",
-    "host": "link.yourbrand.com",
-    "customSlug": "sales"
-  }'`}
-            </pre>
-          </div>
-
-          <div className="space-y-2 pt-2">
-            <h3 className="text-sm font-semibold">Expected JSON Response</h3>
-            <pre className="text-xs font-mono bg-muted p-4 rounded-lg overflow-x-auto border">
-{`{
-  "slug": "sales",
-  "shortUrl": "http://link.yourbrand.com/r/sales",
-  "host": "link.yourbrand.com"
-}`}
-            </pre>
-          </div>
-          <div className="pt-4 border-t flex justify-end">
-            <a href="/docs" target="_blank" className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:underline">
-              View Full API Documentation
-              <ChevronRight className="h-4 w-4" />
-            </a>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Revoke Key Confirmation Dialog */}
+      <Dialog
+        open={Boolean(revokeModalKey)}
+        onOpenChange={(open) => !open && setRevokeModalKey(null)}
+      >
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Revoke API Key</DialogTitle>
+            <DialogDescription className="text-xs">
+              Are you sure you want to revoke <strong>{revokeModalKey?.name}</strong> (
+              <span className="font-mono">{revokeModalKey?.prefix}</span>)? Any applications or
+              scripts using this key will immediately be denied access.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setRevokeModalKey(null)}
+              disabled={isRevoking}
+              className="text-xs"
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              onClick={handleRevokeKey}
+              disabled={isRevoking}
+              className="text-xs"
+            >
+              {isRevoking ? "Revoking..." : "Revoke Key"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
-  )
-}
-
-function PlusIcon(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M5 12h14" />
-      <path d="M12 5v14" />
-    </svg>
   )
 }

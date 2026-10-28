@@ -35,6 +35,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/compare/cuttly",
     "/qr",
     "/utm",
+    "/forms",
     "/docs",
     "/custom-domain-landing",
   ]

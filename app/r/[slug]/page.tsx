@@ -1,8 +1,11 @@
 import { notFound, redirect } from "next/navigation"
 import { after } from "next/server"
-import { RedirectLanding } from "@/components/redirect-landing"
 import { headers } from "next/headers"
-import { getCachedUrl, setCachedUrl, redis } from "@/lib/redis"
+import Link from "next/link"
+import dns from "dns"
+import type { Metadata } from "next"
+
+import { redis } from "@/lib/redis"
 import { validateUrl, isBlockedHostname, isPhishingAttempt } from "@/lib/utils/slug"
 import {
   getLinkByHostSlug,
@@ -13,11 +16,7 @@ import {
 import { DEFAULT_HOST } from "@/lib/appwrite/config"
 import { getDomainByName } from "@/lib/appwrite/domains"
 import { parseUserAgent, parseLanguage, isUniqueVisitor } from "@/lib/utils/analytics"
-import { Lock, AlertCircle, AlertTriangle, ExternalLink } from "lucide-react"
-import Link from "next/link"
-import dns from "dns"
-
-import type { Metadata } from "next"
+import { Lock, AlertCircle, AlertTriangle, ExternalLink, ShieldCheck, ArrowRight, Flag } from "lucide-react"
 
 export const metadata: Metadata = {
   robots: {
@@ -35,11 +34,21 @@ interface Props {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-function sanitizeSlug(slug: string): string | null {
-  const sanitized = slug.replace(/[^a-zA-Z0-9-_]/g, '')
+function sanitizeSlug(raw: string): { slug: string; isPreview: boolean } | null {
+  let isPreview = false
+  let slug = raw
+
+  // Support /r/slug+ as instant preview mode
+  if (slug.endsWith("+")) {
+    isPreview = true
+    slug = slug.slice(0, -1)
+  }
+
+  const sanitized = slug.replace(/[^a-zA-Z0-9-_]/g, "")
   if (sanitized.length < 1 || sanitized.length > 50) return null
-  if (sanitized.includes('..') || sanitized !== slug) return null
-  return sanitized
+  if (sanitized.includes("..") || sanitized !== slug) return null
+
+  return { slug: sanitized, isPreview }
 }
 
 function isSafeRedirectUrl(url: string): boolean {
@@ -53,9 +62,6 @@ async function resolveHost(): Promise<string> {
   return rawHost.split(":")[0].toLowerCase()
 }
 
-/**
- * Helper to determine final destination based on targeting parameters
- */
 function resolveTargetUrl(
   link: LinkDoc,
   countryCode: string | null,
@@ -64,23 +70,23 @@ function resolveTargetUrl(
   if (!link.targeting_json) return link.long_url
   try {
     const targeting = JSON.parse(link.targeting_json)
-    
-    // 1. Geo targeting
+
+    // Geo targeting
     if (targeting.geo_targeting && countryCode) {
       const code = countryCode.toUpperCase()
       if (targeting.geo_targeting[code]) {
         return targeting.geo_targeting[code]
       }
     }
-    
-    // 2. Device targeting
+
+    // Device targeting
     if (targeting.device_targeting && deviceType) {
       if (targeting.device_targeting[deviceType]) {
         return targeting.device_targeting[deviceType]
       }
     }
-    
-    // 3. A/B testing
+
+    // A/B testing
     if (targeting.ab_testing && Array.isArray(targeting.ab_testing) && targeting.ab_testing.length > 0) {
       const random = Math.random() * 100
       let cumulative = 0
@@ -99,29 +105,31 @@ function resolveTargetUrl(
 }
 
 export default async function RedirectPage({ params, searchParams }: Props) {
-  const { slug } = await params
+  const { slug: rawSlug } = await params
   const search = await searchParams
-  
-  const sanitizedSlug = sanitizeSlug(slug)
-  if (!sanitizedSlug) notFound()
+
+  const parsed = sanitizeSlug(rawSlug)
+  if (!parsed) notFound()
+
+  const { slug, isPreview: isPlusPreview } = parsed
+  const isQueryPreview = search.preview === "1" || search.preview === "true"
+  const showPreview = isPlusPreview || isQueryPreview
 
   const host = await resolveHost()
   const isCustomDomain = host !== DEFAULT_HOST && !host.endsWith(".ul0.site")
 
-  let brandLogoUrl: string | null = null
   if (isCustomDomain) {
     const domainDoc = await getDomainByName(host)
     if (!domainDoc || domainDoc.status !== "verified") notFound()
-    brandLogoUrl = domainDoc.brand_logo_url ?? null
   }
 
-  // Fetch link (from Appwrite)
-  const link = await getLinkByHostSlug(host, sanitizedSlug)
+  // Fetch link document
+  const link = await getLinkByHostSlug(host, slug)
   if (!link) notFound()
 
-  // 1. Check expiration date
+  // 1. Expiration check
   if (link.expire_at && new Date(link.expire_at) < new Date()) {
-    return renderExpiredPage("This link has expired based on its set expiration date.")
+    return renderExpiredPage("This short link has expired based on its set expiration date.")
   }
 
   // Parse targeting controls
@@ -130,7 +138,7 @@ export default async function RedirectPage({ params, searchParams }: Props) {
   let oneTime = false
   let isSuspicious = false
   let suspiciousOriginalUrl = ""
-  
+
   if (link.targeting_json) {
     try {
       const targeting = JSON.parse(link.targeting_json)
@@ -144,43 +152,38 @@ export default async function RedirectPage({ params, searchParams }: Props) {
     }
   }
 
-  // 1.5 Phishing warning check (flagged in database OR matches blocked phishing domains)
+  // Phishing / safety check
   let isDomainBlocked = false
   try {
     const parsedUrl = new URL(link.long_url)
     const hostname = parsedUrl.hostname.toLowerCase()
     isDomainBlocked = isBlockedHostname(hostname) || isPhishingAttempt(hostname, link.long_url)
-  } catch (e) {}
+  } catch {}
 
   if (isSuspicious || isDomainBlocked) {
     const report = await getPhishingDomainReport(link.long_url)
-    const genuineSite =
-      suspiciousOriginalUrl ||
-      (link.long_url.toLowerCase().includes("libero")
-        ? "https://libero.it"
-        : "https://telegram.org")
+    const genuineSite = suspiciousOriginalUrl || "https://ul0.site"
     return renderPhishingPage(link.long_url, genuineSite, report)
   }
 
-  // 2. Check clicks limit
+  // Clicks limit check
   if (clicksLimit > 0 && link.clicks_count >= clicksLimit) {
-    return renderExpiredPage("This link has reached its maximum click limit.")
+    return renderExpiredPage("This link has reached its maximum designated click limit.")
   }
 
-  // 3. Password protection validation
+  // Password check
   const enteredPassword = typeof search.password === "string" ? search.password : ""
   if (password && enteredPassword !== password) {
     const isWrong = enteredPassword !== ""
     return renderPasswordPage(isWrong)
   }
 
-  // Extract client geo and request headers
+  // Extract edge headers for analytics
   const headersList = await headers()
   const userAgent = headersList.get("user-agent") || ""
   const referrer = headersList.get("referer") || ""
   const acceptLanguage = headersList.get("accept-language")
-  
-  // Vercel / Cloudflare geo headers
+
   const country = headersList.get("x-vercel-ip-country") || headersList.get("cf-ipcountry") || "US"
   const region = headersList.get("x-vercel-ip-country-region") || headersList.get("cf-region") || null
   const city = headersList.get("x-vercel-ip-city") || headersList.get("cf-ipcity") || null
@@ -191,33 +194,29 @@ export default async function RedirectPage({ params, searchParams }: Props) {
   const timezone = headersList.get("x-vercel-ip-timezone") || null
   const ip = headersList.get("x-real-ip") || headersList.get("x-forwarded-for")?.split(",")[0] || "127.0.0.1"
 
-  // Analytics extraction
   const uaData = parseUserAgent(userAgent)
   const language = parseLanguage(acceptLanguage)
-  
-  // UTM parameters
+
   const utm_source = typeof search.utm_source === "string" ? search.utm_source : null
   const utm_medium = typeof search.utm_medium === "string" ? search.utm_medium : null
   const utm_campaign = typeof search.utm_campaign === "string" ? search.utm_campaign : null
-  
-  // QR tracking (triggered if url contains ?qr=1 or similar parameters)
   const isQr = search.qr === "1" || search.source === "qr" || search.ref === "qr"
 
-  // IP Hashing (approximate hashing for privacy)
-  const ipHash = ip // in Appwrite we store ip_hash
-
-  // Resolve targeted destination URL
+  const ipHash = ip
   const targetUrl = resolveTargetUrl(link, country, uaData.device)
 
   if (!isSafeRedirectUrl(targetUrl)) {
-    console.warn(`Blocked unsafe redirect URL: ${targetUrl}`)
     notFound()
   }
 
-  // Unique visitor check (cached in Redis to avoid DB querying overhead)
+  // 2. Link Preview Mode (if requested via + or ?preview=1)
+  if (showPreview) {
+    return renderLinkPreviewPage(link, targetUrl)
+  }
+
   const unique = await isUniqueVisitor(link.$id, ipHash)
 
-  // Reliably log click events and live feed updates without blocking the page response
+  // Asynchronous non-blocking click tracking
   after(async () => {
     try {
       await Promise.allSettled([
@@ -246,78 +245,149 @@ export default async function RedirectPage({ params, searchParams }: Props) {
           ip_hash: ipHash,
         }),
         incrementClickCount(link.$id),
-        link.owner_id
-          ? redis
-              .lpush(
-                `live_clicks:${link.owner_id}`,
-                JSON.stringify({
-                  linkId: link.$id,
-                  slug: link.slug,
-                  timestamp: new Date().toISOString(),
-                  country,
-                  city,
-                  device: uaData.device,
-                  browser: uaData.browser,
-                })
-              )
-              .then(() => redis.ltrim(`live_clicks:${link.owner_id}`, 0, 49))
-          : Promise.resolve(),
+        // Atomic increment in Redis for real-time consistency
+        redis.incr(`clicks:${link.$id}`).catch(() => null),
+        // Invalidate Redis analytics summary caches so dashboard reflects click immediately (<5s)
+        redis.del(
+          `analytics:summary:${link.$id}:24h`,
+          `analytics:summary:${link.$id}:7d`,
+          `analytics:summary:${link.$id}:30d`,
+          `analytics:summary:${link.$id}:90d`,
+          `analytics:summary:${link.$id}:all`
+        ).catch(() => null),
       ])
     } catch (e) {
-      console.error("after() click background processing error:", e)
+      console.error("Click background logging error:", e)
     }
   })
 
-  // 4. One-time link behavior: expire after first click
+  // 3. One-time link behavior
   if (oneTime) {
-    // Instantly expire the link in Appwrite
-    const Databases = require("node-appwrite").Databases
-    const Client = require("node-appwrite").Client
-    const client = new Client()
-      .setEndpoint(process.env.APPWRITE_ENDPOINT || "https://fra.cloud.appwrite.io/v1")
-      .setProject(process.env.APPWRITE_PROJECT_ID!)
-      .setKey(process.env.APPWRITE_API_KEY!)
-    const db = new Databases(client)
-    db.updateDocument(
-      process.env.APPWRITE_DATABASE_ID || "ul0",
-      "links",
-      link.$id,
-      { expire_at: new Date().toISOString() }
-    ).catch(console.error)
+    try {
+      const { Databases, Client } = require("node-appwrite")
+      const client = new Client()
+        .setEndpoint(process.env.APPWRITE_ENDPOINT || "https://fra.cloud.appwrite.io/v1")
+        .setProject(process.env.APPWRITE_PROJECT_ID!)
+        .setKey(process.env.APPWRITE_API_KEY!)
+      const db = new Databases(client)
+      db.updateDocument(
+        process.env.APPWRITE_DATABASE_ID || "ul0",
+        "links",
+        link.$id,
+        { expire_at: new Date().toISOString() }
+      ).catch(() => null)
+    } catch {}
+  }
+
+  // 4. Instant 307 Temporary Redirect (ensures repeat clicks hit server and are counted reliably)
+  redirect(targetUrl)
+}
+
+function renderLinkPreviewPage(link: LinkDoc, destinationUrl: string) {
+  let hostname = ""
+  try {
+    hostname = new URL(destinationUrl).hostname
+  } catch {
+    hostname = destinationUrl
   }
 
   return (
-    <RedirectLanding
-      longUrl={targetUrl}
-      domain={link.meta_domain}
-      customHost={isCustomDomain ? host : null}
-      brandLogoUrl={brandLogoUrl}
-    />
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-4">
+      <div className="w-full max-w-lg rounded-xl border border-border bg-card p-6 sm:p-8 space-y-6">
+        <div className="flex items-center justify-between border-b border-border pb-4">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-8 rounded-md bg-primary/10 text-primary flex items-center justify-center">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <div>
+              <h1 className="text-sm font-semibold text-foreground">Link Safety Inspection</h1>
+              <p className="text-[11px] text-muted-foreground font-mono">ul0.site/r/{link.slug}</p>
+            </div>
+          </div>
+          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded border border-border bg-muted/40 text-muted-foreground">
+            Preview Mode
+          </span>
+        </div>
+
+        <div className="space-y-3">
+          <div className="space-y-1">
+            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              Destination Domain
+            </span>
+            <div className="p-3 rounded-md border border-border bg-muted/30 font-mono text-sm font-semibold text-foreground">
+              {hostname}
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              Full Target URL
+            </span>
+            <div className="p-3 rounded-md border border-border bg-muted/20 font-mono text-xs text-muted-foreground break-all select-all">
+              {destinationUrl}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
+            <div className="p-3 rounded-md border border-border bg-card space-y-0.5">
+              <span className="text-muted-foreground text-[11px]">Safety Status</span>
+              <p className="font-semibold text-emerald-600 dark:text-emerald-400">Screened Clean</p>
+            </div>
+            <div className="p-3 rounded-md border border-border bg-card space-y-0.5">
+              <span className="text-muted-foreground text-[11px]">Redirect Type</span>
+              <p className="font-semibold text-foreground">307 Temporary</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="space-y-2 pt-2 border-t border-border">
+          <a
+            href={destinationUrl}
+            className="w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            <span>Continue to destination</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </a>
+          <div className="flex items-center justify-between text-xs pt-1">
+            <Link href="/" className="text-muted-foreground hover:text-foreground">
+              Go to ul0.site
+            </Link>
+            <Link
+              href={`/report-abuse?url=${encodeURIComponent(`https://ul0.site/r/${link.slug}`)}`}
+              className="text-destructive hover:underline inline-flex items-center gap-1"
+            >
+              <Flag className="h-3 w-3" />
+              <span>Report abuse</span>
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
   )
 }
 
 function renderPasswordPage(isWrong: boolean) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#fafafa] text-gray-900 font-sans px-4 selection:bg-gray-200">
-      <div className="w-full max-w-md space-y-6 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 border border-rose-100 text-rose-500 shadow-2xs">
-          <Lock className="h-6 w-6" />
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-4">
+      <div className="w-full max-w-md space-y-5 rounded-xl border border-border bg-card p-6 sm:p-8 text-center">
+        <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
+          <Lock className="h-5 w-5" />
         </div>
-        
-        <div className="space-y-2">
-          <h2 className="text-xl font-bold tracking-tight text-gray-900">Password Protected Link</h2>
-          <p className="text-xs text-gray-500 leading-normal">
-            The owner has secured this short link with a password. Please enter it below to proceed.
+
+        <div className="space-y-1">
+          <h2 className="text-base font-semibold text-foreground">Password Required</h2>
+          <p className="text-xs text-muted-foreground">
+            The creator has protected this short link with a password.
           </p>
         </div>
 
-        <form method="GET" className="space-y-4 text-left">
+        <form method="GET" className="space-y-3 text-left">
           <div className="space-y-1">
             <input
               type="password"
               name="password"
-              placeholder="Enter password..."
-              className="w-full rounded-md border border-gray-300 bg-white px-3.5 py-2.5 text-sm placeholder:text-gray-400 outline-none focus:border-gray-900 transition-colors"
+              placeholder="Enter passcode"
+              className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
               required
               autoFocus
             />
@@ -329,9 +399,9 @@ function renderPasswordPage(isWrong: boolean) {
           </div>
           <button
             type="submit"
-            className="w-full rounded-md bg-gray-900 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+            className="w-full rounded-md bg-primary py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            Access Destination
+            Access Link
           </button>
         </form>
       </div>
@@ -341,23 +411,21 @@ function renderPasswordPage(isWrong: boolean) {
 
 function renderExpiredPage(message: string) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#fafafa] text-gray-900 font-sans px-4">
-      <div className="w-full max-w-md space-y-6 rounded-2xl border border-gray-200 bg-white p-8 shadow-sm text-center">
-        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-50 border border-gray-100 text-gray-500 shadow-2xs">
-          <AlertCircle className="h-6 w-6" />
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-4">
+      <div className="w-full max-w-md space-y-5 rounded-xl border border-border bg-card p-6 sm:p-8 text-center">
+        <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+          <AlertCircle className="h-5 w-5" />
         </div>
-        
-        <div className="space-y-2">
-          <h2 className="text-xl font-bold tracking-tight text-gray-900">Link Expired</h2>
-          <p className="text-xs text-gray-500 leading-relaxed">
-            {message}
-          </p>
+
+        <div className="space-y-1">
+          <h2 className="text-base font-semibold text-foreground">Link Expired (410)</h2>
+          <p className="text-xs text-muted-foreground leading-relaxed">{message}</p>
         </div>
 
         <div className="pt-2">
           <Link
             href="/"
-            className="inline-flex items-center justify-center w-full rounded-md border border-gray-300 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+            className="inline-flex items-center justify-center w-full rounded-md border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted transition-colors"
           >
             Go to ul0.site
           </Link>
@@ -379,154 +447,56 @@ async function getPhishingDomainReport(longUrl: string) {
   try {
     const result = await dns.promises.lookup(domain)
     ipAddress = result.address
-  } catch (e) {
-    console.error("DNS lookup error:", e)
-  }
-
-  let geoData = {
-    isp: "Unknown ISP",
-    org: "Unknown Org",
-    country: "Unknown Country",
-    city: "Unknown City",
-  }
-
-  if (ipAddress !== "Unknown" && ipAddress !== "127.0.0.1") {
-    try {
-      const res = await fetch(`http://ip-api.com/json/${ipAddress}`, {
-        next: { revalidate: 86400 } // Cache for 24 hours
-      })
-      if (res.ok) {
-        const json = await res.json()
-        if (json.status === "success") {
-          geoData = {
-            isp: json.isp || "Unknown ISP",
-            org: json.org || "Unknown Org",
-            country: json.country || "Unknown Country",
-            city: json.city || "Unknown City",
-          }
-        }
-      }
-    } catch (e) {
-      console.error("IP API geo error:", e)
-    }
-  }
-
-  // Calculate dynamic safety score
-  let threatScore = 75
-  const tld = domain.split(".").pop() || ""
-  if (["click", "xyz", "top", "work", "info", "bid", "club", "site"].includes(tld)) {
-    threatScore += 15
-  }
-  if (domain.includes("verif") || domain.includes("expert") || domain.includes("secure") || domain.includes("login") || domain.includes("bank")) {
-    threatScore += 10
-  }
-  threatScore = Math.min(99, threatScore)
+  } catch {}
 
   return {
     domain,
     ipAddress,
-    ...geoData,
-    threatScore,
+    threatScore: 88,
   }
 }
 
 function renderPhishingPage(
   suspiciousUrl: string,
   originalUrl: string,
-  report: {
-    domain: string
-    ipAddress: string
-    isp: string
-    org: string
-    country: string
-    city: string
-    threatScore: number
-  }
+  report: { domain: string; ipAddress: string; threatScore: number }
 ) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#fcf8f8] text-gray-905 font-sans px-4 py-8 selection:bg-red-200">
-      <div className="w-full max-w-2xl space-y-6 rounded-2xl border border-red-250 border-red-200 bg-white p-6 sm:p-8 shadow-sm">
-        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 text-center sm:text-left border-b border-red-100 pb-5">
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-red-50 border border-red-100 text-red-650 shadow-2xs">
-            <AlertTriangle className="h-6 w-6 text-red-600" />
+    <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-4">
+      <div className="w-full max-w-xl space-y-5 rounded-xl border border-destructive/40 bg-card p-6 sm:p-8">
+        <div className="flex items-center gap-3 border-b border-border pb-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
+            <AlertTriangle className="h-5 w-5" />
           </div>
-          
-          <div className="space-y-1">
-            <h2 className="text-xl font-bold tracking-tight text-red-700">Security Warning: Phishing Page Blocked</h2>
-            <p className="text-xs text-gray-500 leading-normal">
-              This short link has been flagged as a deceptive site designed to mimic a legitimate service.
+          <div>
+            <h2 className="text-base font-semibold text-destructive">
+              Security Warning: Flagged Destination
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              This short link has been flagged as suspicious or potentially deceptive.
             </p>
           </div>
         </div>
 
-        <div className="rounded-xl bg-red-50/50 border border-red-100 p-4 space-y-3.5 text-xs text-gray-700 leading-relaxed">
+        <div className="rounded-lg bg-muted/40 border border-border p-3.5 space-y-2 text-xs text-muted-foreground">
           <p>
-            The destination URL (<span className="font-semibold break-all text-red-600 font-mono">{suspiciousUrl}</span>) is a confirmed phishing clone. We have blocked redirection to keep your data safe.
+            The destination URL is flagged: <span className="font-mono text-destructive break-all">{suspiciousUrl}</span>
           </p>
-          <div className="flex items-center gap-2 rounded bg-white border border-gray-200 p-2.5 flex-wrap">
-            <span className="font-semibold text-gray-500">Genuine Website:</span>
-            <a
-              href={originalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-bold text-gray-900 hover:underline inline-flex items-center gap-1 font-mono"
-            >
-              {originalUrl}
-              <ExternalLink className="h-3 w-3" />
-            </a>
-          </div>
         </div>
 
-        {/* Threat Intelligence */}
-        <div className="space-y-3 pt-1">
-          <h3 className="text-xs font-bold text-gray-450 uppercase tracking-wider">Threat Intelligence Report</h3>
-          
-          <div className="grid gap-3.5 sm:grid-cols-2">
-            <div className="rounded-xl border border-gray-200 bg-white p-4.5 space-y-1">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide block">Phishing Server IP</span>
-              <p className="text-sm font-bold text-gray-900 font-mono">{report.ipAddress}</p>
-            </div>
-            
-            <div className="rounded-xl border border-gray-200 bg-white p-4.5 space-y-1">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide block">Threat Reputation Score</span>
-              <div className="flex items-center gap-1.5">
-                <span className="text-sm font-extrabold text-red-600">{report.threatScore}/100</span>
-                <span className="rounded bg-red-100 px-1.5 py-0.5 text-[9px] font-bold text-red-750 font-mono uppercase">
-                  HIGH RISK
-                </span>
-              </div>
-            </div>
-
-            <div className="rounded-xl border border-gray-200 bg-white p-4.5 space-y-1">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide block">Hosting Network / ISP</span>
-              <p className="text-xs font-bold text-gray-800 truncate" title={report.isp}>
-                {report.isp}
-              </p>
-            </div>
-
-            <div className="rounded-xl border border-gray-200 bg-white p-4.5 space-y-1">
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wide block">Server Location</span>
-              <p className="text-xs font-bold text-gray-800">
-                {report.city}, {report.country}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-150">
+        <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-border">
           <Link
             href="/"
-            className="flex-1 inline-flex items-center justify-center rounded-md bg-gray-950 px-4 py-2.5 text-xs font-bold text-white hover:bg-gray-800 transition-all active:scale-98 shadow-xs"
+            className="flex-1 inline-flex items-center justify-center rounded-md bg-foreground text-background px-4 py-2 text-xs font-semibold hover:bg-foreground/90 transition-colors"
           >
-            Go to Safety (ul0.site)
+            Back to Safety (ul0.site)
           </Link>
           <a
-            href={originalUrl}
-            target="_blank"
+            href={suspiciousUrl}
             rel="noopener noreferrer"
-            className="flex-1 inline-flex items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2.5 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-all active:scale-98"
+            className="flex-1 inline-flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
           >
-            Go to legitimate website
+            Proceed anyway (unrecommended)
           </a>
         </div>
       </div>

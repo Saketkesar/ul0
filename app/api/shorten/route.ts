@@ -4,9 +4,9 @@ import { generateSlug, validateUrl, validateCustomSlug, extractDomain } from "@/
 import { checkRateLimit, getClientIP, getRequestFingerprint, isSuspiciousRequest } from "@/lib/utils/rate-limit"
 import { createLink, isConflictError } from "@/lib/appwrite/links"
 import { DEFAULT_HOST } from "@/lib/appwrite/config"
-import { getAccountByApiKey } from "@/lib/appwrite/accounts"
+import { verifyApiKey } from "@/lib/api-keys"
 import { getDomainsByOwner } from "@/lib/appwrite/domains"
-import { getPlanLimits } from "@/lib/plans"
+import { createClaimToken } from "@/lib/claim-token"
 
 // Rate limit configurations
 const RATE_LIMIT_CONFIG = {
@@ -35,10 +35,10 @@ export async function POST(request: NextRequest) {
       apiKey = request.headers.get("x-api-key") || null
     }
 
-    let apiKeyAccount = null
+    let apiKeyUser: { userId: string; account: any } | null = null
     if (apiKey) {
-      apiKeyAccount = await getAccountByApiKey(apiKey)
-      if (!apiKeyAccount) {
+      apiKeyUser = await verifyApiKey(apiKey)
+      if (!apiKeyUser) {
         return NextResponse.json({ error: "Invalid API key" }, { status: 401 })
       }
     }
@@ -47,10 +47,11 @@ export async function POST(request: NextRequest) {
     const clientIP = getClientIP(request)
     const fingerprint = getRequestFingerprint(request)
 
-    // 2. Enforce API key-specific rate limits
-    if (apiKeyAccount) {
-      const maxRequests = apiKeyAccount.plan === "business_user" ? 300 : 60
-      const keyRateLimitResult = await checkRateLimit(`api:key:${apiKeyAccount.$id}`, {
+    // 2. Enforce API key-specific rate limits or standard web limits
+    if (apiKeyUser) {
+      const plan = apiKeyUser.account?.plan || "free_user"
+      const maxRequests = plan === "business_user" ? 300 : plan === "pro_user" ? 60 : 10
+      const keyRateLimitResult = await checkRateLimit(`api:key:${apiKeyUser.userId}`, {
         windowMs: 60000,
         maxRequests,
       })
@@ -117,11 +118,11 @@ export async function POST(request: NextRequest) {
     } catch {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
     }
-    
+
     const { longUrl, customSlug, host, targeting_json } = body
 
     // 4. Validate URL
-    if (!longUrl || typeof longUrl !== 'string') {
+    if (!longUrl || typeof longUrl !== "string") {
       return NextResponse.json({ error: "URL is required" }, { status: 400 })
     }
     
@@ -142,12 +143,11 @@ export async function POST(request: NextRequest) {
 
     // 5. Determine host and owner ID
     let finalHost = DEFAULT_HOST
-    let finalOwnerId = null
+    let finalOwnerId: string | null = null
 
-    if (apiKeyAccount) {
-      finalOwnerId = apiKeyAccount.clerk_user_id
+    if (apiKeyUser) {
+      finalOwnerId = apiKeyUser.userId
       if (host && typeof host === "string" && host !== DEFAULT_HOST) {
-        // Verify user owns the connected domain
         const userDomains = await getDomainsByOwner(finalOwnerId)
         const matchedDomain = userDomains.find((d) => d.domain === host.trim() && d.status === "verified")
         if (!matchedDomain) {
@@ -179,12 +179,36 @@ export async function POST(request: NextRequest) {
         })
 
         const protocol = finalHost === DEFAULT_HOST ? "https" : "http"
-        return NextResponse.json({
+        const shortUrl = `${protocol}://${finalHost}/r/${link.slug}`
+
+        // If anonymous, issue signed claim token in HTTP-only cookie
+        let claimToken: string | null = null
+        const responseData: Record<string, any> = {
           slug: link.slug,
-          shortUrl: `${protocol}://${finalHost}/r/${link.slug}`,
+          shortUrl,
           host: finalHost,
           id: link.$id,
-        })
+          isAnonymous: !finalOwnerId,
+        }
+
+        if (!finalOwnerId) {
+          claimToken = createClaimToken(link.$id, link.slug)
+          responseData.claimToken = claimToken
+        }
+
+        const response = NextResponse.json(responseData)
+
+        if (claimToken) {
+          response.cookies.set("ul0_claim_token", claimToken, {
+            path: "/",
+            maxAge: 7 * 24 * 60 * 60,
+            httpOnly: true,
+            sameSite: "lax",
+            secure: process.env.NODE_ENV === "production",
+          })
+        }
+
+        return response
       } catch (err) {
         if (isConflictError(err)) {
           if (isCustomSlug) {
@@ -210,4 +234,3 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
-

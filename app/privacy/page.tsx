@@ -1,160 +1,107 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Metadata } from "next"
+import type { Metadata } from "next"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - ul0 Free URL Shortener",
-  description: "Privacy Policy for ul0 - Free URL Shortener and Expense Splitter. Learn how we collect, use, and protect your data. GDPR compliant.",
-  keywords: ["privacy policy", "ul0 privacy", "url shortener privacy", "data protection", "GDPR"],
+  title: "Privacy Policy",
+  description: "Privacy policy for UL0. Learn how we handle links, analytics, and data without tracking cookies.",
   alternates: {
     canonical: "https://ul0.site/privacy",
-  },
-  openGraph: {
-    title: "Privacy Policy - ul0 URL Shortener",
-    description: "Privacy Policy for ul0 - Free URL Shortener. Learn how we protect your data.",
-    url: "https://ul0.site/privacy",
-    type: "website",
   },
 }
 
 export default function PrivacyPage() {
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
       <Header />
-      
-      <main className="flex-1 py-8 sm:py-12">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <h1 className="text-3xl font-bold mb-6 sm:text-4xl">Privacy Policy</h1>
-          <p className="text-muted-foreground mb-8">Last updated: July 5, 2026</p>
-          
-          <div className="prose prose-gray dark:prose-invert max-w-none space-y-6">
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Welcome to ul0 ("we," "our," or "us"). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our <Link href="/" className="text-primary hover:underline">URL shortening</Link> and <Link href="/split" className="text-primary hover:underline">expense splitting</Link> services.
+
+      <main className="flex-1 py-12 sm:py-16">
+        <div className="container mx-auto px-4 max-w-3xl space-y-8">
+          <div className="border-b border-border pb-6 space-y-2">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
+              Privacy Policy
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Last updated: October 2026 • Effective immediately
+            </p>
+          </div>
+
+          <div className="prose prose-sm dark:prose-invert max-w-none space-y-6 text-xs sm:text-sm leading-relaxed text-muted-foreground">
+            <section className="space-y-2">
+              <h2 className="text-base font-semibold text-foreground">1. Core Privacy Commitments</h2>
+              <p>
+                UL0 is designed to minimize data collection. We do not use advertising tracking cookies,
+                we do not sell user data, and we do not profile individual visitors across the web.
               </p>
             </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">2. Information We Collect</h2>
-              <h3 className="text-xl font-medium mb-2">2.1 Information You Provide</h3>
-              <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                <li>URLs you submit for shortening</li>
-                <li>Group names and member information for expense splitting</li>
-                <li>UPI IDs for payment processing</li>
-                <li>Expense details (amounts, descriptions, dates)</li>
-                <li>Email address and account info when signing up via Clerk</li>
-                <li>Billing details provided to our payment partners (Polar.sh / Stripe) when subscribing to a plan</li>
+            <section className="space-y-2">
+              <h2 className="text-base font-semibold text-foreground">2. Click Analytics &amp; Edge Processing</h2>
+              <p>
+                When a visitor clicks a short link (<code className="font-mono">/r/[slug]</code>), our edge workers
+                record aggregate telemetry to provide link creators with basic analytics:
+              </p>
+              <ul className="list-disc pl-5 space-y-1">
+                <li>Country and approximate region (derived from edge network headers, not GPS)</li>
+                <li>Referring domain (from HTTP Referer header, if provided)</li>
+                <li>Device category, operating system, and browser family (from User-Agent string)</li>
+                <li>Timestamp and whether the click originated from a QR code scan</li>
               </ul>
-              
-              <h3 className="text-xl font-medium mb-2 mt-4">2.2 Automatically Collected Information</h3>
-              <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                <li>IP address and device information</li>
-                <li>Browser type and version</li>
-                <li>Pages visited and time spent</li>
-                <li>Referring website addresses</li>
-                <li>Click data on shortened links</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">3. How We Use Your Information</h2>
-              <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                <li>To provide and maintain our URL shortening service</li>
-                <li>To process and manage expense splits</li>
-                <li>To generate analytics and usage statistics</li>
-                <li>To improve our services and user experience</li>
-                <li>To detect and prevent fraud or abuse</li>
-                <li>To process subscription payments and sync plans via webhooks</li>
-                <li>To comply with legal obligations</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">4. Data Retention</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Shortened URLs are stored indefinitely unless deleted by the creator or flagged for abuse. Expense split data is retained for 24 hours after creation, after which the shareable link expires. We retain account profile information and subscription status as long as your account is active.
+              <p>
+                We do not store plain IP addresses in long-term analytics logs. Daily unique visitors are
+                calculated using a temporary one-way cryptographic hash that resets every 24 hours.
               </p>
             </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">5. Data Sharing</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                We do not sell your personal information. We may share data with:
+            <section className="space-y-2">
+              <h2 className="text-base font-semibold text-foreground">3. Cookies and Local Storage</h2>
+              <p>
+                UL0 does not use third-party advertising cookies or behavioral tracking beacons.
+                We use strictly necessary cookies only:
               </p>
-              <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                <li>Service providers who assist in operating our platform (hosting, analytics, Clerk for authentication, Polar.sh/Stripe for subscription billing processing)</li>
-                <li>Law enforcement when required by law</li>
-                <li>Third parties with your consent</li>
+              <ul className="list-disc pl-5 space-y-1">
+                <li><strong>Session &amp; Authentication:</strong> Managed securely via Clerk to maintain your login session.</li>
+                <li><strong>Theme Preference:</strong> Stored in local storage or cookie (<code className="font-mono">theme</code>) to preserve light or dark mode.</li>
+                <li><strong>Anonymous Link Claim:</strong> A signed, temporary HTTP-only cookie (<code className="font-mono">ul0_claim_token</code>) allowing you to claim a link created before signing up.</li>
               </ul>
             </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">6. Cookies and Tracking</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                We use cookies and similar technologies to enhance your experience, analyze usage patterns, and deliver relevant advertisements. You can control cookie settings through your browser preferences.
+            <section className="space-y-2">
+              <h2 className="text-base font-semibold text-foreground">4. Client-Side Browser Utilities</h2>
+              <p>
+                Utilities including the PDF splitter, image-to-PDF converter, and client tools process files
+                directly inside your web browser using WebAssembly. Your files are not transmitted to or stored
+                on our servers.
               </p>
             </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">7. Advertising and Google AdSense</h2>
-              <p className="text-muted-foreground leading-relaxed mb-3">
-                We use Google AdSense to serve advertisements on our website. To comply with Google's policies, please note the following:
-              </p>
-              <ul className="list-disc pl-6 text-muted-foreground space-y-2 mb-3">
-                <li>Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to your website or other websites.</li>
-                <li>Google's use of advertising cookies enables it and its partners to serve ads to your users based on their visit to your sites and/or other sites on the Internet.</li>
-                <li>Users may opt out of personalized advertising by visiting <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Ads Settings</a> or the <a href="http://www.aboutads.info/choices" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">About Ads</a> portal.</li>
-              </ul>
-              <p className="text-muted-foreground leading-relaxed">
-                These third-party ad networks use technology to send the advertisements and links that appear on our website directly to your browser. They automatically receive your IP address when this occurs.
+            <section className="space-y-2">
+              <h2 className="text-base font-semibold text-foreground">5. Data Retention &amp; Deletion</h2>
+              <p>
+                Public short links remain active indefinitely unless they violate our Acceptable Use Policy or
+                are deleted by the account owner. You may request account deletion or data export at any time
+                by contacting us.
               </p>
             </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">8. Your Rights</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Depending on your location, you may have rights to:
-              </p>
-              <ul className="list-disc pl-6 text-muted-foreground space-y-2">
-                <li>Access your personal data</li>
-                <li>Correct inaccurate data</li>
-                <li>Delete your data</li>
-                <li>Object to data processing</li>
-                <li>Data portability</li>
-              </ul>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">9. Security</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet is 100% secure.
+            <section className="space-y-2">
+              <h2 className="text-base font-semibold text-foreground">6. Security and Abuse Prevention</h2>
+              <p>
+                To protect Internet users from phishing, malware, and deceptive campaigns, destination URLs are
+                screened against automated security blocklists and safe browsing feeds. Flagged links are
+                deactivated immediately or routed through an interstitial safety warning.
               </p>
             </section>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">10. Children's Privacy</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Our services are not intended for children under 13 years of age. We do not knowingly collect personal information from children under 13.
+            <section className="space-y-2">
+              <h2 className="text-base font-semibold text-foreground">7. Contact Information</h2>
+              <p>
+                For privacy inquiries, data requests, or abuse takedown notices, contact:
               </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">11. Changes to This Policy</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last updated" date.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold mb-4">12. Contact Us</h2>
-              <p className="text-muted-foreground leading-relaxed">
-                If you have any questions about this Privacy Policy, please contact us at:
-              </p>
-              <p className="text-muted-foreground mt-2">
-                Email: <a href="mailto:getul0site@gmail.com" className="text-primary hover:underline font-medium">getul0site@gmail.com</a><br />
-                Website: https://ul0.site/contact
+              <p className="font-mono text-foreground">
+                Email: support@ul0.site<br />
+                Abuse portal: <Link href="/report-abuse" className="text-primary hover:underline">ul0.site/report-abuse</Link>
               </p>
             </section>
           </div>

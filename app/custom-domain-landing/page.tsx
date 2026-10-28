@@ -2,176 +2,234 @@ import type { Metadata } from "next"
 import { headers } from "next/headers"
 import Image from "next/image"
 import Link from "next/link"
-import { Link2, ArrowRight } from "lucide-react"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+import { Button } from "@/components/ui/button"
+import { CopyField } from "@/components/copy-field"
+import {
+  Globe,
+  ShieldCheck,
+  Check,
+  ExternalLink,
+  ArrowRight,
+  AlertCircle,
+  HelpCircle,
+} from "lucide-react"
 import { getDomainByName } from "@/lib/appwrite/domains"
+import { DEFAULT_HOST } from "@/lib/appwrite/config"
 
 export const metadata: Metadata = {
-  title: "Free Custom Domain URL Shortener (CNAME Setup)",
+  title: "Custom Branded Domains",
   description:
-    "Connect your own branded domain to ul0.site and create custom short links for free. Build audience trust, increase click-through rates, and track link analytics.",
-  keywords: [
-    "custom domain link shortener",
-    "branded short links",
-    "connect custom domain URL shortener",
-    "white label link shortener",
-    "custom short URL",
-    "branded URL shortener free",
-  ],
-  openGraph: {
-    title: "Free Custom Domain URL Shortener (CNAME Setup) | UL0",
-    description:
-      "Create branded short URLs on your own domain. Track clicks, manage links, and build trust with your audience.",
-    url: "https://ul0.site/custom-domain-landing",
-    siteName: "UL0",
-    type: "website",
-    images: [{
-      url: "https://ul0.site/social-card.png",
-      width: 1376,
-      height: 768,
-      alt: "Free Custom Domain URL Shortener",
-    }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Free Custom Domain URL Shortener (CNAME Setup) | UL0",
-    description:
-      "Create branded short URLs on your own domain. Track clicks, manage links, and build trust with your audience.",
-    images: ["https://ul0.site/social-card.png"],
-  },
+    "Connect your own domain or subdomain via CNAME and shorten branded links with automated SSL certificates.",
   alternates: {
     canonical: "https://ul0.site/custom-domain-landing",
   },
-  robots: { index: true, follow: true },
 }
 
 export default async function CustomDomainLandingPage() {
   const headersList = await headers()
-  const host = headersList.get("host") || ""
-  // Strip port if present
-  const domain = host.split(":")[0]
+  const rawHost = headersList.get("host") || ""
+  const host = rawHost.split(":")[0].toLowerCase()
 
-  // Retrieve brand logo URL from the database for this domain
+  const isCustomDomainVisitor =
+    host &&
+    host !== "ul0.site" &&
+    !host.endsWith(".ul0.site") &&
+    !host.includes("localhost") &&
+    !host.includes("127.0.0.1")
+
   let brandLogoUrl: string | null = null
-  try {
-    const domainDoc = await getDomainByName(domain)
-    brandLogoUrl = domainDoc?.brand_logo_url || null
-  } catch (err) {
-    console.error("Failed to fetch domain doc in landing page:", err)
+  if (isCustomDomainVisitor) {
+    try {
+      const domainDoc = await getDomainByName(host)
+      brandLogoUrl = domainDoc?.brand_logo_url || null
+    } catch {}
   }
 
-  return (
-    <div className="relative flex min-h-screen flex-col bg-white text-gray-900 font-sans selection:bg-gray-100">
-      {/* Notion-style subtle border instead of flashy grid */}
-      <div className="absolute inset-x-0 top-0 h-[1px] bg-gray-200" />
-
-      {/* Header bar */}
-      <header className="relative z-10 border-b border-gray-100 bg-white/80 backdrop-blur-md px-6 py-4">
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <Link href="https://ul0.site" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-            <Image
-              src="/ul0.png"
-              alt="ul0"
-              width={72}
-              height={26}
-              className="h-6 w-auto object-contain"
-              priority
-            />
-          </Link>
-          <Link
-            href="https://ul0.site/sign-up"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 rounded-md border border-gray-900 bg-gray-900 px-4 py-1.5 text-xs font-semibold text-white hover:bg-gray-800 transition-colors"
-          >
-            Get Free Links
-            <ArrowRight className="h-3.5 w-3.5" />
-          </Link>
-        </div>
-      </header>
-
-      {/* Main content */}
-      <main className="relative z-10 flex flex-1 flex-col items-center justify-center px-6 py-24 text-center max-w-3xl mx-auto w-full">
-        {/* Brand Logo Display */}
-        {brandLogoUrl ? (
-          <div className="mb-8 flex items-center justify-center p-3 rounded-xl border border-gray-200 bg-gray-50 shadow-sm max-w-[160px] max-h-[80px]">
+  // 1. Custom Domain Root Visitor View (when visited directly on client's branded domain)
+  if (isCustomDomainVisitor) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-6 text-center">
+        <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 space-y-6">
+          {brandLogoUrl ? (
             <img
               src={brandLogoUrl}
               alt="Brand Logo"
-              className="max-w-[140px] max-h-[60px] object-contain"
+              className="mx-auto h-12 w-auto object-contain"
             />
+          ) : (
+            <div className="mx-auto h-12 w-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+              <Globe className="h-6 w-6" />
+            </div>
+          )}
+
+          <div className="space-y-1.5">
+            <h1 className="text-lg font-semibold text-foreground font-mono">{host}</h1>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              This domain is configured for short links and redirects. Powered by the UL0 infrastructure platform.
+            </p>
           </div>
-        ) : (
-          <div className="mb-8 flex flex-col items-center gap-3">
-            <Image
-              src="/ulo_4kwebp.webp"
-              alt="UL0 Platform"
-              width={160}
-              height={72}
-              className="h-10 w-auto object-contain"
-              priority
-            />
-            <div className="font-mono text-xs tracking-tight border border-gray-200 bg-gray-50 rounded-md px-3 py-1 text-gray-600 font-semibold shadow-xs">
-              {domain}
+
+          <div className="pt-2 border-t border-border">
+            <Link
+              href="https://ul0.site"
+              className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 font-medium"
+            >
+              <span>Learn more about UL0</span>
+              <ArrowRight className="h-3 w-3" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // 2. Marketing & DNS Setup Guide View (on ul0.site/custom-domain-landing)
+  return (
+    <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <Header />
+
+      <main className="flex-1 py-14 sm:py-20">
+        <div className="container mx-auto px-4 sm:px-6 max-w-4xl space-y-16">
+          {/* Header */}
+          <div className="border-b border-border pb-6 space-y-2">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-medium border border-border bg-muted/40 text-muted-foreground">
+              <Globe className="h-3 w-3 text-primary" />
+              <span>Branded Infrastructure</span>
+            </div>
+            <h1 className="text-2xl sm:text-4xl font-semibold tracking-tight text-foreground">
+              Connect Your Custom Domain
+            </h1>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
+              Shorten links using your own brand (such as <code className="font-mono text-foreground">link.yourcompany.com</code>).
+              1 custom domain connection is included on all accounts for free.
+            </p>
+          </div>
+
+          {/* Quick DNS Record Reference */}
+          <div className="rounded-lg border border-border bg-card p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-sm font-semibold text-foreground">Required DNS CNAME Record</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Point your subdomain to our edge routing endpoint.
+                </p>
+              </div>
+              <span className="text-[11px] font-mono font-medium px-2 py-0.5 rounded border border-border bg-muted/40 text-muted-foreground">
+                Automated SSL
+              </span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="bg-muted/40 border-b border-border text-muted-foreground">
+                    <th className="px-3 py-2 font-semibold">Type</th>
+                    <th className="px-3 py-2 font-semibold">Name / Host</th>
+                    <th className="px-3 py-2 font-semibold">Target / Value</th>
+                    <th className="px-3 py-2 font-semibold">Proxy Status</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border font-mono text-xs text-foreground">
+                  <tr>
+                    <td className="px-3 py-2.5 font-bold">CNAME</td>
+                    <td className="px-3 py-2.5">link (or your subdomain)</td>
+                    <td className="px-3 py-2.5 text-primary font-bold">cname.ul0.site</td>
+                    <td className="px-3 py-2.5 font-sans text-muted-foreground">DNS Only (Grey Cloud)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <CopyField value="cname.ul0.site" label="CNAME Target" />
+          </div>
+
+          {/* Step by step guide */}
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-foreground">Step-by-Step DNS Instructions</h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="rounded-lg border border-border bg-card p-5 space-y-2.5">
+                <span className="text-xs font-mono font-semibold text-primary">Step 1</span>
+                <h3 className="text-sm font-semibold text-foreground">Log into your DNS host</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Open Cloudflare, Namecheap, GoDaddy, AWS Route 53, or wherever your domain nameservers are managed.
+                </p>
+              </div>
+
+              <div className="rounded-lg border border-border bg-card p-5 space-y-2.5">
+                <span className="text-xs font-mono font-semibold text-primary">Step 2</span>
+                <h3 className="text-sm font-semibold text-foreground">Add the CNAME record</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Create a CNAME record with name <code className="font-mono">link</code> and value <code className="font-mono">cname.ul0.site</code>. If using Cloudflare, turn proxy off (DNS only).
+                </p>
+              </div>
+
+              <div className="rounded-lg border border-border bg-card p-5 space-y-2.5">
+                <span className="text-xs font-mono font-semibold text-primary">Step 3</span>
+                <h3 className="text-sm font-semibold text-foreground">Verify in dashboard</h3>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Navigate to Domains in your dashboard and click Verify. SSL certificates are issued within seconds.
+                </p>
+              </div>
             </div>
           </div>
-        )}
 
-        {/* Headline */}
-        <h1 className="mb-4 text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 max-w-xl leading-snug">
-          This domain is managed by <span className="underline decoration-2 decoration-gray-400">ul0.site</span>
-        </h1>
-        <p className="mb-10 max-w-md text-base text-gray-500 leading-relaxed">
-          Short link redirection services for this domain are securely powered by ul0. 
-          Get your own branded short links for free today.
-        </p>
+          {/* Common failure states / troubleshooting */}
+          <div className="rounded-lg border border-border bg-muted/20 p-6 space-y-4 text-xs">
+            <h3 className="font-semibold text-foreground flex items-center gap-1.5 text-sm">
+              <AlertCircle className="h-4 w-4 text-primary" />
+              Troubleshooting DNS Verification
+            </h3>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 w-full justify-center">
-          <Link
-            href="https://ul0.site/sign-up"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-950 bg-gray-950 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 transition-all duration-150"
-          >
-            <Link2 className="h-4 w-4" />
-            Get Branded Links — Free
-          </Link>
-          <Link
-            href="https://ul0.site"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-200 bg-white px-6 py-2.5 text-sm font-semibold text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150"
-          >
-            Learn More
-          </Link>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-muted-foreground">
+              <div className="space-y-1">
+                <strong className="text-foreground">Cloudflare Orange Cloud (Proxied)</strong>
+                <p className="leading-relaxed">
+                  If your domain uses Cloudflare, ensure the proxy status is set to &ldquo;DNS Only&rdquo; (grey cloud). Proxied traffic prevents our edge from issuing SSL.
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <strong className="text-foreground">DNS Propagation Window</strong>
+                <p className="leading-relaxed">
+                  Most DNS updates propagate within 5 minutes, but some registrars can take up to 24 hours. You can retry verification at any time in the dashboard.
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <strong className="text-foreground">Apex Domain vs Subdomain</strong>
+                <p className="leading-relaxed">
+                  We recommend using a dedicated subdomain (e.g. <code className="font-mono">link.yourdomain.com</code>) so your main apex domain can remain on your primary website.
+                </p>
+              </div>
+
+              <div className="space-y-1">
+                <strong className="text-foreground">Conflicting A Records</strong>
+                <p className="leading-relaxed">
+                  Ensure no existing A or AAAA record matches the same subdomain name. A CNAME record cannot coexist with an A record for the same host.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA */}
+          <div className="rounded-lg border border-border bg-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="space-y-1 text-center sm:text-left">
+              <h3 className="text-sm font-semibold text-foreground">Ready to connect your domain?</h3>
+              <p className="text-xs text-muted-foreground">
+                Sign in to your dashboard to add your custom domain and generate branded short links.
+              </p>
+            </div>
+            <Button asChild size="sm" className="text-xs font-semibold shrink-0">
+              <Link href="/dashboard/domains">Go to Domains Dashboard →</Link>
+            </Button>
+          </div>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-gray-100 bg-white px-6 py-6">
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 sm:flex-row sm:justify-between">
-          <Link href="https://ul0.site" target="_blank" rel="noopener noreferrer">
-            <Image
-              src="/ul0.png"
-              alt="ul0"
-              width={55}
-              height={20}
-              className="h-5 w-auto object-contain opacity-40 hover:opacity-80 transition-opacity"
-            />
-          </Link>
-          <p className="text-xs text-gray-400 font-mono">
-            Powered by{" "}
-            <a
-              href="https://ul0.site"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-gray-600"
-            >
-              ul0.site
-            </a>
-          </p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }

@@ -87,7 +87,7 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
         </div>
 
         <Link
-          href="/dashboard/forms/new"
+          href="/forms/new"
           className="inline-flex items-center justify-center gap-1.5 px-4 h-10 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity self-start sm:self-auto cursor-pointer"
         >
           <Plus className="w-4 h-4" />
@@ -137,7 +137,7 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
             Create a form in minutes. We provide the spreadsheet template, you paste our lightweight Apps Script, and your Google Sheet becomes the database.
           </p>
           <Link
-            href="/dashboard/forms/new"
+            href="/forms/new"
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
@@ -232,7 +232,7 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
                         <div className="flex items-center justify-end gap-1.5">
                           {/* Entries Button */}
                           <Link
-                            href={`/dashboard/forms/${form.id}/entries`}
+                            href={`/forms/${form.id}/entries`}
                             className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-[var(--primary)] text-xs font-medium transition-colors"
                             title="View Sheet Entries"
                           >
@@ -242,7 +242,7 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
 
                           {/* Edit / Builder Button */}
                           <Link
-                            href={`/dashboard/forms/${form.id}`}
+                            href={`/forms/${form.id}`}
                             className="p-1.5 rounded-md border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-[var(--primary)] text-xs transition-colors"
                             title="Edit form & settings"
                           >

@@ -1,21 +1,30 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { auth } from "@clerk/nextjs/server"
-import { getAccountByClerkId, updateAccountApiKey } from "@/lib/appwrite/accounts"
-import { getPlanLimits } from "@/lib/plans"
+import { auth, currentUser } from "@clerk/nextjs/server"
+import { listUserApiKeys, createUserApiKey, revokeUserApiKey } from "@/lib/api-keys"
+import { getAccountByClerkId } from "@/lib/appwrite/accounts"
+import { getActivePlan } from "@/lib/plan.server"
 import { checkRateLimit, getClientIP } from "@/lib/utils/rate-limit"
 
-function generateApiKey(): string {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
-  let result = "ul0_"
-  for (let i = 0; i < 32; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length))
+export async function GET(request: NextRequest) {
+  try {
+    const authSession = await auth()
+    const { userId } = authSession
+    if (!userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    const keys = await listUserApiKeys(userId)
+    return NextResponse.json({ keys })
+  } catch (error: any) {
+    console.error("API Keys GET error:", error)
+    return NextResponse.json({ error: error?.message ?? "Failed to fetch keys" }, { status: 500 })
   }
-  return result
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId } = await auth()
+    const authSession = await auth()
+    const { userId } = authSession
     if (!userId) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
@@ -28,31 +37,40 @@ export async function POST(request: NextRequest) {
 
     if (!rateLimitResult.success) {
       return NextResponse.json(
-        { error: "Too many requests. Please try again in a minute." },
+        { error: "Too many requests. Please wait a minute before creating another key." },
         { status: 429 }
       )
     }
 
-    const account = await getAccountByClerkId(userId)
-    if (!account) {
-      return NextResponse.json({ error: "Account not found" }, { status: 404 })
-    }
+    const [user, accountDoc] = await Promise.all([
+      currentUser().catch(() => null),
+      getAccountByClerkId(userId).catch(() => null),
+    ])
 
-    const limits = getPlanLimits(account.plan)
-    if (account.plan === "free_user") {
-      return NextResponse.json(
-        { error: "API access is a premium feature. Please upgrade to Pro or Business plan." },
-        { status: 403 }
-      )
-    }
+    const plan = getActivePlan(authSession, user, accountDoc)
 
-    const newKey = generateApiKey()
-    await updateAccountApiKey(userId, newKey)
+    let body: { name?: string } = {}
+    try {
+      body = await request.json()
+    } catch {}
 
-    return NextResponse.json({ apiKey: newKey })
+    const name = (body.name || "Default API Key").slice(0, 50)
+    const created = await createUserApiKey(userId, name)
+
+    return NextResponse.json({
+      key: {
+        id: created.id,
+        name: created.name,
+        prefix: created.prefix,
+        created_at: created.created_at,
+        last_used_at: created.last_used_at,
+      },
+      secretKey: created.secretKey,
+      plan: plan.slug,
+    })
   } catch (error: any) {
     console.error("API Key generation error:", error)
-    return NextResponse.json({ error: error?.message ?? "Internal server error" }, { status: 500 })
+    return NextResponse.json({ error: error?.message ?? "Failed to create API key" }, { status: 500 })
   }
 }
 
@@ -63,24 +81,22 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const clientIP = getClientIP(request)
-    const rateLimitResult = await checkRateLimit(`keys:delete:${userId || clientIP}`, {
-      windowMs: 60000,
-      maxRequests: 5,
-    })
-
-    if (!rateLimitResult.success) {
-      return NextResponse.json(
-        { error: "Too many requests. Please try again in a minute." },
-        { status: 429 }
-      )
+    let keyId = request.nextUrl.searchParams.get("id")
+    if (!keyId) {
+      try {
+        const body = await request.json()
+        keyId = body.id
+      } catch {}
     }
 
-    await updateAccountApiKey(userId, null)
+    if (!keyId) {
+      keyId = "key_default"
+    }
 
-    return NextResponse.json({ success: true })
+    await revokeUserApiKey(userId, keyId)
+    return NextResponse.json({ success: true, revokedId: keyId })
   } catch (error: any) {
     console.error("API Key deletion error:", error)
-    return NextResponse.json({ error: error?.message ?? "Internal server error" }, { status: 500 })
+    return NextResponse.json({ error: error?.message ?? "Failed to delete API key" }, { status: 500 })
   }
 }

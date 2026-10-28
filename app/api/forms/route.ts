@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { auth, currentUser } from "@clerk/nextjs/server"
-import { isUserAdmin } from "@/lib/marketing-auth"
+import { auth } from "@clerk/nextjs/server"
 import { createFormDoc, listFormDocsByOwner, getFormDocBySlug } from "@/lib/appwrite/forms"
 import { validateFormSlug } from "@/lib/forms/slug"
 import { generateScriptSecret, encryptSecret } from "@/lib/forms/crypto"
@@ -9,12 +8,6 @@ export async function GET() {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
 
-  const user = await currentUser().catch(() => null)
-  const email = user?.emailAddresses?.[0]?.emailAddress ?? null
-  if (!isUserAdmin(userId, email)) {
-    return NextResponse.json({ error: "Forbidden: Admin access only." }, { status: 403 })
-  }
-
   const forms = await listFormDocsByOwner(userId)
   return NextResponse.json({ forms })
 }
@@ -22,12 +15,6 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   const { userId } = await auth()
   if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-
-  const user = await currentUser().catch(() => null)
-  const email = user?.emailAddresses?.[0]?.emailAddress ?? null
-  if (!isUserAdmin(userId, email)) {
-    return NextResponse.json({ error: "Forbidden: Admin access only." }, { status: 403 })
-  }
 
   const body = await request.json().catch(() => ({}))
   const title = String(body.title || "").trim() || "Untitled Form"

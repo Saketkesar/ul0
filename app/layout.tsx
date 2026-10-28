@@ -2,9 +2,9 @@ import { ClerkProvider } from "@clerk/nextjs"
 import type React from "react"
 import type { Metadata, Viewport } from "next"
 import { Geist, Geist_Mono } from "next/font/google"
-import { Autotag } from "@/components/autotag"
 import { ConditionalAnalytics } from "@/components/conditional-analytics"
 import { hreflangAlternates } from "@/lib/i18n"
+import { Toaster } from "@/components/ui/sonner"
 import "./globals.css"
 
 const geistSans = Geist({
@@ -20,57 +20,24 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://ul0.site"),
   title: {
-    default: "Free URL Shortener, QR Codes & Custom Domains | UL0",
+    default: "UL0 - URL Shortener, QR Codes and Custom Domains",
     template: "%s | UL0",
   },
   description:
-    "Shorten links free, connect your own custom domain, make dynamic QR codes, and track clicks without signup.",
-  authors: [{ name: "ul0", url: "https://ul0.site" }],
-  creator: "ul0",
-  publisher: "ul0",
-  applicationName: "ul0 URL Shortener",
+    "Shorten links, generate dynamic vector QR codes, and connect branded custom domains with privacy-first click analytics.",
+  authors: [{ name: "UL0", url: "https://ul0.site" }],
+  creator: "UL0",
+  publisher: "UL0",
+  applicationName: "UL0",
   category: "Technology",
-  classification: "URL Shortener, Link Management, QR Code Generator",
-  keywords: [
-    "custom domain short link free",
-    "free custom domain link shortener",
-    "cheapest custom domain link shortener",
-    "branded url shortener free",
-    "short link with custom domain free",
-    "bitly alternative custom domain",
-    "url shortener",
-    "free url shortener",
-    "link shortener",
-    "shorten url",
-    "short link",
-    "tiny url",
-    "short url generator",
-    "link shortener free",
-    "url shortener free",
-    "shorten link free",
-    "free link shortener",
-    "online url shortener",
-    "best url shortener",
-    "url shortener no signup",
-    "free link shortener no signup",
-    "link shortener without login",
-    "bitly alternative",
-    "bitly alternative free",
-    "tinyurl alternative",
-    "tiny url alternative",
-    "rebrandly alternative",
-    "best url shortener 2026",
-    "free url shortener 2026",
-    "qr code generator",
-    "free pdf tools",
-  ],
   alternates: {
     canonical: "https://ul0.site",
     languages: hreflangAlternates,
   },
   openGraph: {
-    title: "Free URL Shortener, QR Codes & Custom Domains | UL0",
-    description: "Shorten links free, connect your own custom domain, make dynamic QR codes, and track clicks without signup.",
+    title: "UL0 - URL Shortener, QR Codes and Custom Domains",
+    description:
+      "Shorten links, generate dynamic vector QR codes, and connect branded custom domains with privacy-first click analytics.",
     url: "https://ul0.site",
     type: "website",
     locale: "en_US",
@@ -80,25 +47,24 @@ export const metadata: Metadata = {
         url: "https://ul0.site/social-card.png",
         width: 1376,
         height: 768,
-        alt: "UL0 — Free URL Shortener, Custom Domains & QR Codes",
+        alt: "UL0 - URL Shortener, QR Codes and Custom Domains",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Free URL Shortener, QR Codes & Custom Domains | UL0",
-    description: "Shorten links free, connect your own custom domain, make dynamic QR codes, and track clicks without signup.",
+    title: "UL0 - URL Shortener, QR Codes and Custom Domains",
+    description:
+      "Shorten links, generate dynamic vector QR codes, and connect branded custom domains with privacy-first click analytics.",
     images: ["https://ul0.site/social-card.png"],
   },
   robots: {
     index: true,
     follow: true,
-    nocache: false,
     googleBot: {
       index: true,
       follow: true,
-      noimageindex: false,
       "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
@@ -107,7 +73,6 @@ export const metadata: Metadata = {
   verification: {
     google: "Apib7-x98H0j5cPqHWwSMm6dNU4GmODRoqxLiDzdx9I",
   },
-  generator: "Next.js",
   referrer: "origin-when-cross-origin",
   icons: {
     icon: [
@@ -127,7 +92,7 @@ export const viewport: Viewport = {
   maximumScale: 5,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: dark)", color: "#08100E" },
   ],
 }
 
@@ -139,17 +104,15 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
-      // Website
       {
         "@type": "WebSite",
         "@id": "https://ul0.site/#website",
         url: "https://ul0.site",
         name: "UL0",
-        description: "Free URL shortener, custom branded domains, and click analytics.",
+        description: "URL shortener, custom domains, vector QR codes, and click analytics.",
         publisher: { "@id": "https://ul0.site/#organization" },
         inLanguage: "en-US",
       },
-      // Organization
       {
         "@type": "Organization",
         "@id": "https://ul0.site/#organization",
@@ -164,24 +127,18 @@ export default function RootLayout({
           height: 512,
           caption: "UL0 Logo",
         },
-        image: { "@id": "https://ul0.site/#logo" },
         sameAs: [
           "https://x.com/ul0site",
-          "https://twitter.com/ul0site",
           "https://github.com/Saketkesar/ul0",
           "https://www.linkedin.com/company/ul0",
-          "https://www.youtube.com/@ul0site",
-          "https://www.instagram.com/ul0site",
-          "https://www.facebook.com/ul0site",
-          "https://www.producthunt.com/products/ul0",
         ],
         contactPoint: {
           "@type": "ContactPoint",
           contactType: "customer support",
           url: "https://ul0.site/contact",
+          email: "support@ul0.site",
         },
       },
-      // SoftwareApplication
       {
         "@type": "SoftwareApplication",
         "@id": "https://ul0.site/#app",
@@ -193,7 +150,7 @@ export default function RootLayout({
           price: "0",
           priceCurrency: "USD",
         },
-        description: "Free modern link management platform with branded custom domains, dynamic vector QR codes, and real-time privacy-first analytics.",
+        description: "Link management platform with branded custom domains, dynamic vector QR codes, and privacy-first analytics.",
         url: "https://ul0.site",
       },
     ],
@@ -205,35 +162,26 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://ul0.site" />
         <link rel="llms.txt" href="/llms.txt" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="format-detection" content="telephone=no" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {/* Google Search Console verification */}
         <meta name="google-site-verification" content="Apib7-x98H0j5cPqHWwSMm6dNU4GmODRoqxLiDzdx9I" />
 
-        {/* Google AdSense account verification */}
-        <meta name="google-adsense-account" content="ca-pub-8018312015732327" />
-
-        {/* Immediate theme restoration: Dark mode strictly allowed inside /dashboard only; rest of website is strictly clean white */}
+        {/* Immediate theme restoration supporting system preference & saved user toggle */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  var path = window.location.pathname || '';
-                  if (!path.startsWith('/dashboard')) {
-                    document.documentElement.classList.remove('dark');
-                    return;
-                  }
                   var stored = localStorage.getItem('theme');
                   var cookieMatch = document.cookie.match(/(?:^|; )theme=([^;]*)/);
                   var cookieTheme = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null;
                   var theme = stored || cookieTheme;
-                  var supportDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (theme === 'dark' || (!theme && supportDark)) {
+                  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (theme === 'dark' || (!theme && prefersDark)) {
                     document.documentElement.classList.add('dark');
                   } else {
                     document.documentElement.classList.remove('dark');
@@ -244,13 +192,30 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="font-sans antialiased" suppressHydrationWarning>
-        <ClerkProvider>
-          <div className="relative">
+      <body className="font-sans antialiased bg-background text-foreground selection:bg-primary/20 selection:text-foreground" suppressHydrationWarning>
+        <ClerkProvider
+          appearance={{
+            variables: {
+              colorPrimary: "#168270",
+              colorBackground: "#FFFFFF",
+              colorText: "#0B1412",
+              colorInputBackground: "#FFFFFF",
+              colorInputBorder: "rgba(14, 61, 56, 0.15)",
+              borderRadius: "6px",
+              fontFamily: "var(--font-geist-sans), sans-serif",
+            },
+            elements: {
+              card: "shadow-none border border-border rounded-lg",
+              formButtonPrimary: "bg-primary hover:bg-primary/90 text-primary-foreground shadow-none text-xs font-semibold h-10",
+              footerActionLink: "text-primary hover:text-primary/90",
+            },
+          }}
+        >
+          <div className="relative min-h-screen flex flex-col">
             {children}
           </div>
-          <Autotag />
           <ConditionalAnalytics />
+          <Toaster richColors closeButton position="top-right" />
         </ClerkProvider>
       </body>
     </html>
