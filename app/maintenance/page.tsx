@@ -8,7 +8,6 @@ import {
   Info,
   Mail,
   ChevronRight,
-  Database,
   ArrowUpRight,
   CheckCircle2,
 } from "lucide-react"
@@ -29,12 +28,13 @@ export default function MaintenancePage() {
       <header className="border-b border-[#E9E9E7] dark:border-[#2E2E2E] bg-[#FBFBFA]/90 dark:bg-[#191919]/90 backdrop-blur-xs sticky top-0 z-20">
         <div className="max-w-[760px] mx-auto px-4 h-12 flex items-center justify-between text-xs text-[#787774] dark:text-[#9B9A97]">
           {/* Breadcrumb */}
-          <div className="flex items-center gap-1.5 truncate">
-            <span className="flex items-center gap-1 font-medium text-[#37352F] dark:text-[#E6E6E5]">
-              <span className="w-4 h-4 rounded-xs bg-[#37352F] dark:bg-[#E6E6E5] text-white dark:text-[#191919] flex items-center justify-center text-[10px] font-bold font-mono">
-                U
-              </span>
-              <span>UL0</span>
+          <div className="flex items-center gap-2 truncate">
+            <span className="flex items-center gap-1.5 font-medium text-[#37352F] dark:text-[#E6E6E5]">
+              <img
+                src="/ul0.webp"
+                alt="UL0"
+                className="h-4.5 w-auto object-contain"
+              />
             </span>
             <ChevronRight className="w-3.5 h-3.5 stroke-[1.5] text-[#9B9A97]" />
             <span>Infrastructure</span>
@@ -56,8 +56,12 @@ export default function MaintenancePage() {
       <main className="flex-1 max-w-[760px] w-full mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-8">
         {/* Document Icon & Title Block */}
         <div className="space-y-4">
-          <div className="w-12 h-12 rounded-lg border border-[#E9E9E7] dark:border-[#2E2E2E] bg-white dark:bg-[#202020] flex items-center justify-center text-[#37352F] dark:text-[#E6E6E5] shadow-xs">
-            <Database className="w-6 h-6 stroke-[1.5]" />
+          <div className="w-14 h-14 rounded-xl border border-[#E9E9E7] dark:border-[#2E2E2E] bg-white dark:bg-[#202020] p-2.5 flex items-center justify-center shadow-xs">
+            <img
+              src="/ul0.webp"
+              alt="UL0"
+              className="w-full h-full object-contain"
+            />
           </div>
 
           <div className="space-y-1.5">
@@ -220,7 +224,10 @@ export default function MaintenancePage() {
       {/* Notion Footer */}
       <footer className="border-t border-[#E9E9E7] dark:border-[#2E2E2E] py-6 text-center text-xs text-[#787774] dark:text-[#9B9A97]">
         <div className="max-w-[760px] mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>UL0 Platform Maintenance · 2026</span>
+          <div className="flex items-center gap-2">
+            <img src="/ul0.webp" alt="UL0 Logo" className="h-4 w-auto object-contain opacity-70" />
+            <span>UL0 Platform Maintenance · 2026</span>
+          </div>
           <span className="font-mono text-[11px]">System Status: Paused</span>
         </div>
       </footer>
