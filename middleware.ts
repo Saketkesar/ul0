@@ -27,10 +27,8 @@ export default clerkMiddleware(async (auth, req) => {
   const url = req.nextUrl.clone()
   const path = url.pathname
 
-  // Check Maintenance Mode
-  const isMaintenanceMode =
-    process.env.MAINTENANCE_MODE === "true" ||
-    process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true"
+  // Check Maintenance Mode (Active by default during 24h window; disable with MAINTENANCE_MODE="false")
+  const isMaintenanceMode = process.env.MAINTENANCE_MODE !== "false"
 
   if (isMaintenanceMode) {
     // 1. Check for admin bypass query param or cookie
@@ -74,7 +72,15 @@ export default clerkMiddleware(async (auth, req) => {
         return NextResponse.next()
       }
 
-      // 3. For API routes, return 503 JSON with Retry-After
+      // 3. If already on /maintenance, let it render
+      if (path === "/maintenance") {
+        const res = NextResponse.next()
+        res.headers.set("Retry-After", "86400")
+        res.headers.set("Cache-Control", "no-store, max-age=0, must-revalidate")
+        return res
+      }
+
+      // 4. For API routes, return 503 JSON with Retry-After
       if (path.startsWith("/api/")) {
         return NextResponse.json(
           {
@@ -92,7 +98,7 @@ export default clerkMiddleware(async (auth, req) => {
         )
       }
 
-      // 4. For web routes, rewrite to the maintenance page with HTTP 503
+      // 5. For web routes, rewrite to the maintenance page with HTTP 503
       url.pathname = "/maintenance"
       const res = NextResponse.rewrite(url, {
         status: 503,
