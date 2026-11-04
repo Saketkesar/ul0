@@ -24,14 +24,94 @@ const securityHeaders: Record<string, string> = {
 }
 
 export default clerkMiddleware(async (auth, req) => {
+  const url = req.nextUrl.clone()
+  const path = url.pathname
+
+  // Check Maintenance Mode
+  const isMaintenanceMode =
+    process.env.MAINTENANCE_MODE === "true" ||
+    process.env.NEXT_PUBLIC_MAINTENANCE_MODE === "true"
+
+  if (isMaintenanceMode) {
+    // 1. Check for admin bypass query param or cookie
+    const bypassParam = url.searchParams.get("bypass")
+    const exitBypass = url.searchParams.get("exit_bypass")
+    const bypassCookie = req.cookies.get("ul0_maintenance_bypass")?.value
+
+    if (exitBypass === "true") {
+      const cleanUrl = req.nextUrl.clone()
+      cleanUrl.searchParams.delete("exit_bypass")
+      const res = NextResponse.redirect(cleanUrl)
+      res.cookies.delete("ul0_maintenance_bypass")
+      return res
+    }
+
+    if (bypassParam === "ul0_admin") {
+      const cleanUrl = req.nextUrl.clone()
+      cleanUrl.searchParams.delete("bypass")
+      const res = NextResponse.redirect(cleanUrl)
+      res.cookies.set("ul0_maintenance_bypass", "ul0_admin", {
+        path: "/",
+        maxAge: 86400,
+        sameSite: "lax",
+      })
+      return res
+    }
+
+    const hasBypass = bypassCookie === "ul0_admin"
+
+    if (!hasBypass) {
+      // 2. Allow static files, maintenance artwork, and metadata
+      const isStaticOrMedia =
+        path.startsWith("/_next") ||
+        path.includes(".") ||
+        path.startsWith("/favicon") ||
+        path === "/robots.txt" ||
+        path === "/sitemap.xml" ||
+        path === "/manifest.webmanifest"
+
+      if (isStaticOrMedia) {
+        return NextResponse.next()
+      }
+
+      // 3. For API routes, return 503 JSON with Retry-After
+      if (path.startsWith("/api/")) {
+        return NextResponse.json(
+          {
+            error: "Service Unavailable: Scheduled database maintenance in progress.",
+            maintenance: true,
+            estimated_window: "24h",
+          },
+          {
+            status: 503,
+            headers: {
+              "Retry-After": "86400",
+              "Cache-Control": "no-store, max-age=0, must-revalidate",
+            },
+          }
+        )
+      }
+
+      // 4. For web routes, rewrite to the maintenance page with HTTP 503
+      url.pathname = "/maintenance"
+      const res = NextResponse.rewrite(url, {
+        status: 503,
+      })
+      res.headers.set("Retry-After", "86400")
+      res.headers.set("Cache-Control", "no-store, max-age=0, must-revalidate")
+      Object.entries(securityHeaders).forEach(([key, value]) => {
+        res.headers.set(key, value)
+      })
+      return res
+    }
+  }
+
   // Protect dashboard and settings routes
   if (isProtectedRoute(req)) {
     await auth.protect()
   }
 
-  const url = req.nextUrl.clone()
   const hostname = req.headers.get("host") || ""
-  const path = url.pathname
 
   // 301 Redirect legacy/temporary routes to their canonical destinations
   const LEGACY_REDIRECTS: Record<string, string> = {
@@ -202,8 +282,8 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Match all routes except static files and public redirect paths (/r/*, /go/*)
-    "/((?!_next/static|_next/image|favicon.ico|r/|go/|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp3|wav|ogg|ico|txt|xml|json)$).*)",
+    // Match all routes except static files and assets
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|mp3|wav|ogg|ico|txt|xml|json)$).*)",
     // API and tRPC routes
     "/(api|trpc)(.*)",
     // Clerk auto-proxy path
