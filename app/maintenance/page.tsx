@@ -5,10 +5,8 @@ import {
   ShieldCheck,
   Layers,
   Activity,
-  Key,
   Info,
   Mail,
-  ExternalLink,
   ChevronRight,
   Database,
   ArrowUpRight,
@@ -191,7 +189,7 @@ export default function MaintenancePage() {
           </details>
         </div>
 
-        {/* Action Links & Admin Access */}
+        {/* Action Links */}
         <div className="pt-4 border-t border-[#E9E9E7] dark:border-[#2E2E2E] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
           <div className="flex items-center gap-4 text-[#787774] dark:text-[#9B9A97]">
             <a
@@ -214,8 +212,7 @@ export default function MaintenancePage() {
           </div>
 
           <div className="flex items-center gap-1.5 text-[11px] text-[#787774] dark:text-[#9B9A97] font-mono">
-            <Key className="w-3 h-3 stroke-[1.5]" />
-            <span>Admin bypass: ?bypass=ul0_admin</span>
+            <span>support@ul0.site</span>
           </div>
         </div>
       </main>
