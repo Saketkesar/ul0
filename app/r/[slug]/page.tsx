@@ -11,6 +11,7 @@ import {
   getLinkByHostSlug,
   logClick,
   incrementClickCount,
+  expireLink,
   type LinkDoc,
 } from "@/lib/appwrite/links"
 import { DEFAULT_HOST } from "@/lib/appwrite/config"
@@ -263,20 +264,7 @@ export default async function RedirectPage({ params, searchParams }: Props) {
 
   // 3. One-time link behavior
   if (oneTime) {
-    try {
-      const { Databases, Client } = require("node-appwrite")
-      const client = new Client()
-        .setEndpoint(process.env.APPWRITE_ENDPOINT || "https://fra.cloud.appwrite.io/v1")
-        .setProject(process.env.APPWRITE_PROJECT_ID!)
-        .setKey(process.env.APPWRITE_API_KEY!)
-      const db = new Databases(client)
-      db.updateDocument(
-        process.env.APPWRITE_DATABASE_ID || "ul0",
-        "links",
-        link.$id,
-        { expire_at: new Date().toISOString() }
-      ).catch(() => null)
-    } catch {}
+    expireLink(link.$id).catch(() => null)
   }
 
   // 4. Instant 307 Temporary Redirect (ensures repeat clicks hit server and are counted reliably)

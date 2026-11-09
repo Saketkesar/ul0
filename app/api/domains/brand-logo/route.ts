@@ -1,8 +1,6 @@
 import { auth } from "@clerk/nextjs/server"
 import { NextResponse } from "next/server"
-import { getDatabases } from "@/lib/appwrite/server"
-import { APPWRITE_DATABASE_ID, COLLECTIONS } from "@/lib/appwrite/config"
-import { getDomainById } from "@/lib/appwrite/domains"
+import { getDomainById, updateDomainBrandLogo } from "@/lib/appwrite/domains"
 import { checkRateLimit, getClientIP } from "@/lib/utils/rate-limit"
 
 export async function POST(req: Request) {
@@ -54,10 +52,7 @@ export async function POST(req: Request) {
     }
 
     // Update the domain document
-    const db = getDatabases()
-    await db.updateDocument(APPWRITE_DATABASE_ID, COLLECTIONS.domains, domainId, {
-      brand_logo_url: brandLogoUrl || null,
-    })
+    await updateDomainBrandLogo(domainId, brandLogoUrl || null)
 
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -1,6 +1,8 @@
 import "server-only"
-import { getDatabases, Query, ID } from "./server"
-import { APPWRITE_DATABASE_ID, COLLECTIONS } from "./config"
+import crypto from "crypto"
+import { query, mapRow, isConflictError } from "../db"
+
+export { isConflictError }
 
 // ---------------------------------------------------------------------------
 // Types
@@ -8,22 +10,20 @@ import { APPWRITE_DATABASE_ID, COLLECTIONS } from "./config"
 
 export interface SplitSessionDoc {
   $id: string
+  id?: string
   slug: string
   title: string
-  /** JSON-stringified array of member objects. */
   members_json: string
-  /** JSON-stringified array of expense objects. */
   expenses_json: string
-  /** JSON-stringified array of settlement objects (may be empty string). */
   settlements_json: string | null
   total_amount: number
   expires_at: string | null
   created_at: string | null
 }
 
-/** Parsed version returned to callers — JSON fields are inflated to objects. */
 export interface SplitSession {
   $id: string
+  id?: string
   slug: string
   title: string
   members: unknown[]
@@ -44,97 +44,74 @@ export interface CreateSplitSessionInput {
   expires_at: string
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-const db = () => getDatabases()
-const DB = APPWRITE_DATABASE_ID
-const COL = COLLECTIONS.split_sessions
-
-/** Inflate a raw Appwrite doc into the friendlier SplitSession shape. */
 function inflate(doc: SplitSessionDoc): SplitSession {
   return {
     $id: doc.$id,
+    id: doc.id || doc.$id,
     slug: doc.slug,
     title: doc.title,
-    members: JSON.parse(doc.members_json || "[]"),
-    expenses: JSON.parse(doc.expenses_json || "[]"),
-    settlements: JSON.parse(doc.settlements_json || "[]"),
-    total_amount: doc.total_amount,
+    members: typeof doc.members_json === "string" ? JSON.parse(doc.members_json || "[]") : doc.members_json || [],
+    expenses: typeof doc.expenses_json === "string" ? JSON.parse(doc.expenses_json || "[]") : doc.expenses_json || [],
+    settlements: typeof doc.settlements_json === "string" ? JSON.parse(doc.settlements_json || "[]") : doc.settlements_json || [],
+    total_amount: Number(doc.total_amount || 0),
     expires_at: doc.expires_at,
     created_at: doc.created_at,
   }
-}
-
-/**
- * Check whether an Appwrite error is a unique-index conflict (HTTP 409).
- */
-export function isConflictError(err: unknown): boolean {
-  if (!err || typeof err !== "object") return false
-  const e = err as Record<string, unknown>
-  return e.code === 409 || e.type === "document_already_exists"
 }
 
 // ---------------------------------------------------------------------------
 // CRUD
 // ---------------------------------------------------------------------------
 
-/**
- * Get a split session by its slug.
- * Returns `null` if not found.
- */
 export async function getSplitSessionBySlug(
-  slug: string,
+  slug: string
 ): Promise<SplitSession | null> {
-  const { documents } = await db().listDocuments(DB, COL, [
-    Query.equal("slug", slug),
-    Query.limit(1),
-  ])
-
-  if (documents.length === 0) return null
-  return inflate(documents[0] as unknown as SplitSessionDoc)
+  const res = await query(
+    "SELECT * FROM split_sessions WHERE slug = $1 LIMIT 1",
+    [slug]
+  )
+  if (res.rows.length === 0) return null
+  return inflate(mapRow<SplitSessionDoc>(res.rows[0]))
 }
 
-/**
- * Create a new split session.
- * Arrays are serialised to JSON strings for storage.
- * Throws on unique-index conflict (duplicate slug).
- */
 export async function createSplitSession(
-  input: CreateSplitSessionInput,
+  input: CreateSplitSessionInput
 ): Promise<SplitSession> {
-  const doc = await db().createDocument(DB, COL, ID.unique(), {
-    slug: input.slug,
-    title: input.title,
-    members_json: JSON.stringify(input.members),
-    expenses_json: JSON.stringify(input.expenses),
-    settlements_json: JSON.stringify(input.settlements),
-    total_amount: input.total_amount,
-    expires_at: input.expires_at,
-    created_at: new Date().toISOString(),
-  })
+  const id = crypto.randomUUID()
+  const expiresAt = input.expires_at ? new Date(input.expires_at) : null
 
-  return inflate(doc as unknown as SplitSessionDoc)
+  const res = await query(
+    `INSERT INTO split_sessions (
+      id, slug, title, members_json, expenses_json, settlements_json, total_amount, expires_at, created_at
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
+    RETURNING *`,
+    [
+      id,
+      input.slug,
+      input.title,
+      JSON.stringify(input.members || []),
+      JSON.stringify(input.expenses || []),
+      JSON.stringify(input.settlements || []),
+      input.total_amount || 0,
+      expiresAt,
+    ]
+  )
+
+  return inflate(mapRow<SplitSessionDoc>(res.rows[0]))
 }
 
-/**
- * Update the settlements array for a split session (e.g. marking settlements as paid/unpaid).
- */
 export async function updateSplitSettlements(
   slug: string,
-  settlements: unknown[],
+  settlements: unknown[]
 ): Promise<SplitSession | null> {
-  const { documents } = await db().listDocuments(DB, COL, [
-    Query.equal("slug", slug),
-    Query.limit(1),
-  ])
+  const res = await query(
+    `UPDATE split_sessions 
+     SET settlements_json = $1 
+     WHERE slug = $2 
+     RETURNING *`,
+    [JSON.stringify(settlements || []), slug]
+  )
 
-  if (documents.length === 0) return null
-  const doc = documents[0] as unknown as SplitSessionDoc
-  const updatedDoc = await db().updateDocument(DB, COL, doc.$id, {
-    settlements_json: JSON.stringify(settlements),
-  })
-
-  return inflate(updatedDoc as unknown as SplitSessionDoc)
+  if (res.rows.length === 0) return null
+  return inflate(mapRow<SplitSessionDoc>(res.rows[0]))
 }

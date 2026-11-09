@@ -1,8 +1,8 @@
 import { auth, currentUser } from "@clerk/nextjs/server"
 import { redirect, notFound } from "next/navigation"
 import type { Metadata } from "next"
-import { getDatabases } from "@/lib/appwrite/server"
-import { APPWRITE_DATABASE_ID, COLLECTIONS, DEFAULT_HOST } from "@/lib/appwrite/config"
+import { getLinkById } from "@/lib/appwrite/links"
+import { DEFAULT_HOST } from "@/lib/appwrite/config"
 import { getAccountByClerkId } from "@/lib/appwrite/accounts"
 import { getActivePlan } from "@/lib/plan.server"
 import { LinkDetailClient } from "@/components/dashboard/link-detail-client"
@@ -26,11 +26,8 @@ export default async function LinkDetailPage({ params }: Props) {
   const { userId } = authSession
   if (!userId) redirect("/sign-in")
 
-  const db = getDatabases()
-  let link: any
-  try {
-    link = await db.getDocument(APPWRITE_DATABASE_ID, COLLECTIONS.links, id)
-  } catch {
+  const link = await getLinkById(id)
+  if (!link) {
     notFound()
   }
 

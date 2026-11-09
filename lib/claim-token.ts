@@ -1,6 +1,5 @@
 import crypto from "crypto"
-import { getDatabases } from "@/lib/appwrite/server"
-import { APPWRITE_DATABASE_ID, COLLECTIONS } from "@/lib/appwrite/config"
+import { query } from "@/lib/db"
 
 const CLAIM_SECRET = process.env.CLAIM_SECRET || process.env.CLERK_SECRET_KEY || "ul0_claim_signing_secret_key"
 
@@ -69,16 +68,11 @@ export function verifyClaimToken(token: string): ClaimPayload | null {
  */
 export async function claimLinkForUser(linkId: string, userId: string): Promise<boolean> {
   try {
-    const db = getDatabases()
-    const doc = await db.getDocument(APPWRITE_DATABASE_ID, COLLECTIONS.links, linkId)
-    // Only claim if it currently has no owner
-    if (!doc.owner_id) {
-      await db.updateDocument(APPWRITE_DATABASE_ID, COLLECTIONS.links, linkId, {
-        owner_id: userId,
-      })
-      return true
-    }
-    return false
+    const res = await query(
+      "UPDATE links SET owner_id = $1 WHERE id = $2 AND owner_id IS NULL RETURNING id",
+      [userId, linkId]
+    )
+    return (res.rowCount ?? 0) > 0
   } catch (err) {
     console.error("Error claiming link:", err)
     return false

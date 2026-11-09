@@ -1,6 +1,6 @@
 import "server-only"
-import { getDatabases, Query, ID } from "./server"
-import { APPWRITE_DATABASE_ID, COLLECTIONS } from "./config"
+import crypto from "crypto"
+import { query, mapRow } from "../db"
 
 // ---------------------------------------------------------------------------
 // Types
@@ -8,6 +8,7 @@ import { APPWRITE_DATABASE_ID, COLLECTIONS } from "./config"
 
 export interface BacklinkDoc {
   $id: string
+  id?: string
   website_url: string
   website_name: string
   website_description: string
@@ -31,90 +32,77 @@ export interface CreateBacklinkInput {
 }
 
 // ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-const db = () => getDatabases()
-const DB = APPWRITE_DATABASE_ID
-const BACKLINKS = COLLECTIONS.backlinks
-
-// ---------------------------------------------------------------------------
 // CRUD
 // ---------------------------------------------------------------------------
 
-/**
- * Create a new backlink registration (unverified).
- */
 export async function createBacklink(input: CreateBacklinkInput): Promise<BacklinkDoc> {
-  const doc = await db().createDocument(DB, BACKLINKS, ID.unique(), {
-    website_url: input.website_url,
-    website_name: input.website_name,
-    website_description: input.website_description,
-    logo_url: input.logo_url ?? null,
-    owner_email: input.owner_email ?? null,
-    badge_code: input.badge_code,
-    verification_token: input.verification_token,
-    verified: false,
-    verified_at: null,
-    created_at: new Date().toISOString(),
-  })
-  return doc as unknown as BacklinkDoc
+  const id = crypto.randomUUID()
+  const res = await query(
+    `INSERT INTO backlinks (
+      id, website_url, website_name, website_description, logo_url,
+      owner_email, badge_code, verification_token, verified, verified_at, created_at
+    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, FALSE, NULL, NOW())
+    RETURNING *`,
+    [
+      id,
+      input.website_url,
+      input.website_name,
+      input.website_description,
+      input.logo_url ?? null,
+      input.owner_email ?? null,
+      input.badge_code,
+      input.verification_token,
+    ]
+  )
+  return mapRow<BacklinkDoc>(res.rows[0])
 }
 
-/**
- * Find a backlink doc by its verification token.
- */
 export async function getBacklinkByToken(token: string): Promise<BacklinkDoc | null> {
-  const { documents } = await db().listDocuments(DB, BACKLINKS, [
-    Query.equal("verification_token", token),
-    Query.limit(1),
-  ])
-  if (documents.length === 0) return null
-  return documents[0] as unknown as BacklinkDoc
+  const res = await query(
+    "SELECT * FROM backlinks WHERE verification_token = $1 LIMIT 1",
+    [token]
+  )
+  if (res.rows.length === 0) return null
+  return mapRow<BacklinkDoc>(res.rows[0])
 }
 
-/**
- * Find a backlink doc by website URL.
- */
 export async function getBacklinkByUrl(url: string): Promise<BacklinkDoc | null> {
-  const { documents } = await db().listDocuments(DB, BACKLINKS, [
-    Query.equal("website_url", url),
-    Query.limit(1),
-  ])
-  if (documents.length === 0) return null
-  return documents[0] as unknown as BacklinkDoc
+  const res = await query(
+    "SELECT * FROM backlinks WHERE website_url = $1 LIMIT 1",
+    [url]
+  )
+  if (res.rows.length === 0) return null
+  return mapRow<BacklinkDoc>(res.rows[0])
 }
 
-/**
- * Mark a backlink as verified.
- */
 export async function verifyBacklink(docId: string): Promise<BacklinkDoc> {
-  const doc = await db().updateDocument(DB, BACKLINKS, docId, {
-    verified: true,
-    verified_at: new Date().toISOString(),
-  })
-  return doc as unknown as BacklinkDoc
+  const res = await query(
+    "UPDATE backlinks SET verified = TRUE, verified_at = NOW() WHERE id = $1 RETURNING *",
+    [docId]
+  )
+  return mapRow<BacklinkDoc>(res.rows[0])
 }
 
-/**
- * List all verified backlinks, newest first.
- */
 export async function listVerifiedBacklinks(limit: number = 100): Promise<BacklinkDoc[]> {
-  const { documents } = await db().listDocuments(DB, BACKLINKS, [
-    Query.equal("verified", true),
-    Query.orderDesc("created_at"),
-    Query.limit(limit),
-  ])
-  return documents as unknown as BacklinkDoc[]
+  try {
+    const res = await query(
+      "SELECT * FROM backlinks WHERE verified = TRUE ORDER BY created_at DESC LIMIT $1",
+      [limit]
+    )
+    return res.rows.map(mapRow<BacklinkDoc>)
+  } catch (err) {
+    console.error("Error fetching verified backlinks:", err)
+    return []
+  }
 }
 
-/**
- * Count total verified backlinks.
- */
 export async function countVerifiedBacklinks(): Promise<number> {
-  const { total } = await db().listDocuments(DB, BACKLINKS, [
-    Query.equal("verified", true),
-    Query.limit(1),
-  ])
-  return total
+  try {
+    const res = await query(
+      "SELECT count(*) as total FROM backlinks WHERE verified = TRUE"
+    )
+    return parseInt(res.rows[0]?.total || "0", 10)
+  } catch {
+    return 0
+  }
 }

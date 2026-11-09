@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { getDatabases, Query } from "@/lib/appwrite/server"
-import { APPWRITE_DATABASE_ID, COLLECTIONS } from "@/lib/appwrite/config"
+import { query } from "@/lib/db"
 import { redis } from "@/lib/redis"
 
 const BASIN_FORM_UUID = process.env.USEBASIN_FORM_UUID || "16f38d46e9f3"
@@ -26,17 +25,16 @@ export async function POST(req: NextRequest) {
       slug = trimmedUrl
     }
 
-    // Flag link in Appwrite if found
+    // Flag link in database if found
     if (slug) {
       try {
-        const db = getDatabases()
-        const { documents } = await db.listDocuments(APPWRITE_DATABASE_ID, COLLECTIONS.links, [
-          Query.equal("slug", slug),
-          Query.limit(1),
-        ])
+        const res = await query(
+          "SELECT id, targeting_json FROM links WHERE slug = $1 LIMIT 1",
+          [slug]
+        )
 
-        if (documents.length > 0) {
-          const doc = documents[0]
+        if (res.rows.length > 0) {
+          const doc = res.rows[0]
           let targeting: Record<string, any> = {}
           try {
             targeting = doc.targeting_json ? JSON.parse(doc.targeting_json) : {}
@@ -46,9 +44,10 @@ export async function POST(req: NextRequest) {
           targeting.flagged_reason = reason || "abuse_report"
           targeting.flagged_at = new Date().toISOString()
 
-          await db.updateDocument(APPWRITE_DATABASE_ID, COLLECTIONS.links, doc.$id, {
-            targeting_json: JSON.stringify(targeting),
-          })
+          await query(
+            "UPDATE links SET targeting_json = $1 WHERE id = $2",
+            [JSON.stringify(targeting), doc.id]
+          )
 
           // Mark in Redis blocklist cache
           await redis.set(`blocked_link:${slug}`, "flagged", { ex: 86400 * 30 }).catch(() => null)

@@ -1,10 +1,6 @@
 import "server-only"
-import { getDatabases, Query, ID } from "./server"
-import { APPWRITE_DATABASE_ID, COLLECTIONS } from "./config"
-
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+import crypto from "crypto"
+import { query, mapRow } from "../db"
 
 export interface AccountDoc {
   $id: string
@@ -18,112 +14,73 @@ export interface AccountDoc {
   api_key: string | null
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-const db = () => getDatabases()
-const DB = APPWRITE_DATABASE_ID
-const COL = COLLECTIONS.accounts
-
-// ---------------------------------------------------------------------------
-// Account CRUD
-// ---------------------------------------------------------------------------
-
-/**
- * Get an account by Clerk user ID.
- * Returns `null` if not found.
- */
 export async function getAccountByClerkId(
-  clerkUserId: string,
+  clerkUserId: string
 ): Promise<AccountDoc | null> {
-  const { documents } = await db().listDocuments(DB, COL, [
-    Query.equal("clerk_user_id", clerkUserId),
-    Query.limit(1),
-  ])
-
-  if (documents.length === 0) return null
-  return documents[0] as unknown as AccountDoc
+  const res = await query(
+    "SELECT * FROM accounts WHERE clerk_user_id = $1 LIMIT 1",
+    [clerkUserId]
+  )
+  if (res.rows.length === 0) return null
+  return mapRow<AccountDoc>(res.rows[0])
 }
 
-/**
- * Upsert an account document keyed by clerk_user_id.
- * If the account already exists, returns it unchanged.
- * If it doesn't exist, creates a new one with the free plan.
- */
 export async function upsertAccount(
   clerkUserId: string,
   email: string | null,
-  plan: string = "free_user",
+  plan: string = "free_user"
 ): Promise<AccountDoc> {
-  // Try to find existing
   const existing = await getAccountByClerkId(clerkUserId)
   if (existing) {
-    // Keep the existing plan stored in Appwrite
     return existing
   }
 
-  // Create new account with the initial plan
-  const doc = await db().createDocument(DB, COL, ID.unique(), {
-    clerk_user_id: clerkUserId,
-    email: email ?? null,
-    plan,
-    billing_status: "active",
-    stripe_customer_id: null,
-    stripe_subscription_id: null,
-    created_at: new Date().toISOString(),
-  })
+  const id = crypto.randomUUID()
+  const res = await query(
+    `INSERT INTO accounts (id, clerk_user_id, email, plan, billing_status, stripe_customer_id, stripe_subscription_id, created_at, api_key)
+     VALUES ($1, $2, $3, $4, 'active', NULL, NULL, NOW(), NULL)
+     ON CONFLICT (clerk_user_id) DO UPDATE SET email = EXCLUDED.email
+     RETURNING *`,
+    [id, clerkUserId, email ?? null, plan]
+  )
 
-  return doc as unknown as AccountDoc
+  return mapRow<AccountDoc>(res.rows[0])
 }
 
-/**
- * Update an account's plan and billing status.
- * Used by billing webhooks / Clerk Billing integration.
- */
 export async function updateAccountPlan(
   clerkUserId: string,
   plan: string,
-  billingStatus: string,
+  billingStatus: string
 ): Promise<AccountDoc | null> {
-  const account = await getAccountByClerkId(clerkUserId)
-  if (!account) return null
+  const res = await query(
+    `UPDATE accounts 
+     SET plan = $1, billing_status = $2 
+     WHERE clerk_user_id = $3 
+     RETURNING *`,
+    [plan, billingStatus, clerkUserId]
+  )
 
-  const doc = await db().updateDocument(DB, COL, account.$id, {
-    plan,
-    billing_status: billingStatus,
-  })
-
-  return doc as unknown as AccountDoc
+  if (res.rows.length === 0) return null
+  return mapRow<AccountDoc>(res.rows[0])
 }
 
-/**
- * Find an account by its API key.
- * Returns `null` if not found.
- */
 export async function getAccountByApiKey(apiKey: string): Promise<AccountDoc | null> {
-  const { documents } = await db().listDocuments(DB, COL, [
-    Query.equal("api_key", apiKey),
-    Query.limit(1),
-  ])
-
-  if (documents.length === 0) return null
-  return documents[0] as unknown as AccountDoc
+  const res = await query(
+    "SELECT * FROM accounts WHERE api_key = $1 LIMIT 1",
+    [apiKey]
+  )
+  if (res.rows.length === 0) return null
+  return mapRow<AccountDoc>(res.rows[0])
 }
 
-/**
- * Update the API key for a Clerk user.
- */
 export async function updateAccountApiKey(
   clerkUserId: string,
-  apiKey: string | null,
+  apiKey: string | null
 ): Promise<AccountDoc | null> {
-  const account = await getAccountByClerkId(clerkUserId)
-  if (!account) return null
-
-  const doc = await db().updateDocument(DB, COL, account.$id, {
-    api_key: apiKey,
-  })
-
-  return doc as unknown as AccountDoc
+  const res = await query(
+    "UPDATE accounts SET api_key = $1 WHERE clerk_user_id = $2 RETURNING *",
+    [apiKey, clerkUserId]
+  )
+  if (res.rows.length === 0) return null
+  return mapRow<AccountDoc>(res.rows[0])
 }

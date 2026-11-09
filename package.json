@@ -11,6 +11,10 @@
     "test": "npm run test:plan && npm run test:contrast && npm run test:claim",
     "lint": "next lint",
     "start": "next start",
+    "db:init": "node scripts/db-init.mjs",
+    "db:migrate": "node scripts/migrate-from-appwrite-to-neon.mjs",
+    "db:init": "node scripts/db-init.mjs",
+    "db:migrate": "node scripts/migrate-from-appwrite-to-neon.mjs",
     "appwrite:setup": "node scripts/appwrite-setup.mjs",
     "appwrite:migrate": "node scripts/migrate-supabase-to-appwrite.mjs"
   },
@@ -44,6 +48,7 @@
     "@radix-ui/react-toggle": "1.1.1",
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
+    "@supabase/supabase-js": "^2.119.0",
     "@types/html2canvas": "^0.5.35",
     "@types/jszip": "^3.4.0",
     "@types/qrcode": "^1.5.6",
