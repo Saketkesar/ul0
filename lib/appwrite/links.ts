@@ -1,20 +1,20 @@
 import "server-only"
-import { getDatabases, Query, ID } from "./server"
-import { APPWRITE_DATABASE_ID, COLLECTIONS, DEFAULT_HOST } from "./config"
+import crypto from "crypto"
+import { query, mapRow, isConflictError } from "../db"
+import { DEFAULT_HOST } from "./config"
+
+export { isConflictError }
 
 // ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
-/** Shape of a document in the `links` collection. */
 export interface LinkDoc {
-  /** Appwrite document id (preserves original Supabase UUID after migration). */
   $id: string
+  id?: string
   slug: string
   long_url: string
-  /** Host the link belongs to. Defaults to "ul0.site" for the public shortener. */
   host: string
-  /** Clerk user ID of the link owner (null for anonymous links). */
   owner_id: string | null
   clicks_count: number
   created_at: string | null
@@ -22,14 +22,11 @@ export interface LinkDoc {
   meta_title: string | null
   meta_domain: string | null
   meta_favicon_url: string | null
-  /** "normal" | "custom" etc. */
   link_type: string
-  /** Original Supabase UUID, kept for audit trail. */
   origin_id: string | null
   targeting_json?: string | null
 }
 
-/** Payload for creating a new link (optional fields omitted if unset). */
 export interface CreateLinkInput {
   slug: string
   long_url: string
@@ -43,9 +40,9 @@ export interface CreateLinkInput {
   targeting_json?: string | null
 }
 
-/** Shape of a document in the `clicks` collection. */
 export interface ClickDoc {
   $id: string
+  id?: string
   link_id: string
   owner_id: string | null
   clicked_at: string | null
@@ -71,7 +68,6 @@ export interface ClickDoc {
   qr_scan?: boolean | null
 }
 
-/** Payload for logging a click event. */
 export interface LogClickInput {
   link_id: string
   owner_id?: string | null
@@ -97,141 +93,6 @@ export interface LogClickInput {
   qr_scan?: boolean | null
 }
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-const db = () => getDatabases()
-const DB = APPWRITE_DATABASE_ID
-const LINKS = COLLECTIONS.links
-const CLICKS = COLLECTIONS.clicks
-
-/**
- * Check whether an Appwrite error is a unique-index conflict (HTTP 409).
- * The SDK throws an `AppwriteException` with `code === 409` when a document
- * violates a unique index (e.g. duplicate host+slug).
- */
-export function isConflictError(err: unknown): boolean {
-  if (!err || typeof err !== "object") return false
-  const e = err as Record<string, unknown>
-  const msg = typeof e.message === "string" ? e.message.toLowerCase() : ""
-  return (
-    e.code === 409 ||
-    e.type === "document_already_exists" ||
-    msg.includes("already exists") ||
-    msg.includes("duplicate") ||
-    msg.includes("unique")
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Link CRUD
-// ---------------------------------------------------------------------------
-
-/**
- * Resolve a link by its (host, slug) pair.
- * Used by the redirect page (/r/[slug]) and multi-tenant routing.
- * Returns `null` if no matching document exists.
- */
-export async function getLinkByHostSlug(
-  host: string,
-  slug: string,
-): Promise<LinkDoc | null> {
-  const { documents } = await db().listDocuments(DB, LINKS, [
-    Query.equal("host", host),
-    Query.equal("slug", slug),
-    Query.limit(1),
-  ])
-
-  if (documents.length === 0) return null
-  return documents[0] as unknown as LinkDoc
-}
-
-/**
- * Create a new link document.
- * Lets Appwrite generate the document ID (random UUID).
- * Throws on unique-index conflict (host+slug) — callers should catch via
- * `isConflictError()` and retry with a new slug or return 409 to the user.
- */
-export async function createLink(input: CreateLinkInput): Promise<LinkDoc> {
-  const doc = await db().createDocument(DB, LINKS, ID.unique(), {
-    slug: input.slug,
-    long_url: input.long_url,
-    host: input.host ?? DEFAULT_HOST,
-    owner_id: input.owner_id ?? null,
-    clicks_count: 0,
-    created_at: new Date().toISOString(),
-    expire_at: input.expire_at ?? null,
-    meta_title: input.meta_title ?? null,
-    meta_domain: input.meta_domain ?? null,
-    meta_favicon_url: input.meta_favicon_url ?? null,
-    link_type: input.link_type ?? "normal",
-    origin_id: null,
-    targeting_json: input.targeting_json ?? null,
-  })
-
-  return doc as unknown as LinkDoc
-}
-
-// ---------------------------------------------------------------------------
-// Click tracking
-// ---------------------------------------------------------------------------
-
-/**
- * Insert a click event into the `clicks` collection.
- * Fire-and-forget friendly — callers can `.catch(console.error)`.
- */
-export async function logClick(input: LogClickInput): Promise<ClickDoc> {
-  const doc = await db().createDocument(DB, CLICKS, ID.unique(), {
-    link_id: input.link_id,
-    owner_id: input.owner_id ?? null,
-    clicked_at: new Date().toISOString(),
-    device_type: input.device_type ?? null,
-    country: input.country ?? null,
-    referrer: input.referrer ?? null,
-    user_agent: input.user_agent ?? null,
-    ip_hash: input.ip_hash ?? null,
-    region: input.region ?? null,
-    city: input.city ?? null,
-    latitude: input.latitude ?? null,
-    longitude: input.longitude ?? null,
-    browser: input.browser ?? null,
-    os: input.os ?? null,
-    device: input.device ?? null,
-    utm_source: input.utm_source ?? null,
-    utm_medium: input.utm_medium ?? null,
-    utm_campaign: input.utm_campaign ?? null,
-    language: input.language ?? null,
-    timezone: input.timezone ?? null,
-    bot: input.bot ?? false,
-    unique_visitor: input.unique_visitor ?? false,
-    qr_scan: input.qr_scan ?? false,
-  })
-
-  return doc as unknown as ClickDoc
-}
-
-/**
- * Atomically(ish) increment the `clicks_count` on a link document.
- *
- * Appwrite doesn't support atomic increments, so we read-then-write.
- * For a URL shortener the minor race-window is acceptable — click totals
- * are eventually consistent and the authoritative count can be derived
- * from the `clicks` collection if needed.
- */
-export async function incrementClickCount(linkId: string): Promise<void> {
-  const doc = await db().getDocument(DB, LINKS, linkId)
-  const current = (doc as unknown as LinkDoc).clicks_count ?? 0
-
-  await db().updateDocument(DB, LINKS, linkId, {
-    clicks_count: current + 1,
-  })
-}
-
-// ---------------------------------------------------------------------------
-// Owner-scoped queries (dashboard)
-// ---------------------------------------------------------------------------
-
 export interface LinkFilterOptions {
   limit?: number
   offset?: number
@@ -241,9 +102,108 @@ export interface LinkFilterOptions {
   sort?: "newest" | "oldest" | "clicks"
 }
 
-/**
- * Filtered, sorted, and paginated links query for the dashboard.
- */
+// ---------------------------------------------------------------------------
+// Link CRUD
+// ---------------------------------------------------------------------------
+
+export async function getLinkByHostSlug(
+  host: string,
+  slug: string
+): Promise<LinkDoc | null> {
+  const res = await query(
+    "SELECT * FROM links WHERE host = $1 AND slug = $2 LIMIT 1",
+    [host, slug]
+  )
+  if (res.rows.length === 0) return null
+  return mapRow<LinkDoc>(res.rows[0])
+}
+
+export async function createLink(input: CreateLinkInput): Promise<LinkDoc> {
+  const id = crypto.randomUUID()
+  const host = input.host ?? DEFAULT_HOST
+  const expireAt = input.expire_at ? new Date(input.expire_at) : null
+
+  const res = await query(
+    `INSERT INTO links (
+      id, slug, long_url, host, owner_id, clicks_count, created_at, expire_at,
+      meta_title, meta_domain, meta_favicon_url, link_type, origin_id, targeting_json
+    ) VALUES ($1, $2, $3, $4, $5, 0, NOW(), $6, $7, $8, $9, $10, NULL, $11)
+    RETURNING *`,
+    [
+      id,
+      input.slug,
+      input.long_url,
+      host,
+      input.owner_id ?? null,
+      expireAt,
+      input.meta_title ?? null,
+      input.meta_domain ?? null,
+      input.meta_favicon_url ?? null,
+      input.link_type ?? "normal",
+      input.targeting_json ?? null,
+    ]
+  )
+
+  return mapRow<LinkDoc>(res.rows[0])
+}
+
+// ---------------------------------------------------------------------------
+// Click tracking
+// ---------------------------------------------------------------------------
+
+export async function logClick(input: LogClickInput): Promise<ClickDoc> {
+  const id = crypto.randomUUID()
+  const res = await query(
+    `INSERT INTO clicks (
+      id, link_id, owner_id, clicked_at, device_type, country, referrer,
+      user_agent, ip_hash, region, city, latitude, longitude, browser, os,
+      device, utm_source, utm_medium, utm_campaign, language, timezone, bot,
+      unique_visitor, qr_scan
+    ) VALUES (
+      $1, $2, $3, NOW(), $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14,
+      $15, $16, $17, $18, $19, $20, $21, $22, $23
+    ) RETURNING *`,
+    [
+      id,
+      input.link_id,
+      input.owner_id ?? null,
+      input.device_type ?? null,
+      input.country ?? null,
+      input.referrer ?? null,
+      input.user_agent ?? null,
+      input.ip_hash ?? null,
+      input.region ?? null,
+      input.city ?? null,
+      input.latitude ?? null,
+      input.longitude ?? null,
+      input.browser ?? null,
+      input.os ?? null,
+      input.device ?? null,
+      input.utm_source ?? null,
+      input.utm_medium ?? null,
+      input.utm_campaign ?? null,
+      input.language ?? null,
+      input.timezone ?? null,
+      Boolean(input.bot),
+      Boolean(input.unique_visitor),
+      Boolean(input.qr_scan),
+    ]
+  )
+
+  return mapRow<ClickDoc>(res.rows[0])
+}
+
+export async function incrementClickCount(linkId: string): Promise<void> {
+  await query(
+    "UPDATE links SET clicks_count = clicks_count + 1 WHERE id = $1",
+    [linkId]
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Owner-scoped queries (dashboard)
+// ---------------------------------------------------------------------------
+
 export async function getPaginatedLinksByOwner(
   ownerId: string,
   options: LinkFilterOptions = {}
@@ -257,112 +217,79 @@ export async function getPaginatedLinksByOwner(
     sort = "newest",
   } = options
 
-  // Build base Appwrite query
-  const queries = [Query.equal("owner_id", ownerId)]
+  const conditions: string[] = ["owner_id = $1"]
+  const params: any[] = [ownerId]
 
   if (domain && domain !== "all") {
-    queries.push(Query.equal("host", domain))
+    params.push(domain)
+    conditions.push(`host = $${params.length}`)
   }
 
+  if (search) {
+    params.push(`%${search.toLowerCase().trim()}%`)
+    const p = params.length
+    conditions.push(
+      `(LOWER(slug) LIKE $${p} OR LOWER(long_url) LIKE $${p} OR LOWER(host) LIKE $${p} OR LOWER(COALESCE(meta_title, '')) LIKE $${p})`
+    )
+  }
+
+  if (status === "active") {
+    conditions.push("(expire_at IS NULL OR expire_at > NOW())")
+  } else if (status === "expired") {
+    conditions.push("(expire_at IS NOT NULL AND expire_at <= NOW())")
+  } else if (status === "has_password") {
+    conditions.push("(targeting_json IS NOT NULL AND targeting_json LIKE '%\"password\":%')")
+  } else if (status === "has_expiry") {
+    conditions.push("(expire_at IS NOT NULL)")
+  } else if (status === "ab_test") {
+    conditions.push("(targeting_json IS NOT NULL AND targeting_json LIKE '%\"ab_rules\":%')")
+  }
+
+  let orderBy = "ORDER BY created_at DESC"
   if (sort === "clicks") {
-    queries.push(Query.orderDesc("clicks_count"))
+    orderBy = "ORDER BY clicks_count DESC, created_at DESC"
   } else if (sort === "oldest") {
-    queries.push(Query.orderAsc("created_at"))
-  } else {
-    queries.push(Query.orderDesc("created_at"))
+    orderBy = "ORDER BY created_at ASC"
   }
 
-  // If search or complex JSON status filters are applied,
-  // fetch up to 200 documents and filter in-memory for precision
-  if (search || (status && status !== "all")) {
-    queries.push(Query.limit(200))
-    const { documents } = await db().listDocuments(DB, LINKS, queries)
-    let filtered = documents as unknown as LinkDoc[]
+  const whereClause = `WHERE ${conditions.join(" AND ")}`
+  const countRes = await query(
+    `SELECT count(*) as total FROM links ${whereClause}`,
+    params
+  )
+  const total = parseInt(countRes.rows[0]?.total || "0", 10)
 
-    if (search) {
-      const q = search.toLowerCase().trim()
-      filtered = filtered.filter(
-        (l) =>
-          l.slug?.toLowerCase().includes(q) ||
-          l.long_url?.toLowerCase().includes(q) ||
-          l.host?.toLowerCase().includes(q) ||
-          l.meta_title?.toLowerCase().includes(q)
-      )
-    }
+  const queryParams = [...params, limit, offset]
+  const selectSql = `SELECT * FROM links ${whereClause} ${orderBy} LIMIT $${params.length + 1} OFFSET $${params.length + 2}`
+  const rowsRes = await query(selectSql, queryParams)
 
-    const now = new Date().toISOString()
-    if (status === "active") {
-      filtered = filtered.filter((l) => !l.expire_at || l.expire_at > now)
-    } else if (status === "expired") {
-      filtered = filtered.filter((l) => Boolean(l.expire_at && l.expire_at <= now))
-    } else if (status === "has_password") {
-      filtered = filtered.filter((l) => {
-        try {
-          const t = l.targeting_json ? JSON.parse(l.targeting_json) : null
-          return Boolean(t?.password)
-        } catch {
-          return false
-        }
-      })
-    } else if (status === "has_expiry") {
-      filtered = filtered.filter((l) => Boolean(l.expire_at))
-    } else if (status === "ab_test") {
-      filtered = filtered.filter((l) => {
-        try {
-          const t = l.targeting_json ? JSON.parse(l.targeting_json) : null
-          return Boolean(t?.ab_rules?.length)
-        } catch {
-          return false
-        }
-      })
-    }
-
-    const total = filtered.length
-    const paginated = filtered.slice(offset, offset + limit)
-    return { links: paginated, total }
-  }
-
-  // Standard direct database pagination
-  queries.push(Query.limit(limit))
-  queries.push(Query.offset(offset))
-
-  const { documents, total } = await db().listDocuments(DB, LINKS, queries)
   return {
-    links: documents as unknown as LinkDoc[],
+    links: rowsRes.rows.map(mapRow<LinkDoc>),
     total,
   }
 }
 
-/**
- * Lightweight KPIs for owner (total links, total clicks, total custom domain links)
- * without fetching full click records.
- */
 export async function getUserLinksStats(ownerId: string): Promise<{
   totalLinks: number
   totalClicks: number
   domainLinksCount: number
 }> {
   try {
-    const { documents, total } = await db().listDocuments(DB, LINKS, [
-      Query.equal("owner_id", ownerId),
-      Query.limit(100),
-      Query.select(["clicks_count", "host"]),
-    ])
+    const res = await query(
+      `SELECT 
+        count(*)::int as total_links,
+        COALESCE(SUM(clicks_count), 0)::int as total_clicks,
+        count(*) FILTER (WHERE host <> $2)::int as domain_links_count
+       FROM links 
+       WHERE owner_id = $1`,
+      [ownerId, DEFAULT_HOST]
+    )
 
-    let totalClicks = 0
-    let domainLinksCount = 0
-
-    for (const doc of documents as unknown as LinkDoc[]) {
-      totalClicks += doc.clicks_count || 0
-      if (doc.host && doc.host !== DEFAULT_HOST) {
-        domainLinksCount++
-      }
-    }
-
+    const row = res.rows[0]
     return {
-      totalLinks: total,
-      totalClicks,
-      domainLinksCount,
+      totalLinks: row?.total_links ?? 0,
+      totalClicks: row?.total_clicks ?? 0,
+      domainLinksCount: row?.domain_links_count ?? 0,
     }
   } catch (err) {
     console.error("Error fetching user links stats:", err)
@@ -374,101 +301,81 @@ export async function getUserLinksStats(ownerId: string): Promise<{
   }
 }
 
-/**
- * List links owned by a specific user, paginated.
- * Results are ordered by creation date descending (newest first).
- */
 export async function listLinksByOwner(
   ownerId: string,
-  { limit = 25, offset = 0 }: { limit?: number; offset?: number } = {},
+  { limit = 25, offset = 0 }: { limit?: number; offset?: number } = {}
 ): Promise<{ links: LinkDoc[]; total: number }> {
-  const { documents, total } = await db().listDocuments(DB, LINKS, [
-    Query.equal("owner_id", ownerId),
-    Query.orderDesc("created_at"),
-    Query.limit(limit),
-    Query.offset(offset),
-  ])
+  const countRes = await query(
+    "SELECT count(*) as total FROM links WHERE owner_id = $1",
+    [ownerId]
+  )
+  const total = parseInt(countRes.rows[0]?.total || "0", 10)
+
+  const res = await query(
+    "SELECT * FROM links WHERE owner_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3",
+    [ownerId, limit, offset]
+  )
 
   return {
-    links: documents as unknown as LinkDoc[],
+    links: res.rows.map(mapRow<LinkDoc>),
     total,
   }
 }
 
-/**
- * Count how many links exist on a given domain (host).
- * Used by plan-gating logic (e.g. "Free plan: max 1 link on custom domain").
- */
 export async function countLinksByDomain(host: string): Promise<number> {
-  const { total } = await db().listDocuments(DB, LINKS, [
-    Query.equal("host", host),
-    Query.limit(1), // We only need the total count, not the docs
-  ])
-
-  return total
+  const res = await query(
+    "SELECT count(*) as total FROM links WHERE host = $1",
+    [host]
+  )
+  return parseInt(res.rows[0]?.total || "0", 10)
 }
 
-/**
- * List clicks for all links owned by a user (used for global dashboard analytics).
- */
 export async function listClicksByOwner(
   ownerId: string,
   limit = 5000
 ): Promise<ClickDoc[]> {
-  const { documents } = await db().listDocuments(DB, CLICKS, [
-    Query.equal("owner_id", ownerId),
-    Query.orderDesc("clicked_at"),
-    Query.limit(limit),
-  ])
-  return documents as unknown as ClickDoc[]
+  const res = await query(
+    "SELECT * FROM clicks WHERE owner_id = $1 ORDER BY clicked_at DESC LIMIT $2",
+    [ownerId, limit]
+  )
+  return res.rows.map(mapRow<ClickDoc>)
 }
 
-/**
- * List clicks for a specific link.
- */
 export async function listClicksByLink(
   linkId: string,
   limit = 5000
 ): Promise<ClickDoc[]> {
-  const { documents } = await db().listDocuments(DB, CLICKS, [
-    Query.equal("link_id", linkId),
-    Query.orderDesc("clicked_at"),
-    Query.limit(limit),
-  ])
-  return documents as unknown as ClickDoc[]
+  const res = await query(
+    "SELECT * FROM clicks WHERE link_id = $1 ORDER BY clicked_at DESC LIMIT $2",
+    [linkId, limit]
+  )
+  return res.rows.map(mapRow<ClickDoc>)
 }
 
-/**
- * Fetch a single link document by its database ID.
- */
-export async function getLinkById(
-  linkId: string
-): Promise<LinkDoc | null> {
+export async function getLinkById(linkId: string): Promise<LinkDoc | null> {
   try {
-    const doc = await db().getDocument(DB, LINKS, linkId)
-    return doc as unknown as LinkDoc
+    const res = await query(
+      "SELECT * FROM links WHERE id = $1 LIMIT 1",
+      [linkId]
+    )
+    if (res.rows.length === 0) return null
+    return mapRow<LinkDoc>(res.rows[0])
   } catch {
     return null
   }
 }
 
-/**
- * Update a link's premium targeting JSON settings.
- */
 export async function updateLinkTargeting(
   linkId: string,
   targetingJson: string | null
 ): Promise<LinkDoc> {
-  const doc = await db().updateDocument(DB, LINKS, linkId, {
-    targeting_json: targetingJson,
-  })
-  return doc as unknown as LinkDoc
+  const res = await query(
+    "UPDATE links SET targeting_json = $1 WHERE id = $2 RETURNING *",
+    [targetingJson, linkId]
+  )
+  return mapRow<LinkDoc>(res.rows[0])
 }
 
-/**
- * Update dynamic QR destination URL, metadata, and design targeting.
- * Slug stays permanent while destination URL updates dynamically.
- */
 export async function updateLinkDestination(
   linkId: string,
   updates: {
@@ -478,84 +385,81 @@ export async function updateLinkDestination(
     targeting_json?: string | null
   }
 ): Promise<LinkDoc> {
-  const payload: Record<string, any> = {
-    long_url: updates.long_url,
-  }
-  if (updates.meta_title !== undefined) payload.meta_title = updates.meta_title
-  if (updates.meta_domain !== undefined) payload.meta_domain = updates.meta_domain
-  if (updates.targeting_json !== undefined) payload.targeting_json = updates.targeting_json
+  const sets: string[] = ["long_url = $1"]
+  const params: any[] = [updates.long_url]
 
-  const doc = await db().updateDocument(DB, LINKS, linkId, payload)
-  return doc as unknown as LinkDoc
+  if (updates.meta_title !== undefined) {
+    params.push(updates.meta_title)
+    sets.push(`meta_title = $${params.length}`)
+  }
+  if (updates.meta_domain !== undefined) {
+    params.push(updates.meta_domain)
+    sets.push(`meta_domain = $${params.length}`)
+  }
+  if (updates.targeting_json !== undefined) {
+    params.push(updates.targeting_json)
+    sets.push(`targeting_json = $${params.length}`)
+  }
+
+  params.push(linkId)
+  const res = await query(
+    `UPDATE links SET ${sets.join(", ")} WHERE id = $${params.length} RETURNING *`,
+    params
+  )
+
+  return mapRow<LinkDoc>(res.rows[0])
 }
 
-/**
- * Fetch dynamic QR links for a user (or all if admin).
- */
 export async function getDynamicQrLinksByOwner(
   ownerId: string,
   isAdmin: boolean = false
 ): Promise<LinkDoc[]> {
   try {
-    const queries = [
-      Query.orderDesc("created_at"),
-      Query.limit(100),
-    ]
-    if (!isAdmin) {
-      queries.push(Query.equal("owner_id", ownerId))
+    let res
+    if (isAdmin) {
+      res = await query(
+        `SELECT * FROM links 
+         WHERE link_type = 'dynamic_qr' OR targeting_json LIKE '%"is_dynamic_qr":true%' OR targeting_json LIKE '%"is_dynamic_qr": true%'
+         ORDER BY created_at DESC LIMIT 100`
+      )
+    } else {
+      res = await query(
+        `SELECT * FROM links 
+         WHERE owner_id = $1 AND (link_type = 'dynamic_qr' OR targeting_json LIKE '%"is_dynamic_qr":true%' OR targeting_json LIKE '%"is_dynamic_qr": true%')
+         ORDER BY created_at DESC LIMIT 100`,
+        [ownerId]
+      )
     }
 
-    const { documents } = await db().listDocuments(DB, LINKS, queries)
-    const links = documents as unknown as LinkDoc[]
-
-    return links.filter((l) => {
-      if (l.link_type === "dynamic_qr") return true
-      if (l.targeting_json) {
-        try {
-          const parsed = JSON.parse(l.targeting_json)
-          if (parsed.is_dynamic_qr) return true
-        } catch {}
-      }
-      return false
-    })
+    return res.rows.map(mapRow<LinkDoc>)
   } catch (err) {
     console.error("Error fetching dynamic QR links:", err)
     return []
   }
 }
 
-/**
- * Delete a link document.
- * Verifies ownership beforehand.
- */
-export async function deleteLink(linkId: string, ownerId: string): Promise<void> {
-  const doc = await db().getDocument(DB, LINKS, linkId)
-  if (doc.owner_id !== ownerId) {
-    throw new Error("Forbidden")
-  }
-  await db().deleteDocument(DB, LINKS, linkId)
+export async function expireLink(linkId: string): Promise<void> {
+  await query("UPDATE links SET expire_at = NOW() WHERE id = $1", [linkId])
 }
 
-/**
- * Fetch links flagged as suspicious or matching phishing blacklists.
- * Used by the public Threat Intelligence Radar (/threats).
- */
+export async function deleteLink(linkId: string, ownerId: string): Promise<void> {
+  const check = await query("SELECT owner_id FROM links WHERE id = $1", [linkId])
+  if (check.rows.length === 0 || check.rows[0].owner_id !== ownerId) {
+    throw new Error("Forbidden")
+  }
+  await query("DELETE FROM clicks WHERE link_id = $1", [linkId])
+  await query("DELETE FROM links WHERE id = $1", [linkId])
+}
+
 export async function getFlaggedPhishingLinks(limit: number = 100): Promise<LinkDoc[]> {
   try {
-    const { documents } = await db().listDocuments(DB, LINKS, [
-      Query.orderDesc("$createdAt"),
-      Query.limit(limit),
-    ])
-
-    return (documents as unknown as LinkDoc[]).filter((doc) => {
-      if (doc.targeting_json) {
-        try {
-          const parsed = JSON.parse(doc.targeting_json)
-          if (parsed.is_suspicious) return true
-        } catch {}
-      }
-      return false
-    })
+    const res = await query(
+      `SELECT * FROM links 
+       WHERE targeting_json LIKE '%"is_suspicious":true%' OR targeting_json LIKE '%"is_suspicious": true%'
+       ORDER BY created_at DESC LIMIT $1`,
+      [limit]
+    )
+    return res.rows.map(mapRow<LinkDoc>)
   } catch (err) {
     console.error("Error fetching flagged links:", err)
     return []

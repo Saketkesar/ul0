@@ -1,15 +1,12 @@
-import { getDatabases } from "@/lib/appwrite/server"
-import { COLLECTIONS, APPWRITE_DATABASE_ID } from "@/lib/appwrite/config"
-import { Query, ID } from "node-appwrite"
+import "server-only"
+import crypto from "crypto"
+import { query, mapRow } from "../db"
 import { redis } from "@/lib/redis"
 import type { FormDoc } from "@/lib/forms/schema"
 
-const db = () => getDatabases()
-const DB = APPWRITE_DATABASE_ID
-const FORMS_COLLECTION = COLLECTIONS.forms
-
 export interface FormRecord {
   $id: string
+  id?: string
   $createdAt: string
   $updatedAt: string
   owner_id: string
@@ -44,8 +41,10 @@ export function parseFormDoc(raw: any): FormDoc {
     permissions = typeof raw.permissions === "string" ? JSON.parse(raw.permissions) : raw.permissions || permissions
   } catch {}
 
+  const id = raw.id || raw.$id
+
   return {
-    id: raw.$id,
+    id,
     owner_id: raw.owner_id,
     slug: raw.slug,
     title: raw.title,
@@ -63,9 +62,6 @@ export function parseFormDoc(raw: any): FormDoc {
   }
 }
 
-/**
- * Creates a new form document in Appwrite.
- */
 export async function createFormDoc(params: {
   owner_id: string
   slug: string
@@ -76,43 +72,39 @@ export async function createFormDoc(params: {
   permissions?: any
   script_secret_enc?: string
 }): Promise<FormDoc> {
-  const now = new Date().toISOString()
-  const payload = {
-    owner_id: params.owner_id,
-    slug: params.slug,
-    title: params.title,
-    description: params.description || "",
-    status: "draft",
-    step: 1,
-    schema: JSON.stringify(params.schema || []),
-    theme: JSON.stringify(params.theme || {}),
-    permissions: JSON.stringify(params.permissions || { read: true, edit: false, delete: false }),
-    script_url: "",
-    script_secret_enc: params.script_secret_enc || "",
-    created_at: now,
-    updated_at: now,
-    published_at: null,
-  }
+  const id = crypto.randomUUID()
+  const res = await query(
+    `INSERT INTO forms (
+      id, owner_id, slug, title, description, status, step, schema,
+      theme, permissions, script_url, script_secret_enc, created_at, updated_at, published_at
+    ) VALUES ($1, $2, $3, $4, $5, 'draft', 1, $6, $7, $8, '', $9, NOW(), NOW(), NULL)
+    RETURNING *`,
+    [
+      id,
+      params.owner_id,
+      params.slug.toLowerCase().trim(),
+      params.title,
+      params.description || "",
+      JSON.stringify(params.schema || []),
+      JSON.stringify(params.theme || {}),
+      JSON.stringify(params.permissions || { read: true, edit: false, delete: false }),
+      params.script_secret_enc || "",
+    ]
+  )
 
-  const doc = await db().createDocument(DB, FORMS_COLLECTION, ID.unique(), payload)
-  return parseFormDoc(doc)
+  return parseFormDoc(mapRow(res.rows[0]))
 }
 
-/**
- * Gets a form document by ID.
- */
 export async function getFormDocById(id: string): Promise<FormDoc | null> {
   try {
-    const doc = await db().getDocument(DB, FORMS_COLLECTION, id)
-    return parseFormDoc(doc)
+    const res = await query("SELECT * FROM forms WHERE id = $1 LIMIT 1", [id])
+    if (res.rows.length === 0) return null
+    return parseFormDoc(mapRow(res.rows[0]))
   } catch {
     return null
   }
 }
 
-/**
- * Gets a form document by slug with Redis caching for published live forms.
- */
 export async function getFormDocBySlug(slug: string, bypassCache = false): Promise<FormDoc | null> {
   const cleanSlug = slug.toLowerCase().trim()
   const cacheKey = `form:${cleanSlug}`
@@ -127,13 +119,9 @@ export async function getFormDocBySlug(slug: string, bypassCache = false): Promi
   }
 
   try {
-    const { documents } = await db().listDocuments(DB, FORMS_COLLECTION, [
-      Query.equal("slug", cleanSlug),
-      Query.limit(1),
-    ])
-
-    if (!documents || documents.length === 0) return null
-    const form = parseFormDoc(documents[0])
+    const res = await query("SELECT * FROM forms WHERE slug = $1 LIMIT 1", [cleanSlug])
+    if (res.rows.length === 0) return null
+    const form = parseFormDoc(mapRow(res.rows[0]))
 
     if (form.status === "live") {
       try {
@@ -147,27 +135,19 @@ export async function getFormDocBySlug(slug: string, bypassCache = false): Promi
   }
 }
 
-/**
- * Lists all forms owned by a user.
- */
 export async function listFormDocsByOwner(ownerId: string, limit = 50): Promise<FormDoc[]> {
   try {
-    const { documents } = await db().listDocuments(DB, FORMS_COLLECTION, [
-      Query.equal("owner_id", ownerId),
-      Query.orderDesc("updated_at"),
-      Query.limit(limit),
-    ])
-
-    return (documents || []).map(parseFormDoc)
+    const res = await query(
+      "SELECT * FROM forms WHERE owner_id = $1 ORDER BY updated_at DESC LIMIT $2",
+      [ownerId, limit]
+    )
+    return res.rows.map((r) => parseFormDoc(mapRow(r)))
   } catch (err) {
     console.error("listFormDocsByOwner error:", err)
     return []
   }
 }
 
-/**
- * Updates a form document and invalidates Redis cache.
- */
 export async function updateFormDoc(
   id: string,
   updates: Partial<{
@@ -184,26 +164,62 @@ export async function updateFormDoc(
     published_at: string | null
   }>
 ): Promise<FormDoc> {
-  const payload: Record<string, any> = {
-    updated_at: new Date().toISOString(),
+  const sets: string[] = ["updated_at = NOW()"]
+  const params: any[] = []
+
+  if (updates.title !== undefined) {
+    params.push(updates.title)
+    sets.push(`title = $${params.length}`)
+  }
+  if (updates.description !== undefined) {
+    params.push(updates.description)
+    sets.push(`description = $${params.length}`)
+  }
+  if (updates.slug !== undefined) {
+    params.push(updates.slug.toLowerCase().trim())
+    sets.push(`slug = $${params.length}`)
+  }
+  if (updates.status !== undefined) {
+    params.push(updates.status)
+    sets.push(`status = $${params.length}`)
+  }
+  if (updates.step !== undefined) {
+    params.push(updates.step)
+    sets.push(`step = $${params.length}`)
+  }
+  if (updates.schema !== undefined) {
+    params.push(JSON.stringify(updates.schema))
+    sets.push(`schema = $${params.length}`)
+  }
+  if (updates.theme !== undefined) {
+    params.push(JSON.stringify(updates.theme))
+    sets.push(`theme = $${params.length}`)
+  }
+  if (updates.permissions !== undefined) {
+    params.push(JSON.stringify(updates.permissions))
+    sets.push(`permissions = $${params.length}`)
+  }
+  if (updates.script_url !== undefined) {
+    params.push(updates.script_url)
+    sets.push(`script_url = $${params.length}`)
+  }
+  if (updates.script_secret_enc !== undefined) {
+    params.push(updates.script_secret_enc)
+    sets.push(`script_secret_enc = $${params.length}`)
+  }
+  if (updates.published_at !== undefined) {
+    params.push(updates.published_at ? new Date(updates.published_at) : null)
+    sets.push(`published_at = $${params.length}`)
   }
 
-  if (updates.title !== undefined) payload.title = updates.title
-  if (updates.description !== undefined) payload.description = updates.description
-  if (updates.slug !== undefined) payload.slug = updates.slug.toLowerCase().trim()
-  if (updates.status !== undefined) payload.status = updates.status
-  if (updates.step !== undefined) payload.step = updates.step
-  if (updates.schema !== undefined) payload.schema = JSON.stringify(updates.schema)
-  if (updates.theme !== undefined) payload.theme = JSON.stringify(updates.theme)
-  if (updates.permissions !== undefined) payload.permissions = JSON.stringify(updates.permissions)
-  if (updates.script_url !== undefined) payload.script_url = updates.script_url
-  if (updates.script_secret_enc !== undefined) payload.script_secret_enc = updates.script_secret_enc
-  if (updates.published_at !== undefined) payload.published_at = updates.published_at
+  params.push(id)
+  const res = await query(
+    `UPDATE forms SET ${sets.join(", ")} WHERE id = $${params.length} RETURNING *`,
+    params
+  )
 
-  const updatedDoc = await db().updateDocument(DB, FORMS_COLLECTION, id, payload)
-  const form = parseFormDoc(updatedDoc)
+  const form = parseFormDoc(mapRow(res.rows[0]))
 
-  // Invalidate cache
   try {
     await redis.del(`form:${form.slug}`)
   } catch {}
@@ -211,16 +227,13 @@ export async function updateFormDoc(
   return form
 }
 
-/**
- * Deletes a form document and purges its cache.
- */
 export async function deleteFormDoc(id: string, ownerId: string): Promise<void> {
   const existing = await getFormDocById(id)
   if (!existing || existing.owner_id !== ownerId) {
     throw new Error("Forbidden or not found")
   }
 
-  await db().deleteDocument(DB, FORMS_COLLECTION, id)
+  await query("DELETE FROM forms WHERE id = $1", [id])
 
   try {
     await redis.del(`form:${existing.slug}`)
