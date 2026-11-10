@@ -219,7 +219,6 @@ export function DashboardShell({
             group: "Exclusive",
             items: [
               { name: "Marketing Engine", href: "/dashboard/marketing", icon: ShieldCheck, badge: "Admin" },
-              { name: "SEO & Radar", href: "/dashboard/seo", icon: BarChart3, badge: "Admin" },
             ],
           },
         ]
