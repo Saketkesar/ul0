@@ -169,6 +169,12 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <meta name="google-site-verification" content="Apib7-x98H0j5cPqHWwSMm6dNU4GmODRoqxLiDzdx9I" />
+        <meta name="google-adsense-account" content="ca-pub-8018312015732327" />
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8018312015732327"
+          crossOrigin="anonymous"
+        />
 
         {/* Immediate theme restoration supporting system preference & saved user toggle */}
         <script

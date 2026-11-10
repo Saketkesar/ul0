@@ -5,6 +5,7 @@ import Link from "next/link"
 import dns from "dns"
 import type { Metadata } from "next"
 
+import { RedirectLanding } from "@/components/redirect-landing"
 import { redis } from "@/lib/redis"
 import { validateUrl, isBlockedHostname, isPhishingAttempt } from "@/lib/utils/slug"
 import {
@@ -119,9 +120,11 @@ export default async function RedirectPage({ params, searchParams }: Props) {
   const host = await resolveHost()
   const isCustomDomain = host !== DEFAULT_HOST && !host.endsWith(".ul0.site")
 
+  let brandLogoUrl: string | null = null
   if (isCustomDomain) {
     const domainDoc = await getDomainByName(host)
     if (!domainDoc || domainDoc.status !== "verified") notFound()
+    brandLogoUrl = domainDoc.brand_logo_url ?? null
   }
 
   // Fetch link document
@@ -267,8 +270,20 @@ export default async function RedirectPage({ params, searchParams }: Props) {
     expireLink(link.$id).catch(() => null)
   }
 
-  // 4. Instant 307 Temporary Redirect (ensures repeat clicks hit server and are counted reliably)
-  redirect(targetUrl)
+  // 4. Instant bypass if requested (?instant=1)
+  if (search.instant === "1" || search.direct === "1") {
+    redirect(targetUrl)
+  }
+
+  // 5. Interstitial Ads Redirection Landing Page with countdown & app detection
+  return (
+    <RedirectLanding
+      longUrl={targetUrl}
+      domain={link.meta_domain || null}
+      customHost={isCustomDomain ? host : null}
+      brandLogoUrl={brandLogoUrl}
+    />
+  )
 }
 
 function renderLinkPreviewPage(link: LinkDoc, destinationUrl: string) {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import {
   Globe,
@@ -13,6 +13,10 @@ import {
   Eye,
   Star,
   ShieldCheck,
+  TrendingUp,
+  BarChart2,
+  ArrowUpRight,
+  Target,
 } from "lucide-react"
 
 export function SeoDashboardClient() {
@@ -22,6 +26,26 @@ export function SeoDashboardClient() {
   const [auditUrl, setAuditUrl] = useState("https://ul0.site")
   const [auditing, setAuditing] = useState(false)
   const [auditResults, setAuditResults] = useState<any>(null)
+
+  const [gscData, setGscData] = useState<any>(null)
+  const [loadingGsc, setLoadingGsc] = useState(true)
+
+  useEffect(() => {
+    async function fetchGsc() {
+      try {
+        const res = await fetch("/api/seo/performance")
+        if (res.ok) {
+          const json = await res.json()
+          setGscData(json.data)
+        }
+      } catch (err) {
+        console.error("GSC fetch error:", err)
+      } finally {
+        setLoadingGsc(false)
+      }
+    }
+    fetchGsc()
+  }, [])
 
   // 1. Submit All URLs to Search Engines
   const handleSubmitUrls = async () => {
@@ -158,6 +182,152 @@ export function SeoDashboardClient() {
                 <span className="text-[11px] text-muted-foreground">{r.message}</span>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Google Search Console Live Performance Data */}
+      {gscData && (
+        <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-6 shadow-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-4">
+            <div>
+              <div className="flex items-center gap-2 text-xs font-semibold text-primary uppercase tracking-wider">
+                <BarChart2 className="h-4 w-4" />
+                <span>Google Search Console Live Performance</span>
+              </div>
+              <h2 className="text-lg font-bold text-foreground mt-0.5">
+                Top Ranking Keywords &amp; Landing Pages
+              </h2>
+            </div>
+            <span className="text-[11px] font-mono text-muted-foreground px-2.5 py-1 rounded-md bg-muted border border-border">
+              {gscData.timeRange}
+            </span>
+          </div>
+
+          {/* Metric Overview Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="p-4 rounded-xl border border-border bg-muted/20 space-y-1">
+              <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                Total Impressions
+              </span>
+              <p className="text-2xl font-black text-foreground">{gscData.totalImpressions}</p>
+            </div>
+            <div className="p-4 rounded-xl border border-border bg-muted/20 space-y-1">
+              <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                Total Clicks
+              </span>
+              <p className="text-2xl font-black text-foreground">{gscData.totalClicks}</p>
+            </div>
+            <div className="p-4 rounded-xl border border-border bg-muted/20 space-y-1">
+              <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                Average Position
+              </span>
+              <p className="text-2xl font-black text-amber-500">{gscData.averagePosition}</p>
+            </div>
+            <div className="p-4 rounded-xl border border-border bg-muted/20 space-y-1">
+              <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                Average CTR
+              </span>
+              <p className="text-2xl font-black text-foreground">{gscData.averageCtr}</p>
+            </div>
+          </div>
+
+          {/* Diagnostic Insights */}
+          <div className="space-y-2.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Target className="h-3.5 w-3.5 text-primary" />
+              <span>GSC Diagnostic Insights</span>
+            </h3>
+            <div className="grid gap-2.5 sm:grid-cols-3">
+              {gscData.diagnosticInsights?.map((diag: any, idx: number) => (
+                <div
+                  key={idx}
+                  className={`p-3.5 rounded-xl border text-xs space-y-1.5 ${
+                    diag.severity === "critical"
+                      ? "bg-rose-500/10 border-rose-500/20 text-rose-700 dark:text-rose-300"
+                      : diag.severity === "high"
+                      ? "bg-amber-500/10 border-amber-500/20 text-amber-700 dark:text-amber-300"
+                      : "bg-emerald-500/10 border-emerald-500/20 text-emerald-700 dark:text-emerald-300"
+                  }`}
+                >
+                  <p className="font-bold flex items-center gap-1.5">
+                    {diag.severity === "opportunity" ? (
+                      <TrendingUp className="h-3.5 w-3.5" />
+                    ) : (
+                      <AlertTriangle className="h-3.5 w-3.5" />
+                    )}
+                    <span>{diag.title}</span>
+                  </p>
+                  <p className="text-[11px] leading-relaxed opacity-90">{diag.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Keywords Table */}
+          <div className="space-y-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Google Search Queries
+            </h3>
+            <div className="overflow-x-auto rounded-xl border border-border">
+              <table className="w-full text-xs text-left">
+                <thead className="bg-muted/50 text-muted-foreground border-b border-border text-[11px]">
+                  <tr>
+                    <th className="py-2.5 px-3 font-semibold">Search Query</th>
+                    <th className="py-2.5 px-3 font-semibold text-center">Impressions</th>
+                    <th className="py-2.5 px-3 font-semibold text-center">Clicks</th>
+                    <th className="py-2.5 px-3 font-semibold text-center">Position</th>
+                    <th className="py-2.5 px-3 font-semibold text-right">Target Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border">
+                  {gscData.queries?.map((q: any, i: number) => (
+                    <tr key={i} className="hover:bg-muted/20">
+                      <td className="py-2.5 px-3 font-medium text-foreground">{q.query}</td>
+                      <td className="py-2.5 px-3 text-center tabular-nums text-muted-foreground">
+                        {q.impressions}
+                      </td>
+                      <td className="py-2.5 px-3 text-center tabular-nums font-semibold text-foreground">
+                        {q.clicks}
+                      </td>
+                      <td className="py-2.5 px-3 text-center">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/15 text-amber-600 dark:text-amber-400">
+                          Pos {q.position}
+                        </span>
+                      </td>
+                      <td className="py-2.5 px-3 text-right">
+                        <span className="text-[11px] text-primary font-medium">
+                          Move to Page 1
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Top Impression Pages */}
+          <div className="space-y-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Top Landing Pages In Google
+            </h3>
+            <div className="space-y-2">
+              {gscData.pages?.map((p: any, i: number) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between p-3 rounded-xl border border-border bg-muted/20 text-xs"
+                >
+                  <span className="font-mono text-foreground truncate max-w-md">{p.page}</span>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-muted-foreground">{p.impressions} imp</span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-muted text-muted-foreground border border-border">
+                      Pos {p.position}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
