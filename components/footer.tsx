@@ -71,6 +71,16 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/blog/custom-domain-short-links-guide" className="hover:text-foreground transition-colors">
+                  Custom Domain Guide
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog/bitly-alternative-free" className="hover:text-foreground transition-colors">
+                  Free Bitly Alternative
+                </Link>
+              </li>
+              <li>
                 <Link href="/pricing" className="hover:text-foreground transition-colors">
                   Pricing &amp; Limits
                 </Link>
@@ -152,6 +162,11 @@ export function Footer() {
               <li>
                 <Link href="/whatsapp" className="hover:text-foreground transition-colors">
                   WhatsApp Link
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog/whatsapp-link-generator-guide" className="hover:text-foreground transition-colors">
+                  WhatsApp Link Guide
                 </Link>
               </li>
               <li>

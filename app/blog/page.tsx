@@ -53,6 +53,15 @@ interface BlogPostItem {
 
 const staticBlogPosts: BlogPostItem[] = [
   {
+    slug: "whatsapp-link-generator-guide",
+    title: "How to Create a WhatsApp Link with Message (Free 2026 Generator)",
+    description: "Learn how to generate free WhatsApp direct chat links with custom pre-filled messages. No app required. Convert website visitors into WhatsApp conversations.",
+    category: "Tutorials",
+    readTime: "5 min read",
+    date: "2026-11-10",
+    featured: true,
+  },
+  {
     slug: "custom-domain-short-links-guide",
     title: "URL Shortener with Custom Domain: Free Setup & Comparison 2026",
     description: "Compare the best URL shorteners with custom domain support. Discover how to connect your brand domain for $0 forever with SSL included.",

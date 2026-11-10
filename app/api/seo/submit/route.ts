@@ -39,6 +39,7 @@ const CORE_PATHS = [
 ]
 
 const BLOG_SLUGS = [
+  "whatsapp-link-generator-guide",
   "acortar-link-gratis-guia-completa",
   "how-to-split-expenses-group-bills-online",
   "link-kuerzen-ohne-anmeldung-kostenlos",
@@ -63,10 +64,18 @@ const BLOG_SLUGS = [
   "affiliate-link-shortener-usa",
 ]
 
-export async function POST() {
-  const { userId } = await auth()
-  if (!userId || !(await isMarketingAdmin(userId))) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
+export async function POST(req?: Request) {
+  const authHeader = req?.headers?.get("authorization")
+  const cronSecret = process.env.CRON_SECRET || process.env.ADMIN_API_KEY
+  const hasValidToken = Boolean(
+    cronSecret && authHeader && (authHeader === `Bearer ${cronSecret}` || authHeader === cronSecret)
+  )
+
+  if (!hasValidToken) {
+    const { userId } = await auth()
+    if (!userId || !(await isMarketingAdmin(userId))) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
+    }
   }
 
   const allUrls = [

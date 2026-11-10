@@ -71,6 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Blog posts with actual publish dates
   const staticBlogPosts: { slug: string; published: string }[] = [
+    { slug: "whatsapp-link-generator-guide", published: "2026-11-10" },
     { slug: "custom-domain-short-links-guide", published: "2026-11-10" },
     { slug: "cheapest-custom-domain-link-shortener", published: "2026-11-10" },
     { slug: "bitly-alternative-free", published: "2026-11-10" },

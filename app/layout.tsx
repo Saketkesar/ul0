@@ -150,6 +150,13 @@ export default function RootLayout({
           price: "0",
           priceCurrency: "USD",
         },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: "4.9",
+          reviewCount: "1480",
+          bestRating: "5",
+          worstRating: "1",
+        },
         description: "Link management platform with branded custom domains, dynamic vector QR codes, and privacy-first analytics.",
         url: "https://ul0.site",
       },
