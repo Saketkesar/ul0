@@ -21,9 +21,9 @@ const AD_CONFIGS = {
 }
 
 /**
- * Sandboxed Ad Banner Component
- * Isolates ad network scripts inside a sandboxed iframe to prevent top-level redirect hijacking,
- * while allowing ads to render and open tabs safely upon user click.
+ * Direct Script Injection Ad Banner Component
+ * Adsterra's invoke.js validates window.location.hostname against ul0.site.
+ * Direct DOM injection allows Adsterra to verify domain approval and render ads.
  */
 export function AdBanner({ slot = 1, type = "large", scriptKey, width, height, scripts }: AdBannerProps) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -59,43 +59,37 @@ export function AdBanner({ slot = 1, type = "large", scriptKey, width, height, s
 
     el.innerHTML = ""
 
-    const iframe = document.createElement("iframe")
-    iframe.style.width = `${baseW}px`
-    iframe.style.height = `${baseH}px`
-    iframe.style.border = "none"
-    iframe.style.overflow = "hidden"
-    iframe.style.display = "block"
-    iframe.style.background = "transparent"
-    iframe.setAttribute("sandbox", "allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms allow-same-origin")
-    iframe.setAttribute("scrolling", "no")
-    iframe.title = `Advertisement ${slot}`
+    // Create unique container div for this ad slot
+    const adBox = document.createElement("div")
+    adBox.id = `adsterra-slot-${slot}-${finalKey}`
+    adBox.style.width = `${baseW}px`
+    adBox.style.height = `${baseH}px`
+    adBox.style.display = "flex"
+    adBox.style.alignItems = "center"
+    adBox.style.justifyContent = "center"
+    adBox.style.overflow = "hidden"
+    el.appendChild(adBox)
 
-    const adSrc = customScript?.src || `${AD_DOMAIN}/${finalKey}/invoke.js`
-    const html = `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8"/>
-<style>
-  * { margin:0; padding:0; overflow:hidden; }
-  html, body { width: ${baseW}px; height: ${baseH}px; background: transparent; display: flex; align-items: center; justify-content: center; }
-</style>
-</head>
-<body>
-<script type="text/javascript">
-var atOptions = {
-  'key': '${finalKey}',
-  'format': 'iframe',
-  'height': ${baseH},
-  'width': ${baseW},
-  'params': {}
-};
-</script>
-<script type="text/javascript" src="${adSrc}"></script>
-</body>
-</html>`
+    // 1. Inject configuration script
+    const confScript = document.createElement("script")
+    confScript.type = "text/javascript"
+    confScript.text = `
+      atOptions = {
+        'key': '${finalKey}',
+        'format': 'iframe',
+        'height': ${baseH},
+        'width': ${baseW},
+        'params': {}
+      };
+    `
+    adBox.appendChild(confScript)
 
-    iframe.srcdoc = html
-    el.appendChild(iframe)
+    // 2. Inject invoke script directly into the page context
+    const invokeScript = document.createElement("script")
+    invokeScript.type = "text/javascript"
+    invokeScript.src = customScript?.src || `${AD_DOMAIN}/${finalKey}/invoke.js`
+    invokeScript.async = true
+    adBox.appendChild(invokeScript)
 
     return () => {
       if (el) el.innerHTML = ""

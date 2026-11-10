@@ -138,7 +138,7 @@ function detectApp(hostname: string): string | null {
 }
 
 export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: Props) {
-  const [countdown, setCountdown] = useState(5)
+  const [countdown, setCountdown] = useState(7)
   const [canSkip, setCanSkip] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [detectedApp, setDetectedApp] = useState<string | null>(null)
@@ -178,7 +178,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
 
     const skipTimer = setTimeout(() => {
       setCanSkip(true)
-    }, 3000)
+    }, 4000)
 
     return () => {
       clearInterval(timer)
@@ -222,7 +222,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
       <div className="h-1.5 w-full bg-muted">
         <div
           className="h-full bg-primary transition-all duration-1000 ease-linear"
-          style={{ width: `${((5 - countdown) / 5) * 100}%` }}
+          style={{ width: `${((7 - countdown) / 7) * 100}%` }}
         />
       </div>
 

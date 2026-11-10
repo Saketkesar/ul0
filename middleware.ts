@@ -23,6 +23,49 @@ const securityHeaders: Record<string, string> = {
   "Permissions-Policy": "camera=*, microphone=(), geolocation=(), interest-cohort=()",
 }
 
+// List of reserved application prefixes that should never be treated as short slugs
+const RESERVED_PATH_PREFIXES = [
+  "/dashboard",
+  "/settings",
+  "/pricing",
+  "/sign-in",
+  "/sign-up",
+  "/split",
+  "/qr",
+  "/utm",
+  "/files",
+  "/pdf",
+  "/wifi",
+  "/whatsapp",
+  "/tools",
+  "/buy",
+  "/privacy",
+  "/terms",
+  "/contact",
+  "/faq",
+  "/blog",
+  "/api",
+  "/security",
+  "/threats",
+  "/backlinks",
+  "/go",
+  "/marketing",
+  "/changelog",
+  "/features",
+  "/compare",
+  "/about",
+  "/refund",
+  "/report-abuse",
+  "/status",
+  "/supporters",
+  "/docs",
+  "/custom-domain-landing",
+  "/forms",
+  "/e",
+  "/q",
+  "/r",
+]
+
 export default clerkMiddleware(async (auth, req) => {
   const url = req.nextUrl.clone()
   const path = url.pathname
@@ -81,7 +124,6 @@ export default clerkMiddleware(async (auth, req) => {
       url.pathname = "/custom-domain-landing"
       const response = NextResponse.rewrite(url)
       
-      // Add security headers to rewritten request
       Object.entries(securityHeaders).forEach(([key, value]) => {
         response.headers.set(key, value)
       })
@@ -104,48 +146,18 @@ export default clerkMiddleware(async (auth, req) => {
       return NextResponse.next()
     }
 
-    // List of reserved application prefixes that should never be accessed on custom domains
-    const RESERVED_PATH_PREFIXES = [
-      "/dashboard",
-      "/settings",
-      "/pricing",
-      "/sign-in",
-      "/sign-up",
-      "/split",
-      "/qr",
-      "/utm",
-      "/files",
-      "/pdf",
-      "/wifi",
-      "/whatsapp",
-      "/tools",
-      "/buy",
-      "/privacy",
-      "/terms",
-      "/contact",
-      "/faq",
-      "/blog",
-      "/api",
-      "/security",
-      "/threats",
-      "/backlinks",
-      "/go",
-      "/marketing",
-    ]
-
-    // 3. Check if it's a reserved path
+    // 4. Check if it's a reserved path
     const isReserved = RESERVED_PATH_PREFIXES.some(
       (prefix) => path === prefix || path.startsWith(prefix + "/"),
     )
 
     if (isReserved) {
-      // Securely redirect to the canonical main site to prevent dashboard/account leaks
       return NextResponse.redirect(
         new URL(`https://ul0.site${path}${url.search}`, req.url),
       )
     }
 
-    // 4. Otherwise, treat as a short link slug
+    // 5. Otherwise, treat as a short link slug and rewrite to /r/
     const slug = path.substring(1)
     const isValidSlug = /^[a-zA-Z0-9-_]+$/.test(slug) && slug.length <= 50
 
@@ -153,7 +165,6 @@ export default clerkMiddleware(async (auth, req) => {
       url.pathname = `/r${path}`
       const response = NextResponse.rewrite(url)
       
-      // Add security headers to rewritten request
       Object.entries(securityHeaders).forEach(([key, value]) => {
         response.headers.set(key, value)
       })
@@ -161,8 +172,23 @@ export default clerkMiddleware(async (auth, req) => {
       return response
     }
 
-    // 5. Fallback for any other path: redirect to main site home
     return NextResponse.redirect(new URL("https://ul0.site", req.url))
+  }
+
+  // Handle Main Site (ul0.site): Support root slugs without /r/ (e.g. ul0.site/mydeal -> /r/mydeal)
+  const isRootSlug = /^\/[a-zA-Z0-9-_]{1,50}$/.test(path)
+  const isReservedMain =
+    RESERVED_PATH_PREFIXES.some((prefix) => path === prefix || path.startsWith(prefix + "/")) ||
+    LOCALES.includes(path.substring(1) as any)
+
+  if (isRootSlug && !isReservedMain && path !== "/" && !path.startsWith("/r/")) {
+    url.pathname = `/r${path}`
+    const response = NextResponse.rewrite(url)
+    Object.entries(securityHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value)
+    })
+    response.headers.set("X-Robots-Tag", "noindex, nofollow")
+    return response
   }
 
   // Determine the locale of the request based on URL pathname
