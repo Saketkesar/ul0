@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next"
 import { SITE_URL, INDEXED_LOCALES, hreflangAlternates } from "@/lib/i18n"
+import { getPublishedSanityPosts } from "@/lib/sanity/client"
 
 export const dynamic = "force-dynamic"
-export const revalidate = 0
+export const revalidate = 60
 
 const BASE_URL = SITE_URL
 
@@ -12,9 +13,9 @@ const LANGUAGES = INDEXED_LOCALES
 // Complete reciprocal hreflang alternates for the homepage + language pages
 const homeLanguageAlternates = hreflangAlternates
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Real update timestamps (avoid setting "now" on every build so crawlers respect lastmod)
-  const coreUpdated = new Date("2026-10-11")
+  const coreUpdated = new Date("2026-11-10")
   const toolsUpdated = new Date("2026-10-01")
   const legalUpdated = new Date("2026-08-01")
 
@@ -69,7 +70,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ]
 
   // Blog posts with actual publish dates
-  const blogPosts: { slug: string; published: string }[] = [
+  const staticBlogPosts: { slug: string; published: string }[] = [
+    { slug: "custom-domain-short-links-guide", published: "2026-11-10" },
+    { slug: "cheapest-custom-domain-link-shortener", published: "2026-11-10" },
+    { slug: "bitly-alternative-free", published: "2026-11-10" },
     { slug: "tiktok-bio-link-tools-guide-2026", published: "2026-10-07" },
     { slug: "utm-builder-tracking-guide-2026", published: "2026-10-07" },
     { slug: "branded-short-links-roi-case-study", published: "2026-10-07" },
@@ -80,9 +84,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { slug: "qr-code-generator-security-guide", published: "2026-07-15" },
     { slug: "custom-domain-dns-cname-setup-guide", published: "2026-08-10" },
     { slug: "free-link-management-for-companies", published: "2026-07-20" },
-    { slug: "cheapest-custom-domain-link-shortener", published: "2026-07-20" },
     { slug: "best-url-shorteners-2026", published: "2026-07-20" },
-    { slug: "bitly-alternative-free", published: "2026-07-20" },
     { slug: "tinyurl-alternative", published: "2026-07-20" },
     { slug: "free-url-shortener-no-signup", published: "2026-07-20" },
     { slug: "how-to-shorten-url-free", published: "2026-07-20" },
@@ -92,7 +94,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { slug: "url-shortener-seo-impact", published: "2026-07-20" },
     { slug: "how-to-track-link-clicks-free", published: "2026-07-20" },
     { slug: "wifi-qr-code-business-guide", published: "2026-07-20" },
-    { slug: "custom-domain-short-links-guide", published: "2026-07-20" },
     { slug: "pomodoro-technique-productivity-guide", published: "2026-07-20" },
     { slug: "affiliate-link-shortener-usa", published: "2026-08-25" },
   ]
@@ -148,12 +149,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })
   }
 
-  // Blog posts — use real publish dates
-  for (const { slug, published } of blogPosts) {
+  // Static blog posts
+  for (const { slug, published } of staticBlogPosts) {
     entries.push({
       url: `${BASE_URL}/blog/${slug}`,
       lastModified: new Date(published),
     })
+  }
+
+  // Dynamically include Sanity published posts
+  try {
+    const sanityPosts = await getPublishedSanityPosts()
+    if (sanityPosts && sanityPosts.length > 0) {
+      for (const sp of sanityPosts) {
+        if (sp.slug?.current && !staticBlogPosts.some((bp) => bp.slug === sp.slug.current)) {
+          entries.push({
+            url: `${BASE_URL}/blog/${sp.slug.current}`,
+            lastModified: sp.publishedAt ? new Date(sp.publishedAt) : coreUpdated,
+          })
+        }
+      }
+    }
+  } catch (err) {
+    console.warn("[Sitemap Sanity Fetch Ignored]:", err)
   }
 
   // Info / legal pages

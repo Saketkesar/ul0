@@ -9,9 +9,18 @@ export const maxDuration = 60 // Allow up to 60s for AI generation
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await auth()
-    if (!userId || !(await isMarketingAdmin(userId))) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 403 })
+    // Check Authorization header for programmatic / cron access
+    const authHeader = req.headers.get("authorization")
+    const cronSecret = process.env.CRON_SECRET || process.env.ADMIN_API_KEY
+    const hasValidToken = Boolean(
+      cronSecret && authHeader && (authHeader === `Bearer ${cronSecret}` || authHeader === cronSecret)
+    )
+
+    if (!hasValidToken) {
+      const { userId } = await auth()
+      if (!userId || !(await isMarketingAdmin(userId))) {
+        return NextResponse.json({ error: "Unauthorized. Admin session or valid Bearer token required." }, { status: 403 })
+      }
     }
 
     const body = await req.json()

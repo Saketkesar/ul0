@@ -39,3 +39,4 @@ export async function generateBlogImage(title: string, keywords: string[] = []):
   )
   return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1200&height=630&model=flux&nologo=true`
 }
+

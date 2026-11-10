@@ -63,6 +63,45 @@ const breadcrumbSchema = {
   ],
 }
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Is Bitly completely free in 2026?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Bitly's free tier is strictly capped at 5 short links per month. Furthermore, Bitly requires a $35/month Growth subscription to connect a custom domain.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "What is the best free Bitly alternative with custom domains in 2026?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "UL0 is the top-rated free Bitly alternative. It provides unlimited link shortening with no signup required, includes 1 free custom domain forever, and delivers fast 307 edge redirects.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Why does UL0 use 307 redirects instead of 301 like Bitly?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Standard 301 redirects are cached permanently in visitor browsers, causing repeat clicks to be missed. 307 temporary redirects ensure accurate real-time click tracking and let you update destination URLs anytime.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I use UL0 without creating an account or providing an email?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. UL0 supports anonymous instant shortening right from the homepage with zero signup, passwords, or credit card requirements.",
+      },
+    },
+  ],
+}
+
 const alternatives = [
   {
     name: "UL0",
@@ -154,6 +193,10 @@ export default function BitlyAlternativePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <Header />
 
@@ -315,6 +358,49 @@ export default function BitlyAlternativePage() {
                 You can connect your own <Link href="/custom-domain-landing" className="text-primary hover:underline font-semibold">branded custom domain</Link> for free with automated Let&apos;s Encrypt SSL certificates.
               </li>
             </ul>
+
+            <h2 className="text-2xl font-bold mt-10 mb-4 text-foreground">Frequently Asked Questions</h2>
+            <div className="space-y-3">
+              <details className="group rounded-xl border border-border bg-card p-4">
+                <summary className="text-sm font-semibold text-foreground cursor-pointer flex items-center justify-between select-none">
+                  <span>Is Bitly completely free in 2026?</span>
+                  <span className="text-xs font-mono text-muted-foreground group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                  Bitly&apos;s free tier is strictly capped at 5 short links per month and 3 custom back-halves. Branded custom domains are not available on Bitly&apos;s free tier and require a $35/month Growth subscription.
+                </p>
+              </details>
+
+              <details className="group rounded-xl border border-border bg-card p-4">
+                <summary className="text-sm font-semibold text-foreground cursor-pointer flex items-center justify-between select-none">
+                  <span>What is the best free Bitly alternative with custom domains in 2026?</span>
+                  <span className="text-xs font-mono text-muted-foreground group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                  UL0 is the top-rated free Bitly alternative. It provides unlimited link shortening with no signup required, includes 1 free branded custom domain forever, and delivers fast 307 temporary edge redirects.
+                </p>
+              </details>
+
+              <details className="group rounded-xl border border-border bg-card p-4">
+                <summary className="text-sm font-semibold text-foreground cursor-pointer flex items-center justify-between select-none">
+                  <span>Why does UL0 use 307 redirects instead of 301 like Bitly?</span>
+                  <span className="text-xs font-mono text-muted-foreground group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                  Standard 301 redirects are cached permanently in visitor browsers, causing repeat clicks to be missed. 307 temporary redirects ensure accurate real-time click tracking and let you update destination URLs anytime.
+                </p>
+              </details>
+
+              <details className="group rounded-xl border border-border bg-card p-4">
+                <summary className="text-sm font-semibold text-foreground cursor-pointer flex items-center justify-between select-none">
+                  <span>Can I use UL0 without creating an account or providing an email?</span>
+                  <span className="text-xs font-mono text-muted-foreground group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                  Yes. UL0 supports anonymous instant shortening right from the homepage with zero signup, passwords, or credit card requirements.
+                </p>
+              </details>
+            </div>
           </div>
 
           {/* Author Card */}

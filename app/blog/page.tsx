@@ -4,10 +4,13 @@ import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, ArrowRight } from "lucide-react"
+import { Calendar, Clock, ArrowRight, Sparkles } from "lucide-react"
+import { getPublishedSanityPosts } from "@/lib/sanity/client"
+
+export const revalidate = 60 // Revalidate blog directory every 60 seconds for scheduled posts
 
 export const metadata: Metadata = {
-  title: "Link Management, QR Code & UTM Guides",
+  title: "Link Management, QR Code & UTM Guides | UL0 Blog",
   description: "Guides, technical tutorials, and competitor breakdowns on branded short links, custom domain DNS CNAME configuration, dynamic QR codes, and link analytics.",
   alternates: {
     canonical: "https://ul0.site/blog",
@@ -37,7 +40,45 @@ export const metadata: Metadata = {
   },
 }
 
-const blogPosts = [
+interface BlogPostItem {
+  slug: string
+  title: string
+  description: string
+  category: string
+  readTime: string
+  date: string
+  featured?: boolean
+  coverImageUrl?: string
+}
+
+const staticBlogPosts: BlogPostItem[] = [
+  {
+    slug: "custom-domain-short-links-guide",
+    title: "URL Shortener with Custom Domain: Free Setup & Comparison 2026",
+    description: "Compare the best URL shorteners with custom domain support. Discover how to connect your brand domain for $0 forever with SSL included.",
+    category: "Branding",
+    readTime: "7 min read",
+    date: "2026-11-10",
+    featured: true,
+  },
+  {
+    slug: "cheapest-custom-domain-link-shortener",
+    title: "Cheapest Custom Domain Link Shortener 2026 - Save on Branded Links",
+    description: "Compare the cheapest custom domain URL shorteners in 2026. Find the best budget-friendly and free custom domain link shorteners like ul0, Dub.co, and Bitly.",
+    category: "Comparison",
+    readTime: "5 min read",
+    date: "2026-11-10",
+    featured: true,
+  },
+  {
+    slug: "bitly-alternative-free",
+    title: "Bitly Alternative Free 2026 - Best Free Bitly Alternatives",
+    description: "Looking for a free Bitly alternative? Compare the best Bitly alternatives in 2026 with no signup, no limits. ul0, TinyURL, Rebrandly & more.",
+    category: "Comparison",
+    readTime: "6 min read",
+    date: "2026-11-10",
+    featured: true,
+  },
   {
     slug: "tiktok-bio-link-tools-guide-2026",
     title: "The Ultimate TikTok Bio Link Guide 2026: Boost Engagement & Sales",
@@ -99,7 +140,6 @@ const blogPosts = [
     category: "Best Practices",
     readTime: "9 min read",
     date: "2026-08-10",
-    featured: true,
   },
   {
     slug: "qr-code-generator-security-guide",
@@ -108,7 +148,6 @@ const blogPosts = [
     category: "Security",
     readTime: "8 min read",
     date: "2026-08-10",
-    featured: true,
   },
   {
     slug: "custom-domain-dns-cname-setup-guide",
@@ -117,7 +156,6 @@ const blogPosts = [
     category: "Infrastructure",
     readTime: "7 min read",
     date: "2026-08-10",
-    featured: true,
   },
   {
     slug: "free-link-management-for-companies",
@@ -126,16 +164,6 @@ const blogPosts = [
     category: "Guides",
     readTime: "8 min read",
     date: "2026-07-15",
-    featured: true,
-  },
-  {
-    slug: "cheapest-custom-domain-link-shortener",
-    title: "Cheapest Custom Domain Link Shortener 2026 - Save on Branded Links",
-    description: "Compare the cheapest custom domain URL shorteners in 2026. Find the best budget-friendly and free custom domain link shorteners like ul0, Dub.co, and Bitly.",
-    category: "Comparison",
-    readTime: "5 min read",
-    date: "2026-07-06",
-    featured: true,
   },
   {
     slug: "best-url-shorteners-2026",
@@ -144,16 +172,6 @@ const blogPosts = [
     category: "Comparison",
     readTime: "8 min read",
     date: "2026-03-01",
-    featured: true,
-  },
-  {
-    slug: "bitly-alternative-free",
-    title: "Bitly Alternative Free 2026 - Best Free Bitly Alternatives",
-    description: "Looking for a free Bitly alternative? Compare the best Bitly alternatives in 2026 with no signup, no limits. ul0, TinyURL, Rebrandly & more.",
-    category: "Comparison",
-    readTime: "6 min read",
-    date: "2026-03-01",
-    featured: true,
   },
   {
     slug: "tinyurl-alternative",
@@ -162,7 +180,6 @@ const blogPosts = [
     category: "Comparison",
     readTime: "5 min read",
     date: "2026-03-01",
-    featured: true,
   },
   {
     slug: "free-url-shortener-no-signup",
@@ -171,7 +188,6 @@ const blogPosts = [
     category: "Guide",
     readTime: "4 min read",
     date: "2026-03-01",
-    featured: true,
   },
   {
     slug: "how-to-shorten-url-free",
@@ -230,14 +246,6 @@ const blogPosts = [
     date: "2026-03-08",
   },
   {
-    slug: "custom-domain-short-links-guide",
-    title: "Why Branded Custom Domain Short Links Outperform Generic URLs in 2026",
-    description: "Learn how custom domain short links boost brand trust, increase email deliverability, and raise link Click-Through Rates (CTR) by up to 39%.",
-    category: "Branding",
-    readTime: "5 min read",
-    date: "2026-03-10",
-  },
-  {
     slug: "pomodoro-technique-productivity-guide",
     title: "The Science of the Pomodoro Technique: Boost Deep Work & Focus in 2026",
     description: "Learn how the 25-minute Pomodoro time management technique fights cognitive fatigue, prevents burnout, and increases daily productivity.",
@@ -255,30 +263,56 @@ const blogPosts = [
   },
 ]
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  let sanityPosts: BlogPostItem[] = []
+  try {
+    const rawSanity = await getPublishedSanityPosts()
+    if (rawSanity && rawSanity.length > 0) {
+      sanityPosts = rawSanity.map((post) => ({
+        slug: post.slug.current,
+        title: post.title,
+        description: post.excerpt,
+        category: post.keywords?.[0] || "Guides",
+        readTime: "6 min read",
+        date: post.publishedAt ? post.publishedAt.split("T")[0] : new Date().toISOString().split("T")[0],
+        featured: true,
+        coverImageUrl: post.coverImageUrl,
+      }))
+    }
+  } catch (err) {
+    console.warn("[Sanity Posts Fetch Ignored]:", err)
+  }
+
+  // Deduplicate and combine (Sanity scheduled/published posts take precedence)
+  const combinedPosts: BlogPostItem[] = [
+    ...sanityPosts,
+    ...staticBlogPosts.filter((sp) => !sanityPosts.some((p) => p.slug === sp.slug)),
+  ]
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Blog",
-    name: "ul0 Blog",
-    description: "Tips and guides about URL shortening, QR codes, and expense splitting",
+    name: "UL0 Blog",
+    description: "Tips, tutorials, and competitive analysis on URL shortening, custom domains, dynamic QR codes, and link analytics.",
     url: "https://ul0.site/blog",
     publisher: {
       "@type": "Organization",
-      name: "ul0",
+      name: "UL0",
       logo: {
         "@type": "ImageObject",
         url: "https://ul0.site/ul0.png",
       },
     },
-    blogPost: blogPosts.map(post => ({
+    blogPost: combinedPosts.map((post) => ({
       "@type": "BlogPosting",
       headline: post.title,
       description: post.description,
       url: `https://ul0.site/blog/${post.slug}`,
       datePublished: post.date,
+      image: post.coverImageUrl || "https://ul0.site/social-card.png",
       author: {
-        "@type": "Organization",
-        name: "ul0",
+        "@type": "Person",
+        name: "Saket Kesar",
       },
     })),
   }
@@ -290,74 +324,97 @@ export default function BlogPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
-      
+
       <main className="flex-1 py-8 sm:py-12">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold mb-4 sm:text-4xl">
-              ul0 Blog
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="text-center mb-10 space-y-3">
+            <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
+              <Sparkles className="h-3.5 w-3.5" /> Technical Guides & Strategies
+            </span>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground">
+              UL0 Resource & Knowledge Hub
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Tips, guides, and best practices for URL shortening, QR codes, link management, and expense splitting.
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+              Everything you need to master branded custom domains, 307 temporary redirects, dynamic QR codes, UTM campaign tracking, and group expense splitting.
             </p>
           </div>
 
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl mx-auto">
-            {blogPosts.map((post) => (
-              <Card key={post.slug} className="flex flex-col hover:shadow-lg transition-shadow">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {combinedPosts.map((post) => (
+              <Card key={post.slug} className="flex flex-col hover:shadow-lg transition-shadow overflow-hidden border-border bg-card">
+                {post.coverImageUrl && (
+                  <div className="relative h-44 w-full overflow-hidden bg-muted/30 border-b border-border">
+                    <img
+                      src={post.coverImageUrl}
+                      alt={post.title}
+                      className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                      loading="lazy"
+                    />
+                  </div>
+                )}
                 <CardHeader>
                   <div className="flex items-center gap-2 mb-2">
-                    <Badge variant="secondary">{post.category}</Badge>
+                    <Badge variant="secondary" className="text-[11px] font-medium">
+                      {post.category}
+                    </Badge>
                   </div>
-                  <CardTitle className="text-lg line-clamp-2">
-                    <Link href={`/blog/${post.slug}`} className="hover:text-primary">
+                  <CardTitle className="text-base sm:text-lg line-clamp-2 leading-snug">
+                    <Link href={`/blog/${post.slug}`} className="hover:text-primary transition-colors text-foreground">
                       {post.title}
                     </Link>
                   </CardTitle>
-                  <CardDescription className="line-clamp-3">
+                  <CardDescription className="line-clamp-3 text-xs leading-relaxed text-muted-foreground">
                     {post.description}
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="mt-auto">
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
-                    <div className="flex items-center gap-4">
+                <CardContent className="mt-auto pt-0">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t border-border">
+                    <div className="flex items-center gap-3">
                       <span className="flex items-center gap-1">
-                        <Calendar className="h-4 w-4" />
-                        {new Date(post.date).toLocaleDateString("en-US", { 
-                          month: "short", 
+                        <Calendar className="h-3.5 w-3.5" />
+                        {new Date(post.date).toLocaleDateString("en-US", {
+                          month: "short",
                           day: "numeric",
-                          year: "numeric"
+                          year: "numeric",
                         })}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Clock className="h-4 w-4" />
+                        <Clock className="h-3.5 w-3.5" />
                         {post.readTime}
                       </span>
                     </div>
                   </div>
-                  <Link 
+                  <Link
                     href={`/blog/${post.slug}`}
-                    className="inline-flex items-center gap-1 text-primary hover:underline mt-3 text-sm font-medium"
+                    className="inline-flex items-center gap-1 text-primary hover:underline mt-3 text-xs font-semibold"
                   >
-                    Read more <ArrowRight className="h-4 w-4" />
+                    Read Guide <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          {/* CTA */}
-          <div className="mt-12 text-center p-8 bg-muted/30 rounded-lg max-w-2xl mx-auto">
-            <h2 className="text-xl font-bold mb-2">Ready to shorten your first link?</h2>
-            <p className="text-muted-foreground mb-4">
-              Try ul0's free URL shortener - no signup required.
+          {/* CTA Box */}
+          <div className="mt-14 text-center p-8 bg-muted/40 rounded-2xl border border-border max-w-2xl mx-auto space-y-4">
+            <h2 className="text-xl font-bold text-foreground">Ready to connect your free custom domain?</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground">
+              Experience fast 307 redirects, free SSL certificates, and dynamic QR codes with UL0. No credit card required.
             </p>
-            <Link
-              href="/"
-              className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 font-medium"
-            >
-              Shorten a URL Now
-            </Link>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <Link
+                href="/"
+                className="inline-flex items-center justify-center rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 text-xs font-semibold shadow-sm transition-colors"
+              >
+                Shorten a URL Free
+              </Link>
+              <Link
+                href="/custom-domain-landing"
+                className="inline-flex items-center justify-center rounded-xl border border-border bg-card text-foreground hover:bg-muted h-10 px-5 text-xs font-medium transition-colors"
+              >
+                View Custom Domains
+              </Link>
+            </div>
           </div>
         </div>
       </main>

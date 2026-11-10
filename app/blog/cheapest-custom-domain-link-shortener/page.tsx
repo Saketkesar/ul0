@@ -63,6 +63,45 @@ const breadcrumbSchema = {
   ],
 }
 
+const faqSchema = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [
+    {
+      "@type": "Question",
+      name: "Which is the cheapest custom domain link shortener in 2026?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "UL0 is the cheapest custom domain URL shortener because it includes 1 branded custom domain completely free ($0 forever) with automated SSL certificates and fast 307 edge redirects. Pro upgrades start at just $3/month for 3 domains.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Why does Bitly charge $35/month for custom domains?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Bitly targets enterprise corporate marketing teams and locks branded custom domains behind their $35/month Growth plan. Platforms like UL0 eliminate this paywall by offering custom domain link management for free.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Can I use my existing domain registrar like Cloudflare or Namecheap?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. You keep your domain at your current registrar (Cloudflare, Namecheap, GoDaddy, Porkbun, etc.) and simply create a CNAME DNS record pointing to cname.ul0.site.",
+      },
+    },
+    {
+      "@type": "Question",
+      name: "Do branded custom domain short links increase click-through rates?",
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: "Yes. Branded short links increase CTR by up to 39% compared to generic shortened links because users immediately recognize and trust your brand name.",
+      },
+    },
+  ],
+}
+
 const alternatives = [
   {
     name: "UL0",
@@ -72,15 +111,15 @@ const alternatives = [
     features: [
       "1 Custom domain included free",
       "Automatic Let's Encrypt SSL certificates",
-      "HTTP 301 Permanent Redirects",
+      "HTTP 307 Temporary Edge Redirects",
       "Free dynamic vector QR code generator",
-      "Pro plan starts at just $2/mo for 3 domains",
+      "Pro plan starts at just $3/mo for 3 domains",
     ],
     limitations: [
       "Free tier custom domain limited to 1 domain",
       "No enterprise SSO SAML (designed for indie creators & small teams)",
     ],
-    price: "Free / $2/mo Pro",
+    price: "Free / $3/mo Pro",
     verdict: "Best for: Creators, startups, and marketing teams looking for branded short links without a $35/mo subscription.",
     url: "https://ul0.site/custom-domain-landing",
   },
@@ -173,6 +212,10 @@ export default function CheapestCustomDomainPage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <Header />
 
@@ -358,6 +401,49 @@ export default function CheapestCustomDomainPage() {
               <li>Visit your <Link href="/dashboard/domains" className="text-primary hover:underline font-semibold">UL0 Domains Dashboard</Link> and click &quot;Connect Domain&quot;.</li>
               <li>Our edge infrastructure verifies your DNS within minutes and automatically generates a free Let&apos;s Encrypt SSL certificate.</li>
             </ol>
+
+            <h2 className="text-2xl font-bold mt-10 mb-4 text-foreground">Frequently Asked Questions</h2>
+            <div className="space-y-3">
+              <details className="group rounded-xl border border-border bg-card p-4">
+                <summary className="text-sm font-semibold text-foreground cursor-pointer flex items-center justify-between select-none">
+                  <span>Which is the cheapest custom domain link shortener in 2026?</span>
+                  <span className="text-xs font-mono text-muted-foreground group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                  UL0 is the cheapest custom domain URL shortener because it includes 1 branded custom domain completely free ($0 forever) with automated SSL certificates and fast 307 edge redirects. Pro upgrades start at just $3/month for 3 domains.
+                </p>
+              </details>
+
+              <details className="group rounded-xl border border-border bg-card p-4">
+                <summary className="text-sm font-semibold text-foreground cursor-pointer flex items-center justify-between select-none">
+                  <span>Why does Bitly charge $35/month for custom domains?</span>
+                  <span className="text-xs font-mono text-muted-foreground group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                  Bitly targets enterprise corporate marketing teams and locks branded custom domains behind their $35/month Growth plan. Platforms like UL0 eliminate this paywall by offering custom domain link management for free.
+                </p>
+              </details>
+
+              <details className="group rounded-xl border border-border bg-card p-4">
+                <summary className="text-sm font-semibold text-foreground cursor-pointer flex items-center justify-between select-none">
+                  <span>Can I use my existing domain registrar like Cloudflare or Namecheap?</span>
+                  <span className="text-xs font-mono text-muted-foreground group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                  Yes. You keep your domain at your current registrar (Cloudflare, Namecheap, GoDaddy, Porkbun, etc.) and simply create a CNAME DNS record pointing to cname.ul0.site.
+                </p>
+              </details>
+
+              <details className="group rounded-xl border border-border bg-card p-4">
+                <summary className="text-sm font-semibold text-foreground cursor-pointer flex items-center justify-between select-none">
+                  <span>Do branded custom domain short links increase click-through rates?</span>
+                  <span className="text-xs font-mono text-muted-foreground group-open:rotate-45 transition-transform">+</span>
+                </summary>
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed">
+                  Yes. Branded short links increase CTR by up to 39% compared to generic shortened links because users immediately recognize and trust your brand name.
+                </p>
+              </details>
+            </div>
           </div>
 
           {/* Author Card */}

@@ -136,3 +136,4 @@ export async function getPublishedSanityPosts(): Promise<SanityPost[]> {
   const posts = await sanityFetch<SanityPost[]>(query, { now })
   return posts || []
 }
+
