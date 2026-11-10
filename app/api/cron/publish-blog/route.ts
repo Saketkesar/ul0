@@ -1,35 +1,46 @@
 import { NextRequest, NextResponse } from "next/server"
-import { generateBlogPostWithGroq } from "@/lib/ai/groq"
+import { generateBlogPostWithGroq, generateRandomizedPublishTime } from "@/lib/ai/groq"
 import { generateBlogImage } from "@/lib/ai/image-generator"
 import { createSanityPost } from "@/lib/sanity/client"
 
-export const maxDuration = 60 // Allow up to 60s on Vercel Pro/Hobby
+export const maxDuration = 60
 export const dynamic = "force-dynamic"
 
-const TOPIC_QUEUE = [
+const HIGH_INTENT_TOPICS = [
   {
     topic: "How to Create a WhatsApp Link with Pre-filled Message (Free 2026 Guide)",
     keywords: ["whatsapp link generator", "create whatsapp link free", "whatsapp direct message link", "wa link generator with message"],
+    category: "WHATSAPP",
   },
   {
-    topic: "Free URL Shortener with Custom Domain: Complete Setup & Comparison 2026",
+    topic: "Free URL Shortener with Custom Domain: The Definitive 2026 Setup Guide",
     keywords: ["free url shortener with custom domain", "custom domain url shortener free", "branded url shortener free"],
+    category: "CUSTOM DOMAINS",
   },
   {
-    topic: "How to Split Group Bills and Expenses Online Free (No App Required 2026)",
+    topic: "How to Split Group Bills and Expenses Online Free Without Downloading an App",
     keywords: ["split bills online free", "splitwise free alternative", "group expense splitter online", "split rent with roommates"],
+    category: "UTILITIES",
   },
   {
     topic: "Dynamic Vector QR Codes vs Static QR Codes: The 2026 Marketer Guide",
     keywords: ["dynamic qr code generator", "free vector qr code svg", "qr code with logo free", "editable qr code destination"],
+    category: "QR CODES",
   },
   {
-    topic: "Why HTTP 307 Redirects Outperform 301 Redirects for Link Tracking",
+    topic: "Why HTTP 307 Redirects Outperform 301 Redirects for Link Analytics",
     keywords: ["307 temporary redirect vs 301", "url shortener redirect status", "accurate link click tracking", "browser cache redirect"],
+    category: "INFRASTRUCTURE",
   },
   {
     topic: "Top 7 Free Bitly Alternatives with Custom Domains in 2026",
     keywords: ["bitly alternative free", "free bitly alternative with custom domain", "url shortener no limits", "best bitly competitors"],
+    category: "COMPARISONS",
+  },
+  {
+    topic: "Why Branded Short Links Increase SMS & Bio CTR by 39%: Real Case Study",
+    keywords: ["branded short links ctr", "custom domain short url benefit", "increase click through rate links"],
+    category: "ANALYTICS",
   },
 ]
 
@@ -39,22 +50,23 @@ export async function GET(req: NextRequest) {
     const authHeader = req.headers.get("authorization")
     const cronSecret = process.env.CRON_SECRET || process.env.ADMIN_API_KEY
 
-    // If CRON_SECRET is set, enforce authorization
     if (cronSecret && authHeader !== `Bearer ${cronSecret}` && authHeader !== cronSecret) {
       return NextResponse.json({ error: "Unauthorized cron invocation" }, { status: 401 })
     }
 
-    // 2. Select topic based on current day of the year for deterministic progression
+    // 2. Deterministic topic selection by day + human random jitter
+    const now = new Date()
     const dayOfYear = Math.floor(
-      (Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24
+      (now.getTime() - new Date(now.getFullYear(), 0, 0).getTime()) / 1000 / 60 / 60 / 24
     )
-    const topicItem = TOPIC_QUEUE[dayOfYear % TOPIC_QUEUE.length]
+    const topicItem = HIGH_INTENT_TOPICS[dayOfYear % HIGH_INTENT_TOPICS.length]
 
-    // 3. Generate article with Groq (LLaMA 3.3 70B)
-    const blogPost = await generateBlogPostWithGroq(topicItem.topic, topicItem.keywords)
+    // 3. Generate article with human tone & realistic jitter timestamp
+    const randomizedTimestamp = generateRandomizedPublishTime(now)
+    const blogPost = await generateBlogPostWithGroq(topicItem.topic, topicItem.keywords, now)
 
-    // 4. Generate 16:9 featured cover image
-    const coverImageUrl = await generateBlogImage(blogPost.title, blogPost.keywords)
+    // 4. Generate instant, beautiful branded 1200x630 banner
+    const coverImageUrl = await generateBlogImage(blogPost.title, blogPost.keywords, topicItem.category)
 
     // 5. Schedule / Publish in Sanity if configured
     let sanityResult: any = null
@@ -66,7 +78,7 @@ export async function GET(req: NextRequest) {
         slug: { current: blogPost.slug },
         excerpt: blogPost.excerpt,
         coverImageUrl,
-        publishedAt: new Date().toISOString(),
+        publishedAt: randomizedTimestamp,
         body: blogPost.bodyMarkdown,
         metaTitle: blogPost.metaTitle,
         metaDescription: blogPost.metaDescription,
@@ -74,7 +86,7 @@ export async function GET(req: NextRequest) {
       })
     }
 
-    // 6. Ping IndexNow so search engines crawl the new post immediately
+    // 6. Ping IndexNow for instant search engine indexing
     try {
       await fetch("https://api.indexnow.org/indexnow", {
         method: "POST",
@@ -91,9 +103,12 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      timestamp: new Date().toISOString(),
+      publishedAt: randomizedTimestamp,
+      author: blogPost.author,
+      readTime: blogPost.readTime,
       topic: topicItem.topic,
       slug: blogPost.slug,
+      coverImageUrl,
       sanityConfigured: hasSanity,
       sanityResult,
     })

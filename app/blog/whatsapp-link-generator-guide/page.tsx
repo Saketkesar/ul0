@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     type: "article",
     publishedTime: "2026-11-10",
     images: [{
-      url: "https://ul0.site/social-card.png",
+      url: "https://ul0.site/api/og/blog?title=How%20to%20Create%20a%20WhatsApp%20Link%20with%20Message&category=WHATSAPP%20TUTORIAL",
       width: 1200,
       height: 630,
       alt: "WhatsApp Link Generator Guide",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "How to Create a WhatsApp Link with Message (Free 2026 Generator)",
     description: "Convert social and web visitors into instant WhatsApp leads. Create a free wa.me link with pre-filled text in seconds.",
-    images: ["https://ul0.site/social-card.png"],
+    images: ["https://ul0.site/api/og/blog?title=How%20to%20Create%20a%20WhatsApp%20Link%20with%20Message&category=WHATSAPP%20TUTORIAL"],
   },
 }
 
@@ -309,3 +309,4 @@ export default function WhatsAppLinkGeneratorGuidePage() {
     </div>
   )
 }
+

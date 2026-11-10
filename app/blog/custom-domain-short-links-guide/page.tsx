@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     type: "article",
     publishedTime: "2026-03-10",
     images: [{
-      url: "https://ul0.site/social-card.png",
+      url: "https://ul0.site/api/og/blog?title=URL%20Shortener%20with%20Custom%20Domain%20(Free%20Setup)&category=CUSTOM%20DOMAINS",
       width: 1200,
       height: 630,
       alt: "URL Shortener with Custom Domain Guide",
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "URL Shortener with Custom Domain: Free Setup & Comparison 2026",
     description: "Compare the best URL shorteners with custom domain support. Discover how to connect your brand domain for $0 forever with SSL included.",
-    images: ["https://ul0.site/social-card.png"],
+    images: ["https://ul0.site/api/og/blog?title=URL%20Shortener%20with%20Custom%20Domain%20(Free%20Setup)&category=CUSTOM%20DOMAINS"],
   },
 }
 
