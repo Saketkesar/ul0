@@ -23,6 +23,7 @@ import {
   Clock,
   Activity,
   AlertTriangle,
+  Lock,
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -50,15 +51,19 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
   const [revokeModalKey, setRevokeModalKey] = useState<ApiKeyItem | null>(null)
   const [isRevoking, setIsRevoking] = useState(false)
 
-  const isFreePlan = planSlug === "free_user"
+  const isFreePlan = planSlug !== "pro_user" && planSlug !== "business_user"
   const rateLimitLabel =
     planSlug === "business_user"
       ? "300 requests / minute"
       : planSlug === "pro_user"
       ? "60 requests / minute"
-      : "10 requests / minute (Sandbox)"
+      : "Locked (Pro / Business only)"
 
   const handleOpenCreate = () => {
+    if (isFreePlan) {
+      toast.error("API access requires a Pro or Business subscription. Please upgrade to unlock API keys.")
+      return
+    }
     setKeyName("")
     setCreatedSecret(null)
     setCopiedSecret(false)
@@ -145,6 +150,29 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
 
   return (
     <div className="space-y-6">
+      {/* Free Plan Upgrade Callout Banner */}
+      {isFreePlan && (
+        <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground">
+                <Lock className="h-3 w-3" />
+                Pro & Business Only
+              </span>
+              <h3 className="text-sm font-semibold text-foreground">API Access is Restricted</h3>
+            </div>
+            <p className="text-xs text-muted-foreground max-w-xl">
+              Programmatic REST API keys for shortening links, managing custom domains, and retrieving analytics are exclusively available on Pro ($3/mo) and Business ($9/mo) plans.
+            </p>
+          </div>
+          <Button asChild size="sm" className="text-xs shrink-0 font-semibold shadow-xs">
+            <Link href="/dashboard/billing">
+              Upgrade to Pro ($3/mo)
+            </Link>
+          </Button>
+        </div>
+      )}
+
       {/* Rate limit status tile */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-lg border border-border bg-card p-4 space-y-1">
@@ -159,7 +187,7 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
             <Key className="h-3.5 w-3.5 text-primary" />
             Active Keys
           </span>
-          <p className="text-sm font-semibold text-foreground">{keys.length} of 5</p>
+          <p className="text-sm font-semibold text-foreground">{isFreePlan ? "0 allowed" : `${keys.length} of 5`}</p>
         </div>
         <div className="rounded-lg border border-border bg-card p-4 space-y-1">
           <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
@@ -179,13 +207,39 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
               Secret keys allow programmatic access to shorten links and inspect analytics.
             </p>
           </div>
-          <Button onClick={handleOpenCreate} size="sm" className="gap-1.5 text-xs">
-            <Plus className="h-3.5 w-3.5" />
-            <span>Create key</span>
-          </Button>
+          {isFreePlan ? (
+            <Button asChild size="sm" variant="outline" className="gap-1.5 text-xs border-primary/40 text-primary hover:bg-primary/10">
+              <Link href="/dashboard/billing">
+                <Lock className="h-3.5 w-3.5" />
+                <span>Unlock with Pro</span>
+              </Link>
+            </Button>
+          ) : (
+            <Button onClick={handleOpenCreate} size="sm" className="gap-1.5 text-xs">
+              <Plus className="h-3.5 w-3.5" />
+              <span>Create key</span>
+            </Button>
+          )}
         </div>
 
-        {keys.length === 0 ? (
+        {isFreePlan ? (
+          <div className="p-8 text-center space-y-3">
+            <div className="mx-auto h-10 w-10 rounded-full border border-primary/30 bg-primary/10 flex items-center justify-center text-primary">
+              <Lock className="h-5 w-5" />
+            </div>
+            <div className="space-y-1 max-w-sm mx-auto">
+              <h3 className="text-sm font-semibold text-foreground">API Access Locked</h3>
+              <p className="text-xs text-muted-foreground">
+                Upgrade to Pro or Business to generate secret API keys and integrate URL shortening directly into your backend services, CLI tools, or automated workflows.
+              </p>
+            </div>
+            <Button asChild size="sm" className="text-xs font-semibold gap-1.5">
+              <Link href="/dashboard/billing">
+                Upgrade to Pro ($3/mo)
+              </Link>
+            </Button>
+          </div>
+        ) : keys.length === 0 ? (
           <div className="p-8 text-center space-y-3">
             <div className="mx-auto h-9 w-9 rounded-md border border-border bg-muted/40 flex items-center justify-center text-muted-foreground">
               <Key className="h-4 w-4" />

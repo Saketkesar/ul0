@@ -33,6 +33,8 @@ export interface PlanLimits {
   hasDomainAnalytics: boolean
   /** Whether analytics is available for regular (non-domain) links. */
   hasRegularAnalytics: boolean
+  /** Whether programmatic REST API key creation and usage is permitted. */
+  hasApiAccess: boolean
   /** Label shown on pricing page. */
   label: string
   /** Monthly price in USD (for display). */
@@ -48,6 +50,7 @@ export const PLANS: Record<PlanSlug, PlanLimits> = {
     canDeleteDomainLinks: false,
     hasDomainAnalytics: true,
     hasRegularAnalytics: false,
+    hasApiAccess: false,
     label: "Free",
     priceMonthly: 0,
     priceAnnual: 0,
@@ -58,6 +61,7 @@ export const PLANS: Record<PlanSlug, PlanLimits> = {
     canDeleteDomainLinks: true,
     hasDomainAnalytics: true,
     hasRegularAnalytics: true,
+    hasApiAccess: true,
     label: "Pro",
     priceMonthly: 3,
     priceAnnual: 24, // $2/mo effective
@@ -68,6 +72,7 @@ export const PLANS: Record<PlanSlug, PlanLimits> = {
     canDeleteDomainLinks: true,
     hasDomainAnalytics: true,
     hasRegularAnalytics: true,
+    hasApiAccess: true,
     label: "Business",
     priceMonthly: 9,
     priceAnnual: 72, // $6/mo effective
@@ -99,6 +104,7 @@ export const PLAN_FEATURES: Record<PlanSlug, string[]> = {
     "100 short links per domain",
     "Full analytics for all links",
     "Link deletion",
+    "REST API access (60 req/min)",
     "Priority support",
   ],
   business_user: [
@@ -107,6 +113,7 @@ export const PLAN_FEATURES: Record<PlanSlug, string[]> = {
     "Unlimited short links per domain",
     "Full analytics for all links",
     "Link deletion",
+    "High-throughput REST API (300 req/min)",
     "Dedicated support",
   ],
 }

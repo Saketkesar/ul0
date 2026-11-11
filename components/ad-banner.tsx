@@ -59,37 +59,52 @@ export function AdBanner({ slot = 1, type = "large", scriptKey, width, height, s
 
     el.innerHTML = ""
 
-    // Create unique container div for this ad slot
-    const adBox = document.createElement("div")
-    adBox.id = `adsterra-slot-${slot}-${finalKey}`
-    adBox.style.width = `${baseW}px`
-    adBox.style.height = `${baseH}px`
-    adBox.style.display = "flex"
-    adBox.style.alignItems = "center"
-    adBox.style.justifyContent = "center"
-    adBox.style.overflow = "hidden"
-    el.appendChild(adBox)
+    // Create a friendly same-origin iframe to isolate window.atOptions
+    // and prevent race conditions between multiple concurrent ad slots.
+    const iframe = document.createElement("iframe")
+    iframe.id = `adsterra-frame-${slot}-${finalKey}`
+    iframe.width = `${baseW}`
+    iframe.height = `${baseH}`
+    iframe.style.width = `${baseW}px`
+    iframe.style.height = `${baseH}px`
+    iframe.style.border = "none"
+    iframe.style.overflow = "hidden"
+    iframe.scrolling = "no"
+    el.appendChild(iframe)
 
-    // 1. Inject configuration script
-    const confScript = document.createElement("script")
-    confScript.type = "text/javascript"
-    confScript.text = `
-      atOptions = {
-        'key': '${finalKey}',
-        'format': 'iframe',
-        'height': ${baseH},
-        'width': ${baseW},
-        'params': {}
-      };
-    `
-    adBox.appendChild(confScript)
-
-    // 2. Inject invoke script directly into the page context
-    const invokeScript = document.createElement("script")
-    invokeScript.type = "text/javascript"
-    invokeScript.src = customScript?.src || `${AD_DOMAIN}/${finalKey}/invoke.js`
-    invokeScript.async = true
-    adBox.appendChild(invokeScript)
+    try {
+      const doc = iframe.contentWindow?.document
+      if (doc) {
+        doc.open()
+        doc.write(`
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <base target="_blank">
+              <style>
+                * { box-sizing: border-box; }
+                body { margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; background: transparent; overflow: hidden; }
+              </style>
+            </head>
+            <body>
+              <script type="text/javascript">
+                atOptions = {
+                  'key': '${finalKey}',
+                  'format': 'iframe',
+                  'height': ${baseH},
+                  'width': ${baseW},
+                  'params': {}
+                };
+              </script>
+              <script type="text/javascript" src="${customScript?.src || `${AD_DOMAIN}/${finalKey}/invoke.js`}"></script>
+            </body>
+          </html>
+        `)
+        doc.close()
+      }
+    } catch (e) {
+      console.error("AdBanner iframe rendering error:", e)
+    }
 
     return () => {
       if (el) el.innerHTML = ""

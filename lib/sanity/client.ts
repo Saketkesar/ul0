@@ -127,7 +127,7 @@ export async function getPublishedSanityPosts(): Promise<SanityPost[]> {
     title,
     slug,
     excerpt,
-    coverImageUrl,
+    "coverImageUrl": coalesce(coverImageUrl, coverImage.asset->url, ""),
     publishedAt,
     metaTitle,
     metaDescription,

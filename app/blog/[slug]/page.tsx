@@ -18,7 +18,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params
   const now = new Date().toISOString()
   const post = await sanityFetch<SanityPost>(
-    `*[_type == "post" && slug.current == $slug && publishedAt <= $now][0]`,
+    `*[_type == "post" && slug.current == $slug && publishedAt <= $now][0]{
+      _id,
+      title,
+      slug,
+      excerpt,
+      "coverImageUrl": coalesce(coverImageUrl, coverImage.asset->url, ""),
+      publishedAt,
+      metaTitle,
+      metaDescription,
+      keywords
+    }`,
     { slug, now }
   )
 
@@ -63,7 +73,18 @@ export default async function DynamicSanityBlogPostPage({ params }: Props) {
   const { slug } = await params
   const now = new Date().toISOString()
   const post = await sanityFetch<SanityPost>(
-    `*[_type == "post" && slug.current == $slug && publishedAt <= $now][0]`,
+    `*[_type == "post" && slug.current == $slug && publishedAt <= $now][0]{
+      _id,
+      title,
+      slug,
+      excerpt,
+      "coverImageUrl": coalesce(coverImageUrl, coverImage.asset->url, ""),
+      publishedAt,
+      body,
+      metaTitle,
+      metaDescription,
+      keywords
+    }`,
     { slug, now }
   )
 

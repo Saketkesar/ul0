@@ -13,8 +13,25 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const keys = await listUserApiKeys(userId)
-    return NextResponse.json({ keys })
+    const [user, accountDoc, keys] = await Promise.all([
+      currentUser().catch(() => null),
+      getAccountByClerkId(userId).catch(() => null),
+      listUserApiKeys(userId).catch(() => []),
+    ])
+
+    const plan = getActivePlan(authSession, user, accountDoc)
+    const isAllowed = plan.slug === "pro_user" || plan.slug === "business_user"
+
+    if (!isAllowed) {
+      return NextResponse.json({
+        keys: [],
+        plan: plan.slug,
+        locked: true,
+        error: "API access is reserved for Pro and Business subscriptions.",
+      })
+    }
+
+    return NextResponse.json({ keys, plan: plan.slug, locked: false })
   } catch (error: any) {
     console.error("API Keys GET error:", error)
     return NextResponse.json({ error: error?.message ?? "Failed to fetch keys" }, { status: 500 })
@@ -29,6 +46,22 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
+    const [user, accountDoc] = await Promise.all([
+      currentUser().catch(() => null),
+      getAccountByClerkId(userId).catch(() => null),
+    ])
+
+    const plan = getActivePlan(authSession, user, accountDoc)
+    if (plan.slug !== "pro_user" && plan.slug !== "business_user") {
+      return NextResponse.json(
+        {
+          error: "API access is reserved for Pro and Business plans. Please upgrade your plan to generate API keys.",
+          code: "UPGRADE_REQUIRED",
+        },
+        { status: 403 }
+      )
+    }
+
     const clientIP = getClientIP(request)
     const rateLimitResult = await checkRateLimit(`keys:generate:${userId || clientIP}`, {
       windowMs: 60000,
@@ -41,13 +74,6 @@ export async function POST(request: NextRequest) {
         { status: 429 }
       )
     }
-
-    const [user, accountDoc] = await Promise.all([
-      currentUser().catch(() => null),
-      getAccountByClerkId(userId).catch(() => null),
-    ])
-
-    const plan = getActivePlan(authSession, user, accountDoc)
 
     let body: { name?: string } = {}
     try {

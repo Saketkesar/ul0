@@ -203,7 +203,12 @@ export function DashboardShell({
     {
       group: "Developers",
       items: [
-        { name: "API Keys", href: "/dashboard/keys", icon: Key },
+        {
+          name: "API Keys",
+          href: "/dashboard/keys",
+          icon: Key,
+          badge: plan.slug === "free_user" ? "Pro" : undefined,
+        },
         { name: "REST API Docs", href: "/docs", icon: ExternalLink, external: true },
       ],
     },

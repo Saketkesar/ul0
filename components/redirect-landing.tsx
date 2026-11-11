@@ -18,6 +18,7 @@ import {
   X as XIcon,
   Sparkles,
   ArrowRight,
+  Clock,
 } from "lucide-react"
 import { AdBanner } from "@/components/ad-banner"
 
@@ -164,11 +165,12 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
   }, [longUrl])
 
   useEffect(() => {
-    // Start countdown immediately
+    // Exact 7-second countdown before redirect
     const timer = setInterval(() => {
       setCountdown((prev) => {
         if (prev <= 1) {
           clearInterval(timer)
+          setCanSkip(true)
           redirect()
           return 0
         }
@@ -176,13 +178,13 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
       })
     }, 1000)
 
-    const skipTimer = setTimeout(() => {
+    const fullTimer = setTimeout(() => {
       setCanSkip(true)
-    }, 4000)
+    }, 7000)
 
     return () => {
       clearInterval(timer)
-      clearTimeout(skipTimer)
+      clearTimeout(fullTimer)
     }
   }, [redirect])
 
@@ -237,11 +239,18 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
             </span>
           </div>
           <div className="flex items-center gap-3">
-            <span className="text-2xl font-bold tabular-nums text-primary">{countdown}s</span>
-            {canSkip && (
-              <Button size="sm" onClick={redirect} className="gap-1">
-                <SkipForward className="h-4 w-4" />
-                <span className="hidden sm:inline">Skip</span>
+            {countdown > 0 ? (
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold tabular-nums text-primary">{countdown}s</span>
+                <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground font-medium bg-muted/60 px-2.5 py-1 rounded-md border border-border">
+                  <Clock className="h-3.5 w-3.5 animate-spin text-primary" />
+                  <span>Please wait {countdown}s</span>
+                </div>
+              </div>
+            ) : (
+              <Button size="sm" onClick={redirect} className="gap-1.5 font-semibold text-xs shadow-xs">
+                <SkipForward className="h-3.5 w-3.5" />
+                <span>Continue</span>
               </Button>
             )}
           </div>

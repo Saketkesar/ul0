@@ -47,10 +47,20 @@ export async function POST(request: NextRequest) {
     const clientIP = getClientIP(request)
     const fingerprint = getRequestFingerprint(request)
 
-    // 2. Enforce API key-specific rate limits or standard web limits
+    // 2. Enforce API key-specific plan check & rate limits
     if (apiKeyUser) {
       const plan = apiKeyUser.account?.plan || "free_user"
-      const maxRequests = plan === "business_user" ? 300 : plan === "pro_user" ? 60 : 10
+      if (plan !== "pro_user" && plan !== "business_user") {
+        return NextResponse.json(
+          {
+            error: "API access is reserved for Pro and Business plans. Please upgrade your subscription to use programmatic API keys.",
+            code: "PLAN_UPGRADE_REQUIRED",
+          },
+          { status: 403 }
+        )
+      }
+
+      const maxRequests = plan === "business_user" ? 300 : 60
       const keyRateLimitResult = await checkRateLimit(`api:key:${apiKeyUser.userId}`, {
         windowMs: 60000,
         maxRequests,
