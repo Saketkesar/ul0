@@ -26,7 +26,7 @@ export function PricingSection() {
         linksPerDomain: "1 link",
         qrCodes: "Unlimited PNG & SVG",
         analyticsRetention: "24-hour total clicks",
-        apiRateLimit: "10 requests / min (Sandbox)",
+        apiRateLimit: "Not included (Pro & Business)",
         teamSeats: "1 user",
         support: "Community GitHub",
       },

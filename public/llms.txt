@@ -11,12 +11,12 @@ Founded in 2024, ul0's mission is to make branded link management accessible to 
 ## Core Products & Features
 
 - **Forms to Google Sheets**: Create public forms that write straight to your Google Sheet with Zero-DB storage.
-- **URL Shortener**: Free, unlimited link shortening with permanent redirects. No signup required.
-- **Custom Domain Links**: Connect your own domain (e.g., link.yourbrand.com) to create branded short URLs. Starting at $2/month.
-- **QR Code Generator**: Create free, customizable QR codes for any link with logo upload and color customization.
-- **Click Analytics**: Track clicks by device, referrer, country, and daily trends for all links.
+- **URL Shortener**: Free, unlimited link shortening with fast 307 temporary redirects and editable destinations. No signup required.
+- **Custom Domain Links**: Connect your own domain (e.g., link.yourbrand.com) to create branded short URLs. 1 custom domain included free forever; Pro plans from $3/month ($2/mo billed annually) for up to 3 domains.
+- **QR Code Generator**: Create free, customizable vector QR codes (SVG and PNG) with high error correction and custom colors.
+- **Click Analytics**: Track clicks by device, referrer, country, and daily trends without third-party tracking cookies.
 - **UTM Campaign Builder**: Generate tracking-tagged links for Google Analytics and marketing campaigns.
-- **Developer API**: REST API for programmatic link shortening with authentication and rate limiting.
+- **Developer API**: REST API for programmatic link shortening with authentication and rate limiting (Pro & Business tiers).
 - **Expense Splitter**: Split group bills and generate UPI QR payment codes.
 - **PDF Page Splitter**: Free client-side tool to extract, split, and download individual pages from any PDF document.
 - **PDF Scanner**: Browser-based document scanning with filters, cropping, and multi-page PDF export.

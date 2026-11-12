@@ -103,7 +103,7 @@ export const COMPETITORS: Record<string, CompetitorData> = {
       { feature: "User Experience", ul0: "Clean, ad-free redirection", competitor: "Ad-supported redirect experience" },
       { feature: "Dynamic QR Codes", ul0: "Vector SVG & high-res PNG", competitor: "Basic PNG only" },
       { feature: "Analytics Quality", ul0: "Real-time geo & referrer tracking", competitor: "Basic click counter" },
-      { feature: "API Access", ul0: "Free REST API with rate limits", competitor: "Paid tier required" },
+      { feature: "API Access", ul0: "Included on Pro ($3/mo)", competitor: "Paid tier required" },
     ],
     migrationSteps: [
       "Identify the destination URLs currently using TinyURL.",
@@ -265,7 +265,7 @@ export const COMPETITORS: Record<string, CompetitorData> = {
       { feature: "Custom Domain on Free", ul0: "1 domain included free", competitor: "Paid plans only" },
       { feature: "Paid Starting Price", ul0: "$3 / month", competitor: "$10 / month" },
       { feature: "QR Code Capabilities", ul0: "Dynamic vector SVG + PNG", competitor: "Standard QR" },
-      { feature: "Developer REST API", ul0: "Included free", competitor: "Requires API token tier" },
+      { feature: "Developer REST API", ul0: "Included on Pro ($3/mo)", competitor: "Requires API token tier" },
     ],
     migrationSteps: [
       "Connect your custom domain to UL0.",

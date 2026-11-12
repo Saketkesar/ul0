@@ -252,7 +252,7 @@ export default function ToolsHubPage() {
                           {t.category}
                         </span>
                       </div>
-                      <h2 className="text-sm font-semibold text-foreground">{t.name}</h2>
+                      <h3 className="text-sm font-semibold text-foreground">{t.name}</h3>
                       <p className="text-xs text-muted-foreground leading-relaxed">
                         {t.description}
                       </p>

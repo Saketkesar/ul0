@@ -34,19 +34,19 @@ function contrastRatio(hex1, hex2) {
 }
 
 const lightPairs = [
-  { name: "Light Background vs Foreground", bg: "#FFFFFF", fg: "#0B1412", min: 4.5 },
-  { name: "Light Primary Button Text", bg: "#168270", fg: "#FFFFFF", min: 4.5 },
-  { name: "Light Card vs Muted Text", bg: "#FFFFFF", fg: "#5B6B67", min: 4.5 },
+  { name: "Light Background vs Foreground", bg: "#F6F8F7", fg: "#0B1A17", min: 4.5 },
+  { name: "Light Primary Button Text", bg: "#0B7A66", fg: "#FFFFFF", min: 4.5 },
+  { name: "Light Card vs Muted Text", bg: "#FFFFFF", fg: "#475C57", min: 4.5 },
   { name: "Light Destructive Button Text", bg: "#D92D20", fg: "#FFFFFF", min: 4.5 },
-  { name: "Light UI Border against White", bg: "#FFFFFF", fg: "#168270", min: 3.0 },
+  { name: "Light UI Border against White", bg: "#FFFFFF", fg: "#0B7A66", min: 3.0 },
 ]
 
 const darkPairs = [
-  { name: "Dark Background vs Foreground", bg: "#08100E", fg: "#ECF5F2", min: 4.5 },
-  { name: "Dark Primary Button Text", bg: "#1FA087", fg: "#08100E", min: 4.5 },
-  { name: "Dark Card vs Muted Text", bg: "#0D1815", fg: "#8DA39D", min: 4.5 },
+  { name: "Dark Background vs Foreground", bg: "#0B1116", fg: "#EEF4F2", min: 4.5 },
+  { name: "Dark Primary Button Text", bg: "#3DDBB8", fg: "#0B1116", min: 4.5 },
+  { name: "Dark Card vs Muted Text", bg: "#111A21", fg: "#A3B7B2", min: 4.5 },
   { name: "Dark Destructive Button Text", bg: "#D92D20", fg: "#FFFFFF", min: 4.5 },
-  { name: "Dark UI Border against Surface", bg: "#08100E", fg: "#1FA087", min: 3.0 },
+  { name: "Dark UI Border against Surface", bg: "#0B1116", fg: "#3DDBB8", min: 3.0 },
 ]
 
 console.log("==========================================")

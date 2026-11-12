@@ -20,29 +20,29 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #FFFFFF;
-  --foreground: #0B1412;
+  --background: #F6F8F7;
+  --foreground: #0B1A17;
   --card: #FFFFFF;
-  --card-foreground: #0B1412;
+  --card-foreground: #0B1A17;
   --popover: #FFFFFF;
-  --popover-foreground: #0B1412;
-  --primary: #168270; /* Brand Teal-600 */
+  --popover-foreground: #0B1A17;
+  --primary: #0B7A66; /* PDF Light Accent */
   --primary-foreground: #FFFFFF;
-  --secondary: #F0F5F3; /* Brand Surface-2 */
-  --secondary-foreground: #0B1412;
-  --muted: #F8FBFA; /* Brand Surface */
-  --muted-foreground: #5B6B67;
-  --accent: #F0F5F3;
-  --accent-foreground: #168270;
+  --secondary: #E8EFEC; /* PDF Light Surface 2 */
+  --secondary-foreground: #0B1A17;
+  --muted: #E8EFEC;
+  --muted-foreground: #475C57; /* PDF Light Muted */
+  --accent: #E8EFEC;
+  --accent-foreground: #0B7A66;
   --destructive: #D92D20;
   --destructive-foreground: #FFFFFF;
-  --border: rgba(14, 61, 56, 0.12);
-  --input: rgba(14, 61, 56, 0.15);
-  --ring: #168270;
+  --border: rgba(11, 26, 23, 0.14); /* PDF 14% border */
+  --input: rgba(11, 26, 23, 0.32); /* PDF 32% input border */
+  --ring: #0B7A66;
   --surface-1: #FFFFFF;
-  --surface-2: #F8FBFA;
-  --surface-3: #F0F5F3;
-  --success: #168270;
+  --surface-2: #E8EFEC;
+  --surface-3: #DCE5E1;
+  --success: #0B7A66;
   --success-foreground: #FFFFFF;
   --warning: #D97706;
   --warning-foreground: #FFFFFF;
@@ -50,68 +50,68 @@
   --danger-foreground: #FFFFFF;
   --info: #2563EB;
   --info-foreground: #FFFFFF;
-  --chart-1: #1FA087; /* Teal-500 */
-  --chart-2: #3DBE7A; /* Coin-500 */
-  --chart-3: #6C8EF5; /* Muted Indigo */
-  --chart-4: #F2A93B; /* Amber */
+  --chart-1: #0B7A66;
+  --chart-2: #3DBE7A;
+  --chart-3: #6C8EF5;
+  --chart-4: #F2A93B;
   --chart-5: #168270;
-  --chart-6: #8B5CF6; /* Violet */
+  --chart-6: #8B5CF6;
   --radius: 0.625rem;
-  --sidebar: #F8FBFA;
-  --sidebar-foreground: #0B1412;
-  --sidebar-primary: #168270;
+  --sidebar: #F6F8F7;
+  --sidebar-foreground: #0B1A17;
+  --sidebar-primary: #0B7A66;
   --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #F0F5F3;
-  --sidebar-accent-foreground: #168270;
-  --sidebar-border: rgba(14, 61, 56, 0.10);
-  --sidebar-ring: #168270;
+  --sidebar-accent: #E8EFEC;
+  --sidebar-accent-foreground: #0B7A66;
+  --sidebar-border: rgba(11, 26, 23, 0.14);
+  --sidebar-ring: #0B7A66;
 }
 
 .dark {
-  --background: #08100E;
-  --foreground: #ECF5F2;
-  --card: #0D1815;
-  --card-foreground: #ECF5F2;
-  --popover: #0D1815;
-  --popover-foreground: #ECF5F2;
-  --surface-1: #08100E;
-  --surface-2: #0D1815;
-  --surface-3: #13211D;
-  --primary: #1FA087; /* Brand Teal-500 for crisp dark contrast */
-  --primary-foreground: #08100E;
-  --secondary: #13211D;
-  --secondary-foreground: #ECF5F2;
-  --muted: #0D1815;
-  --muted-foreground: #8DA39D;
-  --accent: #13211D;
-  --accent-foreground: #74D3BC;
+  --background: #0B1116; /* PDF Dark Base */
+  --foreground: #EEF4F2; /* PDF Dark Text */
+  --card: #111A21; /* PDF Dark Surface 1 */
+  --card-foreground: #EEF4F2;
+  --popover: #111A21;
+  --popover-foreground: #EEF4F2;
+  --surface-1: #111A21; /* PDF Dark Surface 1 */
+  --surface-2: #18252F; /* PDF Dark Surface 2 */
+  --surface-3: #20313E;
+  --primary: #3DDBB8; /* PDF Dark Accent */
+  --primary-foreground: #0B1116;
+  --secondary: #18252F;
+  --secondary-foreground: #EEF4F2;
+  --muted: #18252F;
+  --muted-foreground: #A3B7B2; /* PDF Dark Muted */
+  --accent: #18252F;
+  --accent-foreground: #3DDBB8;
   --destructive: #D92D20;
   --destructive-foreground: #FFFFFF;
-  --success: #1FA087;
-  --success-foreground: #08100E;
+  --success: #3DDBB8;
+  --success-foreground: #0B1116;
   --warning: #F59E0B;
-  --warning-foreground: #08100E;
+  --warning-foreground: #0B1116;
   --danger: #EF4444;
   --danger-foreground: #FFFFFF;
   --info: #3B82F6;
   --info-foreground: #FFFFFF;
-  --border: rgba(168, 230, 213, 0.12);
-  --input: rgba(168, 230, 213, 0.15);
-  --ring: #74D3BC;
-  --chart-1: #3FBBA0;
+  --border: rgba(255, 255, 255, 0.14); /* PDF 14% border */
+  --input: rgba(255, 255, 255, 0.32); /* PDF 32% input border */
+  --ring: #3DDBB8;
+  --sidebar: #0B1116;
+  --sidebar-foreground: #EEF4F2;
+  --sidebar-primary: #3DDBB8;
+  --sidebar-primary-foreground: #0B1116;
+  --sidebar-accent: #18252F;
+  --sidebar-accent-foreground: #3DDBB8;
+  --sidebar-border: rgba(255, 255, 255, 0.14);
+  --sidebar-ring: #3DDBB8;
+  --chart-1: #3DDBB8;
   --chart-2: #5FD38D;
   --chart-3: #82A2F8;
   --chart-4: #F6BC5E;
-  --chart-5: #3FBBA0;
+  --chart-5: #3DDBB8;
   --chart-6: #A78BFA;
-  --sidebar: #0D1815;
-  --sidebar-foreground: #ECF5F2;
-  --sidebar-primary: #1FA087;
-  --sidebar-primary-foreground: #08100E;
-  --sidebar-accent: #13211D;
-  --sidebar-accent-foreground: #74D3BC;
-  --sidebar-border: rgba(168, 230, 213, 0.10);
-  --sidebar-ring: #74D3BC;
 }
 
 @theme inline {

@@ -20,11 +20,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://ul0.site"),
   title: {
-    default: "UL0 - URL Shortener, QR Codes and Custom Domains",
+    default: "UL0: Free Branded Short Links, QR Codes & Analytics",
     template: "%s | UL0",
   },
   description:
-    "Shorten links, generate dynamic vector QR codes, and connect branded custom domains with privacy-first click analytics.",
+    "Shorten links instantly. Add a free custom domain, create dynamic vector QR codes, and track clicks without tracking cookies.",
   authors: [{ name: "UL0", url: "https://ul0.site" }],
   creator: "UL0",
   publisher: "UL0",
@@ -35,9 +35,9 @@ export const metadata: Metadata = {
     languages: hreflangAlternates,
   },
   openGraph: {
-    title: "UL0 - URL Shortener, QR Codes and Custom Domains",
+    title: "UL0: Free Branded Short Links, QR Codes & Analytics",
     description:
-      "Shorten links, generate dynamic vector QR codes, and connect branded custom domains with privacy-first click analytics.",
+      "Shorten links instantly. Add a free custom domain, create dynamic vector QR codes, and track clicks without tracking cookies.",
     url: "https://ul0.site",
     type: "website",
     locale: "en_US",
@@ -47,16 +47,16 @@ export const metadata: Metadata = {
         url: "https://ul0.site/social-card.png",
         width: 1376,
         height: 768,
-        alt: "UL0 - URL Shortener, QR Codes and Custom Domains",
+        alt: "UL0 - Free Branded Short Links, QR Codes & Analytics",
         type: "image/png",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "UL0 - URL Shortener, QR Codes and Custom Domains",
+    title: "UL0: Free Branded Short Links, QR Codes & Analytics",
     description:
-      "Shorten links, generate dynamic vector QR codes, and connect branded custom domains with privacy-first click analytics.",
+      "Shorten links instantly. Add a free custom domain, create dynamic vector QR codes, and track clicks without tracking cookies.",
     images: ["https://ul0.site/social-card.png"],
   },
   robots: {
@@ -91,8 +91,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 5,
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#08100E" },
+    { media: "(prefers-color-scheme: light)", color: "#F6F8F7" },
+    { media: "(prefers-color-scheme: dark)", color: "#0B1116" },
   ],
 }
 
@@ -150,13 +150,6 @@ export default function RootLayout({
           price: "0",
           priceCurrency: "USD",
         },
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: "4.9",
-          reviewCount: "1480",
-          bestRating: "5",
-          worstRating: "1",
-        },
         description: "Link management platform with branded custom domains, dynamic vector QR codes, and privacy-first analytics.",
         url: "https://ul0.site",
       },
@@ -176,12 +169,6 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
         <meta name="google-site-verification" content="Apib7-x98H0j5cPqHWwSMm6dNU4GmODRoqxLiDzdx9I" />
-        <meta name="google-adsense-account" content="ca-pub-8018312015732327" />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8018312015732327"
-          crossOrigin="anonymous"
-        />
 
         {/* Immediate theme restoration supporting system preference & saved user toggle */}
         <script
@@ -208,19 +195,17 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-background text-foreground selection:bg-primary/20 selection:text-foreground" suppressHydrationWarning>
         <ClerkProvider
           appearance={{
-            variables: {
-              colorPrimary: "#168270",
-              colorBackground: "#FFFFFF",
-              colorText: "#0B1412",
-              colorInputBackground: "#FFFFFF",
-              colorInputBorder: "rgba(14, 61, 56, 0.15)",
-              borderRadius: "6px",
-              fontFamily: "var(--font-geist-sans), sans-serif",
-            },
             elements: {
-              card: "shadow-none border border-border rounded-lg",
-              formButtonPrimary: "bg-primary hover:bg-primary/90 text-primary-foreground shadow-none text-xs font-semibold h-10",
-              footerActionLink: "text-primary hover:text-primary/90",
+              card: "shadow-none border border-border rounded-xl bg-card text-card-foreground",
+              headerTitle: "text-foreground font-semibold",
+              headerSubtitle: "text-muted-foreground",
+              socialButtonsBlockButton: "border border-border bg-card hover:bg-muted text-foreground transition-colors",
+              formButtonPrimary: "bg-primary hover:bg-primary/90 text-primary-foreground shadow-none text-xs font-semibold h-10 transition-colors",
+              formFieldInput: "bg-background border-border text-foreground focus:ring-2 focus:ring-primary",
+              formFieldLabel: "text-foreground",
+              footerActionLink: "text-primary hover:underline",
+              identityPreviewText: "text-foreground",
+              userButtonPopoverCard: "bg-card border border-border text-card-foreground shadow-lg rounded-xl",
             },
           }}
         >

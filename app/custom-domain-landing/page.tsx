@@ -178,10 +178,10 @@ export default async function CustomDomainLandingPage() {
 
           {/* Common failure states / troubleshooting */}
           <div className="rounded-lg border border-border bg-muted/20 p-6 space-y-4 text-xs">
-            <h3 className="font-semibold text-foreground flex items-center gap-1.5 text-sm">
+            <h2 className="font-semibold text-foreground flex items-center gap-1.5 text-sm">
               <AlertCircle className="h-4 w-4 text-primary" />
               Troubleshooting DNS Verification
-            </h3>
+            </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-muted-foreground">
               <div className="space-y-1">
