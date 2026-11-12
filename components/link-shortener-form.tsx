@@ -43,6 +43,16 @@ export function LinkShortenerForm() {
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<CreatedLinkResult | null>(null)
 
+  useEffect(() => {
+    const handler = (e: any) => {
+      if (e.detail?.tab) {
+        setActiveTab(e.detail.tab)
+      }
+    }
+    window.addEventListener("ul0:set-tab", handler)
+    return () => window.removeEventListener("ul0:set-tab", handler)
+  }, [])
+
   const handlePaste = async () => {
     try {
       const text = await navigator.clipboard.readText()

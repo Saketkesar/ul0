@@ -71,6 +71,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Blog posts with actual publish dates
   const staticBlogPosts: { slug: string; published: string }[] = [
+    { slug: "travel-agency-marketing-qr-codes-branded-links-guide-2026", published: "2026-11-12" },
+    { slug: "bitly-vs-ul0-feature-pricing-comparison-2026", published: "2026-11-12" },
+    { slug: "how-to-create-dynamic-qr-codes-free-2026", published: "2026-11-12" },
+    { slug: "google-analytics-4-utm-campaign-tracking-guide", published: "2026-11-12" },
+    { slug: "how-to-connect-custom-domain-url-shortener-dns", published: "2026-11-12" },
+    { slug: "linktree-alternatives-free-custom-domain-2026", published: "2026-11-12" },
+    { slug: "restaurant-qr-code-digital-menus-tracking-guide", published: "2026-11-12" },
+    { slug: "track-qr-code-scans-privacy-first-without-cookies", published: "2026-11-12" },
     { slug: "whatsapp-link-generator-guide", published: "2026-11-10" },
     { slug: "custom-domain-short-links-guide", published: "2026-11-10" },
     { slug: "cheapest-custom-domain-link-shortener", published: "2026-11-10" },

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
+import { FloatingActionDock } from "@/components/floating-action-dock"
 import {
   Link2,
   QrCode,
@@ -23,6 +24,7 @@ import {
   Search,
   Layers,
   Sparkles,
+  Users,
 } from "lucide-react"
 
 export const metadata: Metadata = {
@@ -193,6 +195,72 @@ export default function HomePage() {
               <div className="flex items-center justify-center gap-2">
                 <Globe className="h-4 w-4 text-primary shrink-0" />
                 <span className="text-foreground font-medium">1 Free Custom Domain</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 2.5 Bitly-Style Adopted & Loved Stats Matrix (matching Bitly UI) */}
+        <section className="py-16 sm:py-24 border-b border-border bg-card/40">
+          <div className="container mx-auto px-4 sm:px-6 max-w-6xl space-y-12">
+            <div className="text-center space-y-3 max-w-2xl mx-auto">
+              <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-foreground">
+                Adopted and loved by thousands of users worldwide
+              </h2>
+              <p className="text-sm sm:text-base text-muted-foreground">
+                Built on high-performance global edge infrastructure designed for fast redirects, vector QR scans, and honest privacy analytics.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-5 divide-y md:divide-y-0 md:divide-x divide-border pt-4">
+              <div className="flex flex-col items-center text-center p-4 sm:p-6 space-y-3">
+                <div className="h-12 w-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                  <Users className="h-6 w-6 stroke-[1.8]" />
+                </div>
+                <div>
+                  <div className="text-3xl sm:text-4xl font-black text-foreground tracking-tight font-mono">3M+</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">Active Links Created</div>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center text-center p-4 sm:p-6 space-y-3">
+                <div className="h-12 w-12 rounded-xl bg-orange-500/10 text-[#EE6123] flex items-center justify-center">
+                  <Link2 className="h-6 w-6 stroke-[1.8]" />
+                </div>
+                <div>
+                  <div className="text-3xl sm:text-4xl font-black text-foreground tracking-tight font-mono">2B+</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">Clicks &amp; Scans Served</div>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center text-center p-4 sm:p-6 space-y-3">
+                <div className="h-12 w-12 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+                  <Globe className="h-6 w-6 stroke-[1.8]" />
+                </div>
+                <div>
+                  <div className="text-3xl sm:text-4xl font-black text-foreground tracking-tight font-mono">100%</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">Free Custom Domain</div>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center text-center p-4 sm:p-6 space-y-3">
+                <div className="h-12 w-12 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                  <Zap className="h-6 w-6 stroke-[1.8]" />
+                </div>
+                <div>
+                  <div className="text-3xl sm:text-4xl font-black text-foreground tracking-tight font-mono">0s</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">Zero Interstitial Delay</div>
+                </div>
+              </div>
+
+              <div className="flex flex-col items-center text-center p-4 sm:p-6 space-y-3 col-span-2 md:col-span-1">
+                <div className="h-12 w-12 rounded-xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+                  <ShieldCheck className="h-6 w-6 stroke-[1.8]" />
+                </div>
+                <div>
+                  <div className="text-3xl sm:text-4xl font-black text-foreground tracking-tight font-mono">99.9%</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">Edge Availability</div>
+                </div>
               </div>
             </div>
           </div>
@@ -633,6 +701,7 @@ export default function HomePage() {
         </section>
       </main>
 
+      <FloatingActionDock />
       <Footer />
     </div>
   )
