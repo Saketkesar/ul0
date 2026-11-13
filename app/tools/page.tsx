@@ -5,6 +5,7 @@ import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Input } from "@/components/ui/input"
+import { UL0Icon } from "@/components/ul0-icon"
 import {
   Link2,
   QrCode,
@@ -32,6 +33,7 @@ interface ToolItem {
   category: "links" | "qr" | "documents" | "utilities"
   privacy: string
   icon: React.ComponentType<{ className?: string }>
+  iconName: string
 }
 
 const TOOLS: ToolItem[] = [
@@ -43,6 +45,7 @@ const TOOLS: ToolItem[] = [
     category: "utilities",
     privacy: "Direct to Google Sheets (Zero-DB)",
     icon: FileSpreadsheet,
+    iconName: "docs",
   },
   {
     id: "shortener",
@@ -52,6 +55,7 @@ const TOOLS: ToolItem[] = [
     category: "links",
     privacy: "Processed at edge",
     icon: Link2,
+    iconName: "scissors",
   },
   {
     id: "redirect-checker",
@@ -61,6 +65,7 @@ const TOOLS: ToolItem[] = [
     category: "links",
     privacy: "Server inspection query",
     icon: TrendingUp,
+    iconName: "chartline",
   },
   {
     id: "url-expander",
@@ -70,6 +75,7 @@ const TOOLS: ToolItem[] = [
     category: "links",
     privacy: "Safety screened query",
     icon: Search,
+    iconName: "search",
   },
   {
     id: "utm-builder",
@@ -79,6 +85,7 @@ const TOOLS: ToolItem[] = [
     category: "links",
     privacy: "Processed in your browser",
     icon: Link2,
+    iconName: "target",
   },
   {
     id: "og-preview",
@@ -88,6 +95,7 @@ const TOOLS: ToolItem[] = [
     category: "links",
     privacy: "Fetched on demand",
     icon: Eye,
+    iconName: "image",
   },
   {
     id: "qr-studio",
@@ -97,6 +105,7 @@ const TOOLS: ToolItem[] = [
     category: "qr",
     privacy: "Processed in your browser",
     icon: QrCode,
+    iconName: "qr",
   },
   {
     id: "wifi-qr",
@@ -106,6 +115,7 @@ const TOOLS: ToolItem[] = [
     category: "qr",
     privacy: "Processed in your browser",
     icon: Wifi,
+    iconName: "wifi",
   },
   {
     id: "whatsapp-link",
@@ -115,6 +125,7 @@ const TOOLS: ToolItem[] = [
     category: "utilities",
     privacy: "Processed in your browser",
     icon: MessageCircle,
+    iconName: "whatsapp",
   },
   {
     id: "split-bill",
@@ -124,6 +135,7 @@ const TOOLS: ToolItem[] = [
     category: "utilities",
     privacy: "No app download required",
     icon: Users,
+    iconName: "splitbill",
   },
   {
     id: "pdf-tools",
@@ -133,6 +145,7 @@ const TOOLS: ToolItem[] = [
     category: "documents",
     privacy: "100% client-side (no uploads)",
     icon: Scissors,
+    iconName: "pdf",
   },
   {
     id: "pdf-splitter",
@@ -142,6 +155,7 @@ const TOOLS: ToolItem[] = [
     category: "documents",
     privacy: "100% client-side (no uploads)",
     icon: FileText,
+    iconName: "pdf",
   },
   {
     id: "meta-tag-generator",
@@ -151,6 +165,7 @@ const TOOLS: ToolItem[] = [
     category: "utilities",
     privacy: "Processed in your browser",
     icon: Code2,
+    iconName: "code",
   },
 ]
 
@@ -245,8 +260,8 @@ export default function ToolsHubPage() {
                   >
                     <div className="space-y-2.5">
                       <div className="flex items-center justify-between">
-                        <div className="h-8 w-8 rounded-md border border-border bg-muted/30 flex items-center justify-center text-primary">
-                          <Icon className="h-4 w-4" />
+                        <div className="h-10 w-10 rounded-xl border border-border/80 bg-muted/30 flex items-center justify-center p-2">
+                          <UL0Icon name={t.iconName || "tools"} size={26} />
                         </div>
                         <span className="text-[10px] font-mono text-muted-foreground border border-border/60 bg-muted/30 px-2 py-0.5 rounded">
                           {t.category}

@@ -372,7 +372,7 @@ export function PdfSplitterClient() {
             Choose PDF File
           </div>
           <p className="text-xs text-muted-foreground mt-4">
-            🔒 100% Private &amp; Client-Side — Your files never leave your browser.
+            100% Private &amp; Client-Side — Your files never leave your browser.
           </p>
         </div>
       )}
@@ -484,7 +484,7 @@ export function PdfSplitterClient() {
                 <span>Click any checkbox below to select pages for merged or ZIP export.</span>
               ) : (
                 <span>
-                  🎉 You have selected <strong className="text-primary">{selectedCount} pages</strong>
+                  You have selected <strong className="text-primary">{selectedCount} pages</strong>
                 </span>
               )}
             </div>

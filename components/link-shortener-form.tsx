@@ -1,10 +1,8 @@
 "use client"
 
-import React, { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { CopyField } from "@/components/copy-field"
 import {
   Link2,
   QrCode,
@@ -17,6 +15,8 @@ import {
   Flag,
   ArrowRight,
   Check,
+  Copy,
+  BarChart2,
 } from "lucide-react"
 import { validateUrl } from "@/lib/utils/slug"
 import QRCode from "qrcode"
@@ -42,6 +42,7 @@ export function LinkShortenerForm() {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<CreatedLinkResult | null>(null)
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     const handler = (e: any) => {
@@ -105,13 +106,13 @@ export function LinkShortenerForm() {
       const qrPng = await QRCode.toDataURL(data.shortUrl, {
         width: 360,
         margin: 2,
-        color: { dark: "#0B1412", light: "#FFFFFF" },
+        color: { dark: "#0B1736", light: "#FFFFFF" },
       })
 
       const qrSvg = await QRCode.toString(data.shortUrl, {
         type: "svg",
         margin: 2,
-        color: { dark: "#0B1412", light: "#FFFFFF" },
+        color: { dark: "#0B1736", light: "#FFFFFF" },
       })
 
       setResult({
@@ -135,6 +136,17 @@ export function LinkShortenerForm() {
     }
   }
 
+  const handleCopy = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      toast.success("Copied to clipboard!")
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      toast.error("Failed to copy")
+    }
+  }
+
   const downloadSvg = () => {
     if (!result) return
     const blob = new Blob([result.qrSvgString], { type: "image/svg+xml" })
@@ -147,242 +159,200 @@ export function LinkShortenerForm() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-4 text-left">
-      {/* Creator Box */}
-      <div className="rounded-xl border border-border bg-card p-5 sm:p-6 space-y-4">
-        {/* Mode Tabs */}
-        <div className="flex items-center gap-1 p-1 rounded-md bg-muted/40 border border-border/60 w-fit">
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab("link")
-              setError(null)
-            }}
-            className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded transition-colors ${
-              activeTab === "link"
-                ? "bg-background text-foreground shadow-2xs font-semibold"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <Link2 className="h-3.5 w-3.5" />
-            <span>Short link</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setActiveTab("qr")
-              setError(null)
-            }}
-            className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-medium rounded transition-colors ${
-              activeTab === "qr"
-                ? "bg-background text-foreground shadow-2xs font-semibold"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <QrCode className="h-3.5 w-3.5" />
-            <span>QR code</span>
-          </button>
-        </div>
-
-        {/* Input Form */}
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <div className="flex flex-col sm:flex-row gap-2">
-            <div className="relative flex-1">
-              <Input
-                type="text"
-                inputMode="url"
-                value={longUrl}
-                onChange={(e) => {
-                  setLongUrl(e.target.value)
-                  setError(null)
-                }}
-                placeholder="Paste destination URL (e.g. https://example.com/very/long/url)"
-                className="h-11 sm:h-12 text-xs sm:text-sm font-sans bg-background pr-16"
-                required
-                autoFocus
-              />
-              {!longUrl && (
-                <button
-                  type="button"
-                  onClick={handlePaste}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[11px] font-medium text-muted-foreground hover:text-foreground px-2 py-1 rounded bg-muted/50 border border-border/60 transition-colors"
-                >
-                  Paste
-                </button>
-              )}
-            </div>
-
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="h-11 sm:h-12 px-5 font-semibold text-xs shrink-0"
-            >
-              {isLoading ? "Creating..." : activeTab === "qr" ? "Generate QR" : "Shorten link"}
-            </Button>
+    <div className="w-full max-w-2xl mx-auto space-y-6 text-center">
+      {/* Main Cute Clean Input Bar matching UL0Homecuteclean.png */}
+      <form onSubmit={handleSubmit} className="w-full">
+        <div className="relative flex items-center w-full bg-white dark:bg-[#0F1E36] rounded-full border border-black/10 dark:border-white/10 p-1.5 sm:p-2 shadow-xs hover:border-[#EE6123]/50 focus-within:border-[#EE6123] focus-within:ring-4 focus-within:ring-[#EE6123]/10 transition-all">
+          {/* Link Icon */}
+          <div className="pl-3 sm:pl-4 text-muted-foreground shrink-0">
+            <Link2 className="h-4 w-4 sm:h-5 sm:w-5" />
           </div>
 
-          {/* Collapsed Options Toggle */}
-          <div>
+          {/* URL Input */}
+          <input
+            type="text"
+            inputMode="url"
+            value={longUrl}
+            onChange={(e) => {
+              setLongUrl(e.target.value)
+              setError(null)
+            }}
+            placeholder="Paste your long link here"
+            className="w-full bg-transparent px-3 py-2 text-sm sm:text-base text-foreground placeholder:text-muted-foreground/70 focus:outline-none"
+            required
+            autoFocus
+          />
+
+          {/* Paste shortcut button if empty */}
+          {!longUrl && (
             <button
               type="button"
-              onClick={() => setShowOptions(!showOptions)}
-              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              onClick={handlePaste}
+              className="hidden sm:inline-flex items-center text-xs text-muted-foreground hover:text-foreground px-2.5 py-1 rounded-full bg-muted/60 transition-colors mr-2 cursor-pointer"
             >
-              <SlidersHorizontal className="h-3 w-3" />
-              <span>Customize alias and options</span>
-              {showOptions ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+              Paste
             </button>
+          )}
 
-            {showOptions && (
-              <div className="mt-2.5 p-3 rounded-md border border-border bg-muted/20 space-y-2">
-                <label className="text-xs font-medium text-foreground">Custom back-half alias</label>
-                <div className="flex items-center rounded-md border border-border bg-background overflow-hidden">
-                  <span className="px-3 py-1.5 text-xs font-mono text-muted-foreground border-r border-border bg-muted/40 select-none">
-                    ul0.site/r/
-                  </span>
-                  <input
-                    type="text"
-                    value={customSlug}
-                    onChange={(e) =>
-                      setCustomSlug(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ""))
-                    }
-                    placeholder="custom-name"
-                    maxLength={40}
-                    className="flex-1 px-3 py-1.5 text-xs font-mono bg-transparent outline-none text-foreground placeholder:text-muted-foreground/40"
-                  />
-                </div>
-                <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-0.5">
-                  <span>Letters, numbers, and hyphens only.</span>
-                  <Link href="/custom-domain-landing" className="text-primary hover:underline font-medium">
-                    Connect custom domain free →
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
+          {/* Orange Pill Submit Button */}
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="rounded-full px-5 sm:px-7 py-2.5 sm:py-3 bg-[#EE6123] text-white font-semibold text-xs sm:text-sm hover:bg-[#EE6123]/90 active:scale-95 transition-all shadow-xs shrink-0 cursor-pointer disabled:opacity-70"
+          >
+            {isLoading ? "Shortening..." : "Shorten"}
+          </button>
+        </div>
+      </form>
 
-          {error && <p className="text-xs text-destructive font-medium">{error}</p>}
-        </form>
+      {/* Trust checkmarks under input bar */}
+      <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-xs text-muted-foreground">
+        <span className="inline-flex items-center gap-1.5">
+          <Check className="h-3.5 w-3.5 text-[#EE6123]" />
+          <span>No sign-up</span>
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Check className="h-3.5 w-3.5 text-[#EE6123]" />
+          <span>Free QR included</span>
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <Check className="h-3.5 w-3.5 text-[#EE6123]" />
+          <span>Click stats</span>
+        </span>
+      </div>
 
-        {/* Inline Result Card (No Modal, Under 10s creation) */}
-        {result && (
-          <div className="pt-2 border-t border-border space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold text-foreground flex items-center gap-1.5">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
-                {activeTab === "qr" ? "QR Code & Link Ready" : "Short Link Created"}
+      {/* Collapsed Options Toggle */}
+      <div className="text-center">
+        <button
+          type="button"
+          onClick={() => setShowOptions(!showOptions)}
+          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+        >
+          <SlidersHorizontal className="h-3 w-3" />
+          <span>Customize alias</span>
+          {showOptions ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+        </button>
+
+        {showOptions && (
+          <div className="mt-3 p-3 max-w-md mx-auto rounded-xl border border-border bg-card text-left space-y-2">
+            <label className="text-xs font-medium text-foreground">Custom back-half alias</label>
+            <div className="flex items-center rounded-lg border border-border bg-background overflow-hidden">
+              <span className="px-3 py-1.5 text-xs font-mono text-muted-foreground border-r border-border bg-muted/40 select-none">
+                ul0.site/r/
               </span>
-              <span className="text-[11px] font-mono text-muted-foreground">307 Temporary Redirect</span>
+              <input
+                type="text"
+                value={customSlug}
+                onChange={(e) =>
+                  setCustomSlug(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ""))
+                }
+                placeholder="custom-name"
+                maxLength={40}
+                className="flex-1 bg-transparent px-3 py-1.5 text-xs font-mono text-foreground focus:outline-none"
+              />
             </div>
-
-            {/* Short URL CopyField */}
-            <CopyField value={result.shortUrl} label="Short URL" />
-
-            {/* QR Code Container */}
-            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 p-4 rounded-lg border border-border bg-muted/20">
-              <div className="p-2 rounded-md border border-border bg-white shrink-0">
-                <img
-                  src={result.qrPngUrl}
-                  alt={`QR code for ${result.shortUrl}`}
-                  className="w-24 h-24 object-contain"
-                />
-              </div>
-              <div className="space-y-2 text-center sm:text-left flex-1">
-                <div>
-                  <h4 className="text-xs font-semibold text-foreground">Printable Vector QR Code</h4>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">
-                    High-contrast dynamic code. Scans to <span className="font-mono">{result.shortUrl}</span>.
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-2 justify-center sm:justify-start">
-                  <a
-                    href={result.qrPngUrl}
-                    download={`ul0-${result.slug}.png`}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-border bg-card hover:bg-muted text-[11px] font-medium text-foreground transition-colors"
-                  >
-                    <Download className="h-3 w-3" />
-                    <span>Download PNG</span>
-                  </a>
-                  <button
-                    type="button"
-                    onClick={downloadSvg}
-                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded border border-border bg-card hover:bg-muted text-[11px] font-medium text-foreground transition-colors"
-                  >
-                    <Download className="h-3 w-3" />
-                    <span>Download SVG</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Link Preview & Abuse report links */}
-            <div className="flex items-center justify-between text-xs pt-1 border-t border-border/60">
-              <div className="flex items-center gap-3">
-                <a
-                  href={`${result.shortUrl}+`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-                >
-                  <ShieldCheck className="h-3.5 w-3.5" />
-                  <span>Inspect preview</span>
-                </a>
-                <a
-                  href={result.shortUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
-                >
-                  <ExternalLink className="h-3.5 w-3.5" />
-                  <span>Test redirect</span>
-                </a>
-              </div>
-              <Link
-                href={`/report-abuse?url=${encodeURIComponent(result.shortUrl)}`}
-                className="text-muted-foreground hover:text-destructive inline-flex items-center gap-1"
-              >
-                <Flag className="h-3 w-3" />
-                <span>Report abuse</span>
-              </Link>
-            </div>
-
-            {/* Anonymous Claim Prompt */}
-            {result.isAnonymous && !isSignedIn && (
-              <div className="p-3 rounded-md border border-primary/20 bg-primary/5 text-xs text-muted-foreground flex flex-col sm:flex-row items-center justify-between gap-2">
-                <span>Created as an anonymous link. Log in or create an account to claim it and track analytics.</span>
-                <Link
-                  href="/sign-up"
-                  className="text-primary hover:underline font-semibold inline-flex items-center gap-1 shrink-0"
-                >
-                  <span>Claim link</span>
-                  <ArrowRight className="h-3 w-3" />
-                </Link>
-              </div>
-            )}
           </div>
         )}
       </div>
 
-      {/* Free Plan Exact Limits - 3 plain bullet points */}
-      <div className="rounded-lg border border-border/80 bg-muted/20 px-4 py-3 text-xs text-muted-foreground space-y-1">
-        <div className="font-semibold text-foreground text-[11px] uppercase tracking-wider">
-          Included on Free Plan ($0 forever)
+      {/* Error Notice */}
+      {error && (
+        <div className="p-3 rounded-xl border border-destructive/30 bg-destructive/5 text-xs text-destructive text-center max-w-md mx-auto">
+          {error}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px]">
-          <div className="flex items-center gap-1.5">
-            <Check className="h-3 w-3 text-primary shrink-0" />
-            <span>Unlimited links on ul0.site</span>
+      )}
+
+      {/* Result Card: Cute Clean Card Matching UL0Homecuteclean.png */}
+      {result && (
+        <div className="relative mt-6 max-w-xl mx-auto rounded-2xl border border-border/80 bg-white dark:bg-[#0F1E36] p-4 sm:p-5 shadow-xs text-left transition-all">
+          {/* Top-left sticker */}
+          <div className="absolute -top-3 left-6 px-2.5 py-0.5 rounded-full bg-[#EE6123]/10 border border-[#EE6123]/30 text-[#EE6123] text-[10px] font-bold tracking-tight select-none">
+            no sign-up ↗
           </div>
-          <div className="flex items-center gap-1.5">
-            <Check className="h-3 w-3 text-primary shrink-0" />
-            <span>1 custom domain connection</span>
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1">
+            {/* Left: QR Thumbnail & Link Info */}
+            <div className="flex items-center gap-3.5 w-full sm:w-auto">
+              <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl border border-border bg-white p-1 shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={result.qrPngUrl}
+                  alt="QR Code"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="min-w-0">
+                <div className="text-sm sm:text-base font-bold text-foreground truncate">
+                  {result.shortUrl.replace(/^https?:\/\//, "")}
+                </div>
+                <div className="text-xs text-muted-foreground mt-0.5">
+                  0 clicks • Ready to share
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Copy & Stats Action Pills */}
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+              <button
+                type="button"
+                onClick={() => handleCopy(result.shortUrl)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border bg-card hover:bg-muted text-xs font-semibold text-foreground transition-all cursor-pointer shadow-2xs"
+              >
+                {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                <span>{copied ? "Copied" : "Copy"}</span>
+              </button>
+
+              <Link
+                href={isSignedIn ? "/dashboard/links" : `${result.shortUrl}+`}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0B1736] dark:bg-white text-white dark:text-[#0B1736] hover:bg-[#0B1736]/90 text-xs font-semibold transition-all shadow-2xs"
+              >
+                <BarChart2 className="h-3.5 w-3.5" />
+                <span>Stats</span>
+              </Link>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5">
-            <Check className="h-3 w-3 text-primary shrink-0" />
-            <span>Real-time click analytics &amp; QR</span>
+
+          {/* Expandable Extra Actions */}
+          <div className="mt-4 pt-3 border-t border-border flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={downloadSvg}
+                className="hover:text-foreground inline-flex items-center gap-1 cursor-pointer"
+              >
+                <Download className="h-3 w-3" />
+                <span>Download SVG QR</span>
+              </button>
+              <a
+                href={result.qrPngUrl}
+                download={`ul0-${result.slug}.png`}
+                className="hover:text-foreground inline-flex items-center gap-1"
+              >
+                <Download className="h-3 w-3" />
+                <span>PNG</span>
+              </a>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <a
+                href={result.shortUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground inline-flex items-center gap-1"
+              >
+                <ExternalLink className="h-3 w-3" />
+                <span>Test redirect</span>
+              </a>
+              <Link
+                href={`/report-abuse?url=${encodeURIComponent(result.shortUrl)}`}
+                className="hover:text-destructive text-[11px]"
+              >
+                Report
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

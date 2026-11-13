@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { BrandLogo } from "@/components/brand-logo"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -234,6 +235,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/icons" className="hover:text-foreground transition-colors font-medium text-[#EE6123]">
+                  Our Icons &amp; Color Scheme
+                </Link>
+              </li>
+              <li>
                 <Link href="/refund" className="hover:text-foreground transition-colors">
                   Refund Policy
                 </Link>
@@ -246,7 +252,7 @@ export function Footer() {
         <div className="pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
             <Link href="/" aria-label="UL0 Homepage">
-              <Image src="/ul0.png" alt="UL0" width={56} height={20} className="h-4 w-auto object-contain" />
+              <BrandLogo iconSize="sm" />
             </Link>
             <span className="hidden sm:inline text-muted-foreground/40">•</span>
             <span>Zero-tracking cookies • Client-side private tools</span>

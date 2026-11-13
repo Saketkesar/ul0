@@ -19,6 +19,9 @@ import {
   FileText,
   CornerDownRight,
   Sparkles,
+  Link2,
+  Lightbulb,
+  Folder,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
@@ -256,7 +259,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
         <div className="p-6 sm:p-10 -mt-10 relative">
           {/* Notion Page Icon */}
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#FFFFFF] dark:bg-[#222222] border border-neutral-200 dark:border-neutral-700 shadow-sm text-2xl mb-4 select-none">
-            🔗
+            <Link2 className="h-6 w-6 text-foreground" />
           </div>
 
           {/* Breadcrumb Path */}
@@ -312,7 +315,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
 
           {/* Notion Callout Box */}
           <div className="mt-6 p-4 rounded-xl border border-[#E9E9E7] dark:border-[#2E2E2E] bg-[#F7F6F3] dark:bg-[#202020] flex items-start gap-3 text-xs leading-relaxed text-neutral-700 dark:text-neutral-300">
-            <span className="text-base shrink-0 select-none">💡</span>
+            <Lightbulb className="h-5 w-5 text-primary shrink-0" />
             <div>
               <strong className="font-semibold text-neutral-900 dark:text-neutral-100 block mb-0.5">
                 Zero spam. Zero obnoxious neon widgets.
@@ -797,7 +800,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
         <div className="p-4 sm:p-6 border-b border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
-              <span className="text-sm">🗂️</span>
+              <Folder className="h-4 w-4 text-muted-foreground" />
               <h2 className="text-base font-bold text-neutral-900 dark:text-neutral-100">
                 Verified Backlink Partners
               </h2>
@@ -855,7 +858,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
         {/* Directory Content */}
         {filteredSites.length === 0 ? (
           <div className="p-12 text-center space-y-3">
-            <div className="text-3xl text-neutral-300 dark:text-neutral-600 select-none">📂</div>
+            <Folder className="h-8 w-8 text-neutral-300 dark:text-neutral-600 mx-auto" />
             <h4 className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
               {sitesList.length === 0 ? "No verified partners yet" : "No matching partners found"}
             </h4>

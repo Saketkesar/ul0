@@ -58,7 +58,7 @@ export default function PortuguesePage() {
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">
-              🇧🇷 Encurtador de URL Grátis
+              Encurtador de URL Grátis
             </h1>
             <p className="text-xl text-muted-foreground mb-2">
               #1 Encurtador de Link Grátis no Brasil

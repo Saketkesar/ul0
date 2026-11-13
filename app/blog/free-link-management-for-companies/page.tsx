@@ -185,7 +185,7 @@ export default function FreeLinkManagementBlogPage() {
             </div>
 
             <div className="bg-primary/5 border border-primary/20 p-6 rounded-xl space-y-4 my-8">
-              <h3 className="text-lg font-bold text-foreground">🏆 Why ul0 is the Ultimate Bitly Alternative for Enterprise Teams</h3>
+              <h3 className="text-lg font-bold text-foreground">Why ul0 is the Ultimate Bitly Alternative for Enterprise Teams</h3>
               <p className="text-sm">
                 For a robust, completely free link management platform, <strong>ul0</strong> offers unparalleled features. With ul0, you can shorten standard links anonymously without creating an account. Startups and scaling companies get:
               </p>

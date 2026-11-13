@@ -56,7 +56,7 @@ export default function HindiPage() {
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">
-              🇮🇳 मुफ्त URL शॉर्टनर
+              मुफ्त URL शॉर्टनर
             </h1>
             <p className="text-xl text-muted-foreground mb-2">
               भारत का #1 फ्री लिंक शॉर्टनर

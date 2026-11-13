@@ -58,7 +58,7 @@ export default function VietnamesePage() {
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">
-              🇻🇳 Rút gọn Link Miễn Phí
+              Rút gọn Link Miễn Phí
             </h1>
             <p className="text-xl text-muted-foreground mb-2">
               #1 Công cụ Rút gọn Link tại Việt Nam

@@ -78,7 +78,7 @@ export default function JapanesePage() {
       <main className="flex-1">
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">🇯🇵 無料URL短縮ツール</h1>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">無料URL短縮ツール</h1>
             <p className="text-xl text-muted-foreground mb-2">No.1 無料リンク短縮</p>
             <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
               長いURLを一瞬で短縮。登録不要、制限なし、100%無料。

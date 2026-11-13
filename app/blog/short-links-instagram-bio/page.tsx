@@ -135,8 +135,8 @@ export default function ShortLinksInstagramBioPage() {
 
             <h2 className="text-2xl font-bold mt-8">Top Tips to Boost Link Clicks</h2>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground">
-              <li><strong>Use arrows or pointers:</strong> In your bio text, place emojis pointing down (👇) directly above your link.</li>
-              <li><strong>Promote in stories and posts:</strong> Remind users to click the link in your bio during reels, posts, and stories ("Link in Bio!").</li>
+              <li><strong>Use directional cues:</strong> In your bio text, guide attention directly above your short link.</li>
+              <li><strong>Promote in stories and posts:</strong> Remind users to click the link in your bio during reels, posts, and stories (&quot;Link in Bio&quot;).</li>
               <li><strong>Keep it fresh:</strong> Update your shortened link frequently to point to your latest launch, video, or product feature.</li>
             </ul>
 
@@ -168,8 +168,8 @@ export default function ShortLinksInstagramBioPage() {
               To maximize profitability from Instagram organic traffic, treat your bio link as an active conversion funnel element. Test different Call-to-Action (CTA) phrases in your profile text every two weeks. For instance:
             </p>
             <ul className="list-disc pl-6 space-y-2 text-muted-foreground text-sm">
-              <li><strong>Test A:</strong> &quot;👇 Download our free PDF guide below&quot;</li>
-              <li><strong>Test B:</strong> &quot;🔥 Grab 20% off your first order (Link below)&quot;</li>
+              <li><strong>Test A:</strong> &quot;Download our free PDF guide below&quot;</li>
+              <li><strong>Test B:</strong> &quot;Grab 20% off your first order (Link below)&quot;</li>
             </ul>
             <p className="text-muted-foreground leading-relaxed">
               Combine your short URL with <Link href="/utm" className="text-primary hover:underline font-semibold">UTM Campaign Builder</Link> parameters to observe whether Instagram Stories, Reels, or profile views generate higher quality leads in Google Analytics.

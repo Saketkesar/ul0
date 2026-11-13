@@ -58,7 +58,7 @@ export default function ThaiPage() {
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">
-              🇹🇭 ย่อลิงก์ฟรี
+               ย่อลิงก์ฟรี
             </h1>
             <p className="text-xl text-muted-foreground mb-2">
               #1 เครื่องมือย่อลิงก์ฟรีในประเทศไทย

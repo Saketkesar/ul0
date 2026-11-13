@@ -135,9 +135,7 @@ export function ThreatRadarClient({
       <div className="space-y-3 border-b border-neutral-200 dark:border-neutral-800 pb-5">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <span className="text-3xl select-none leading-none" role="img" aria-label="shield">
-              🛡️
-            </span>
+            <Shield className="h-7 w-7 text-primary shrink-0" />
             <Image
               src="/ul0.png"
               alt="ul0"
@@ -326,7 +324,8 @@ export function ThreatRadarClient({
           {/* Notion Callout Box */}
           <div className="p-3.5 rounded-md bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 space-y-1">
             <h2 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
-              <span>🌟</span> Submit a Phishing Link &amp; Earn Good Karma
+              <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
+              <span>Submit a Phishing Link</span>
             </h2>
             <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
               Found a scam or fake login page? Submit it with proof to protect others. Reports are sent directly to our private review team via Basin and will not be displayed on the public list until verified and blocked.
@@ -337,7 +336,7 @@ export function ThreatRadarClient({
             <div className="p-3.5 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs space-y-1">
               <p className="font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
                 <Check className="h-3.5 w-3.5" />
-                Report Submitted! Good Karma Earned 🌟
+                Report Submitted! Verification Pending
               </p>
               <p className="text-neutral-500 dark:text-neutral-400">
                 Thank you for keeping the web safe. Our security review team will inspect the proof and disable the scam.
@@ -466,7 +465,7 @@ export function ThreatRadarClient({
                 </>
               ) : (
                 <>
-                  <span>Submit Phishing Report (+ Karma 🌟)</span>
+                  <span>Submit Phishing Report</span>
                   <ArrowRight className="h-3 w-3" />
                 </>
               )}

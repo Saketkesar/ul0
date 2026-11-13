@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Wifi, Download, Copy, Check, Eye, EyeOff, QrCode, Smartphone, Laptop, Shield } from "lucide-react"
+import { Wifi, Download, Copy, Check, Eye, EyeOff, QrCode, Smartphone, Laptop, Shield, Home, Building2, Utensils, Building } from "lucide-react"
 import QRCode from "qrcode"
 import Link from "next/link"
 
@@ -264,23 +264,23 @@ export default function WifiQRGeneratorPage() {
               Perfect For
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="p-4 bg-muted/30 rounded-lg text-center">
-                <span className="text-3xl mb-2 block">🏠</span>
+              <div className="p-4 bg-muted/30 rounded-lg text-center flex flex-col items-center">
+                <Home className="h-6 w-6 text-primary mb-2" />
                 <h3 className="font-semibold mb-1">Home</h3>
                 <p className="text-sm text-muted-foreground">Share with family & visitors</p>
               </div>
-              <div className="p-4 bg-muted/30 rounded-lg text-center">
-                <span className="text-3xl mb-2 block">🏢</span>
+              <div className="p-4 bg-muted/30 rounded-lg text-center flex flex-col items-center">
+                <Building2 className="h-6 w-6 text-primary mb-2" />
                 <h3 className="font-semibold mb-1">Office</h3>
                 <p className="text-sm text-muted-foreground">Guest WiFi for clients</p>
               </div>
-              <div className="p-4 bg-muted/30 rounded-lg text-center">
-                <span className="text-3xl mb-2 block">🍽️</span>
+              <div className="p-4 bg-muted/30 rounded-lg text-center flex flex-col items-center">
+                <Utensils className="h-6 w-6 text-primary mb-2" />
                 <h3 className="font-semibold mb-1">Restaurant</h3>
                 <p className="text-sm text-muted-foreground">Table tent QR codes</p>
               </div>
-              <div className="p-4 bg-muted/30 rounded-lg text-center">
-                <span className="text-3xl mb-2 block">🏨</span>
+              <div className="p-4 bg-muted/30 rounded-lg text-center flex flex-col items-center">
+                <Building className="h-6 w-6 text-primary mb-2" />
                 <h3 className="font-semibold mb-1">Hotel/Airbnb</h3>
                 <p className="text-sm text-muted-foreground">Room WiFi access</p>
               </div>

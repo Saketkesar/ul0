@@ -81,7 +81,7 @@ export default function ArabicPage() {
       <main className="flex-1">
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
-            <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">🇸🇦 اختصار الروابط مجانا</h1>
+            <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">اختصار الروابط مجانا</h1>
             <p className="text-xl text-muted-foreground mb-2">الأداة رقم 1 لاختصار الروابط مجانا</p>
             <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
               اختصر أي رابط طويل فورا. بدون تسجيل، بدون حدود، مجاني 100%.

@@ -39,3 +39,6 @@ yarn-error.log*
 /scripts/migration-report.json
 .env*
 /n8n/
+ul0-icon-library.zip
+UL0Homecuteclean.png
+undraw_*.svg

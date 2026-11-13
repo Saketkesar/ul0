@@ -424,7 +424,7 @@ export function MarketingDashboardClient({
                   </div>
                   <div>
                     <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                      <span>🔘 Button Verification</span>
+                      <span>Button Verification</span>
                       <span className="text-[10px] bg-primary/20 text-primary font-mono px-1.5 py-0.5 rounded font-bold">
                         High Engagement
                       </span>
@@ -663,8 +663,8 @@ export function MarketingDashboardClient({
               className="rounded-lg border border-border bg-surface-1 px-2.5 py-1.5 text-xs text-foreground outline-none focus:border-primary cursor-pointer"
             >
               <option value="all">All Gate Types</option>
-              <option value="auto_skip">⚡ Auto-Skip (5s)</option>
-              <option value="button">🔘 Button Unlock</option>
+              <option value="auto_skip">Auto-Skip (5s)</option>
+              <option value="button">Button Unlock</option>
             </select>
 
             <span className="text-xs text-muted-foreground pl-1">

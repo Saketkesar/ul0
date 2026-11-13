@@ -28,27 +28,27 @@ import { getShortUrl } from "@/lib/utils/link-url"
 
 // Popular country dialing codes
 const COUNTRY_CODES = [
-  { name: "India", code: "91", flag: "🇮🇳" },
-  { name: "United States", code: "1", flag: "🇺🇸" },
-  { name: "United Kingdom", code: "44", flag: "🇬🇧" },
-  { name: "Brazil", code: "55", flag: "🇧🇷" },
-  { name: "Indonesia", code: "62", flag: "🇮🇩" },
-  { name: "Spain", code: "34", flag: "🇪🇸" },
-  { name: "Germany", code: "49", flag: "🇩🇪" },
-  { name: "Canada", code: "1", flag: "🇨🇦" },
-  { name: "Australia", code: "61", flag: "🇦🇺" },
-  { name: "United Arab Emirates", code: "971", flag: "🇦🇪" },
-  { name: "Saudi Arabia", code: "966", flag: "🇸🇦" },
-  { name: "Mexico", code: "52", flag: "🇲🇽" },
-  { name: "France", code: "33", flag: "🇫🇷" },
-  { name: "Italy", code: "39", flag: "🇮🇹" },
-  { name: "Pakistan", code: "92", flag: "🇵🇰" },
-  { name: "Bangladesh", code: "880", flag: "🇧🇩" },
-  { name: "Nigeria", code: "234", flag: "🇳🇬" },
-  { name: "South Africa", code: "27", flag: "🇿🇦" },
-  { name: "Philippines", code: "63", flag: "🇵🇭" },
-  { name: "Malaysia", code: "60", flag: "🇲🇾" },
-  { name: "Singapore", code: "65", flag: "🇸🇬" },
+  { name: "India", code: "91" },
+  { name: "United States", code: "1" },
+  { name: "United Kingdom", code: "44" },
+  { name: "Brazil", code: "55" },
+  { name: "Indonesia", code: "62" },
+  { name: "Spain", code: "34" },
+  { name: "Germany", code: "49" },
+  { name: "Canada", code: "1" },
+  { name: "Australia", code: "61" },
+  { name: "UAE", code: "971" },
+  { name: "Saudi Arabia", code: "966" },
+  { name: "Mexico", code: "52" },
+  { name: "France", code: "33" },
+  { name: "Italy", code: "39" },
+  { name: "Pakistan", code: "92" },
+  { name: "Bangladesh", code: "880" },
+  { name: "Nigeria", code: "234" },
+  { name: "South Africa", code: "27" },
+  { name: "Philippines", code: "63" },
+  { name: "Malaysia", code: "60" },
+  { name: "Singapore", code: "65" },
 ]
 
 // Pre-filled template presets
@@ -56,27 +56,22 @@ const PRESET_TEMPLATES = [
   {
     title: "Product Inquiry",
     text: "Hello! I saw your product on your website/Instagram and would like more details on pricing and availability.",
-    icon: "🛍️",
   },
   {
     title: "Customer Support",
     text: "Hi support team, I have a question regarding my order/account. Can you please assist me?",
-    icon: "💬",
   },
   {
     title: "Book Consultation",
     text: "Hi! I would like to schedule a consultation/appointment. What times are currently open?",
-    icon: "📅",
   },
   {
     title: "Price Quotation",
     text: "Hi! Could you please share a quotation for your services? Here is what I am looking for:",
-    icon: "🏷️",
   },
   {
     title: "General Greeting",
     text: "Hi there! I found your profile online and wanted to connect with you.",
-    icon: "👋",
   },
 ]
 
@@ -275,7 +270,7 @@ export default function WhatsAppLinkGeneratorPage() {
                       >
                         {COUNTRY_CODES.map((c) => (
                           <option key={`${c.code}-${c.name}`} value={c.code}>
-                            {c.flag} +{c.code} ({c.name})
+                            +{c.code} ({c.name})
                           </option>
                         ))}
                       </select>
@@ -332,9 +327,8 @@ export default function WhatsAppLinkGeneratorPage() {
                             key={tpl.title}
                             type="button"
                             onClick={() => setMessage(tpl.text)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium border border-border bg-surface-1 hover:bg-surface-3 hover:border-emerald-500/40 text-muted-foreground hover:text-foreground transition-all cursor-pointer"
+                            className="inline-flex items-center px-2.5 py-1 rounded-lg text-[11px] font-medium border border-border bg-surface-1 hover:bg-surface-3 hover:border-emerald-500/40 text-muted-foreground hover:text-foreground transition-all cursor-pointer"
                           >
-                            <span>{tpl.icon}</span>
                             <span>{tpl.title}</span>
                           </button>
                         ))}

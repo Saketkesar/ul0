@@ -149,7 +149,7 @@ export default function FreeURLShortenerNoSignupPage() {
             </p>
 
             <div className="bg-primary/10 p-6 rounded-lg my-6 text-center">
-              <h3 className="font-bold mb-2 text-lg">🚀 Try It Now - No Signup Required</h3>
+              <h3 className="font-bold mb-2 text-lg">Try It Now - No Signup Required</h3>
               <p className="mb-4 text-muted-foreground">
                 Paste any URL and get a short link in seconds
               </p>

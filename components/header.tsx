@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { BrandLogo } from "@/components/brand-logo"
 import { usePathname } from "next/navigation"
 import {
   DropdownMenu,
@@ -75,14 +76,7 @@ export function Header() {
         {/* Left: Brand Logo (goes home) */}
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2" aria-label="UL0 Homepage">
-            <Image
-              src="/ul0.png"
-              alt="UL0"
-              width={64}
-              height={24}
-              className="h-6 w-auto object-contain"
-              priority
-            />
+            <BrandLogo iconSize="md" />
           </Link>
 
           {/* Desktop Nav - Exactly matches PDF Section 5 */}
@@ -227,12 +221,12 @@ export function Header() {
             <div className="hidden sm:flex items-center gap-2">
               <SignInButton mode="modal">
                 <Button variant="ghost" size="sm" className="h-9 text-xs font-medium text-foreground hover:bg-muted">
-                  Sign in
+                  Log in
                 </Button>
               </SignInButton>
 
-              <Button asChild size="sm" className="h-9 text-xs font-semibold px-4 bg-primary text-primary-foreground hover:bg-primary/90">
-                <Link href="/#shortener">Create free link</Link>
+              <Button asChild size="sm" className="h-9 text-xs font-semibold px-4 rounded-full bg-[#0B1736] dark:bg-white text-white dark:text-[#0B1736] hover:bg-[#0B1736]/90 shadow-2xs">
+                <Link href="/sign-up">Get started</Link>
               </Button>
             </div>
           )}
@@ -252,7 +246,7 @@ export function Header() {
             <SheetContent side="right" className="w-full sm:w-80 p-6 flex flex-col justify-between">
               <SheetHeader className="text-left border-b border-border pb-4">
                 <SheetTitle className="flex items-center gap-2">
-                  <Image src="/ul0.png" alt="UL0" width={60} height={22} className="h-5 w-auto" />
+                  <BrandLogo iconSize="sm" />
                 </SheetTitle>
               </SheetHeader>
 

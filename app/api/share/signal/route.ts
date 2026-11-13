@@ -31,7 +31,7 @@ interface RoomData {
 }
 
 function getCountryFlag(countryCode?: string | null): string {
-  if (!countryCode || countryCode.length !== 2) return "🌐"
+  if (!countryCode || countryCode.length !== 2) return ""
   const codePoints = countryCode
     .toUpperCase()
     .split("")

@@ -937,8 +937,8 @@ export default function SplitExpensePage() {
                     <div className="space-y-2">
                       <Label className="text-sm font-medium">Who Owes Who</Label>
                       {settlements.length === 0 ? (
-                        <div className="rounded-lg bg-green-500/10 p-3 text-center text-sm text-green-600">
-                          Everyone is settled up! 🎉
+                        <div className="rounded-lg bg-green-500/10 p-3 text-center text-sm font-medium text-green-600">
+                          Everyone is settled up.
                         </div>
                       ) : (
                         settlements.map((settlement, idx) => {

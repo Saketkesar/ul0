@@ -22,7 +22,8 @@ import {
   Shirt,
   Heart,
   TrendingUp,
-  Calculator
+  Calculator,
+  Sparkles
 } from "lucide-react"
 import Link from "next/link"
 import {
@@ -64,11 +65,11 @@ const getComparisons = (price: number, currency: CurrencyCode) => {
   const priceInUSD = price * usdEquivalent[currency]
   
   return [
-    { icon: <Coffee className="h-5 w-5" />, name: "Coffees", count: Math.round(priceInUSD / 5), emoji: "☕" },
-    { icon: <Utensils className="h-5 w-5" />, name: "Meals out", count: Math.round(priceInUSD / 15), emoji: "🍔" },
-    { icon: <Smartphone className="h-5 w-5" />, name: "Netflix months", count: Math.round(priceInUSD / 15), emoji: "📺" },
-    { icon: <Car className="h-5 w-5" />, name: "Uber rides", count: Math.round(priceInUSD / 12), emoji: "🚗" },
-    { icon: <Plane className="h-5 w-5" />, name: "Spotify years", count: Math.round(priceInUSD / 120), emoji: "🎵" },
+    { icon: <Coffee className="h-5 w-5" />, name: "Coffees", count: Math.round(priceInUSD / 5) },
+    { icon: <Utensils className="h-5 w-5" />, name: "Meals out", count: Math.round(priceInUSD / 15) },
+    { icon: <Smartphone className="h-5 w-5" />, name: "Subscription months", count: Math.round(priceInUSD / 15) },
+    { icon: <Car className="h-5 w-5" />, name: "Commute rides", count: Math.round(priceInUSD / 12) },
+    { icon: <Plane className="h-5 w-5" />, name: "Annual passes", count: Math.round(priceInUSD / 120) },
   ].filter(c => c.count > 0)
 }
 
@@ -78,8 +79,8 @@ const getVerdict = (hoursOfWork: number) => {
     return {
       status: "go",
       icon: <CheckCircle2 className="h-8 w-8 text-green-500" />,
-      title: "Go for it! 🎉",
-      message: "Less than an hour of work? Treat yourself!",
+      title: "Go for it",
+      message: "Less than an hour of work. Enjoy it!",
       color: "text-green-500",
       bgColor: "bg-green-500/10 border-green-500/20",
     }
@@ -87,7 +88,7 @@ const getVerdict = (hoursOfWork: number) => {
     return {
       status: "maybe",
       icon: <AlertTriangle className="h-8 w-8 text-yellow-500" />,
-      title: "Think about it 🤔",
+      title: "Think about it",
       message: "A few hours of work. Is it worth it to you?",
       color: "text-yellow-500",
       bgColor: "bg-yellow-500/10 border-yellow-500/20",
@@ -96,8 +97,8 @@ const getVerdict = (hoursOfWork: number) => {
     return {
       status: "careful",
       icon: <AlertTriangle className="h-8 w-8 text-orange-500" />,
-      title: "Sleep on it 😴",
-      message: "That's almost a full day of work. Maybe wait 24 hours?",
+      title: "Sleep on it",
+      message: "That is almost a full day of work. Consider waiting 24 hours.",
       color: "text-orange-500",
       bgColor: "bg-orange-500/10 border-orange-500/20",
     }
@@ -105,8 +106,8 @@ const getVerdict = (hoursOfWork: number) => {
     return {
       status: "warning",
       icon: <XCircle className="h-8 w-8 text-red-500" />,
-      title: "Major purchase 💸",
-      message: "This costs you a week (or more) of work. Really think hard.",
+      title: "Major purchase",
+      message: "This costs you a week or more of work. Plan carefully.",
       color: "text-red-500",
       bgColor: "bg-red-500/10 border-red-500/20",
     }
@@ -114,8 +115,8 @@ const getVerdict = (hoursOfWork: number) => {
     return {
       status: "stop",
       icon: <XCircle className="h-8 w-8 text-red-600" />,
-      title: "Whoa there! 🛑",
-      message: "This is a MAJOR financial decision. Do your research!",
+      title: "Major financial commitment",
+      message: "This is a significant financial decision. Verify budget allocation.",
       color: "text-red-600",
       bgColor: "bg-red-600/10 border-red-600/20",
     }
@@ -243,7 +244,7 @@ export default function ShouldIBuyPage() {
               ← Back to Home
             </Link>
             <div className="flex items-center justify-center gap-3 mt-4 mb-3">
-              <span className="text-4xl">🤔</span>
+              <Sparkles className="h-8 w-8 text-primary shrink-0" />
               <h1 className="text-3xl sm:text-4xl font-bold text-foreground">Should I Buy This?</h1>
             </div>
             <p className="text-muted-foreground text-lg">
