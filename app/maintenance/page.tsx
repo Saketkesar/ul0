@@ -1,16 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import {
-  Clock,
-  ShieldCheck,
-  Layers,
-  Activity,
-  Info,
-  Mail,
-  ChevronRight,
-  ArrowUpRight,
-  CheckCircle2,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Scheduled Maintenance — UL0",
@@ -36,9 +26,9 @@ export default function MaintenancePage() {
                 className="h-4.5 w-auto object-contain"
               />
             </span>
-            <ChevronRight className="w-3.5 h-3.5 stroke-[1.5] text-[#9B9A97]" />
+            <UL0Icon name="arrowright" className="w-3 h-3 text-[#9B9A97]" />
             <span>Infrastructure</span>
-            <ChevronRight className="w-3.5 h-3.5 stroke-[1.5] text-[#9B9A97]" />
+            <UL0Icon name="arrowright" className="w-3 h-3 text-[#9B9A97]" />
             <span className="text-[#37352F] dark:text-[#E6E6E5] truncate">Maintenance</span>
           </div>
 
@@ -79,7 +69,7 @@ export default function MaintenancePage() {
           {/* Status Property */}
           <div className="grid grid-cols-12 items-center gap-2">
             <div className="col-span-4 sm:col-span-3 flex items-center gap-1.5 text-[#787774] dark:text-[#9B9A97]">
-              <Activity className="w-3.5 h-3.5 stroke-[1.5]" />
+              <UL0Icon name="status" className="w-3.5 h-3.5" />
               <span>Status</span>
             </div>
             <div className="col-span-8 sm:col-span-9 flex items-center">
@@ -92,7 +82,7 @@ export default function MaintenancePage() {
           {/* Window Property */}
           <div className="grid grid-cols-12 items-center gap-2">
             <div className="col-span-4 sm:col-span-3 flex items-center gap-1.5 text-[#787774] dark:text-[#9B9A97]">
-              <Clock className="w-3.5 h-3.5 stroke-[1.5]" />
+              <UL0Icon name="clock" className="w-3.5 h-3.5" />
               <span>Downtime Window</span>
             </div>
             <div className="col-span-8 sm:col-span-9 text-[#37352F] dark:text-[#E6E6E5] font-mono text-[11px]">
@@ -103,7 +93,7 @@ export default function MaintenancePage() {
           {/* Scope Property */}
           <div className="grid grid-cols-12 items-center gap-2">
             <div className="col-span-4 sm:col-span-3 flex items-center gap-1.5 text-[#787774] dark:text-[#9B9A97]">
-              <Layers className="w-3.5 h-3.5 stroke-[1.5]" />
+              <UL0Icon name="docs" className="w-3.5 h-3.5" />
               <span>Scope</span>
             </div>
             <div className="col-span-8 sm:col-span-9 text-[#37352F] dark:text-[#E6E6E5]">
@@ -114,12 +104,12 @@ export default function MaintenancePage() {
           {/* Data Integrity Property */}
           <div className="grid grid-cols-12 items-center gap-2">
             <div className="col-span-4 sm:col-span-3 flex items-center gap-1.5 text-[#787774] dark:text-[#9B9A97]">
-              <ShieldCheck className="w-3.5 h-3.5 stroke-[1.5]" />
+              <UL0Icon name="shield" className="w-3.5 h-3.5" />
               <span>Data Integrity</span>
             </div>
             <div className="col-span-8 sm:col-span-9 flex items-center">
               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-[#EBF5EE] text-[#2B7A4B] dark:bg-[#183624] dark:text-[#57B77C]">
-                <CheckCircle2 className="w-3 h-3 stroke-[2]" />
+                <UL0Icon name="check" className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                 <span>Zero Link Loss</span>
               </span>
             </div>
@@ -145,7 +135,7 @@ export default function MaintenancePage() {
 
         {/* Notion Callout Box */}
         <div className="p-4 rounded-lg border border-[#E9E9E7] dark:border-[#2E2E2E] bg-[#F7F6F3] dark:bg-[#202020] flex items-start gap-3">
-          <Info className="w-5 h-5 text-[#787774] dark:text-[#9B9A97] shrink-0 mt-0.5 stroke-[1.5]" />
+          <UL0Icon name="bulb" className="w-5 h-5 text-[#787774] dark:text-[#9B9A97] shrink-0 mt-0.5" />
           <div className="space-y-1 text-xs sm:text-sm text-[#37352F] dark:text-[#D4D4D4] leading-relaxed">
             <div className="font-semibold text-[#37352F] dark:text-[#E6E6E5]">
               Important update for customers and developers
@@ -165,7 +155,7 @@ export default function MaintenancePage() {
           <details className="group border border-[#E9E9E7] dark:border-[#2E2E2E] rounded-md bg-white dark:bg-[#202020] p-3 text-xs open:bg-[#F7F6F3]/50 dark:open:bg-[#252525]/50 transition-colors">
             <summary className="font-medium text-[#37352F] dark:text-[#E6E6E5] cursor-pointer list-none flex items-center justify-between">
               <span>Why is the website in maintenance mode?</span>
-              <ChevronRight className="w-3.5 h-3.5 text-[#9B9A97] transition-transform duration-150 group-open:rotate-90 stroke-[1.5]" />
+              <UL0Icon name="arrowright" className="w-3.5 h-3.5 text-[#9B9A97] transition-transform duration-150 group-open:rotate-90" />
             </summary>
             <p className="mt-2 text-[#787774] dark:text-[#9B9A97] leading-relaxed pl-1">
               Our storage tier is being migrated to an upgraded cluster with increased connection limits and lower latency. To ensure no database writes are interrupted or corrupted, write and read operations are temporarily suspended.
@@ -175,7 +165,7 @@ export default function MaintenancePage() {
           <details className="group border border-[#E9E9E7] dark:border-[#2E2E2E] rounded-md bg-white dark:bg-[#202020] p-3 text-xs open:bg-[#F7F6F3]/50 dark:open:bg-[#252525]/50 transition-colors">
             <summary className="font-medium text-[#37352F] dark:text-[#E6E6E5] cursor-pointer list-none flex items-center justify-between">
               <span>Will my existing short links work after maintenance?</span>
-              <ChevronRight className="w-3.5 h-3.5 text-[#9B9A97] transition-transform duration-150 group-open:rotate-90 stroke-[1.5]" />
+              <UL0Icon name="arrowright" className="w-3.5 h-3.5 text-[#9B9A97] transition-transform duration-150 group-open:rotate-90" />
             </summary>
             <p className="mt-2 text-[#787774] dark:text-[#9B9A97] leading-relaxed pl-1">
               Yes. All short links, custom aliases, domain configurations, and QR codes are preserved without modification. Redirection will resume immediately once maintenance mode ends.
@@ -185,7 +175,7 @@ export default function MaintenancePage() {
           <details className="group border border-[#E9E9E7] dark:border-[#2E2E2E] rounded-md bg-white dark:bg-[#202020] p-3 text-xs open:bg-[#F7F6F3]/50 dark:open:bg-[#252525]/50 transition-colors">
             <summary className="font-medium text-[#37352F] dark:text-[#E6E6E5] cursor-pointer list-none flex items-center justify-between">
               <span>How are search crawlers and SEO treated during downtime?</span>
-              <ChevronRight className="w-3.5 h-3.5 text-[#9B9A97] transition-transform duration-150 group-open:rotate-90 stroke-[1.5]" />
+              <UL0Icon name="arrowright" className="w-3.5 h-3.5 text-[#9B9A97] transition-transform duration-150 group-open:rotate-90" />
             </summary>
             <p className="mt-2 text-[#787774] dark:text-[#9B9A97] leading-relaxed pl-1">
               All pages respond with standard HTTP 503 Service Unavailable and a Retry-After header of 86,400 seconds (24 hours). This signals Googlebot and other crawlers that downtime is temporary, preserving search indexing and rankings.
@@ -200,7 +190,7 @@ export default function MaintenancePage() {
               href="mailto:support@ul0.site"
               className="inline-flex items-center gap-1 hover:text-[#37352F] dark:hover:text-[#E6E6E5] underline underline-offset-4 decoration-[#E9E9E7] dark:decoration-[#2E2E2E] transition-colors"
             >
-              <Mail className="w-3.5 h-3.5 stroke-[1.5]" />
+              <UL0Icon name="mail" className="w-3.5 h-3.5" />
               <span>Contact Support</span>
             </a>
 
@@ -211,7 +201,7 @@ export default function MaintenancePage() {
               className="inline-flex items-center gap-1 hover:text-[#37352F] dark:hover:text-[#E6E6E5] underline underline-offset-4 decoration-[#E9E9E7] dark:decoration-[#2E2E2E] transition-colors"
             >
               <span>GitHub Status</span>
-              <ArrowUpRight className="w-3.5 h-3.5 stroke-[1.5]" />
+              <UL0Icon name="arrowright" className="w-3.5 h-3.5" />
             </a>
           </div>
 

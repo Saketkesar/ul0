@@ -12,19 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
-import {
-  Key,
-  Plus,
-  Copy,
-  Check,
-  Trash2,
-  ExternalLink,
-  ShieldAlert,
-  Clock,
-  Activity,
-  AlertTriangle,
-  Lock,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { toast } from "sonner"
 
 interface ApiKeyItem {
@@ -152,11 +140,11 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
     <div className="space-y-6">
       {/* Free Plan Upgrade Callout Banner */}
       {isFreePlan && (
-        <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="rounded-3xl border border-primary/30 bg-primary/5 p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground">
-                <Lock className="h-3 w-3" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-primary text-primary-foreground">
+                <UL0Icon name="lock" className="h-3 w-3" />
                 Pro & Business Only
               </span>
               <h3 className="text-sm font-semibold text-foreground">API Access is Restricted</h3>
@@ -165,7 +153,7 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
               Programmatic REST API keys for shortening links, managing custom domains, and retrieving analytics are exclusively available on Pro ($3/mo) and Business ($9/mo) plans.
             </p>
           </div>
-          <Button asChild size="sm" className="text-xs shrink-0 font-semibold shadow-xs">
+          <Button asChild size="sm" className="text-xs shrink-0 font-semibold shadow-xs rounded-full">
             <Link href="/dashboard/billing">
               Upgrade to Pro ($3/mo)
             </Link>
@@ -175,23 +163,23 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
 
       {/* Rate limit status tile */}
       <div className="grid gap-4 sm:grid-cols-3">
-        <div className="rounded-lg border border-border bg-card p-4 space-y-1">
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-1">
           <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
-            <Activity className="h-3.5 w-3.5 text-primary" />
+            <UL0Icon name="status" className="h-3.5 w-3.5 text-primary" />
             Rate Limit Quota
           </span>
           <p className="text-sm font-semibold text-foreground">{rateLimitLabel}</p>
         </div>
-        <div className="rounded-lg border border-border bg-card p-4 space-y-1">
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-1">
           <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
-            <Key className="h-3.5 w-3.5 text-primary" />
+            <UL0Icon name="apikey" className="h-3.5 w-3.5 text-primary" />
             Active Keys
           </span>
           <p className="text-sm font-semibold text-foreground">{isFreePlan ? "0 allowed" : `${keys.length} of 5`}</p>
         </div>
-        <div className="rounded-lg border border-border bg-card p-4 space-y-1">
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-1">
           <span className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
-            <Clock className="h-3.5 w-3.5 text-primary" />
+            <UL0Icon name="clock" className="h-3.5 w-3.5 text-primary" />
             Authentication Scheme
           </span>
           <p className="text-sm font-mono font-semibold text-foreground">Bearer Token</p>
@@ -199,8 +187,8 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
       </div>
 
       {/* Main Keys List Card */}
-      <div className="rounded-lg border border-border bg-card overflow-hidden">
-        <div className="p-4 sm:p-5 flex items-center justify-between border-b border-border">
+      <div className="rounded-3xl border border-border bg-card overflow-hidden">
+        <div className="p-5 sm:p-6 flex items-center justify-between border-b border-border">
           <div>
             <h2 className="text-sm font-semibold text-foreground">Active API Keys</h2>
             <p className="text-xs text-muted-foreground mt-0.5">
@@ -208,15 +196,15 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
             </p>
           </div>
           {isFreePlan ? (
-            <Button asChild size="sm" variant="outline" className="gap-1.5 text-xs border-primary/40 text-primary hover:bg-primary/10">
+            <Button asChild size="sm" variant="outline" className="gap-1.5 text-xs border-primary/40 text-primary hover:bg-primary/10 rounded-full">
               <Link href="/dashboard/billing">
-                <Lock className="h-3.5 w-3.5" />
+                <UL0Icon name="lock" className="h-3.5 w-3.5" />
                 <span>Unlock with Pro</span>
               </Link>
             </Button>
           ) : (
-            <Button onClick={handleOpenCreate} size="sm" className="gap-1.5 text-xs">
-              <Plus className="h-3.5 w-3.5" />
+            <Button onClick={handleOpenCreate} size="sm" className="gap-1.5 text-xs rounded-full">
+              <UL0Icon name="plus" className="h-3.5 w-3.5" />
               <span>Create key</span>
             </Button>
           )}
@@ -224,8 +212,8 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
 
         {isFreePlan ? (
           <div className="p-8 text-center space-y-3">
-            <div className="mx-auto h-10 w-10 rounded-full border border-primary/30 bg-primary/10 flex items-center justify-center text-primary">
-              <Lock className="h-5 w-5" />
+            <div className="mx-auto h-12 w-12 rounded-2xl border border-primary/30 bg-primary/10 flex items-center justify-center text-primary">
+              <UL0Icon name="lock" className="h-5 w-5" />
             </div>
             <div className="space-y-1 max-w-sm mx-auto">
               <h3 className="text-sm font-semibold text-foreground">API Access Locked</h3>
@@ -233,7 +221,7 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
                 Upgrade to Pro or Business to generate secret API keys and integrate URL shortening directly into your backend services, CLI tools, or automated workflows.
               </p>
             </div>
-            <Button asChild size="sm" className="text-xs font-semibold gap-1.5">
+            <Button asChild size="sm" className="text-xs font-semibold gap-1.5 rounded-full">
               <Link href="/dashboard/billing">
                 Upgrade to Pro ($3/mo)
               </Link>
@@ -241,8 +229,8 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
           </div>
         ) : keys.length === 0 ? (
           <div className="p-8 text-center space-y-3">
-            <div className="mx-auto h-9 w-9 rounded-md border border-border bg-muted/40 flex items-center justify-center text-muted-foreground">
-              <Key className="h-4 w-4" />
+            <div className="mx-auto h-12 w-12 rounded-2xl border border-border bg-muted/40 flex items-center justify-center text-muted-foreground">
+              <UL0Icon name="apikey" className="h-4 w-4" />
             </div>
             <div className="space-y-1 max-w-sm mx-auto">
               <h3 className="text-xs font-semibold text-foreground">No API keys generated</h3>
@@ -250,8 +238,8 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
                 Generate an API key to integrate URL shortening into your command-line tools or backend applications.
               </p>
             </div>
-            <Button onClick={handleOpenCreate} size="sm" variant="outline" className="text-xs gap-1.5">
-              <Plus className="h-3.5 w-3.5" />
+            <Button onClick={handleOpenCreate} size="sm" variant="outline" className="text-xs gap-1.5 rounded-full">
+              <UL0Icon name="plus" className="h-3.5 w-3.5" />
               <span>Generate your first key</span>
             </Button>
           </div>
@@ -272,7 +260,7 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
                   <tr key={k.id} className="hover:bg-muted/20 transition-colors">
                     <td className="px-4 py-3 font-medium text-foreground">
                       <span className="flex items-center gap-1.5">
-                        <Key className="h-3 w-3 text-muted-foreground shrink-0" />
+                        <UL0Icon name="apikey" className="h-3 w-3 text-muted-foreground shrink-0" />
                         {k.name}
                       </span>
                     </td>
@@ -301,9 +289,9 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
                         onClick={() => setRevokeModalKey(k)}
                         variant="ghost"
                         size="sm"
-                        className="h-7 px-2 text-destructive hover:text-destructive hover:bg-destructive/10 text-xs"
+                        className="h-7 px-2.5 rounded-full text-destructive hover:text-destructive hover:bg-destructive/10 text-xs"
                       >
-                        <Trash2 className="h-3 w-3 mr-1" />
+                        <UL0Icon name="trash" className="h-3 w-3 mr-1" />
                         <span>Revoke</span>
                       </Button>
                     </td>
@@ -316,7 +304,7 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
       </div>
 
       {/* Code Snippet Card */}
-      <div className="rounded-lg border border-border bg-card p-4 sm:p-5 space-y-3">
+      <div className="rounded-3xl border border-border bg-card p-5 sm:p-6 space-y-3">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-xs font-semibold text-foreground">Example Request</h3>
@@ -328,14 +316,14 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
             onClick={handleCopySnippet}
             variant="outline"
             size="sm"
-            className="h-7 text-xs gap-1"
+            className="h-7 text-xs gap-1 rounded-full"
           >
-            {copiedSnippet ? <Check className="h-3 w-3 text-primary" /> : <Copy className="h-3 w-3" />}
+            {copiedSnippet ? <UL0Icon name="check" className="h-3 w-3 text-primary" /> : <UL0Icon name="copy" className="h-3 w-3" />}
             <span>{copiedSnippet ? "Copied" : "Copy curl"}</span>
           </Button>
         </div>
 
-        <pre className="p-3 rounded-md bg-muted/60 border border-border font-mono text-xs overflow-x-auto text-foreground">
+        <pre className="p-4 rounded-2xl bg-muted/60 border border-border font-mono text-xs overflow-x-auto text-foreground">
           {curlSnippet}
         </pre>
 
@@ -346,14 +334,14 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
             className="text-primary hover:underline font-medium inline-flex items-center gap-1"
           >
             <span>Full API Reference</span>
-            <ExternalLink className="h-3 w-3" />
+            <UL0Icon name="external" className="h-3 w-3" />
           </Link>
         </div>
       </div>
 
       {/* Create Key Dialog */}
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
-        <DialogContent className="max-w-md">
+        <DialogContent className="max-w-md rounded-3xl">
           <DialogHeader>
             <DialogTitle>
               {createdSecret ? "API Key Created" : "Create New API Key"}
@@ -367,8 +355,8 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
 
           {createdSecret ? (
             <div className="space-y-4 py-2">
-              <div className="rounded-md border border-amber-500/30 bg-amber-500/10 p-3 flex items-start gap-2 text-xs text-amber-700 dark:text-amber-400">
-                <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 flex items-start gap-2 text-xs text-amber-700 dark:text-amber-400">
+                <UL0Icon name="warning" className="h-4 w-4 shrink-0 mt-0.5" />
                 <span>
                   Save this key in a password manager or secure environment variable. It cannot be recovered once this dialog is closed.
                 </span>
@@ -380,14 +368,14 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
                   <Input
                     value={createdSecret}
                     readOnly
-                    className="font-mono text-xs bg-muted/50 select-all"
+                    className="font-mono text-xs bg-muted/50 select-all rounded-full"
                   />
                   <Button
                     onClick={handleCopySecret}
                     size="sm"
-                    className="gap-1.5 shrink-0 text-xs"
+                    className="gap-1.5 shrink-0 text-xs rounded-full"
                   >
-                    {copiedSecret ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                    {copiedSecret ? <UL0Icon name="check" className="h-3.5 w-3.5" /> : <UL0Icon name="copy" className="h-3.5 w-3.5" />}
                     <span>{copiedSecret ? "Copied" : "Copy"}</span>
                   </Button>
                 </div>

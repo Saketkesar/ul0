@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
 import Link from "next/link"
-import { Link2, Zap, Shield, Globe, Users, QrCode } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Encurtador de URL Grátis - Encurtar Link | ul0",
@@ -79,44 +79,56 @@ export default function PortuguesePage() {
               Por que escolher ul0?
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-              <div className="bg-background p-6 rounded-lg border">
-                <Zap className="h-10 w-10 text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Super Rápido</h3>
+              <div className="bg-card p-6 rounded-3xl border border-border/80 shadow-xs">
+                <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
+                  <UL0Icon name="bolt" className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2 text-foreground">Super Rápido</h3>
                 <p className="text-sm text-muted-foreground">
                   Encurte links em menos de 1 segundo. Sem espera.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Shield className="h-10 w-10 text-primary mb-4" />
-                <h3 className="font-semibold mb-2">100% Seguro</h3>
+              <div className="bg-card p-6 rounded-3xl border border-border/80 shadow-xs">
+                <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
+                  <UL0Icon name="shield" className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2 text-foreground">100% Seguro</h3>
                 <p className="text-sm text-muted-foreground">
                   Seus links estão seguros. Sem spam, sem vírus.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Globe className="h-10 w-10 text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Sempre Grátis</h3>
+              <div className="bg-card p-6 rounded-3xl border border-border/80 shadow-xs">
+                <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
+                  <UL0Icon name="domain" className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2 text-foreground">Sempre Grátis</h3>
                 <p className="text-sm text-muted-foreground">
                   Sem custos ocultos. Encurte links ilimitados.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Users className="h-10 w-10 text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Dividir Despesas</h3>
+              <div className="bg-card p-6 rounded-3xl border border-border/80 shadow-xs">
+                <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
+                  <UL0Icon name="team" className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2 text-foreground">Dividir Despesas</h3>
                 <p className="text-sm text-muted-foreground">
                   Rachar conta com amigos. Fácil e rápido.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <QrCode className="h-10 w-10 text-primary mb-4" />
-                <h3 className="font-semibold mb-2">QR Code PIX</h3>
+              <div className="bg-card p-6 rounded-3xl border border-border/80 shadow-xs">
+                <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
+                  <UL0Icon name="qr" className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2 text-foreground">QR Code PIX</h3>
                 <p className="text-sm text-muted-foreground">
                   Gere QR code para pagamento via PIX.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Link2 className="h-10 w-10 text-primary mb-4" />
-                <h3 className="font-semibold mb-2">Sem Cadastro</h3>
+              <div className="bg-card p-6 rounded-3xl border border-border/80 shadow-xs">
+                <div className="w-11 h-11 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-4">
+                  <UL0Icon name="link" className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2 text-foreground">Sem Cadastro</h3>
                 <p className="text-sm text-muted-foreground">
                   Não precisa criar conta. Use agora mesmo.
                 </p>
@@ -132,20 +144,20 @@ export default function PortuguesePage() {
               Onde usar?
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 max-w-4xl mx-auto text-center">
-              <div className="p-4 bg-green-500/10 rounded-lg">
-                <p className="font-semibold text-green-600">WhatsApp</p>
+              <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl">
+                <p className="font-semibold text-emerald-600">WhatsApp</p>
                 <p className="text-sm text-muted-foreground">Status e conversas</p>
               </div>
-              <div className="p-4 bg-pink-500/10 rounded-lg">
-                <p className="font-semibold text-pink-600">Instagram</p>
+              <div className="p-4 bg-primary/10 border border-primary/20 rounded-2xl">
+                <p className="font-semibold text-primary">Instagram</p>
                 <p className="text-sm text-muted-foreground">Link na bio</p>
               </div>
-              <div className="p-4 bg-slate-500/10 rounded-lg">
-                <p className="font-semibold text-slate-600">TikTok</p>
+              <div className="p-4 bg-muted/60 border border-border rounded-2xl">
+                <p className="font-semibold text-foreground">TikTok</p>
                 <p className="text-sm text-muted-foreground">Bio do perfil</p>
               </div>
-              <div className="p-4 bg-red-500/10 rounded-lg">
-                <p className="font-semibold text-red-600">YouTube</p>
+              <div className="p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl">
+                <p className="font-semibold text-emerald-600">YouTube</p>
                 <p className="text-sm text-muted-foreground">Descrição</p>
               </div>
             </div>
@@ -163,7 +175,7 @@ export default function PortuguesePage() {
             </p>
             <Link 
               href="/split"
-              className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium"
+              className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium shadow-xs"
             >
               Dividir Despesas →
             </Link>

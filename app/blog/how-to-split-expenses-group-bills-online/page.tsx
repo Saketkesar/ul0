@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, Users, QrCode, ShieldCheck, Zap, Sparkles } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "How to Split Group Expenses & Bills Online Free",
@@ -95,7 +95,7 @@ export default function SplitExpensesGuidePage() {
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link href="/blog" className="hover:text-foreground inline-flex items-center gap-1">
-              <ArrowLeft className="h-3 w-3" /> Back to blog
+              <UL0Icon name="arrowleft" className="h-3 w-3" /> Back to blog
             </Link>
             <span>/</span>
             <span className="text-foreground">Productivity &amp; Finances</span>
@@ -104,7 +104,7 @@ export default function SplitExpensesGuidePage() {
           {/* Header */}
           <div className="space-y-4">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-              <Users className="h-3 w-3" />
+              <UL0Icon name="team" className="h-3 w-3" />
               Group Finance &amp; Utilities Guide
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">
@@ -118,7 +118,7 @@ export default function SplitExpensesGuidePage() {
           {/* CTA Box */}
           <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6 space-y-3">
             <div className="flex items-center gap-2 font-semibold text-foreground">
-              <Sparkles className="h-5 w-5 text-emerald-500" />
+              <UL0Icon name="sparkles" className="h-5 w-5 text-emerald-500" />
               <span>Try the Free Online Bill Splitter</span>
             </div>
             <p className="text-sm text-muted-foreground">

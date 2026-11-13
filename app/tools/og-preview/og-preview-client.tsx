@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState } from "react"
-import { Search, Loader2, Share2, Globe, AlertTriangle, CheckCircle2, XCircle, Info, Image as ImageIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface OgData {
   success: boolean
@@ -69,42 +69,42 @@ export function OgPreviewClient() {
   return (
     <div className="w-full">
       {/* Input Form */}
-      <form onSubmit={handleInspect} className="relative flex flex-col sm:flex-row gap-2">
+      <form onSubmit={handleInspect} className="relative flex flex-col sm:flex-row gap-2.5">
         <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted-foreground">
-            <Globe className="h-4 w-4" />
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground">
+            <UL0Icon name="domain" size={18} />
           </div>
           <input
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="Enter URL to preview (e.g. github.com, nytimes.com, yoursite.com)"
-            className="w-full pl-10 pr-4 py-3 text-sm bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all shadow-sm"
+            className="w-full pl-11 pr-4 py-3.5 text-sm bg-card border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all shadow-2xs"
           />
         </div>
-        <Button
+        <button
           type="submit"
           disabled={loading || !url.trim()}
-          className="h-auto py-3 px-6 text-sm font-semibold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+          className="h-auto py-3.5 px-7 text-sm font-semibold rounded-full bg-primary hover:opacity-90 disabled:opacity-50 text-primary-foreground shadow-2xs transition-all cursor-pointer inline-flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Scanning...
+              <UL0Icon name="loading" animated={true} size={16} />
+              <span>Scanning...</span>
             </>
           ) : (
-            "Preview Social Card"
+            <span>Preview Social Card</span>
           )}
-        </Button>
+        </button>
       </form>
 
       {/* Preset quick test links */}
-      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+      <div className="mt-3.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground px-2">
         <span>Try testing:</span>
         <button
           type="button"
           onClick={() => setUrl("https://github.com")}
-          className="hover:text-foreground underline decoration-dotted"
+          className="hover:text-foreground underline decoration-dotted cursor-pointer"
         >
           github.com
         </button>
@@ -112,7 +112,7 @@ export function OgPreviewClient() {
         <button
           type="button"
           onClick={() => setUrl("https://stripe.com")}
-          className="hover:text-foreground underline decoration-dotted"
+          className="hover:text-foreground underline decoration-dotted cursor-pointer"
         >
           stripe.com
         </button>
@@ -120,7 +120,7 @@ export function OgPreviewClient() {
         <button
           type="button"
           onClick={() => setUrl("https://ul0.site")}
-          className="hover:text-foreground underline decoration-dotted"
+          className="hover:text-foreground underline decoration-dotted cursor-pointer"
         >
           ul0.site
         </button>
@@ -128,8 +128,8 @@ export function OgPreviewClient() {
 
       {/* Error message */}
       {error && (
-        <div className="mt-6 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs sm:text-sm flex items-start gap-2.5">
-          <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+        <div className="mt-6 p-4 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-xs sm:text-sm flex items-start gap-2.5">
+          <UL0Icon name="warning" size={16} className="shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
@@ -138,43 +138,43 @@ export function OgPreviewClient() {
       {data && (
         <div className="mt-8 space-y-8 animate-in fade-in-50 duration-200">
           {/* Tab Bar */}
-          <div className="flex border-b border-border gap-2 overflow-x-auto pb-1">
+          <div className="flex border-b border-border gap-2 overflow-x-auto pb-2">
             <button
               onClick={() => setActiveTab("twitter")}
-              className={`px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors shrink-0 ${
+              className={`px-4 py-2 text-xs sm:text-sm rounded-full transition-colors shrink-0 cursor-pointer ${
                 activeTab === "twitter"
-                  ? "bg-primary text-primary-foreground font-semibold"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-primary text-primary-foreground font-bold shadow-2xs"
+                  : "text-muted-foreground hover:bg-surface-2 hover:text-foreground font-medium"
               }`}
             >
               X / Twitter Card
             </button>
             <button
               onClick={() => setActiveTab("facebook")}
-              className={`px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors shrink-0 ${
+              className={`px-4 py-2 text-xs sm:text-sm rounded-full transition-colors shrink-0 cursor-pointer ${
                 activeTab === "facebook"
-                  ? "bg-primary text-primary-foreground font-semibold"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-primary text-primary-foreground font-bold shadow-2xs"
+                  : "text-muted-foreground hover:bg-surface-2 hover:text-foreground font-medium"
               }`}
             >
               Facebook Share
             </button>
             <button
               onClick={() => setActiveTab("linkedin")}
-              className={`px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors shrink-0 ${
+              className={`px-4 py-2 text-xs sm:text-sm rounded-full transition-colors shrink-0 cursor-pointer ${
                 activeTab === "linkedin"
-                  ? "bg-primary text-primary-foreground font-semibold"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-primary text-primary-foreground font-bold shadow-2xs"
+                  : "text-muted-foreground hover:bg-surface-2 hover:text-foreground font-medium"
               }`}
             >
               LinkedIn Feed
             </button>
             <button
               onClick={() => setActiveTab("discord")}
-              className={`px-4 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors shrink-0 ${
+              className={`px-4 py-2 text-xs sm:text-sm rounded-full transition-colors shrink-0 cursor-pointer ${
                 activeTab === "discord"
-                  ? "bg-primary text-primary-foreground font-semibold"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                  ? "bg-primary text-primary-foreground font-bold shadow-2xs"
+                  : "text-muted-foreground hover:bg-surface-2 hover:text-foreground font-medium"
               }`}
             >
               Discord Embed
@@ -182,7 +182,7 @@ export function OgPreviewClient() {
           </div>
 
           {/* Social Mockup Container */}
-          <div className="p-6 rounded-2xl border border-border bg-card/50 flex justify-center">
+          <div className="p-6 sm:p-8 rounded-3xl border border-border bg-card/60 flex justify-center shadow-2xs">
             {/* Twitter Card */}
             {activeTab === "twitter" && (
               <div className="w-full max-w-lg rounded-2xl overflow-hidden border border-border bg-black text-white shadow-md">
@@ -193,7 +193,7 @@ export function OgPreviewClient() {
                   </div>
                 ) : (
                   <div className="aspect-[1200/628] w-full bg-neutral-900 flex flex-col items-center justify-center text-neutral-500 text-xs">
-                    <ImageIcon className="h-8 w-8 mb-2 opacity-40" />
+                    <UL0Icon name="image" size={32} className="mb-2 opacity-40" />
                     <span>No og:image specified</span>
                   </div>
                 )}
@@ -207,7 +207,7 @@ export function OgPreviewClient() {
 
             {/* Facebook Share */}
             {activeTab === "facebook" && (
-              <div className="w-full max-w-lg overflow-hidden border border-border bg-[#18191a] text-[#e4e6eb] rounded-xl shadow-md">
+              <div className="w-full max-w-lg overflow-hidden border border-border bg-[#18191a] text-[#e4e6eb] rounded-2xl shadow-md">
                 {data.image ? (
                   <div className="aspect-[1.91/1] w-full bg-neutral-900 overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -228,7 +228,7 @@ export function OgPreviewClient() {
 
             {/* LinkedIn Feed */}
             {activeTab === "linkedin" && (
-              <div className="w-full max-w-lg overflow-hidden border border-border bg-[#1d2226] text-white rounded-xl shadow-md">
+              <div className="w-full max-w-lg overflow-hidden border border-border bg-[#1d2226] text-white rounded-2xl shadow-md">
                 {data.image ? (
                   <div className="aspect-[1.91/1] w-full bg-neutral-900 overflow-hidden">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -248,12 +248,12 @@ export function OgPreviewClient() {
 
             {/* Discord Embed */}
             {activeTab === "discord" && (
-              <div className="w-full max-w-lg rounded-lg border-l-4 border-l-blue-500 bg-[#2b2d31] p-4 text-[#dbdee1] space-y-2.5 shadow-md">
+              <div className="w-full max-w-lg rounded-2xl border-l-4 border-l-emerald-500 bg-[#2b2d31] p-4 text-[#dbdee1] space-y-2.5 shadow-md">
                 <span className="text-[11px] text-[#949ba4] font-medium">{data.siteName}</span>
-                <h4 className="text-sm font-bold text-blue-400 hover:underline cursor-pointer">{data.title}</h4>
+                <h4 className="text-sm font-bold text-emerald-400 hover:underline cursor-pointer">{data.title}</h4>
                 <p className="text-xs text-[#dbdee1] leading-relaxed line-clamp-3">{data.description}</p>
                 {data.image && (
-                  <div className="rounded-lg overflow-hidden max-w-md max-h-56 mt-2">
+                  <div className="rounded-xl overflow-hidden max-w-md max-h-56 mt-2">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img src={data.image} alt={data.title} className="object-cover w-full h-full" />
                   </div>
@@ -263,24 +263,24 @@ export function OgPreviewClient() {
           </div>
 
           {/* Tag Quality Audit */}
-          <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+          <div className="rounded-3xl border border-border bg-card p-6 sm:p-7 space-y-4 shadow-2xs">
             <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <Share2 className="h-4 w-4 text-primary" />
+              <UL0Icon name="share" animated={true} size={18} />
               <span>OpenGraph &amp; Twitter Meta Tag Audit</span>
             </h3>
 
             <div className="grid gap-3 sm:grid-cols-2 text-xs">
               {/* Title check */}
-              <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
+              <div className="p-4 rounded-2xl border border-border bg-background space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-foreground">og:title</span>
                   {data.raw.ogTitle ? (
-                    <span className="flex items-center gap-1 text-emerald-500 font-medium">
-                      <CheckCircle2 className="h-3.5 w-3.5" /> Present ({titleLen} chars)
+                    <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                      <UL0Icon name="check" size={14} /> Present ({titleLen} chars)
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-amber-500 font-medium">
-                      <AlertTriangle className="h-3.5 w-3.5" /> Missing (Using fallback)
+                    <span className="flex items-center gap-1.5 text-amber-500 font-medium">
+                      <UL0Icon name="warning" size={14} /> Missing (Using fallback)
                     </span>
                   )}
                 </div>
@@ -293,16 +293,16 @@ export function OgPreviewClient() {
               </div>
 
               {/* Description check */}
-              <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
+              <div className="p-4 rounded-2xl border border-border bg-background space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-foreground">og:description</span>
                   {data.raw.ogDescription ? (
-                    <span className="flex items-center gap-1 text-emerald-500 font-medium">
-                      <CheckCircle2 className="h-3.5 w-3.5" /> Present ({descLen} chars)
+                    <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                      <UL0Icon name="check" size={14} /> Present ({descLen} chars)
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-amber-500 font-medium">
-                      <AlertTriangle className="h-3.5 w-3.5" /> Missing (Using fallback)
+                    <span className="flex items-center gap-1.5 text-amber-500 font-medium">
+                      <UL0Icon name="warning" size={14} /> Missing (Using fallback)
                     </span>
                   )}
                 </div>
@@ -315,16 +315,16 @@ export function OgPreviewClient() {
               </div>
 
               {/* Image check */}
-              <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
+              <div className="p-4 rounded-2xl border border-border bg-background space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-foreground">og:image</span>
                   {data.image ? (
-                    <span className="flex items-center gap-1 text-emerald-500 font-medium">
-                      <CheckCircle2 className="h-3.5 w-3.5" /> Detected
+                    <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                      <UL0Icon name="check" size={14} /> Detected
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1 text-destructive font-medium">
-                      <XCircle className="h-3.5 w-3.5" /> Not Found
+                    <span className="flex items-center gap-1.5 text-destructive font-medium">
+                      <UL0Icon name="close" size={14} /> Not Found
                     </span>
                   )}
                 </div>
@@ -333,7 +333,7 @@ export function OgPreviewClient() {
               </div>
 
               {/* Twitter card check */}
-              <div className="p-3.5 rounded-xl border border-border bg-background space-y-1">
+              <div className="p-4 rounded-2xl border border-border bg-background space-y-1">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-foreground">twitter:card</span>
                   <span className="font-mono text-primary font-medium">{data.twitterCard}</span>

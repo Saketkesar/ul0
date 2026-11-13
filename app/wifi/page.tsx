@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Wifi, Download, Copy, Check, Eye, EyeOff, QrCode, Smartphone, Laptop, Shield, Home, Building2, Utensils, Building } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import QRCode from "qrcode"
 import Link from "next/link"
 
@@ -77,15 +77,15 @@ export default function WifiQRGeneratorPage() {
       <main className="flex-1 py-8 sm:py-12">
         <div className="container mx-auto px-4">
           {/* Hero */}
-          <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-              <Wifi className="h-4 w-4" />
-              Free WiFi QR Code Generator
+          <div className="text-center mb-10 space-y-3">
+            <div className="inline-flex items-center gap-2 bg-surface-3 text-primary px-4 py-1.5 rounded-full text-xs font-semibold mb-2 border border-primary/20">
+              <UL0Icon name="wifi" animated={true} size={15} />
+              <span>Free WiFi QR Code Generator</span>
             </div>
-            <h1 className="text-3xl font-bold mb-4 sm:text-4xl lg:text-5xl">
+            <h1 className="text-3xl font-bold mb-2 sm:text-4xl lg:text-5xl text-foreground">
               WiFi QR Code Generator
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
               Create a QR code for your WiFi network. Guests can scan and connect instantly without typing the password. 
               Perfect for homes, offices, restaurants, and hotels.
             </p>
@@ -93,27 +93,28 @@ export default function WifiQRGeneratorPage() {
 
           <div className="grid gap-8 lg:grid-cols-2 max-w-5xl mx-auto">
             {/* Generator Form */}
-            <Card>
+            <Card className="rounded-3xl border-border bg-card shadow-2xs">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Wifi className="h-5 w-5" />
+                <CardTitle className="flex items-center gap-2 text-lg font-bold">
+                  <UL0Icon name="wifi" size={18} />
                   WiFi Network Details
                 </CardTitle>
-                <CardDescription>Enter your WiFi credentials to generate QR code</CardDescription>
+                <CardDescription className="text-xs">Enter your WiFi credentials to generate QR code</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="ssid">Network Name (SSID) *</Label>
+                  <Label htmlFor="ssid" className="text-xs font-semibold">Network Name (SSID) *</Label>
                   <Input
                     id="ssid"
                     placeholder="Your WiFi network name"
                     value={ssid}
                     onChange={(e) => setSsid(e.target.value)}
+                    className="rounded-xl h-10"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
+                  <Label htmlFor="password" className="text-xs font-semibold">Password</Label>
                   <div className="relative">
                     <Input
                       id="password"
@@ -121,21 +122,22 @@ export default function WifiQRGeneratorPage() {
                       placeholder="WiFi password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
+                      className="rounded-xl h-10 pr-10"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
                     >
-                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      <UL0Icon name={showPassword ? "eyeoff" : "eye"} size={16} />
                     </button>
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="encryption">Security Type</Label>
+                  <Label htmlFor="encryption" className="text-xs font-semibold">Security Type</Label>
                   <Select value={encryption} onValueChange={setEncryption}>
-                    <SelectTrigger>
+                    <SelectTrigger className="rounded-xl h-10">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -144,7 +146,7 @@ export default function WifiQRGeneratorPage() {
                       <SelectItem value="nopass">None (Open Network)</SelectItem>
                     </SelectContent>
                   </Select>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[11px] text-muted-foreground">
                     Most modern networks use WPA2 or WPA3
                   </p>
                 </div>
@@ -155,38 +157,41 @@ export default function WifiQRGeneratorPage() {
                     id="hidden"
                     checked={hidden}
                     onChange={(e) => setHidden(e.target.checked)}
-                    className="rounded border-gray-300"
+                    className="rounded border-border"
                   />
-                  <Label htmlFor="hidden" className="text-sm font-normal cursor-pointer">
+                  <Label htmlFor="hidden" className="text-xs text-muted-foreground cursor-pointer">
                     Hidden network (SSID not broadcast)
                   </Label>
                 </div>
 
                 <Button 
                   onClick={generateWifiQR} 
-                  className="w-full" 
+                  className="w-full rounded-full bg-primary text-primary-foreground hover:opacity-90 font-semibold mt-2" 
                   disabled={generating || !ssid.trim()}
                   size="lg"
                 >
-                  {generating ? "Generating..." : "Generate WiFi QR Code"}
+                  <UL0Icon name="qr" size={16} />
+                  <span>{generating ? "Generating..." : "Generate WiFi QR"}</span>
                 </Button>
               </CardContent>
             </Card>
 
             {/* Preview */}
-            <Card>
+            <Card className="rounded-3xl border-border bg-card shadow-2xs">
               <CardHeader>
-                <CardTitle>Your WiFi QR Code</CardTitle>
-                <CardDescription>Scan with any smartphone camera to connect</CardDescription>
+                <CardTitle className="text-lg font-bold">Your WiFi QR Code</CardTitle>
+                <CardDescription className="text-xs">Scan with any smartphone camera to connect</CardDescription>
               </CardHeader>
               <CardContent className="flex flex-col items-center">
-                <div className="w-[350px] h-[350px] border-2 border-dashed rounded-lg flex items-center justify-center bg-muted/30 mb-4">
+                <div className="w-[320px] h-[320px] border border-border rounded-2xl flex items-center justify-center bg-surface-2 mb-4 p-4">
                   {qrDataUrl ? (
-                    <img src={qrDataUrl} alt="WiFi QR Code" className="w-full h-full" />
+                    <img src={qrDataUrl} alt="WiFi QR Code" className="w-full h-full object-contain rounded-xl" />
                   ) : (
-                    <div className="text-center text-muted-foreground p-6">
-                      <Wifi className="h-16 w-16 mx-auto mb-2 opacity-50" />
-                      <p className="mb-2">Your WiFi QR code will appear here</p>
+                    <div className="text-center text-muted-foreground p-6 space-y-2">
+                      <div className="flex justify-center opacity-60">
+                        <UL0Icon name="wifi" size={48} />
+                      </div>
+                      <p className="font-semibold text-sm">Your WiFi QR code will appear here</p>
                       <p className="text-xs">Enter your network details and click Generate</p>
                     </div>
                   )}
@@ -195,25 +200,25 @@ export default function WifiQRGeneratorPage() {
                 {qrDataUrl && (
                   <>
                     <div className="flex gap-2 w-full mb-4">
-                      <Button onClick={downloadQR} className="flex-1">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download PNG
+                      <Button onClick={downloadQR} className="flex-1 rounded-full bg-primary text-primary-foreground hover:opacity-90">
+                        <UL0Icon name="download" size={14} />
+                        <span>Download PNG</span>
                       </Button>
-                      <Button onClick={copyQR} variant="outline" className="flex-1">
+                      <Button onClick={copyQR} variant="outline" className="flex-1 rounded-full">
                         {copied ? (
                           <>
-                            <Check className="h-4 w-4 mr-2" />
-                            Copied!
+                            <UL0Icon name="check" size={14} />
+                            <span>Copied!</span>
                           </>
                         ) : (
                           <>
-                            <Copy className="h-4 w-4 mr-2" />
-                            Copy
+                            <UL0Icon name="copy" size={14} />
+                            <span>Copy</span>
                           </>
                         )}
                       </Button>
                     </div>
-                    <p className="text-sm text-muted-foreground text-center">
+                    <p className="text-xs text-muted-foreground text-center">
                       Print this QR code and display it for guests to easily connect
                     </p>
                   </>
@@ -224,34 +229,34 @@ export default function WifiQRGeneratorPage() {
 
           {/* How it works */}
           <section className="mt-16 max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6 text-center">
+            <h2 className="text-2xl font-bold mb-6 text-center text-foreground">
               How WiFi QR Codes Work
             </h2>
             <div className="grid gap-6 sm:grid-cols-3">
-              <div className="text-center p-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <QrCode className="h-6 w-6 text-primary" />
+              <div className="text-center p-6 rounded-2xl bg-surface-2/60 border border-border/80">
+                <div className="w-12 h-12 bg-surface-3 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <UL0Icon name="qr" size={24} />
                 </div>
-                <h3 className="font-semibold mb-2">1. Generate QR</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold mb-1 text-sm text-foreground">1. Generate QR</h3>
+                <p className="text-xs text-muted-foreground">
                   Enter your WiFi network name and password above
                 </p>
               </div>
-              <div className="text-center p-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Smartphone className="h-6 w-6 text-primary" />
+              <div className="text-center p-6 rounded-2xl bg-surface-2/60 border border-border/80">
+                <div className="w-12 h-12 bg-surface-3 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <UL0Icon name="mobile" size={24} />
                 </div>
-                <h3 className="font-semibold mb-2">2. Scan Code</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold mb-1 text-sm text-foreground">2. Scan Code</h3>
+                <p className="text-xs text-muted-foreground">
                   Guests point their phone camera at the QR code
                 </p>
               </div>
-              <div className="text-center p-4">
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
-                  <Wifi className="h-6 w-6 text-primary" />
+              <div className="text-center p-6 rounded-2xl bg-surface-2/60 border border-border/80">
+                <div className="w-12 h-12 bg-surface-3 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <UL0Icon name="wifi" size={24} />
                 </div>
-                <h3 className="font-semibold mb-2">3. Connected!</h3>
-                <p className="text-sm text-muted-foreground">
+                <h3 className="font-semibold mb-1 text-sm text-foreground">3. Connected!</h3>
+                <p className="text-xs text-muted-foreground">
                   Phone automatically connects to WiFi - no typing needed
                 </p>
               </div>
@@ -260,41 +265,43 @@ export default function WifiQRGeneratorPage() {
 
           {/* Use Cases */}
           <section className="mt-12 max-w-4xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6 text-center">
+            <h2 className="text-2xl font-bold mb-6 text-center text-foreground">
               Perfect For
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <div className="p-4 bg-muted/30 rounded-lg text-center flex flex-col items-center">
-                <Home className="h-6 w-6 text-primary mb-2" />
-                <h3 className="font-semibold mb-1">Home</h3>
-                <p className="text-sm text-muted-foreground">Share with family & visitors</p>
+              <div className="p-5 bg-card border border-border rounded-2xl text-center flex flex-col items-center gap-2">
+                <UL0Icon name="home" size={24} />
+                <h3 className="font-semibold text-sm text-foreground">Home</h3>
+                <p className="text-xs text-muted-foreground">Share with family &amp; visitors</p>
               </div>
-              <div className="p-4 bg-muted/30 rounded-lg text-center flex flex-col items-center">
-                <Building2 className="h-6 w-6 text-primary mb-2" />
-                <h3 className="font-semibold mb-1">Office</h3>
-                <p className="text-sm text-muted-foreground">Guest WiFi for clients</p>
+              <div className="p-5 bg-card border border-border rounded-2xl text-center flex flex-col items-center gap-2">
+                <UL0Icon name="domain" size={24} />
+                <h3 className="font-semibold text-sm text-foreground">Office</h3>
+                <p className="text-xs text-muted-foreground">Guest WiFi for clients</p>
               </div>
-              <div className="p-4 bg-muted/30 rounded-lg text-center flex flex-col items-center">
-                <Utensils className="h-6 w-6 text-primary mb-2" />
-                <h3 className="font-semibold mb-1">Restaurant</h3>
-                <p className="text-sm text-muted-foreground">Table tent QR codes</p>
+              <div className="p-5 bg-card border border-border rounded-2xl text-center flex flex-col items-center gap-2">
+                <UL0Icon name="cart" size={24} />
+                <h3 className="font-semibold text-sm text-foreground">Restaurant</h3>
+                <p className="text-xs text-muted-foreground">Table tent QR codes</p>
               </div>
-              <div className="p-4 bg-muted/30 rounded-lg text-center flex flex-col items-center">
-                <Building className="h-6 w-6 text-primary mb-2" />
-                <h3 className="font-semibold mb-1">Hotel/Airbnb</h3>
-                <p className="text-sm text-muted-foreground">Room WiFi access</p>
+              <div className="p-5 bg-card border border-border rounded-2xl text-center flex flex-col items-center gap-2">
+                <UL0Icon name="domain" size={24} />
+                <h3 className="font-semibold text-sm text-foreground">Hotel/Airbnb</h3>
+                <p className="text-xs text-muted-foreground">Room WiFi access</p>
               </div>
             </div>
           </section>
 
           {/* Security Note */}
           <section className="mt-12 max-w-4xl mx-auto">
-            <Card className="border-primary/20 bg-primary/5">
+            <Card className="border-primary/20 bg-surface-3/50 rounded-3xl">
               <CardContent className="flex items-start gap-4 pt-6">
-                <Shield className="h-8 w-8 text-primary flex-shrink-0" />
+                <div className="shrink-0">
+                  <UL0Icon name="shield" size={28} />
+                </div>
                 <div>
-                  <h3 className="font-semibold mb-2">Zero-Server Data Processing Security Guarantee</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <h3 className="font-bold text-sm text-foreground mb-1">Zero-Server Data Processing Security Guarantee</h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
                     Your Wi-Fi SSID network name and security passphrases are parsed and rendered 100% locally within your client browser session using Web Canvas API primitives. Credentials are never dispatched across network sockets or saved in server logs.
                   </p>
                 </div>

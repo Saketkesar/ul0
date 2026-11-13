@@ -2,20 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import {
-  Link2,
-  Globe,
-  BarChart3,
-  QrCode,
-  ShieldCheck,
-  Code2,
-  Zap,
-  Clock,
-  Lock,
-  ArrowRight,
-  Check,
-  CheckCircle2,
-} from "lucide-react"
+import { UL0Icon, UL0IconName } from "@/components/ul0-icon"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
@@ -48,9 +35,15 @@ export const metadata: Metadata = {
 }
 
 export default function FeaturesPage() {
-  const coreFeatures = [
+  const coreFeatures: {
+    icon: UL0IconName
+    title: string
+    badge: string
+    description: string
+    highlights: string[]
+  }[] = [
     {
-      icon: Zap,
+      icon: "bolt",
       title: "Global Edge Redirection",
       badge: "Edge Routed",
       description:
@@ -58,7 +51,7 @@ export default function FeaturesPage() {
       highlights: ["Global CDN distribution", "High availability infrastructure", "Preserves HTTP referrer headers"],
     },
     {
-      icon: Globe,
+      icon: "domain",
       title: "Branded Custom Domains",
       badge: "Custom Domains",
       description:
@@ -66,7 +59,7 @@ export default function FeaturesPage() {
       highlights: ["Automatic Let's Encrypt SSL", "One-click DNS verification", "Custom root domain redirects"],
     },
     {
-      icon: BarChart3,
+      icon: "chartline",
       title: "Real-Time Geo Attribution",
       badge: "Privacy-Compliant",
       description:
@@ -74,7 +67,7 @@ export default function FeaturesPage() {
       highlights: ["Zero third-party cookie reliance", "UTM campaign taxonomy audit", "Exportable CSV & JSON logs"],
     },
     {
-      icon: QrCode,
+      icon: "qr",
       title: "Dynamic Vector QR Codes",
       badge: "Print-Ready SVG",
       description:
@@ -82,7 +75,7 @@ export default function FeaturesPage() {
       highlights: ["Lossless SVG and high-res PNG export", "Custom foreground & background palette", "Real-time scan tracking"],
     },
     {
-      icon: Lock,
+      icon: "lock",
       title: "Link Protection & Expiry",
       badge: "Granular Control",
       description:
@@ -90,7 +83,7 @@ export default function FeaturesPage() {
       highlights: ["SHA-256 hashed password verification", "Scheduled expiration timestamps", "Maximum click cap limits"],
     },
     {
-      icon: Code2,
+      icon: "code",
       title: "Developer REST API",
       badge: "cURL & SDK",
       description:
@@ -127,7 +120,7 @@ export default function FeaturesPage() {
           {/* Hero */}
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-4">
-              <Zap className="h-3.5 w-3.5" />
+              <UL0Icon name="bolt" size={14} />
               <span>Full-Stack Link Infrastructure</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
@@ -138,12 +131,12 @@ export default function FeaturesPage() {
             </p>
             <div className="mt-6 flex flex-wrap justify-center gap-3">
               <Link href="/sign-up">
-                <Button className="rounded-xl px-6 py-2.5 font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
-                  Get Started Free <ArrowRight className="ml-2 h-4 w-4" />
+                <Button className="rounded-full px-6 py-2.5 font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs">
+                  Get Started Free <UL0Icon name="arrowright" size={16} className="ml-2" />
                 </Button>
               </Link>
               <Link href="/pricing">
-                <Button variant="outline" className="rounded-xl px-6 py-2.5 font-semibold">
+                <Button variant="outline" className="rounded-full px-6 py-2.5 font-semibold">
                   View Pricing &amp; Plans
                 </Button>
               </Link>
@@ -153,28 +146,27 @@ export default function FeaturesPage() {
           {/* Core Feature Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-20">
             {coreFeatures.map((item, idx) => {
-              const Icon = item.icon
               return (
                 <div
                   key={idx}
-                  className="rounded-2xl border border-border bg-card p-6 shadow-sm hover:border-primary/50 transition-all flex flex-col justify-between"
+                  className="rounded-3xl border border-border/60 bg-card p-6 shadow-xs hover:border-primary/40 transition-all flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4">
-                      <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
-                        <Icon className="h-5 w-5" />
+                      <div className="w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+                        <UL0Icon name={item.icon} animated size={22} />
                       </div>
-                      <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-muted text-muted-foreground border border-border">
+                      <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-primary/5 text-primary border border-primary/20 font-semibold">
                         {item.badge}
                       </span>
                     </div>
                     <h3 className="text-base font-bold text-foreground mb-2">{item.title}</h3>
                     <p className="text-xs text-muted-foreground leading-relaxed mb-4">{item.description}</p>
                   </div>
-                  <ul className="space-y-1.5 border-t border-border pt-3">
+                  <ul className="space-y-1.5 border-t border-border/60 pt-3">
                     {item.highlights.map((hl, i) => (
                       <li key={i} className="text-xs text-muted-foreground flex items-center gap-2">
-                        <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                        <UL0Icon name="check" size={14} className="shrink-0" />
                         <span>{hl}</span>
                       </li>
                     ))}
@@ -193,22 +185,22 @@ export default function FeaturesPage() {
               </p>
             </div>
 
-            <div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-sm">
+            <div className="overflow-x-auto rounded-3xl border border-border/60 bg-card shadow-xs">
               <table className="w-full text-xs text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-border bg-muted/40 font-semibold text-muted-foreground">
+                  <tr className="border-b border-border/60 bg-muted/40 font-semibold text-muted-foreground">
                     <th className="p-4 text-foreground">Capability</th>
                     <th className="p-4 text-primary font-bold">UL0 Platform</th>
                     <th className="p-4">Bitly</th>
                     <th className="p-4">TinyURL</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody className="divide-y divide-border/60">
                   {comparisonRows.map((row, idx) => (
                     <tr key={idx} className="hover:bg-muted/20 transition-colors">
                       <td className="p-4 font-semibold text-foreground">{row.feature}</td>
                       <td className="p-4 font-bold text-primary flex items-center gap-1.5">
-                        <Check className="h-4 w-4 text-emerald-500" />
+                        <UL0Icon name="check" size={16} />
                         <span>{row.ul0}</span>
                       </td>
                       <td className="p-4 text-muted-foreground">{row.bitly}</td>
@@ -230,12 +222,12 @@ export default function FeaturesPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-3">
               <Link href="/">
-                <Button className="rounded-xl px-6 py-2.5 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
+                <Button className="rounded-full px-6 py-2.5 text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs">
                   Shorten a Link Now
                 </Button>
               </Link>
               <Link href="/tools">
-                <Button variant="outline" className="rounded-xl px-6 py-2.5 text-sm font-semibold">
+                <Button variant="outline" className="rounded-full px-6 py-2.5 text-sm font-semibold">
                   Explore Free SEO Tools
                 </Button>
               </Link>

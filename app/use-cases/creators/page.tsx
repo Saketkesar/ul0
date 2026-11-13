@@ -2,18 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import {
-  Sparkles,
-  CheckCircle2,
-  ArrowRight,
-  Share2,
-  BarChart3,
-  HelpCircle,
-  Video,
-  Instagram,
-  Youtube,
-  DollarSign,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Link Tracking & Branded Bio Links for Creators | UL0",
@@ -83,7 +72,7 @@ export default function CreatorsUseCasePage() {
           {/* Hero */}
           <div className="mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs font-semibold text-purple-500 mb-4">
-              <Sparkles className="h-3.5 w-3.5" />
+              <UL0Icon name="sparkles" className="h-3.5 w-3.5" />
               Creator Economy
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-5 leading-tight">
@@ -95,13 +84,13 @@ export default function CreatorsUseCasePage() {
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/"
-                className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Create a Creator Short Link
               </Link>
               <Link
                 href="/pricing"
-                className="rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Connect Your Custom Domain
               </Link>
@@ -110,9 +99,9 @@ export default function CreatorsUseCasePage() {
 
           {/* Platforms Grid */}
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-16">
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-rose-500/10 text-rose-500 p-3 w-fit mb-4">
-                <Youtube className="h-5 w-5" />
+                <UL0Icon name="video" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">YouTube Description Links</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -120,9 +109,9 @@ export default function CreatorsUseCasePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-purple-500/10 text-purple-500 p-3 w-fit mb-4">
-                <Instagram className="h-5 w-5" />
+                <UL0Icon name="instagram" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Instagram &amp; TikTok Bio</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -130,9 +119,9 @@ export default function CreatorsUseCasePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-emerald-500/10 text-emerald-500 p-3 w-fit mb-4">
-                <DollarSign className="h-5 w-5" />
+                <UL0Icon name="splitbill" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Sponsor Proof &amp; Media Kits</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -148,9 +137,9 @@ export default function CreatorsUseCasePage() {
             </h2>
             <div className="space-y-4 max-w-3xl mx-auto">
               {faqSchema.mainEntity.map((item, idx) => (
-                <div key={idx} className="rounded-xl border border-border bg-card p-5">
+                <div key={idx} className="rounded-2xl border border-border shadow-xs bg-card p-5">
                   <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4 text-primary shrink-0" />
+                    <UL0Icon name="bulb" className="h-4 w-4 text-primary shrink-0" />
                     <span>{item.name}</span>
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed pl-6">
@@ -172,13 +161,13 @@ export default function CreatorsUseCasePage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/"
-                className="rounded-xl bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Shorten Link Free
               </Link>
               <Link
                 href="/pricing"
-                className="rounded-xl border border-border bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Get Custom Domain ($3/mo)
               </Link>

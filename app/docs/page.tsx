@@ -6,16 +6,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { CodeBlock } from "@/components/code-block"
-import {
-  Code,
-  Key,
-  Layers,
-  ExternalLink,
-  ShieldCheck,
-  Check,
-  Download,
-  AlertTriangle,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export default function ApiDocsPage() {
   const [selectedLang, setSelectedLang] = useState<"curl" | "js" | "python">("curl")
@@ -122,8 +113,8 @@ print(data["shortUrl"])`
         <div className="container mx-auto px-4 sm:px-6 max-w-4xl space-y-16">
           {/* Header */}
           <div className="border-b border-border pb-6 space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-medium border border-border bg-muted/40 text-muted-foreground">
-              <Code className="h-3 w-3 text-primary" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold border border-border bg-muted/40 text-muted-foreground">
+              <UL0Icon name="code" className="h-3 w-3 text-primary" />
               <span>Developer Reference</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-semibold tracking-tight text-foreground">
@@ -273,7 +264,7 @@ print(data["shortUrl"])`
           </div>
 
           {/* OpenAPI Spec Download */}
-          <div className="rounded-lg border border-border bg-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="rounded-3xl border border-border bg-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="space-y-1 text-center sm:text-left">
               <h3 className="text-sm font-semibold text-foreground">OpenAPI 3.1 Specification</h3>
               <p className="text-xs text-muted-foreground">
@@ -285,9 +276,9 @@ print(data["shortUrl"])`
               variant="outline"
               size="sm"
               onClick={downloadOpenApi}
-              className="text-xs font-semibold gap-1.5 shrink-0"
+              className="text-xs font-semibold gap-1.5 shrink-0 rounded-full px-5"
             >
-              <Download className="h-3.5 w-3.5" />
+              <UL0Icon name="download" className="h-3.5 w-3.5" />
               <span>Download openapi.json</span>
             </Button>
           </div>

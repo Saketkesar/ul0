@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, Sparkles, Building, Globe, Shield, BarChart3 } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Free Link Management for Companies: The Ultimate 2026 Guide | ul0",
@@ -58,7 +58,7 @@ export default function FreeLinkManagementBlogPage() {
             href="/blog" 
             className="inline-flex items-center text-sm font-semibold text-muted-foreground hover:text-primary mb-6 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 mr-1" />
+            <UL0Icon name="arrowleft" className="h-4 w-4 mr-1" />
             Back to Blog
           </Link>
 
@@ -84,33 +84,33 @@ export default function FreeLinkManagementBlogPage() {
 
             <div className="my-8 rounded-xl border border-border bg-muted/40 p-6 space-y-4">
               <h3 className="text-lg font-bold flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-yellow-500" />
+                <UL0Icon name="sparkles" className="h-5 w-5 text-yellow-500" />
                 Why Link Management Matters for Modern Companies
               </h3>
               <div className="grid gap-4 sm:grid-cols-2 text-sm">
                 <div className="flex gap-2">
-                  <Globe className="h-5 w-5 text-rose-500 shrink-0" />
+                  <UL0Icon name="domain" className="h-5 w-5 text-rose-500 shrink-0" />
                   <div>
                     <strong className="block text-foreground">Branded Custom Domains</strong>
                     Using a custom short domain (like <code className="text-xs bg-muted px-1 py-0.5 rounded">go.mycompany.com</code>) boosts CTR (Click-Through Rates) by up to 34% compared to generic shorteners.
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <BarChart3 className="h-5 w-5 text-rose-500 shrink-0" />
+                  <UL0Icon name="chartline" className="h-5 w-5 text-rose-500 shrink-0" />
                   <div>
                     <strong className="block text-foreground">Granular Analytics</strong>
                     Track who clicks, when they click, and where they come from (countries, cities, devices, and browser distributions) to optimize campaigns.
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Shield className="h-5 w-5 text-rose-500 shrink-0" />
+                  <UL0Icon name="shield" className="h-5 w-5 text-rose-500 shrink-0" />
                   <div>
                     <strong className="block text-foreground">Redirection Control</strong>
                     Fix broken destination URLs, target countries or devices specifically, and protect sensitive links with access passwords.
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Building className="h-5 w-5 text-rose-500 shrink-0" />
+                  <UL0Icon name="domain" className="h-5 w-5 text-rose-500 shrink-0" />
                   <div>
                     <strong className="block text-foreground">Campaign Tagging</strong>
                     Maintain consistent UTM parameters across search variables (`utm_source`, `utm_medium`, `utm_campaign`) to measure ROI accurately.
@@ -191,22 +191,22 @@ export default function FreeLinkManagementBlogPage() {
               </p>
               <div className="grid gap-2 sm:grid-cols-2 text-xs font-semibold">
                 <div className="flex items-center gap-1.5">
-                  <Check className="h-4 w-4 text-green-500" /> Unlimited Free Links
+                  <UL0Icon name="check" className="h-4 w-4 text-green-500" /> Unlimited Free Links
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Check className="h-4 w-4 text-green-500" /> Free custom branded domain link
+                  <UL0Icon name="check" className="h-4 w-4 text-green-500" /> Free custom branded domain link
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Check className="h-4 w-4 text-green-500" /> Interactive Traffic Heatmaps
+                  <UL0Icon name="check" className="h-4 w-4 text-green-500" /> Interactive Traffic Heatmaps
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Check className="h-4 w-4 text-green-500" /> Live Click activity timeline logs
+                  <UL0Icon name="check" className="h-4 w-4 text-green-500" /> Live Click activity timeline logs
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Check className="h-4 w-4 text-green-500" /> Geo & Device smart redirections
+                  <UL0Icon name="check" className="h-4 w-4 text-green-500" /> Geo & Device smart redirections
                 </div>
                 <div className="flex items-center gap-1.5">
-                  <Check className="h-4 w-4 text-green-500" /> CSV exports & password protection
+                  <UL0Icon name="check" className="h-4 w-4 text-green-500" /> CSV exports & password protection
                 </div>
               </div>
               <div className="pt-2">

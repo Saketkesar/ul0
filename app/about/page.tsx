@@ -1,10 +1,9 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Metadata } from "next"
-import { Link2, Globe, ShieldCheck, Zap, BarChart3, Code2, ArrowRight } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
   title: "About UL0 | Free Link Management & Custom Domains",
@@ -25,25 +24,25 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   const values = [
     {
-      icon: Zap,
+      icon: "bolt",
       title: "Edge-Level Speed",
       description:
         "Every millisecond matters when routing a user to your destination. UL0's edge distribution network executes 301 redirects near-instantaneously worldwide.",
     },
     {
-      icon: ShieldCheck,
+      icon: "shield",
       title: "Integrity & Anti-Abuse",
       description:
         "We actively monitor our link network using automated malware filters and domain reputation feeds to ensure bad actors never abuse our infrastructure for phishing.",
     },
     {
-      icon: BarChart3,
+      icon: "chartline",
       title: "Privacy-Respecting Analytics",
       description:
         "Our analytics deliver essential geographic and device insights without invasive cross-site tracking cookies, maintaining user privacy by design.",
     },
     {
-      icon: Globe,
+      icon: "domain",
       title: "Brand Ownership",
       description:
         "We believe businesses should never be forced to share third-party short domains. UL0 enables easy custom domain delegation for all organizations free.",
@@ -82,8 +81,8 @@ export default function AboutPage() {
         {/* Hero Section */}
         <section className="py-16 sm:py-24 bg-gradient-to-b from-primary/5 via-background to-background">
           <div className="container mx-auto px-4 text-center max-w-4xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-6">
-              <Link2 className="h-3.5 w-3.5" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-2 border border-border text-foreground text-xs font-semibold mb-6 shadow-2xs">
+              <UL0Icon name="link" size={14} />
               <span>Building the Future of Digital Attribution</span>
             </div>
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground mb-6">
@@ -136,18 +135,15 @@ export default function AboutPage() {
             </div>
 
             <div className="grid gap-6 sm:grid-cols-2">
-              {values.map((val, idx) => {
-                const Icon = val.icon
-                return (
-                  <div key={idx} className="rounded-2xl border border-border bg-card p-6 shadow-xs">
-                    <div className="p-3 rounded-xl bg-primary/10 text-primary w-fit mb-4">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <h3 className="text-base font-bold text-foreground mb-2">{val.title}</h3>
-                    <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{val.description}</p>
+              {values.map((val, idx) => (
+                <div key={idx} className="rounded-3xl border border-border bg-card p-7 shadow-2xs hover:border-primary/40 transition-colors">
+                  <div className="p-3 rounded-2xl bg-surface-2 border border-border w-fit mb-4">
+                    <UL0Icon name={val.icon} animated={true} size={28} />
                   </div>
-                )
-              })}
+                  <h3 className="text-base font-bold text-foreground mb-2">{val.title}</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{val.description}</p>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -203,25 +199,29 @@ export default function AboutPage() {
               Check out our feature matrix, try our free developer tools, or read about how companies in your industry leverage UL0.
             </p>
             <div className="flex flex-wrap justify-center gap-3 pt-2">
-              <Link href="/features">
-                <Button className="rounded-xl px-5 py-2.5 text-xs sm:text-sm font-semibold bg-primary text-primary-foreground hover:bg-primary/90">
-                  Platform Features
-                </Button>
+              <Link
+                href="/features"
+                className="rounded-full px-6 py-2.5 text-xs sm:text-sm font-semibold bg-primary text-primary-foreground hover:opacity-90 transition-opacity shadow-2xs"
+              >
+                Platform Features
               </Link>
-              <Link href="/use-cases">
-                <Button variant="outline" className="rounded-xl px-5 py-2.5 text-xs sm:text-sm font-semibold">
-                  Industry Use Cases
-                </Button>
+              <Link
+                href="/use-cases"
+                className="rounded-full px-6 py-2.5 text-xs sm:text-sm font-semibold border border-border bg-surface-2 hover:bg-muted text-foreground transition-colors shadow-2xs"
+              >
+                Industry Use Cases
               </Link>
-              <Link href="/tools">
-                <Button variant="outline" className="rounded-xl px-5 py-2.5 text-xs sm:text-sm font-semibold">
-                  Free Web Tools
-                </Button>
+              <Link
+                href="/tools"
+                className="rounded-full px-6 py-2.5 text-xs sm:text-sm font-semibold border border-border bg-surface-2 hover:bg-muted text-foreground transition-colors shadow-2xs"
+              >
+                Free Web Tools
               </Link>
-              <Link href="/changelog">
-                <Button variant="ghost" className="rounded-xl px-5 py-2.5 text-xs sm:text-sm font-semibold">
-                  Changelog &amp; Roadmap
-                </Button>
+              <Link
+                href="/changelog"
+                className="rounded-full px-6 py-2.5 text-xs sm:text-sm font-semibold hover:bg-surface-2 text-foreground transition-colors"
+              >
+                Changelog &amp; Roadmap
               </Link>
             </div>
           </div>

@@ -5,7 +5,7 @@ import { isQrStudioAuthorized, isUserAdmin } from "@/lib/marketing-auth"
 import { getDynamicQrLinksByOwner, listClicksByOwner, listClicksByLink } from "@/lib/appwrite/links"
 import { getDynamicQrUrl } from "@/lib/utils/link-url"
 import { QrStudioClient, type DynamicQrItem } from "@/components/dashboard/qr-studio-client"
-import { ShieldAlert, ArrowLeft } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import Link from "next/link"
 
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default async function DynamicQrStudioPage() {
     return (
       <div className="max-w-2xl mx-auto py-16 text-center space-y-5">
         <div className="w-16 h-16 rounded-3xl bg-amber-500/10 text-amber-600 flex items-center justify-center mx-auto border border-amber-500/20">
-          <ShieldAlert className="w-8 h-8" />
+          <UL0Icon name="shield" className="w-8 h-8" />
         </div>
         <div className="space-y-2">
           <h1 className="text-2xl font-bold text-foreground">Access Restricted</h1>
@@ -40,9 +40,9 @@ export default async function DynamicQrStudioPage() {
         <div className="pt-2">
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <UL0Icon name="arrowleft" className="w-4 h-4" />
             <span>Return to Dashboard Overview</span>
           </Link>
         </div>

@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { QrCode, Download, Upload, Trash2, Check, Copy, Palette, Type } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import QRCode from "qrcode"
 
 interface QrCustomizerProps {
@@ -177,7 +177,7 @@ export function QrCustomizer({ shortUrl, slug }: QrCustomizerProps) {
     <Card className="border-border">
       <CardHeader>
         <CardTitle className="text-lg flex items-center gap-2">
-          <QrCode className="h-5 w-5 text-primary" />
+          <UL0Icon name="qr" className="h-5 w-5 text-primary" />
           Brand QR Studio
         </CardTitle>
         <CardDescription>
@@ -206,12 +206,12 @@ export function QrCustomizer({ shortUrl, slug }: QrCustomizerProps) {
               </div>
             )}
             <div className="flex gap-2 w-full max-w-[200px]">
-              <Button onClick={handleDownload} className="flex-1 text-xs gap-1 h-8 px-2.5">
-                <Download className="h-3.5 w-3.5" />
+              <Button onClick={handleDownload} className="flex-1 text-xs gap-1 h-8 px-2.5 rounded-full">
+                <UL0Icon name="download" className="h-3.5 w-3.5" />
                 Download
               </Button>
-              <Button onClick={handleCopy} variant="outline" className="flex-1 text-xs gap-1 h-8 px-2.5">
-                {copied ? <Check className="h-3.5 w-3.5 text-green-500" /> : <Copy className="h-3.5 w-3.5" />}
+              <Button onClick={handleCopy} variant="outline" className="flex-1 text-xs gap-1 h-8 px-2.5 rounded-full">
+                {copied ? <UL0Icon name="check" className="h-3.5 w-3.5 text-primary" /> : <UL0Icon name="copy" className="h-3.5 w-3.5" />}
                 {copied ? "Copied!" : "Copy"}
               </Button>
             </div>
@@ -220,17 +220,17 @@ export function QrCustomizer({ shortUrl, slug }: QrCustomizerProps) {
           {/* Right Side: Visual Customizers */}
           <div className="flex-1 min-w-0">
             <Tabs defaultValue="palette" className="space-y-4">
-              <TabsList className="grid grid-cols-3 h-9">
-                <TabsTrigger value="palette" className="text-xs gap-1.5 py-1">
-                  <Palette className="h-3.5 w-3.5" />
+              <TabsList className="grid grid-cols-3 h-9 rounded-full">
+                <TabsTrigger value="palette" className="text-xs gap-1.5 py-1 rounded-full">
+                  <UL0Icon name="palette" className="h-3.5 w-3.5" />
                   Colors
                 </TabsTrigger>
-                <TabsTrigger value="logo" className="text-xs gap-1.5 py-1">
-                  <Upload className="h-3.5 w-3.5" />
+                <TabsTrigger value="logo" className="text-xs gap-1.5 py-1 rounded-full">
+                  <UL0Icon name="upload" className="h-3.5 w-3.5" />
                   Logo
                 </TabsTrigger>
-                <TabsTrigger value="text" className="text-xs gap-1.5 py-1">
-                  <Type className="h-3.5 w-3.5" />
+                <TabsTrigger value="text" className="text-xs gap-1.5 py-1 rounded-full">
+                  <UL0Icon name="texttools" className="h-3.5 w-3.5" />
                   Text
                 </TabsTrigger>
               </TabsList>
@@ -283,9 +283,9 @@ export function QrCustomizer({ shortUrl, slug }: QrCustomizerProps) {
                       type="button"
                       variant="outline"
                       onClick={() => fileInputRef.current?.click()}
-                      className="gap-1.5 text-xs h-8"
+                      className="gap-1.5 text-xs h-8 rounded-full"
                     >
-                      <Upload className="h-3.5 w-3.5" />
+                      <UL0Icon name="upload" className="h-3.5 w-3.5" />
                       Choose Image
                     </Button>
                     {logoSrc && (
@@ -293,9 +293,9 @@ export function QrCustomizer({ shortUrl, slug }: QrCustomizerProps) {
                         type="button"
                         variant="destructive"
                         onClick={handleRemoveLogo}
-                        className="gap-1.5 text-xs h-8"
+                        className="gap-1.5 text-xs h-8 rounded-full"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <UL0Icon name="trash" className="h-3.5 w-3.5" />
                         Remove
                       </Button>
                     )}

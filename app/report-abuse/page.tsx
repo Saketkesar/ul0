@@ -7,7 +7,7 @@ import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Flag, CheckCircle2, AlertTriangle, Shield, Clock } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import Link from "next/link"
 
 function ReportAbuseContent() {
@@ -66,8 +66,8 @@ function ReportAbuseContent() {
     <div className="container mx-auto px-4 max-w-2xl py-12 sm:py-16 space-y-8">
       {/* Header */}
       <div className="border-b border-border pb-6 space-y-2">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-medium border border-border bg-muted/40 text-muted-foreground">
-          <Flag className="h-3 w-3 text-destructive" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold border border-border bg-muted/40 text-muted-foreground">
+          <UL0Icon name="flag" className="h-3 w-3 text-destructive" />
           <span>Trust &amp; Safety</span>
         </div>
         <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
@@ -80,9 +80,9 @@ function ReportAbuseContent() {
       </div>
 
       {submitted ? (
-        <div className="rounded-lg border border-border bg-card p-6 sm:p-8 text-center space-y-4">
-          <div className="mx-auto h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
-            <CheckCircle2 className="h-5 w-5" />
+        <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 text-center space-y-4">
+          <div className="mx-auto h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+            <UL0Icon name="check" className="h-5 w-5" />
           </div>
           <div className="space-y-1">
             <h2 className="text-base font-semibold text-foreground">Report Received</h2>
@@ -101,17 +101,17 @@ function ReportAbuseContent() {
               }}
               variant="outline"
               size="sm"
-              className="text-xs"
+              className="text-xs rounded-full px-5"
             >
               Report another link
             </Button>
           </div>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="rounded-lg border border-border bg-card p-6 sm:p-8 space-y-5">
+        <form onSubmit={handleSubmit} className="rounded-3xl border border-border bg-card p-6 sm:p-8 space-y-5">
           {error && (
-            <div className="p-3 rounded-md bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 shrink-0" />
+            <div className="p-3 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-xs flex items-center gap-2">
+              <UL0Icon name="warning" className="h-4 w-4 shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -191,9 +191,9 @@ function ReportAbuseContent() {
       )}
 
       {/* Safety Policy summary */}
-      <div className="rounded-lg border border-border bg-muted/20 p-5 space-y-2 text-xs text-muted-foreground">
+      <div className="rounded-2xl border border-border bg-muted/20 p-5 space-y-2 text-xs text-muted-foreground">
         <span className="font-semibold text-foreground flex items-center gap-1.5">
-          <Shield className="h-3.5 w-3.5 text-primary" />
+          <UL0Icon name="shield" className="h-3.5 w-3.5 text-primary" />
           Automated Threat Screening
         </span>
         <p className="leading-relaxed">

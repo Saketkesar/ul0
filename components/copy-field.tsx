@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Copy, Check } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface CopyFieldProps {
   value: string
@@ -44,12 +44,12 @@ export function CopyField({ value, label, className = "", size = "md" }: CopyFie
       >
         {copied ? (
           <>
-            <Check className="h-3.5 w-3.5 text-primary" />
-            <span className="text-[11px] font-medium text-primary">Copied</span>
+            <UL0Icon name="check" size={13} />
+            <span className="text-[11px] font-semibold text-primary">Copied</span>
           </>
         ) : (
           <>
-            <Copy className="h-3.5 w-3.5" />
+            <UL0Icon name="copy" size={13} />
             <span className="text-[11px] font-medium">Copy</span>
           </>
         )}

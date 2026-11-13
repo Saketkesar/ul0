@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
 import Link from "next/link"
-import { Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "무료 URL 단축기 - 회원가입 없는 링크 줄이기 & QR코드 | ul0",
@@ -78,6 +78,10 @@ export default function KoreanPage() {
       <main className="flex-1">
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-4">
+              <UL0Icon name="lang-ko" size={18} />
+              <span>한국어 · Korea Edition</span>
+            </div>
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4"> 무료 URL 단축기</h1>
             <p className="text-xl text-muted-foreground mb-2">No.1 무료 링크 단축</p>
             <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
@@ -92,33 +96,33 @@ export default function KoreanPage() {
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold text-center mb-8">왜 ul0인가요?</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-              <div className="bg-background p-6 rounded-lg border">
-                <Zap className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="bolt" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">초고속</h3>
                 <p className="text-sm text-muted-foreground">1초 이내에 링크를 단축. 기다림 없음.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Shield className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="shield" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">100% 안전</h3>
                 <p className="text-sm text-muted-foreground">링크는 안전합니다. 스팸과 바이러스 없음.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Globe className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="domain" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">항상 무료</h3>
                 <p className="text-sm text-muted-foreground">숨겨진 비용 없음. 무제한 단축.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Users className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="team" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">비용 분담</h3>
                 <p className="text-sm text-muted-foreground">친구들과 계산을 쉽게 나누세요.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <QrCode className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="qr" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">QR 코드</h3>
                 <p className="text-sm text-muted-foreground">각 링크의 QR 코드를 즉시 생성.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Wifi className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="wifi" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">WiFi QR</h3>
                 <p className="text-sm text-muted-foreground">비밀번호 공유용 WiFi QR 코드 생성.</p>
               </div>
@@ -130,15 +134,15 @@ export default function KoreanPage() {
           <div className="container mx-auto px-4 max-w-3xl">
             <h2 className="text-2xl font-bold text-center mb-8">자주 묻는 질문</h2>
             <div className="space-y-4">
-              <div className="bg-background p-5 rounded-lg border">
+              <div className="bg-background p-5 rounded-2xl border border-border/60">
                 <h3 className="font-semibold mb-2">URL 단축기는 정말 무료인가요?</h3>
                 <p className="text-sm text-muted-foreground">네, ul0는 100% 무료이며 무제한, 숨겨진 비용이 없습니다.</p>
               </div>
-              <div className="bg-background p-5 rounded-lg border">
+              <div className="bg-background p-5 rounded-2xl border border-border/60">
                 <h3 className="font-semibold mb-2">계정이 필요한가요?</h3>
                 <p className="text-sm text-muted-foreground">아니요, 가입 없이 바로 링크를 단축할 수 있습니다.</p>
               </div>
-              <div className="bg-background p-5 rounded-lg border">
+              <div className="bg-background p-5 rounded-2xl border border-border/60">
                 <h3 className="font-semibold mb-2">QR 코드를 만들 수 있나요?</h3>
                 <p className="text-sm text-muted-foreground">네, 각 링크의 QR 코드를 무료로 생성할 수 있습니다.</p>
               </div>
@@ -151,10 +155,10 @@ export default function KoreanPage() {
             <h2 className="text-2xl font-bold mb-4">지금 시작 – 100% 무료!</h2>
             <p className="text-muted-foreground mb-6">친구들과 비용을 나누고 싶으세요? Split 기능을 사용해 보세요.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/split" className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium">
+              <Link href="/split" className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium shadow-xs">
                 비용 분담하기 →
               </Link>
-              <Link href="/qr" className="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 font-medium">
+              <Link href="/qr" className="inline-flex items-center justify-center rounded-full border border-border bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 font-medium shadow-xs">
                 QR 코드 만들기 →
               </Link>
             </div>

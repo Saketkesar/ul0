@@ -2,7 +2,7 @@
 
 import React from "react"
 import Link from "next/link"
-import { Lock, Sparkles, ArrowRight } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { PLANS, PLAN_FEATURES, type PlanSlug } from "@/lib/plans"
 
 export type GateFeature =
@@ -93,17 +93,17 @@ export function PlanGate({
 
       {/* Overlay card */}
       <div className="absolute inset-0 flex items-center justify-center p-4 bg-background/60 backdrop-blur-xs">
-        <div className="max-w-md w-full rounded-xl border border-primary/30 bg-surface-2 p-6 shadow-xl text-center space-y-4 animate-in fade-in zoom-in-95 duration-200">
-          <div className="mx-auto h-11 w-11 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
-            <Lock className="h-5 w-5" />
+        <div className="max-w-md w-full rounded-3xl border border-primary/30 bg-surface-2 p-6 shadow-xl text-center space-y-4 animate-in fade-in zoom-in-95 duration-200">
+          <div className="mx-auto h-12 w-12 rounded-2xl bg-surface-3 border border-primary/20 flex items-center justify-center text-primary">
+            <UL0Icon name="lock" size={22} />
           </div>
 
           <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-primary/10 text-primary border border-primary/20">
-              <Sparkles className="h-3 w-3" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-surface-3 text-primary border border-primary/20">
+              <UL0Icon name="sparkles" animated={true} size={14} />
               <span>Pro Plan (${proPlan.priceMonthly}/mo)</span>
             </div>
-            <h3 className="text-base font-semibold text-foreground tracking-tight">
+            <h3 className="text-base font-bold text-foreground tracking-tight">
               {defaultTitle}
             </h3>
             <p className="text-xs text-muted-foreground leading-relaxed">
@@ -114,10 +114,10 @@ export function PlanGate({
           <div className="pt-1">
             <Link
               href="/pricing"
-              className="inline-flex items-center justify-center gap-2 w-full rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-all shadow-sm"
+              className="inline-flex items-center justify-center gap-2 w-full rounded-full bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:opacity-90 transition-all shadow-xs"
             >
               <span>Upgrade to Pro</span>
-              <ArrowRight className="h-3.5 w-3.5" />
+              <UL0Icon name="arrowright" size={12} />
             </Link>
           </div>
         </div>

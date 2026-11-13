@@ -7,17 +7,7 @@ import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CopyField } from "@/components/copy-field"
-import {
-  QrCode,
-  Download,
-  Link2,
-  Sliders,
-  ShieldCheck,
-  AlertTriangle,
-  Sparkles,
-  ArrowRight,
-  Check,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import QRCode from "qrcode"
 import { toast } from "sonner"
 
@@ -121,9 +111,12 @@ export default function QrPage() {
         <div className="container mx-auto px-4 sm:px-6 max-w-5xl space-y-12">
           {/* Header */}
           <div className="border-b border-border pb-6 space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">
-              Vector QR Code Studio
-            </h1>
+            <div className="flex items-center gap-2.5">
+              <UL0Icon name="qr" animated={true} size={28} />
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+                Vector QR Code Studio
+              </h1>
+            </div>
             <p className="text-xs sm:text-sm text-muted-foreground">
               Create high-resolution PNG and SVG vector QR codes. Processed client-side in your browser.
             </p>
@@ -247,8 +240,8 @@ export default function QrPage() {
 
               {/* Contrast Warning */}
               {isLowContrast && (
-                <div className="p-3 rounded-md border border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-400 text-xs flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 shrink-0" />
+                <div className="p-3.5 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs flex items-center gap-2.5">
+                  <UL0Icon name="warning" size={16} />
                   <span>
                     Contrast ratio is {contrastRatio.toFixed(1)}:1 (minimum 3:1 recommended). Low contrast can prevent phone cameras from scanning.
                   </span>
@@ -257,15 +250,15 @@ export default function QrPage() {
             </div>
 
             {/* Right Preview Column (5 cols) */}
-            <div className="lg:col-span-5 rounded-lg border border-border bg-card p-5 sm:p-6 space-y-5 text-center">
+            <div className="lg:col-span-5 rounded-2xl border border-border bg-card p-5 sm:p-6 space-y-5 text-center shadow-2xs">
               <div className="text-xs font-semibold text-foreground text-left">Real-Time Vector Preview</div>
 
-              <div className="flex items-center justify-center p-6 bg-muted/30 rounded-lg border border-border">
+              <div className="flex items-center justify-center p-6 bg-surface-2 rounded-2xl border border-border/80">
                 {qrPngUrl ? (
                   <img
                     src={qrPngUrl}
                     alt="Generated QR code"
-                    className="w-52 h-52 object-contain rounded"
+                    className="w-52 h-52 object-contain rounded-xl"
                   />
                 ) : (
                   <div className="w-52 h-52 flex items-center justify-center text-xs text-muted-foreground font-mono">
@@ -279,11 +272,11 @@ export default function QrPage() {
                   <Button
                     asChild
                     size="sm"
-                    className="w-full text-xs font-semibold gap-1.5"
+                    className="w-full text-xs font-semibold gap-1.5 rounded-full bg-primary text-primary-foreground hover:opacity-90 shadow-2xs"
                     disabled={!qrPngUrl}
                   >
                     <a href={qrPngUrl} download="ul0-qr.png">
-                      <Download className="h-3.5 w-3.5" />
+                      <UL0Icon name="download" size={14} />
                       <span>Download PNG</span>
                     </a>
                   </Button>
@@ -293,9 +286,9 @@ export default function QrPage() {
                     size="sm"
                     onClick={downloadSvg}
                     disabled={!qrSvgString}
-                    className="w-full text-xs font-semibold gap-1.5"
+                    className="w-full text-xs font-semibold gap-1.5 rounded-full border-border bg-card hover:bg-surface-2 shadow-2xs"
                   >
-                    <Download className="h-3.5 w-3.5" />
+                    <UL0Icon name="download" size={14} />
                     <span>Download SVG</span>
                   </Button>
                 </div>

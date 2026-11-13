@@ -2,18 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import {
-  Megaphone,
-  CheckCircle2,
-  ArrowRight,
-  BarChart3,
-  HelpCircle,
-  Globe,
-  Share2,
-  TrendingUp,
-  Layers,
-  Database,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Link Management & UTM Tracking for Marketing Agencies | UL0",
@@ -83,7 +72,7 @@ export default function MarketingAgenciesUseCasePage() {
           {/* Hero */}
           <div className="mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-semibold text-blue-500 mb-4">
-              <Megaphone className="h-3.5 w-3.5" />
+              <UL0Icon name="campaign" className="h-3.5 w-3.5" />
               Agency Campaign Infrastructure
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-5 leading-tight">
@@ -95,13 +84,13 @@ export default function MarketingAgenciesUseCasePage() {
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/utm"
-                className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Open UTM Campaign Builder
               </Link>
               <Link
                 href="/pricing"
-                className="rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Agency Custom Domain Plans
               </Link>
@@ -110,9 +99,9 @@ export default function MarketingAgenciesUseCasePage() {
 
           {/* Core Agency Capabilities Grid */}
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-16">
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-blue-500/10 text-blue-500 p-3 w-fit mb-4">
-                <Globe className="h-5 w-5" />
+                <UL0Icon name="domain" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Multi-Tenant Custom Domains</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -120,9 +109,9 @@ export default function MarketingAgenciesUseCasePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-emerald-500/10 text-emerald-500 p-3 w-fit mb-4">
-                <Layers className="h-5 w-5" />
+                <UL0Icon name="docs" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Standardized UTM Taxonomy</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -130,9 +119,9 @@ export default function MarketingAgenciesUseCasePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-purple-500/10 text-purple-500 p-3 w-fit mb-4">
-                <BarChart3 className="h-5 w-5" />
+                <UL0Icon name="chartline" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Granular Click Attribution</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -142,7 +131,7 @@ export default function MarketingAgenciesUseCasePage() {
           </div>
 
           {/* Agency Comparison: UL0 vs Legacy Enterprise Shorteners */}
-          <div className="mb-16 rounded-2xl border border-border bg-card overflow-hidden">
+          <div className="mb-16 rounded-3xl border border-border shadow-xs bg-card overflow-hidden">
             <div className="p-6 border-b border-border bg-muted/20">
               <h3 className="font-bold text-foreground text-lg">UL0 vs Legacy Enterprise Shorteners (Bitly, Rebrandly)</h3>
               <p className="text-xs text-muted-foreground mt-1">Why modern digital marketing agencies are migrating to UL0.</p>
@@ -194,9 +183,9 @@ export default function MarketingAgenciesUseCasePage() {
             </h2>
             <div className="space-y-4 max-w-3xl mx-auto">
               {faqSchema.mainEntity.map((item, idx) => (
-                <div key={idx} className="rounded-xl border border-border bg-card p-5">
+                <div key={idx} className="rounded-2xl border border-border shadow-xs bg-card p-5">
                   <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4 text-primary shrink-0" />
+                    <UL0Icon name="bulb" className="h-4 w-4 text-primary shrink-0" />
                     <span>{item.name}</span>
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed pl-6">
@@ -218,13 +207,13 @@ export default function MarketingAgenciesUseCasePage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/pricing"
-                className="rounded-xl bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Explore Agency Plans
               </Link>
               <Link
                 href="/utm"
-                className="rounded-xl border border-border bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Try the UTM Builder
               </Link>

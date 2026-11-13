@@ -3,29 +3,8 @@
 import React, { useState, useRef, useEffect, useCallback } from "react"
 import { PDFDocument } from "pdf-lib"
 import JSZip from "jszip"
-import {
-  Upload,
-  FileText,
-  Download,
-  CheckSquare,
-  Square,
-  Edit2,
-  Trash2,
-  Layers,
-  Archive,
-  RefreshCw,
-  Loader2,
-  ArrowDownToLine,
-  Eye,
-  Check,
-  Split,
-  FileCheck,
-  SlidersHorizontal,
-  LayoutList,
-  LayoutGrid,
-  Info,
-} from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface PageItem {
   pageNumber: number // 1-indexed
@@ -359,8 +338,8 @@ export function PdfSplitterClient() {
               }
             }}
           />
-          <div className="mx-auto w-16 h-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-            <Upload className="h-8 w-8" />
+          <div className="mx-auto w-16 h-16 rounded-3xl bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+            <UL0Icon name="upload" animated={true} size={36} />
           </div>
           <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">
             Upload Multi-Page PDF to Split
@@ -368,7 +347,7 @@ export function PdfSplitterClient() {
           <p className="text-sm text-muted-foreground max-w-md mx-auto mb-6">
             Drag &amp; drop any PDF (e.g. 5, 10, 30, or 100+ pages). Preview every page line-by-line, rename, and download single pages or selected batches.
           </p>
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-sm font-semibold shadow-sm">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-2xs">
             Choose PDF File
           </div>
           <p className="text-xs text-muted-foreground mt-4">
@@ -379,8 +358,8 @@ export function PdfSplitterClient() {
 
       {/* Loading state indicator */}
       {isLoading && (
-        <div className="p-6 rounded-2xl border border-border bg-card text-center space-y-3">
-          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+        <div className="p-8 rounded-3xl border border-border bg-card text-center space-y-3">
+          <UL0Icon name="loading" animated={true} size={36} className="mx-auto" />
           <p className="text-sm font-medium text-foreground">{statusMessage}</p>
         </div>
       )}
@@ -389,10 +368,10 @@ export function PdfSplitterClient() {
       {file && pages.length > 0 && (
         <div className="space-y-6">
           {/* Top Control Bar */}
-          <div className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="rounded-3xl border border-border bg-card p-5 sm:p-6 shadow-2xs flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-primary/10 text-primary">
-                <FileText className="h-6 w-6" />
+              <div className="p-2.5 rounded-2xl bg-surface-2 border border-border text-primary">
+                <UL0Icon name="docs" animated={true} size={28} />
               </div>
               <div>
                 <h3 className="text-base sm:text-lg font-bold text-foreground truncate max-w-xs sm:max-w-md">
@@ -407,73 +386,69 @@ export function PdfSplitterClient() {
 
             {/* Quick Actions & View Controls */}
             <div className="flex flex-wrap items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
+              <button
+                type="button"
                 onClick={() => selectAll(true)}
-                className="text-xs h-8 gap-1.5 rounded-lg"
+                className="text-xs h-8 px-3.5 gap-1.5 rounded-full border border-border bg-surface-2 hover:bg-muted font-semibold text-foreground inline-flex items-center cursor-pointer transition-colors"
               >
-                <CheckSquare className="h-3.5 w-3.5" />
-                Select All
-              </Button>
+                <UL0Icon name="check" size={14} />
+                <span>Select All</span>
+              </button>
 
-              <Button
-                variant="outline"
-                size="sm"
+              <button
+                type="button"
                 onClick={() => selectAll(false)}
-                className="text-xs h-8 gap-1.5 rounded-lg"
+                className="text-xs h-8 px-3.5 gap-1.5 rounded-full border border-border bg-surface-2 hover:bg-muted font-semibold text-foreground inline-flex items-center cursor-pointer transition-colors"
               >
-                <Square className="h-3.5 w-3.5" />
-                Deselect All
-              </Button>
+                <span className="h-3 w-3 rounded-xs border border-muted-foreground/60 block" />
+                <span>Deselect All</span>
+              </button>
 
-              <Button
-                variant="outline"
-                size="sm"
+              <button
+                type="button"
                 onClick={() => setShowBatchModal(true)}
-                className="text-xs h-8 gap-1.5 rounded-lg"
+                className="text-xs h-8 px-3.5 gap-1.5 rounded-full border border-border bg-surface-2 hover:bg-muted font-semibold text-foreground inline-flex items-center cursor-pointer transition-colors"
               >
-                <Edit2 className="h-3.5 w-3.5" />
-                Batch Rename
-              </Button>
+                <UL0Icon name="edit" size={14} />
+                <span>Batch Rename</span>
+              </button>
 
               {/* View Switcher */}
-              <div className="flex items-center rounded-lg border border-border bg-muted p-0.5">
+              <div className="flex items-center rounded-full border border-border bg-surface-2 p-0.5">
                 <button
                   type="button"
                   onClick={() => setViewMode("list")}
-                  className={`p-1.5 rounded-md transition-colors ${
-                    viewMode === "list" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground"
+                  className={`p-1.5 rounded-full transition-colors cursor-pointer ${
+                    viewMode === "list" ? "bg-primary text-primary-foreground shadow-2xs" : "text-muted-foreground hover:text-foreground"
                   }`}
                   title="Line-by-line List View"
                 >
-                  <LayoutList className="h-4 w-4" />
+                  <UL0Icon name="docs" size={14} />
                 </button>
                 <button
                   type="button"
                   onClick={() => setViewMode("grid")}
-                  className={`p-1.5 rounded-md transition-colors ${
-                    viewMode === "grid" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground"
+                  className={`p-1.5 rounded-full transition-colors cursor-pointer ${
+                    viewMode === "grid" ? "bg-primary text-primary-foreground shadow-2xs" : "text-muted-foreground hover:text-foreground"
                   }`}
                   title="Grid Card View"
                 >
-                  <LayoutGrid className="h-4 w-4" />
+                  <UL0Icon name="dashboard" size={14} />
                 </button>
               </div>
 
               {/* Reset / Change File */}
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
+                type="button"
                 onClick={() => {
                   setFile(null)
                   setFileBuffer(null)
                   setPages([])
                 }}
-                className="text-xs h-8 text-destructive hover:bg-destructive/10"
+                className="text-xs h-8 px-3.5 rounded-full text-destructive hover:bg-destructive/10 font-semibold cursor-pointer transition-colors"
               >
                 Change PDF
-              </Button>
+              </button>
             </div>
           </div>
 
@@ -498,11 +473,11 @@ export function PdfSplitterClient() {
                 className="text-xs h-8 gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg"
               >
                 {isMergingSelected ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <UL0Icon name="loading" animated={true} size={14} />
                 ) : (
-                  <Layers className="h-3.5 w-3.5" />
+                  <UL0Icon name="docs" size={14} />
                 )}
-                Merge {selectedCount > 1 ? `${selectedCount} Pages` : "Selected"}
+                <span>Merge {selectedCount > 1 ? `${selectedCount} Pages` : "Selected"}</span>
               </Button>
 
               {/* Download Selected as ZIP */}
@@ -511,14 +486,14 @@ export function PdfSplitterClient() {
                 variant="outline"
                 disabled={selectedCount === 0 || isProcessingZip}
                 onClick={() => downloadAsZip(true)}
-                className="text-xs h-8 gap-1.5 rounded-lg border-primary/30 text-primary hover:bg-primary/10"
+                className="text-xs h-8 gap-1.5 rounded-full border-primary/30 text-primary hover:bg-primary/10 cursor-pointer"
               >
                 {isProcessingZip ? (
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <UL0Icon name="loading" animated={true} size={14} />
                 ) : (
-                  <Archive className="h-3.5 w-3.5" />
+                  <UL0Icon name="download" size={14} />
                 )}
-                Download Selected ({selectedCount}) as ZIP
+                <span>Download Selected ({selectedCount}) as ZIP</span>
               </Button>
 
               {/* Download All as ZIP */}
@@ -527,19 +502,19 @@ export function PdfSplitterClient() {
                 variant="outline"
                 disabled={isProcessingZip}
                 onClick={() => downloadAsZip(false)}
-                className="text-xs h-8 gap-1.5 rounded-lg"
+                className="text-xs h-8 gap-1.5 rounded-full cursor-pointer"
               >
-                <ArrowDownToLine className="h-3.5 w-3.5" />
-                Download All {totalPages} Pages (ZIP)
+                <UL0Icon name="download" size={14} />
+                <span>Download All {totalPages} Pages (ZIP)</span>
               </Button>
             </div>
           </div>
 
           {/* Batch Rename Modal */}
           {showBatchModal && (
-            <div className="p-4 rounded-2xl border border-border bg-card space-y-3 animate-in fade-in-50 duration-200">
+            <div className="p-5 rounded-3xl border border-border bg-card space-y-3 animate-in fade-in-50 duration-200 shadow-2xs">
               <h4 className="text-sm font-bold text-foreground flex items-center gap-2">
-                <Edit2 className="h-4 w-4 text-primary" />
+                <UL0Icon name="edit" size={16} />
                 <span>Batch Rename All Pages</span>
               </h4>
               <p className="text-xs text-muted-foreground">
@@ -551,19 +526,22 @@ export function PdfSplitterClient() {
                   value={batchPrefix}
                   onChange={(e) => setBatchPrefix(e.target.value)}
                   placeholder="e.g. quarterly_invoice_page"
-                  className="flex-1 px-3 py-1.5 text-xs bg-background border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="flex-1 px-3.5 py-1.5 text-xs bg-background border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary font-mono"
                 />
-                <Button size="sm" onClick={applyBatchRename} className="h-8 text-xs rounded-xl">
+                <button
+                  type="button"
+                  onClick={applyBatchRename}
+                  className="h-8 px-4 text-xs font-semibold rounded-full bg-primary hover:opacity-90 text-primary-foreground transition-opacity cursor-pointer"
+                >
                   Apply to All
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
+                </button>
+                <button
+                  type="button"
                   onClick={() => setShowBatchModal(false)}
-                  className="h-8 text-xs"
+                  className="h-8 px-3 text-xs text-muted-foreground hover:text-foreground cursor-pointer"
                 >
                   Cancel
-                </Button>
+                </button>
               </div>
             </div>
           )}
@@ -587,16 +565,18 @@ export function PdfSplitterClient() {
                     <button
                       type="button"
                       onClick={() => togglePageSelection(p.pageNumber)}
-                      className="text-primary focus:outline-none shrink-0"
+                      className="text-primary focus:outline-none shrink-0 cursor-pointer"
                     >
                       {p.selected ? (
-                        <CheckSquare className="h-5 w-5 text-primary" />
+                        <span className="h-5 w-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center">
+                          <UL0Icon name="check" size={14} />
+                        </span>
                       ) : (
-                        <Square className="h-5 w-5 text-muted-foreground hover:text-foreground" />
+                        <span className="h-5 w-5 rounded-md border border-muted-foreground/60 block hover:border-foreground" />
                       )}
                     </button>
 
-                    <div className="flex items-center justify-center h-8 w-12 rounded-lg bg-muted text-foreground text-xs font-mono font-bold shrink-0">
+                    <div className="flex items-center justify-center h-8 w-12 rounded-lg bg-surface-2 border border-border text-foreground text-xs font-mono font-bold shrink-0">
                       #{p.pageNumber}
                     </div>
 
@@ -610,7 +590,7 @@ export function PdfSplitterClient() {
                           className="h-full w-full object-contain"
                         />
                       ) : (
-                        <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                        <UL0Icon name="loading" animated={true} size={16} />
                       )}
                     </div>
 
@@ -642,14 +622,14 @@ export function PdfSplitterClient() {
 
                   {/* Right: Individual Single Page Download Button */}
                   <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <Button
-                      size="sm"
+                    <button
+                      type="button"
                       onClick={() => downloadSinglePage(p.pageNumber, p.customName)}
-                      className="text-xs h-8 gap-1.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs shrink-0"
+                      className="text-xs h-8 px-4 gap-1.5 rounded-full bg-primary hover:opacity-90 text-primary-foreground font-semibold inline-flex items-center shadow-2xs transition-opacity cursor-pointer shrink-0"
                     >
-                      <Download className="h-3.5 w-3.5" />
-                      Download Page {p.pageNumber}
-                    </Button>
+                      <UL0Icon name="download" size={14} />
+                      <span>Download Page {p.pageNumber}</span>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -664,7 +644,7 @@ export function PdfSplitterClient() {
                   key={p.pageNumber}
                   className={`rounded-2xl border p-3 flex flex-col justify-between transition-all ${
                     p.selected
-                      ? "border-primary bg-primary/5 shadow-xs ring-1 ring-primary"
+                      ? "border-primary bg-primary/5 shadow-2xs ring-1 ring-primary"
                       : "border-border bg-card hover:border-border/80"
                   }`}
                 >
@@ -672,12 +652,14 @@ export function PdfSplitterClient() {
                     <button
                       type="button"
                       onClick={() => togglePageSelection(p.pageNumber)}
-                      className="text-primary focus:outline-none"
+                      className="text-primary focus:outline-none cursor-pointer"
                     >
                       {p.selected ? (
-                        <CheckSquare className="h-4 w-4 text-primary" />
+                        <span className="h-4 w-4 rounded bg-primary text-primary-foreground flex items-center justify-center">
+                          <UL0Icon name="check" size={12} />
+                        </span>
                       ) : (
-                        <Square className="h-4 w-4 text-muted-foreground hover:text-foreground" />
+                        <span className="h-4 w-4 rounded border border-muted-foreground/60 block hover:border-foreground" />
                       )}
                     </button>
                     <span className="text-[11px] font-mono font-bold px-1.5 py-0.5 rounded bg-muted text-foreground">
@@ -698,7 +680,7 @@ export function PdfSplitterClient() {
                         className="h-full w-full object-contain"
                       />
                     ) : (
-                      <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+                      <UL0Icon name="loading" animated={true} size={18} />
                     )}
                   </div>
 
@@ -712,15 +694,14 @@ export function PdfSplitterClient() {
                       title={p.customName}
                     />
 
-                    <Button
-                      size="sm"
-                      variant="outline"
+                    <button
+                      type="button"
                       onClick={() => downloadSinglePage(p.pageNumber, p.customName)}
-                      className="w-full text-[11px] h-7 gap-1 rounded-lg"
+                      className="w-full text-[11px] h-7 gap-1 rounded-full border border-border bg-surface-2 hover:bg-muted font-semibold text-foreground inline-flex items-center justify-center transition-colors cursor-pointer"
                     >
-                      <Download className="h-3 w-3" />
-                      Download
-                    </Button>
+                      <UL0Icon name="download" size={12} />
+                      <span>Download</span>
+                    </button>
                   </div>
                 </div>
               ))}

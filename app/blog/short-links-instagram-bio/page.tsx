@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, Sparkles, Instagram, Link2, Eye } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "How to Add Multiple Links in Instagram Bio - Bio Link Guide 2026 | ul0",
@@ -70,7 +70,7 @@ export default function ShortLinksInstagramBioPage() {
             href="/blog" 
             className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground mb-6"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <UL0Icon name="arrowleft" className="h-4 w-4" />
             Back to Blog
           </Link>
 
@@ -103,7 +103,7 @@ export default function ShortLinksInstagramBioPage() {
             <h2 className="text-2xl font-bold mt-8">How to Set Up Your Instagram Bio Link</h2>
             <div className="space-y-4 my-6">
               <div className="flex gap-4 p-4 bg-muted/30 rounded-lg">
-                <Link2 className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                <UL0Icon name="link" className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold text-foreground">1. Shorten Your Primary Destination</h3>
                   <p className="text-muted-foreground text-sm">
@@ -113,7 +113,7 @@ export default function ShortLinksInstagramBioPage() {
               </div>
 
               <div className="flex gap-4 p-4 bg-muted/30 rounded-lg">
-                <Instagram className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                <UL0Icon name="instagram" className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold text-foreground">2. Add to Your Instagram Profile</h3>
                   <p className="text-muted-foreground text-sm">
@@ -123,7 +123,7 @@ export default function ShortLinksInstagramBioPage() {
               </div>
 
               <div className="flex gap-4 p-4 bg-muted/30 rounded-lg">
-                <Eye className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                <UL0Icon name="target" className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold text-foreground">3. Leverage Campaign UTM Tracking</h3>
                   <p className="text-muted-foreground text-sm">

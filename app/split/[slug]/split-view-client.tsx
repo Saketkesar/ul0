@@ -1,23 +1,6 @@
 "use client"
 
-import { useRef, useState, useEffect, useMemo, useCallback } from "react"
-import { Button } from "@/components/ui/button"
-import {
-  ArrowRight,
-  Download,
-  QrCode,
-  Clock,
-  ExternalLink,
-  Copy,
-  Check,
-  CheckCircle2,
-  RefreshCw,
-  Share2,
-  CreditCard,
-  Wallet,
-  Smartphone,
-  Plus,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import QRCode from "qrcode"
 import html2canvas from "html2canvas"
 import { jsPDF } from "jspdf"
@@ -410,7 +393,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
           <div className="flex items-center gap-2">
             {session.expires_at && (
               <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-border bg-card text-[11px] font-mono text-muted-foreground">
-                <Clock className="w-3 h-3 text-muted-foreground" />
+                <UL0Icon name="clock" className="w-3 h-3 text-muted-foreground" />
                 <span>
                   {timeLeft.hours}h {timeLeft.minutes}m left
                 </span>
@@ -424,7 +407,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
               className="p-1.5 rounded-md border border-border bg-card text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               title="Refresh"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+              <UL0Icon name="refresh" className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
             </button>
 
             <button
@@ -434,12 +417,12 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
             >
               {copiedShareLink ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-foreground" />
+                  <UL0Icon name="check" className="w-3.5 h-3.5 text-foreground" />
                   <span>Copied</span>
                 </>
               ) : (
                 <>
-                  <Share2 className="w-3.5 h-3.5 text-muted-foreground" />
+                  <UL0Icon name="link" className="w-3.5 h-3.5 text-muted-foreground" />
                   <span>Share</span>
                 </>
               )}
@@ -568,7 +551,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
                                 className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-border bg-card hover:bg-muted/50 text-xs font-medium text-foreground transition-colors"
                               >
                                 <span>Pay</span>
-                                <ExternalLink className="w-3 h-3 text-muted-foreground" />
+                                <UL0Icon name="external" className="w-3 h-3 text-muted-foreground" />
                               </a>
                             )}
 
@@ -579,7 +562,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
                                 className="p-1.5 rounded-md border border-border bg-card hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                                 title="Show QR code"
                               >
-                                <QrCode className="w-3.5 h-3.5" />
+                                <UL0Icon name="qr" className="w-3.5 h-3.5" />
                               </button>
                             )}
 
@@ -591,9 +574,9 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
                                 title={`Copy ${paymentId}`}
                               >
                                 {copiedId === paymentId ? (
-                                  <Check className="w-3.5 h-3.5 text-foreground" />
+                                  <UL0Icon name="check" className="w-3.5 h-3.5 text-foreground" />
                                 ) : (
-                                  <Copy className="w-3.5 h-3.5" />
+                                  <UL0Icon name="copy" className="w-3.5 h-3.5" />
                                 )}
                               </button>
                             )}
@@ -610,7 +593,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
                               }`}
                             >
                               {updatingIdx === idx ? (
-                                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                <UL0Icon name="refresh" className="w-3.5 h-3.5 animate-spin" />
                               ) : isPaid ? (
                                 <span>Settled</span>
                               ) : (
@@ -729,7 +712,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
             onClick={downloadPDF}
             className="w-full sm:w-1/2 h-10 rounded-md text-xs font-medium cursor-pointer"
           >
-            <Download className="w-3.5 h-3.5 mr-1.5" />
+            <UL0Icon name="download" className="w-3.5 h-3.5 mr-1.5" />
             <span>Download PDF Receipt</span>
           </Button>
 
@@ -738,7 +721,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
             className="w-full sm:w-1/2 h-10 rounded-md text-xs font-medium bg-foreground text-background hover:opacity-90 cursor-pointer"
           >
             <a href="/split">
-              <Plus className="w-3.5 h-3.5 mr-1.5" />
+              <UL0Icon name="plus" className="w-3.5 h-3.5 mr-1.5" />
               <span>New Split</span>
             </a>
           </Button>

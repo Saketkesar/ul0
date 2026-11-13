@@ -2,17 +2,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Metadata } from "next"
 import Link from "next/link"
-import {
-  ShieldCheck,
-  ShieldAlert,
-  Lock,
-  Server,
-  EyeOff,
-  AlertTriangle,
-  Flag,
-  CheckCircle2,
-  FileCheck,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Security & Safety Architecture — How ul0 Protects Users | ul0",
@@ -32,8 +22,8 @@ export default function SecurityPage() {
         <div className="container mx-auto px-4 max-w-4xl space-y-12">
           {/* Header */}
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mb-4">
-              <ShieldCheck className="h-4 w-4" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mb-4 border border-emerald-500/20">
+              <UL0Icon name="shield" className="h-4 w-4" />
               Infrastructure &amp; Safety Standards
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
@@ -46,9 +36,9 @@ export default function SecurityPage() {
 
           {/* Security Pillars */}
           <div className="grid gap-6 sm:grid-cols-2">
-            <div className="p-6 rounded-2xl border border-border bg-card space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-                <Lock className="h-5 w-5" />
+            <div className="p-6 rounded-3xl border border-border bg-card space-y-3 shadow-xs">
+              <div className="h-10 w-10 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20">
+                <UL0Icon name="lock" className="h-5 w-5" />
               </div>
               <h3 className="text-lg font-bold text-foreground">1. Mandatory TLS / HTTPS</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -56,9 +46,9 @@ export default function SecurityPage() {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl border border-border bg-card space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center">
-                <Server className="h-5 w-5" />
+            <div className="p-6 rounded-3xl border border-border bg-card space-y-3 shadow-xs">
+              <div className="h-10 w-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+                <UL0Icon name="server" className="h-5 w-5" />
               </div>
               <h3 className="text-lg font-bold text-foreground">2. SSRF &amp; Private IP Blocking</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -66,9 +56,9 @@ export default function SecurityPage() {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl border border-border bg-card space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center">
-                <AlertTriangle className="h-5 w-5" />
+            <div className="p-6 rounded-3xl border border-border bg-card space-y-3 shadow-xs">
+              <div className="h-10 w-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center border border-amber-500/20">
+                <UL0Icon name="warning" className="h-5 w-5" />
               </div>
               <h3 className="text-lg font-bold text-foreground">3. Brand Mimicry &amp; Phishing Heuristics</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -76,9 +66,9 @@ export default function SecurityPage() {
               </p>
             </div>
 
-            <div className="p-6 rounded-2xl border border-border bg-card space-y-3">
-              <div className="h-10 w-10 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center">
-                <EyeOff className="h-5 w-5" />
+            <div className="p-6 rounded-3xl border border-border bg-card space-y-3 shadow-xs">
+              <div className="h-10 w-10 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center border border-emerald-500/20">
+                <UL0Icon name="shield" className="h-5 w-5" />
               </div>
               <h3 className="text-lg font-bold text-foreground">4. Privacy-First Telemetry</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -88,13 +78,13 @@ export default function SecurityPage() {
           </div>
 
           {/* Live Threat Radar Banner */}
-          <div className="p-6 sm:p-8 rounded-2xl border border-red-500/30 bg-gradient-to-r from-red-950/20 via-red-900/10 to-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-sm">
+          <div className="p-6 sm:p-8 rounded-3xl border border-red-500/30 bg-gradient-to-r from-red-950/20 via-red-900/10 to-card flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 shadow-sm">
             <div className="space-y-1">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-red-500/10 text-red-500 border border-red-500/20 uppercase mb-1">
                 Live Transparency Feed
               </div>
               <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-                <ShieldAlert className="h-5 w-5 text-red-500" />
+                <UL0Icon name="shield" className="h-5 w-5 text-red-500" />
                 Threat Intelligence Radar
               </h3>
               <p className="text-xs text-muted-foreground max-w-xl leading-relaxed">
@@ -103,17 +93,17 @@ export default function SecurityPage() {
             </div>
             <Link
               href="/threats"
-              className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors shrink-0 shadow-md shadow-red-600/20"
+              className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-red-700 transition-colors shrink-0 shadow-md shadow-red-600/20"
             >
               View Threat Radar &rarr;
             </Link>
           </div>
 
           {/* Abuse Takedown Box */}
-          <div className="p-6 sm:p-8 rounded-2xl border border-rose-500/30 bg-rose-500/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+          <div className="p-6 sm:p-8 rounded-3xl border border-rose-500/30 bg-rose-500/5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
             <div className="space-y-1">
               <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-                <Flag className="h-5 w-5 text-rose-500" />
+                <UL0Icon name="flag" className="h-5 w-5 text-rose-500" />
                 Spam &amp; Phishing Takedowns
               </h3>
               <p className="text-xs text-muted-foreground max-w-xl leading-relaxed">
@@ -122,7 +112,7 @@ export default function SecurityPage() {
             </div>
             <Link
               href="/report-abuse"
-              className="inline-flex items-center gap-2 rounded-xl bg-rose-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-rose-700 transition-colors shrink-0 shadow-sm"
+              className="inline-flex items-center gap-2 rounded-full bg-rose-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-rose-700 transition-colors shrink-0 shadow-sm"
             >
               Report Malicious Link
             </Link>

@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { UrlExpanderClient } from "./url-expander-client"
-import { HelpCircle, ShieldCheck, AlertTriangle, Eye, Lock } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "URL Expander — Unshorten & Check Short Links Online | UL0",
@@ -93,22 +93,28 @@ export default function UrlExpanderPage() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3 text-xs">
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <ShieldCheck className="h-5 w-5 text-emerald-500 mb-2" />
-                <h4 className="font-bold text-foreground mb-1">Anti-Phishing Detection</h4>
-                <p className="text-muted-foreground">Screens the target destination against active phishing databases and high-risk domain patterns.</p>
+              <div className="p-5 rounded-2xl border border-border bg-card shadow-2xs hover:border-primary/40 transition-colors">
+                <div className="mb-3">
+                  <UL0Icon name="shield" animated={true} size={28} />
+                </div>
+                <h4 className="font-bold text-foreground mb-1 text-sm">Anti-Phishing Detection</h4>
+                <p className="text-muted-foreground leading-relaxed">Screens the target destination against active phishing databases and high-risk domain patterns.</p>
               </div>
 
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <Lock className="h-5 w-5 text-blue-500 mb-2" />
-                <h4 className="font-bold text-foreground mb-1">SSL Certificate Check</h4>
-                <p className="text-muted-foreground">Verifies that the target website uses secure HTTPS encryption to protect your sensitive credentials.</p>
+              <div className="p-5 rounded-2xl border border-border bg-card shadow-2xs hover:border-primary/40 transition-colors">
+                <div className="mb-3">
+                  <UL0Icon name="lock" animated={true} size={28} />
+                </div>
+                <h4 className="font-bold text-foreground mb-1 text-sm">SSL Certificate Check</h4>
+                <p className="text-muted-foreground leading-relaxed">Verifies that the target website uses secure HTTPS encryption to protect your sensitive credentials.</p>
               </div>
 
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <Eye className="h-5 w-5 text-purple-500 mb-2" />
-                <h4 className="font-bold text-foreground mb-1">Metadata Preview</h4>
-                <p className="text-muted-foreground">Extracts the destination page title, meta description, and official favicon before you visit.</p>
+              <div className="p-5 rounded-2xl border border-border bg-card shadow-2xs hover:border-primary/40 transition-colors">
+                <div className="mb-3">
+                  <UL0Icon name="eye" animated={true} size={28} />
+                </div>
+                <h4 className="font-bold text-foreground mb-1 text-sm">Metadata Preview</h4>
+                <p className="text-muted-foreground leading-relaxed">Extracts the destination page title, meta description, and official favicon before you visit.</p>
               </div>
             </div>
 
@@ -117,12 +123,12 @@ export default function UrlExpanderPage() {
               <h3 className="text-lg font-bold text-foreground mb-4">Frequently Asked Questions</h3>
               <div className="space-y-3">
                 {faqSchema.mainEntity.map((item, idx) => (
-                  <div key={idx} className="rounded-xl border border-border bg-card p-4">
-                    <h4 className="text-xs font-semibold text-foreground mb-1.5 flex items-center gap-1.5">
-                      <HelpCircle className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <div key={idx} className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-2xs">
+                    <h4 className="text-xs sm:text-sm font-semibold text-foreground mb-1.5 flex items-center gap-2">
+                      <UL0Icon name="faq" size={16} />
                       <span>{item.name}</span>
                     </h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed pl-5">
+                    <p className="text-xs text-muted-foreground leading-relaxed pl-6">
                       {item.acceptedAnswer.text}
                     </p>
                   </div>

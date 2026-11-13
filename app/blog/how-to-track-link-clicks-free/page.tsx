@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, BarChart3, ShieldCheck, Zap } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "How to Track Link Clicks for Free in 2026 - Analytics Guide | ul0",
@@ -68,7 +68,7 @@ export default function TrackLinkClicksFreePage() {
             href="/blog" 
             className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground mb-6"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <UL0Icon name="arrowleft" className="h-4 w-4" />
             Back to Blog
           </Link>
 

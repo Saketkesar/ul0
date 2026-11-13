@@ -3,16 +3,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { FilesWorkspace } from "@/app/files/files-workspace"
 import { Badge } from "@/components/ui/badge"
-import {
-  FileText,
-  ImageIcon,
-  FileStack,
-  ScanLine,
-  Shield,
-  Zap,
-  Globe,
-  Lock,
-} from "lucide-react"
+import { UL0Icon, UL0IconName } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Free PDF Tools Online — Image to PDF, Merge PDFs & Document Scanner | ul0",
@@ -163,12 +154,12 @@ export default function PdfPage() {
           {/* Hero section */}
           <div className="text-center mb-10">
             <div className="flex items-center justify-center gap-2 mb-4">
-              <Badge variant="secondary" className="gap-1">
-                <FileText className="h-3 w-3" />
+              <Badge variant="secondary" className="gap-1 rounded-full">
+                <UL0Icon name="docs" className="h-3 w-3" />
                 PDF Tools
               </Badge>
-              <Badge variant="outline" className="gap-1">
-                <Lock className="h-3 w-3" />
+              <Badge variant="outline" className="gap-1 rounded-full">
+                <UL0Icon name="lock" className="h-3 w-3" />
                 100% Private
               </Badge>
             </div>
@@ -184,16 +175,16 @@ export default function PdfPage() {
           {/* Trust badges */}
           <div className="flex flex-wrap items-center justify-center gap-4 mb-10">
             {[
-              { icon: Shield, text: "No upload — 100% client-side" },
-              { icon: Zap, text: "Instant processing" },
-              { icon: Globe, text: "Works on any device" },
-              { icon: Lock, text: "No watermarks" },
-            ].map(({ icon: Icon, text }) => (
+              { icon: "shield" as const, text: "No upload — 100% client-side" },
+              { icon: "bolt" as const, text: "Instant processing" },
+              { icon: "domain" as const, text: "Works on any device" },
+              { icon: "lock" as const, text: "No watermarks" },
+            ].map(({ icon, text }) => (
               <div
                 key={text}
                 className="flex items-center gap-2 px-3 py-1.5 bg-muted/30 border border-border/50 rounded-full text-xs text-muted-foreground"
               >
-                <Icon className="h-3.5 w-3.5 text-primary" />
+                <UL0Icon name={icon} className="h-3.5 w-3.5 text-primary" />
                 {text}
               </div>
             ))}
@@ -210,31 +201,33 @@ export default function PdfPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {[
                 {
-                  icon: ImageIcon,
+                  icon: "image" as const,
                   title: "Image to PDF Converter",
                   desc: "Upload JPG, PNG, or WebP images and instantly convert them into a single PDF document. Set page size (A4, Letter, Legal), orientation, and custom filename. Perfect for creating photo albums, portfolios, or document archives.",
                 },
                 {
-                  icon: FileStack,
+                  icon: "docs" as const,
                   title: "Merge PDF Files",
                   desc: "Combine multiple PDF files into one document. Drag to reorder pages, see page counts, and download the merged result. Great for combining contracts, reports, or presentation slides.",
                 },
                 {
-                  icon: ScanLine,
+                  icon: "qr" as const,
                   title: "Document Scanner",
                   desc: "Use your phone or laptop camera to scan physical documents. The scanner includes an A4 aspect ratio guide overlay and automatic contrast enhancement for cleaner scans. Export as PDF with a custom filename.",
                 },
                 {
-                  icon: Shield,
+                  icon: "shield" as const,
                   title: "Privacy-First Processing",
                   desc: "Unlike other PDF tools, ul0 processes everything in your browser using JavaScript. Your files are never uploaded to any server. No account required, no data collection, no tracking.",
                 },
-              ].map(({ icon: Icon, title, desc }) => (
+              ].map(({ icon, title, desc }) => (
                 <div
                   key={title}
-                  className="p-5 bg-card rounded-2xl border border-border/60 hover:border-primary/30 transition-colors"
+                  className="p-5 bg-card rounded-3xl border border-border/60 hover:border-primary/30 transition-colors shadow-xs"
                 >
-                  <Icon className="h-6 w-6 text-primary mb-3" />
+                  <div className="w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-3">
+                    <UL0Icon name={icon} className="h-5 w-5 text-primary" />
+                  </div>
                   <h3 className="font-semibold mb-2">{title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
                 </div>

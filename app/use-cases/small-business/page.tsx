@@ -2,18 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import {
-  Briefcase,
-  CheckCircle2,
-  ArrowRight,
-  QrCode,
-  Globe,
-  BarChart3,
-  HelpCircle,
-  Share2,
-  ShieldCheck,
-  TrendingUp,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Link Tracking & Branded Links for Small Businesses | UL0",
@@ -83,7 +72,7 @@ export default function SmallBusinessUseCasePage() {
           {/* Hero */}
           <div className="mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-500 mb-4">
-              <Briefcase className="h-3.5 w-3.5" />
+              <UL0Icon name="cart" className="h-3.5 w-3.5" />
               Small Business Growth
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-5 leading-tight">
@@ -95,13 +84,13 @@ export default function SmallBusinessUseCasePage() {
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/"
-                className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Create a Free Trackable Link
               </Link>
               <Link
                 href="/qr"
-                className="rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Generate Flyer QR Code
               </Link>
@@ -136,15 +125,15 @@ export default function SmallBusinessUseCasePage() {
               </h3>
               <ul className="space-y-3 text-sm text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <UL0Icon name="check" className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
                   <span>Short branded URLs (e.g. <code>shop.link/deal</code>) that customers remember and trust.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <UL0Icon name="check" className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
                   <span>Crisp, auto-generated vector QR codes that customers scan in under 2 seconds.</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <UL0Icon name="check" className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
                   <span>Real-time click dashboards showing exactly when, where, and on what device customers engaged.</span>
                 </li>
               </ul>
@@ -158,8 +147,8 @@ export default function SmallBusinessUseCasePage() {
             </h2>
 
             <div className="grid gap-6 md:grid-cols-3">
-              <div className="rounded-2xl border border-border bg-card p-6">
-                <div className="rounded-xl bg-primary/10 text-primary w-10 h-10 flex items-center justify-center font-bold mb-4">
+              <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
+                <div className="rounded-full bg-primary/10 text-primary w-10 h-10 flex items-center justify-center font-bold mb-4">
                   1
                 </div>
                 <h3 className="text-base font-bold text-foreground mb-2">Shorten Your Promo Link</h3>
@@ -168,8 +157,8 @@ export default function SmallBusinessUseCasePage() {
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-border bg-card p-6">
-                <div className="rounded-xl bg-primary/10 text-primary w-10 h-10 flex items-center justify-center font-bold mb-4">
+              <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
+                <div className="rounded-full bg-primary/10 text-primary w-10 h-10 flex items-center justify-center font-bold mb-4">
                   2
                 </div>
                 <h3 className="text-base font-bold text-foreground mb-2">Print or Share Everywhere</h3>
@@ -178,8 +167,8 @@ export default function SmallBusinessUseCasePage() {
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-border bg-card p-6">
-                <div className="rounded-xl bg-primary/10 text-primary w-10 h-10 flex items-center justify-center font-bold mb-4">
+              <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
+                <div className="rounded-full bg-primary/10 text-primary w-10 h-10 flex items-center justify-center font-bold mb-4">
                   3
                 </div>
                 <h3 className="text-base font-bold text-foreground mb-2">Measure What Converts</h3>
@@ -191,7 +180,7 @@ export default function SmallBusinessUseCasePage() {
           </div>
 
           {/* Concrete Examples Table */}
-          <div className="mb-16 rounded-2xl border border-border bg-card overflow-hidden">
+          <div className="mb-16 rounded-3xl border border-border shadow-xs bg-card overflow-hidden">
             <div className="p-6 border-b border-border bg-muted/20">
               <h3 className="font-bold text-foreground text-lg">Real Small Business Use Cases</h3>
               <p className="text-xs text-muted-foreground mt-1">Examples of how local businesses apply UL0 link tracking.</p>
@@ -237,9 +226,9 @@ export default function SmallBusinessUseCasePage() {
             </h2>
             <div className="space-y-4 max-w-3xl mx-auto">
               {faqSchema.mainEntity.map((item, idx) => (
-                <div key={idx} className="rounded-xl border border-border bg-card p-5">
+                <div key={idx} className="rounded-2xl border border-border shadow-xs bg-card p-5">
                   <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4 text-primary shrink-0" />
+                    <UL0Icon name="bulb" className="h-4 w-4 text-primary shrink-0" />
                     <span>{item.name}</span>
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed pl-6">
@@ -261,13 +250,13 @@ export default function SmallBusinessUseCasePage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/"
-                className="rounded-xl bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+                className="rounded-full bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 Shorten a URL Now
               </Link>
               <Link
                 href="/pricing"
-                className="rounded-xl border border-border bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Custom Domain Plans ($3/mo)
               </Link>

@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, ShieldCheck, Zap, Globe, Sparkles } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Link kürzen ohne Anmeldung: Beste URL-Shortener 2026",
@@ -94,7 +94,7 @@ export default function LinkKuerzenPage() {
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link href="/blog" className="hover:text-foreground inline-flex items-center gap-1">
-              <ArrowLeft className="h-3 w-3" /> Zurück zum Blog
+              <UL0Icon name="arrowleft" className="h-3 w-3" /> Zurück zum Blog
             </Link>
             <span>/</span>
             <span className="text-foreground">Ratgeber auf Deutsch</span>
@@ -103,7 +103,7 @@ export default function LinkKuerzenPage() {
           {/* Header */}
           <div className="space-y-4">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
-              <Sparkles className="h-3 w-3" />
+              <UL0Icon name="sparkles" className="h-3 w-3" />
               URL-Management Ratgeber 2026
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">
@@ -117,7 +117,7 @@ export default function LinkKuerzenPage() {
           {/* CTA Box */}
           <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 space-y-3">
             <div className="flex items-center gap-2 font-semibold text-foreground">
-              <Zap className="h-5 w-5 text-primary" />
+              <UL0Icon name="bolt" className="h-5 w-5 text-primary" />
               <span>Jetzt Link in 3 Sekunden kürzen</span>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -125,7 +125,7 @@ export default function LinkKuerzenPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:opacity-90 transition-all"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:opacity-90 transition-all"
             >
               Link jetzt kostenlos kürzen →
             </Link>
@@ -207,7 +207,7 @@ export default function LinkKuerzenPage() {
             <div className="flex justify-center gap-3 pt-2">
               <Link
                 href="/"
-                className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:opacity-90 transition-all"
+                className="rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:opacity-90 transition-all"
               >
                 Link jetzt kürzen
               </Link>

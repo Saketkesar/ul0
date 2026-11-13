@@ -2,17 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import {
-  ShoppingBag,
-  CheckCircle2,
-  ArrowRight,
-  QrCode,
-  Smartphone,
-  Tag,
-  HelpCircle,
-  Truck,
-  RotateCw,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "E-Commerce Packaging QR Codes & SMS Link Tracking | UL0",
@@ -82,7 +72,7 @@ export default function EcommerceUseCasePage() {
           {/* Hero */}
           <div className="mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-semibold text-cyan-500 mb-4">
-              <ShoppingBag className="h-3.5 w-3.5" />
+              <UL0Icon name="cart" className="h-3.5 w-3.5" />
               Direct-to-Consumer Commerce
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-5 leading-tight">
@@ -94,13 +84,13 @@ export default function EcommerceUseCasePage() {
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/qr"
-                className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Generate Packaging QR Code
               </Link>
               <Link
                 href="/utm"
-                className="rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Build Trackable Campaign URL
               </Link>
@@ -109,9 +99,9 @@ export default function EcommerceUseCasePage() {
 
           {/* E-Commerce Touchpoints */}
           <div className="grid gap-6 md:grid-cols-3 mb-16">
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-cyan-500/10 text-cyan-500 p-3 w-fit mb-4">
-                <Truck className="h-5 w-5" />
+                <UL0Icon name="target" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Unboxing Inserts</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -119,9 +109,9 @@ export default function EcommerceUseCasePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-emerald-500/10 text-emerald-500 p-3 w-fit mb-4">
-                <Smartphone className="h-5 w-5" />
+                <UL0Icon name="mobile" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">High-Deliverability SMS</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -129,9 +119,9 @@ export default function EcommerceUseCasePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-purple-500/10 text-purple-500 p-3 w-fit mb-4">
-                <RotateCw className="h-5 w-5" />
+                <UL0Icon name="refresh" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Zero-Reprint Flexibility</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -147,9 +137,9 @@ export default function EcommerceUseCasePage() {
             </h2>
             <div className="space-y-4 max-w-3xl mx-auto">
               {faqSchema.mainEntity.map((item, idx) => (
-                <div key={idx} className="rounded-xl border border-border bg-card p-5">
+                <div key={idx} className="rounded-2xl border border-border shadow-xs bg-card p-5">
                   <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4 text-primary shrink-0" />
+                    <UL0Icon name="bulb" className="h-4 w-4 text-primary shrink-0" />
                     <span>{item.name}</span>
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed pl-6">
@@ -171,13 +161,13 @@ export default function EcommerceUseCasePage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/"
-                className="rounded-xl bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Shorten Link Free
               </Link>
               <Link
                 href="/pricing"
-                className="rounded-xl border border-border bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Connect Branded Domain ($3/mo)
               </Link>

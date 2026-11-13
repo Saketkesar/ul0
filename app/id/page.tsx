@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
 import Link from "next/link"
-import { Link2, Zap, Shield, Globe, Users, QrCode } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Pemendek URL Gratis - Perpendek Link | ul0",
@@ -57,6 +57,10 @@ export default function IndonesianPage() {
         {/* Hero Section */}
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-4">
+              <UL0Icon name="language" size={18} />
+              <span>Bahasa Indonesia · Edisi Nusantara</span>
+            </div>
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">
                Pemendek URL Gratis
             </h1>
@@ -79,43 +83,43 @@ export default function IndonesianPage() {
               Mengapa Pilih ul0?
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-              <div className="bg-background p-6 rounded-lg border">
-                <Zap className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="bolt" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Super Cepat</h3>
                 <p className="text-sm text-muted-foreground">
                   Perpendek link dalam waktu kurang dari 1 detik. Tanpa menunggu.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Shield className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="shield" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">100% Aman</h3>
                 <p className="text-sm text-muted-foreground">
                   Link Anda aman. Tidak ada spam, tidak ada virus.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Globe className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="domain" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Selalu Gratis</h3>
                 <p className="text-sm text-muted-foreground">
                   Tidak ada biaya tersembunyi. Perpendek link tanpa batas.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Users className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="team" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Bagi Tagihan</h3>
                 <p className="text-sm text-muted-foreground">
                   Split bill dengan teman-teman. Mudah dan cepat.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <QrCode className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="qr" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">QR Code</h3>
                 <p className="text-sm text-muted-foreground">
                   Generate QR code untuk pembayaran instan.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Link2 className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="link" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Tanpa Daftar</h3>
                 <p className="text-sm text-muted-foreground">
                   Tidak perlu buat akun. Langsung pakai sekarang.
@@ -132,20 +136,24 @@ export default function IndonesianPage() {
               Di Mana Bisa Dipakai?
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 max-w-4xl mx-auto text-center">
-              <div className="p-4 bg-green-500/10 rounded-lg">
-                <p className="font-semibold text-green-600">WhatsApp</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="whatsapp" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">WhatsApp</p>
                 <p className="text-sm text-muted-foreground">Status & chat</p>
               </div>
-              <div className="p-4 bg-pink-500/10 rounded-lg">
-                <p className="font-semibold text-pink-600">Instagram</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="instagram" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">Instagram</p>
                 <p className="text-sm text-muted-foreground">Link di bio</p>
               </div>
-              <div className="p-4 bg-slate-500/10 rounded-lg">
-                <p className="font-semibold text-slate-600">TikTok</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="mobile" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">TikTok</p>
                 <p className="text-sm text-muted-foreground">Bio profile</p>
               </div>
-              <div className="p-4 bg-blue-500/10 rounded-lg">
-                <p className="font-semibold text-blue-600">Telegram</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="telegram" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">Telegram</p>
                 <p className="text-sm text-muted-foreground">Grup & channel</p>
               </div>
             </div>
@@ -161,12 +169,14 @@ export default function IndonesianPage() {
             <p className="text-muted-foreground mb-6">
               Mau bagi tagihan dengan teman? Coba fitur Split kami.
             </p>
-            <Link 
-              href="/split"
-              className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium"
-            >
-              Bagi Tagihan →
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link 
+                href="/split"
+                className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium shadow-xs"
+              >
+                Bagi Tagihan →
+              </Link>
+            </div>
           </div>
         </section>
       </main>

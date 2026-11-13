@@ -2,18 +2,7 @@
 
 import React, { useState, useRef, useEffect, useMemo } from "react"
 import { CURATED_ACCENTS, type FormDoc, type FormField, type AccentId } from "@/lib/forms/schema"
-import {
-  Check,
-  UploadCloud,
-  ExternalLink,
-  ShieldCheck,
-  AlertTriangle,
-  ArrowRight,
-  Sun,
-  Moon,
-  Sparkles,
-  CornerDownLeft,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface PublicFormViewProps {
   form: FormDoc
@@ -250,7 +239,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
             className="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-sm"
             style={{ background: `${accentColor}18`, color: accentColor }}
           >
-            <Check className="w-8 h-8 stroke-[2.5]" />
+            <UL0Icon name="check" className="w-8 h-8" />
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-3">
@@ -267,7 +256,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
           )}
 
           <div className="pt-8 border-t border-black/10 dark:border-white/10 flex items-center justify-center gap-2 text-xs opacity-50">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+            <UL0Icon name="shield" className="w-4 h-4 text-emerald-500" />
             <span>Encrypted zero-database relay · Powered by ul0.site</span>
           </div>
         </div>
@@ -306,7 +295,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
           className="p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
           title={isDark ? "Switch to light mode" : "Switch to dark mode"}
         >
-          {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+          {isDark ? <UL0Icon name="bulb" className="w-4 h-4" /> : <UL0Icon name="palette" className="w-4 h-4" />}
         </button>
       </header>
 
@@ -553,7 +542,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                               className="hidden"
                             />
                             {isSelected && (
-                              <Check className="w-4 h-4 stroke-[2.5]" style={{ color: accentColor }} />
+                              <UL0Icon name="check" className="w-4 h-4" style={{ color: accentColor }} />
                             )}
                           </label>
                         )
@@ -609,7 +598,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                               className="hidden"
                             />
                             {isSelected && (
-                              <Check className="w-4 h-4 stroke-[2.5]" style={{ color: accentColor }} />
+                              <UL0Icon name="check" className="w-4 h-4" style={{ color: accentColor }} />
                             )}
                           </label>
                         )
@@ -664,7 +653,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                           >
                             <span className="text-xs font-mono opacity-50">[{i === 0 ? "Y" : "N"}]</span>
                             <span>{opt}</span>
-                            {isSelected && <Check className="w-3.5 h-3.5 stroke-[2.5]" />}
+                            {isSelected && <UL0Icon name="check" className="w-3.5 h-3.5" />}
                           </button>
                         )
                       })}
@@ -780,7 +769,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                               if (f) handleFileUpload(field.key, f)
                             }}
                           />
-                          <UploadCloud className="w-7 h-7 opacity-40 mb-2" />
+                          <UL0Icon name="upload" className="w-7 h-7 opacity-40 mb-2" />
                           {uploadingField === field.key ? (
                             <span className="text-xs opacity-60 animate-pulse">
                               Uploading image to secure host...
@@ -838,7 +827,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
               ) : (
                 <>
                   <span>{theme.submit_label || "Submit"}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <UL0Icon name="arrowright" className="w-4 h-4" />
                 </>
               )}
             </button>
@@ -855,7 +844,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
         {/* Footer */}
         <footer className="mt-20 pt-8 border-t border-black/10 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs opacity-50 gap-3">
           <div className="flex items-center gap-1.5">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+            <UL0Icon name="shield" className="w-4 h-4 text-emerald-500" />
             <span>Responses go directly to the owner's Google Sheet</span>
           </div>
           <div className="flex items-center gap-4">

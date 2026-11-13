@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from "react"
-import { Search, Loader2, ArrowRight, CheckCircle2, AlertCircle, Copy, Check, Clock, Server } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { Button } from "@/components/ui/button"
 
 interface Hop {
@@ -87,41 +87,41 @@ export function RedirectCheckerClient() {
   return (
     <div className="space-y-8">
       {/* Search Input Box */}
-      <form onSubmit={handleTrace} className="rounded-2xl border border-border bg-card p-4 sm:p-6 shadow-sm">
+      <form onSubmit={handleTrace} className="rounded-3xl border border-border/60 bg-card p-4 sm:p-6 shadow-xs">
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <UL0Icon name="search" size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 opacity-60" />
             <input
               type="text"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="e.g. bit.ly/3example or https://yourdomain.com/old-page"
-              className="w-full h-11 pl-10 pr-4 rounded-xl border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
+              className="w-full h-11 pl-10 pr-4 rounded-full border border-border/60 bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40"
               required
             />
           </div>
           <Button
             type="submit"
             disabled={loading}
-            className="h-11 px-6 font-semibold shrink-0 cursor-pointer"
+            className="h-11 px-6 rounded-full font-semibold shrink-0 cursor-pointer shadow-xs"
           >
             {loading ? (
               <span className="flex items-center gap-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <UL0Icon name="loading" size={16} className="animate-spin" />
                 <span>Tracing...</span>
               </span>
             ) : (
               <span className="flex items-center gap-1.5">
                 <span>Trace Redirects</span>
-                <ArrowRight className="h-4 w-4" />
+                <UL0Icon name="arrowright" size={16} />
               </span>
             )}
           </Button>
         </div>
 
         {error && (
-          <div className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 shrink-0" />
+          <div className="mt-4 p-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs flex items-center gap-2">
+            <UL0Icon name="warning" size={16} className="shrink-0" />
             <span>{error}</span>
           </div>
         )}
@@ -129,9 +129,9 @@ export function RedirectCheckerClient() {
 
       {/* Results Box */}
       {result && (
-        <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm animate-in fade-in duration-300">
+        <div className="rounded-3xl border border-border/60 bg-card overflow-hidden shadow-xs animate-in fade-in duration-300">
           {/* Header Summary */}
-          <div className="p-5 sm:p-6 border-b border-border bg-muted/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="p-5 sm:p-6 border-b border-border/60 bg-muted/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2 text-xs font-semibold text-muted-foreground mb-1">
                 <span>Analysis Complete</span>
@@ -139,7 +139,7 @@ export function RedirectCheckerClient() {
                 <span className="text-foreground">{result.totalHops} {result.totalHops === 1 ? "Hop" : "Hops"}</span>
                 <span>•</span>
                 <span className="flex items-center gap-1 text-foreground">
-                  <Clock className="h-3 w-3" />
+                  <UL0Icon name="clock" size={12} />
                   {result.totalTimeMs}ms
                 </span>
               </div>
@@ -152,9 +152,9 @@ export function RedirectCheckerClient() {
               onClick={copyResults}
               variant="outline"
               size="sm"
-              className="shrink-0 text-xs gap-1.5 cursor-pointer"
+              className="shrink-0 text-xs gap-1.5 cursor-pointer rounded-full"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? <UL0Icon name="check" size={14} /> : <UL0Icon name="copy" size={14} />}
               <span>{copied ? "Copied" : "Copy Trace"}</span>
             </Button>
           </div>
@@ -164,10 +164,10 @@ export function RedirectCheckerClient() {
             {result.hops.map((hop, idx) => (
               <div
                 key={idx}
-                className="relative flex items-start gap-4 p-4 rounded-xl border border-border/80 bg-background/50 hover:bg-muted/10 transition-colors"
+                className="relative flex items-start gap-4 p-4 rounded-2xl border border-border/60 bg-background/50 hover:bg-muted/10 transition-colors"
               >
                 {/* Hop Number Pill */}
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-muted text-xs font-mono font-bold text-muted-foreground shrink-0 mt-0.5">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-muted text-xs font-mono font-bold text-muted-foreground shrink-0 mt-0.5">
                   {hop.hop}
                 </div>
 
@@ -176,13 +176,13 @@ export function RedirectCheckerClient() {
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     {getStatusBadge(hop.status)}
                     <span className="text-[11px] font-mono text-muted-foreground flex items-center gap-1">
-                      <Clock className="h-3 w-3" />
+                      <UL0Icon name="clock" size={12} />
                       {hop.latencyMs}ms
                       {hop.server && (
                         <>
                           <span>•</span>
                           <span className="flex items-center gap-1">
-                            <Server className="h-3 w-3" />
+                            <UL0Icon name="server" size={12} />
                             {hop.server}
                           </span>
                         </>
@@ -196,7 +196,7 @@ export function RedirectCheckerClient() {
 
                   {hop.location && (
                     <div className="flex items-center gap-1.5 text-xs text-muted-foreground pt-1">
-                      <ArrowRight className="h-3 w-3 text-primary shrink-0" />
+                      <UL0Icon name="arrowright" size={12} className="shrink-0 text-primary" />
                       <span className="font-mono text-[11px] text-primary break-all">
                         {hop.location}
                       </span>

@@ -2,7 +2,7 @@
 
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Copy, Check } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface CodeBlockProps {
   code: string
@@ -37,12 +37,12 @@ export function CodeBlock({ code, language = "bash", title, className = "" }: Co
         >
           {copied ? (
             <>
-              <Check className="h-3 w-3 text-primary" />
-              <span>Copied</span>
+              <UL0Icon name="check" size={12} />
+              <span className="text-primary font-semibold">Copied</span>
             </>
           ) : (
             <>
-              <Copy className="h-3 w-3" />
+              <UL0Icon name="copy" size={12} />
               <span>Copy</span>
             </>
           )}

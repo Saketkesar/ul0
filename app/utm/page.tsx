@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Copy, Check, Trash2, Link2, ExternalLink, QrCode, Plus, History, Bookmark, Download } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import Link from "next/link"
 import QRCode from "qrcode"
@@ -276,7 +276,7 @@ export default function UtmBuilderPage() {
           {/* Hero Section */}
           <div className="text-center mb-8">
             <h1 className="text-3xl font-bold mb-3 sm:text-4xl flex items-center justify-center gap-3">
-              <Link2 className="h-10 w-10 text-primary" />
+              <UL0Icon name="target" animated={true} size={36} />
               Free UTM Link Builder
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -413,20 +413,20 @@ export default function UtmBuilderPage() {
 
               {/* Action Buttons */}
               <div className="flex flex-wrap gap-3">
-                <Button onClick={generateUrl} className="gap-2">
-                  <Link2 className="h-4 w-4" />
+                <Button onClick={generateUrl} className="gap-2 rounded-full bg-primary text-primary-foreground hover:opacity-90">
+                  <UL0Icon name="target" size={16} />
                   Generate UTM Link
                 </Button>
-                <Button onClick={clearAll} variant="outline" className="gap-2">
-                  <Trash2 className="h-4 w-4" />
+                <Button onClick={clearAll} variant="outline" className="gap-2 rounded-full">
+                  <UL0Icon name="trash" size={14} />
                   Clear
                 </Button>
                 <Button 
                   onClick={() => setShowHistory(!showHistory)} 
                   variant="outline" 
-                  className="gap-2"
+                  className="gap-2 rounded-full"
                 >
-                  <History className="h-4 w-4" />
+                  <UL0Icon name="clock" size={14} />
                   History ({savedCampaigns.length})
                 </Button>
               </div>
@@ -435,7 +435,7 @@ export default function UtmBuilderPage() {
 
           {/* Error Message */}
           {error && (
-            <Alert variant="destructive" className="mb-4">
+            <Alert variant="destructive" className="mb-4 rounded-2xl">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
@@ -445,10 +445,10 @@ export default function UtmBuilderPage() {
 
           {/* Generated URL */}
           {generatedUrl && (
-            <Card className="mb-6 border-primary/50 bg-primary/5">
+            <Card className="mb-6 border-primary/30 bg-surface-2 rounded-3xl">
               <CardHeader className="pb-3">
                 <CardTitle className="text-lg flex items-center gap-2">
-                  <Check className="h-5 w-5 text-green-500" />
+                  <UL0Icon name="check" size={18} />
                   Your UTM Link is Ready!
                 </CardTitle>
               </CardHeader>
@@ -459,26 +459,26 @@ export default function UtmBuilderPage() {
                     <Textarea
                       value={generatedUrl}
                       readOnly
-                      className="font-mono text-sm bg-background min-h-[85px]"
+                      className="font-mono text-sm bg-background min-h-[85px] rounded-2xl"
                     />
                     <div className="flex flex-wrap gap-2.5">
-                      <Button onClick={copyToClipboard} size="sm" className="gap-1.5">
-                        {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                      <Button onClick={copyToClipboard} size="sm" className="gap-1.5 rounded-full bg-primary text-primary-foreground">
+                        <UL0Icon name={copied ? "check" : "copy"} size={14} />
                         {copied ? "Copied!" : "Copy Link"}
                       </Button>
-                      <Button onClick={saveCampaign} size="sm" variant="outline" className="gap-1.5">
-                        <Bookmark className="h-3.5 w-3.5" />
+                      <Button onClick={saveCampaign} size="sm" variant="outline" className="gap-1.5 rounded-full">
+                        <UL0Icon name="bookmark" size={14} />
                         Save Campaign
                       </Button>
-                      <Button asChild size="sm" variant="outline" className="gap-1.5">
+                      <Button asChild size="sm" variant="outline" className="gap-1.5 rounded-full">
                         <a href={generatedUrl} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-3.5 w-3.5" />
+                          <UL0Icon name="external" size={14} />
                           Test Link
                         </a>
                       </Button>
-                      <Button asChild size="sm" variant="outline" className="gap-1.5">
+                      <Button asChild size="sm" variant="outline" className="gap-1.5 rounded-full">
                         <Link href={`/?url=${encodeURIComponent(generatedUrl)}`}>
-                          <Link2 className="h-3.5 w-3.5" />
+                          <UL0Icon name="scissors" size={14} />
                           Shorten URL
                         </Link>
                       </Button>
@@ -487,8 +487,8 @@ export default function UtmBuilderPage() {
 
                   {/* Right Column: QR Code Preview & Download */}
                   {qrDataUrl && (
-                    <div className="flex flex-col items-center gap-3 p-4 border border-border bg-card rounded-xl shadow-xs shrink-0 self-center md:self-stretch justify-center">
-                      <div className="relative bg-white p-2.5 rounded-lg border border-border">
+                    <div className="flex flex-col items-center gap-3 p-4 border border-border bg-card rounded-2xl shadow-xs shrink-0 self-center md:self-stretch justify-center">
+                      <div className="relative bg-white p-2.5 rounded-xl border border-border">
                         <img 
                           src={qrDataUrl} 
                           alt="Campaign QR Code" 
@@ -499,9 +499,9 @@ export default function UtmBuilderPage() {
                         onClick={downloadCampaignQR} 
                         size="sm" 
                         variant="secondary" 
-                        className="w-full gap-1.5 h-8 text-xs font-medium"
+                        className="w-full gap-1.5 h-8 text-xs font-semibold rounded-full"
                       >
-                        <Download className="h-3.5 w-3.5" />
+                        <UL0Icon name="download" size={14} />
                         Download QR
                       </Button>
                     </div>
@@ -513,10 +513,10 @@ export default function UtmBuilderPage() {
 
           {/* Saved Campaigns History */}
           {showHistory && savedCampaigns.length > 0 && (
-            <Card className="mb-6">
+            <Card className="mb-6 rounded-3xl">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <History className="h-5 w-5" />
+                  <UL0Icon name="clock" size={18} />
                   Saved Campaigns
                 </CardTitle>
                 <CardDescription>Click to load a previous campaign</CardDescription>

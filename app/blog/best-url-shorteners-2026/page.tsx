@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, ExternalLink, Check, X, Star, User, Calendar, Clock, Sparkles } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
@@ -221,7 +221,7 @@ export default function BestUrlShortenersPage() {
             href="/blog"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 mr-1.5" />
+            <UL0Icon name="arrowleft" className="h-4 w-4 mr-1.5" />
             Back to Blog Guides
           </Link>
 
@@ -235,17 +235,17 @@ export default function BestUrlShortenersPage() {
             </h1>
             <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y py-3">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-primary" />
+                <UL0Icon name="user" className="h-4 w-4 text-primary" />
                 <Link href="/about" className="hover:underline text-foreground font-medium">
                   Saket Kesar
                 </Link>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
+                <UL0Icon name="calendar" className="h-4 w-4 text-primary" />
                 <span>Updated Oct 6, 2026</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
+                <UL0Icon name="clock" className="h-4 w-4 text-primary" />
                 <span>8 min read</span>
               </div>
             </div>
@@ -287,9 +287,9 @@ export default function BestUrlShortenersPage() {
                       </td>
                       <td className="p-3.5 text-center">
                         {s.noSignup ? (
-                          <Check className="h-4 w-4 text-emerald-500 mx-auto" />
+                          <UL0Icon name="check" className="h-4 w-4 text-emerald-500 mx-auto" />
                         ) : (
-                          <X className="h-4 w-4 text-muted-foreground mx-auto" />
+                          <UL0Icon name="close" className="h-4 w-4 text-muted-foreground mx-auto" />
                         )}
                       </td>
                       <td className="p-3.5 text-center text-xs">
@@ -298,14 +298,14 @@ export default function BestUrlShortenersPage() {
                         ) : typeof s.customDomain === "string" ? (
                           <span className="text-muted-foreground">{s.customDomain}</span>
                         ) : (
-                          <X className="h-4 w-4 text-muted-foreground mx-auto" />
+                          <UL0Icon name="close" className="h-4 w-4 text-muted-foreground mx-auto" />
                         )}
                       </td>
                       <td className="p-3.5 text-center">
                         {s.qrCode ? (
-                          <Check className="h-4 w-4 text-emerald-500 mx-auto" />
+                          <UL0Icon name="check" className="h-4 w-4 text-emerald-500 mx-auto" />
                         ) : (
-                          <X className="h-4 w-4 text-muted-foreground mx-auto" />
+                          <UL0Icon name="close" className="h-4 w-4 text-muted-foreground mx-auto" />
                         )}
                       </td>
                       <td className="p-3.5 text-center text-xs text-muted-foreground">
@@ -335,7 +335,7 @@ export default function BestUrlShortenersPage() {
                       </span>
                       <h3 className="text-xl font-bold text-foreground">{s.name}</h3>
                       <div className="flex items-center gap-1 text-xs text-amber-500 font-semibold ml-2">
-                        <Star className="h-3.5 w-3.5 fill-current" />
+                        <UL0Icon name="sparkles" className="h-3.5 w-3.5 fill-current" />
                         <span>{s.rating}</span>
                       </div>
                     </div>
@@ -354,7 +354,7 @@ export default function BestUrlShortenersPage() {
                       <ul className="space-y-1.5 text-muted-foreground">
                         {s.pros.map((p) => (
                           <li key={p} className="flex items-start gap-1.5">
-                            <Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
+                            <UL0Icon name="check" className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
                             <span>{p}</span>
                           </li>
                         ))}
@@ -388,7 +388,7 @@ export default function BestUrlShortenersPage() {
                         className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
                       >
                         <span>Visit {s.name}</span>
-                        <ExternalLink className="h-3 w-3 opacity-60" />
+                        <UL0Icon name="external" className="h-3 w-3 opacity-60" />
                       </a>
                     )}
                   </div>

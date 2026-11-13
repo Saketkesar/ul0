@@ -2,30 +2,7 @@
 
 import React, { useState, useMemo } from "react"
 import Link from "next/link"
-import {
-  MousePointerClick,
-  Users,
-  Link2,
-  QrCode,
-  TrendingUp,
-  TrendingDown,
-  ArrowUpRight,
-  Copy,
-  Check,
-  ExternalLink,
-  Table as TableIcon,
-  LineChart as LineChartIcon,
-  CheckCircle2,
-  Circle,
-  X,
-  Sparkles,
-  Globe,
-  Key,
-  Shield,
-  Clock,
-  ArrowRight,
-  Lock,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import {
   AreaChart,
   Area,
@@ -197,10 +174,10 @@ export function OverviewClient({
 
       {/* Brand new empty account hero */}
       {totalLinksCount === 0 && (
-        <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-surface-1 to-surface-2 p-6 sm:p-8 space-y-6">
+        <div className="rounded-3xl border border-primary/20 bg-surface-2/60 p-6 sm:p-8 space-y-6">
           <div className="max-w-xl space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-primary/10 text-primary border border-primary/20">
-              <Sparkles className="h-3 w-3" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-surface-3 text-primary border border-primary/20">
+              <UL0Icon name="sparkles" animated={true} size={14} />
               <span>Get Started</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
@@ -211,7 +188,7 @@ export function OverviewClient({
             </p>
           </div>
 
-          <div className="max-w-2xl bg-surface-1 rounded-xl p-4 border border-border shadow-xs">
+          <div className="max-w-2xl bg-card rounded-2xl p-4 border border-border shadow-xs">
             <LinkShortenerForm />
           </div>
         </div>
@@ -219,10 +196,10 @@ export function OverviewClient({
 
       {/* 2. Onboarding Checklist (dismissable, hides when done) */}
       {!allChecklistDone && !dismissChecklist && totalLinksCount < 5 && (
-        <div className="rounded-xl border border-border bg-surface-2 p-5 space-y-4 shadow-2xs">
+        <div className="rounded-2xl border border-border bg-surface-2/80 p-5 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="h-7 w-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
+              <div className="h-7 w-7 rounded-lg bg-surface-3 text-primary flex items-center justify-center font-bold text-xs border border-primary/20">
                 {completedCount}/{checklistItems.length}
               </div>
               <div>
@@ -233,10 +210,10 @@ export function OverviewClient({
             <button
               type="button"
               onClick={handleDismissChecklist}
-              className="text-muted-foreground hover:text-foreground p-1 rounded-md transition-colors"
+              className="text-muted-foreground hover:text-foreground p-1 rounded-md transition-colors cursor-pointer"
               title="Dismiss checklist"
             >
-              <X className="h-4 w-4" />
+              <UL0Icon name="close" size={14} />
             </button>
           </div>
 
@@ -245,16 +222,18 @@ export function OverviewClient({
               <Link
                 key={item.id}
                 href={item.href}
-                className={`flex items-start gap-3 p-3 rounded-lg border transition-all ${
+                className={`flex items-start gap-3 p-3 rounded-xl border transition-all ${
                   item.completed
                     ? "bg-surface-3/50 border-border text-muted-foreground opacity-75"
-                    : "bg-surface-1 border-border/80 hover:border-primary/40 hover:bg-surface-3 text-foreground"
+                    : "bg-card border-border/80 hover:border-primary/40 hover:bg-surface-3 text-foreground"
                 }`}
               >
                 {item.completed ? (
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <div className="mt-0.5 shrink-0">
+                    <UL0Icon name="check" size={14} />
+                  </div>
                 ) : (
-                  <Circle className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                  <div className="h-3.5 w-3.5 rounded-full border border-muted-foreground/60 shrink-0 mt-0.5" />
                 )}
                 <div className="text-xs font-medium leading-tight">
                   <span className={item.completed ? "line-through" : ""}>{item.label}</span>
@@ -268,19 +247,19 @@ export function OverviewClient({
       {/* 3. KPI Row (4 cards) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Total Clicks */}
-        <div className="rounded-xl border border-border bg-surface-2 p-5 space-y-2 shadow-2xs">
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-2 shadow-2xs">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">Clicks ({range})</span>
-            <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <MousePointerClick className="h-4 w-4" />
+            <span className="text-xs font-semibold">Clicks ({range})</span>
+            <div className="h-8 w-8 rounded-xl bg-surface-2 flex items-center justify-center">
+              <UL0Icon name="chartline" size={16} />
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-mono">
+            <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-mono">
               {totalClicksSum.toLocaleString()}
             </span>
-            <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-500">
-              <TrendingUp className="h-3 w-3" />
+            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+              <UL0Icon name="chartline" size={12} />
               +14.2%
             </span>
           </div>
@@ -288,19 +267,19 @@ export function OverviewClient({
         </div>
 
         {/* Card 2: Unique Visitors */}
-        <div className="rounded-xl border border-border bg-surface-2 p-5 space-y-2 shadow-2xs">
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-2 shadow-2xs">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">Unique Visitors</span>
-            <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
-              <Users className="h-4 w-4" />
+            <span className="text-xs font-semibold">Unique Visitors</span>
+            <div className="h-8 w-8 rounded-xl bg-surface-2 flex items-center justify-center">
+              <UL0Icon name="team" size={16} />
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-mono">
+            <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-mono">
               {Math.round(totalClicksSum * 0.78).toLocaleString()}
             </span>
-            <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-500">
-              <TrendingUp className="h-3 w-3" />
+            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+              <UL0Icon name="chartline" size={12} />
               +8.5%
             </span>
           </div>
@@ -308,15 +287,15 @@ export function OverviewClient({
         </div>
 
         {/* Card 3: Links Created */}
-        <div className="rounded-xl border border-border bg-surface-2 p-5 space-y-2 shadow-2xs">
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-2 shadow-2xs">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">Total Active Links</span>
-            <div className="h-8 w-8 rounded-lg bg-teal-500/10 text-teal-500 flex items-center justify-center">
-              <Link2 className="h-4 w-4" />
+            <span className="text-xs font-semibold">Total Active Links</span>
+            <div className="h-8 w-8 rounded-xl bg-surface-2 flex items-center justify-center">
+              <UL0Icon name="link" size={16} />
             </div>
           </div>
           <div className="flex items-baseline justify-between">
-            <span className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-mono">
+            <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-mono">
               {totalLinksCount.toLocaleString()}
             </span>
             <span className="text-xs text-muted-foreground font-mono">
@@ -327,11 +306,11 @@ export function OverviewClient({
         </div>
 
         {/* Card 4: QR Scans / Free Tier Locked Status */}
-        <div className="rounded-xl border border-border bg-surface-2 p-5 space-y-2 shadow-2xs">
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-2 shadow-2xs">
           <div className="flex items-center justify-between text-muted-foreground">
-            <span className="text-xs font-medium">QR Scans</span>
-            <div className="h-8 w-8 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center">
-              <QrCode className="h-4 w-4" />
+            <span className="text-xs font-semibold">QR Scans</span>
+            <div className="h-8 w-8 rounded-xl bg-surface-2 flex items-center justify-center">
+              <UL0Icon name="qr" size={16} />
             </div>
           </div>
           {isFreePlan ? (
@@ -340,7 +319,7 @@ export function OverviewClient({
                 <span className="text-xl font-bold text-foreground font-mono">
                   {Math.round(totalClicksSum * 0.15)}
                 </span>
-                <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-primary/20 text-primary">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-surface-3 text-primary">
                   Pro
                 </span>
               </div>
@@ -351,11 +330,11 @@ export function OverviewClient({
           ) : (
             <>
               <div className="flex items-baseline justify-between">
-                <span className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-mono">
+                <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-mono">
                   {Math.round(totalClicksSum * 0.15).toLocaleString()}
                 </span>
-                <span className="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-500">
-                  <TrendingUp className="h-3 w-3" />
+                <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                  <UL0Icon name="chartline" size={12} />
                   +19.0%
                 </span>
               </div>
@@ -366,10 +345,10 @@ export function OverviewClient({
       </div>
 
       {/* 4. Main Chart: Clicks over Time */}
-      <div className="rounded-xl border border-border bg-surface-2 p-5 space-y-4 shadow-2xs">
+      <div className="rounded-2xl border border-border bg-card p-5 space-y-4 shadow-2xs">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h2 className="text-base font-semibold text-foreground">Clicks Over Time</h2>
+            <h2 className="text-base font-bold text-foreground">Clicks Over Time</h2>
             <p className="text-xs text-muted-foreground">
               Direct traffic trends and period comparison
             </p>
@@ -378,16 +357,16 @@ export function OverviewClient({
             <button
               type="button"
               onClick={() => setChartView(chartView === "chart" ? "table" : "chart")}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-border bg-surface-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-border bg-surface-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               {chartView === "chart" ? (
                 <>
-                  <TableIcon className="h-3.5 w-3.5" />
+                  <UL0Icon name="docs" size={14} />
                   <span>View as table</span>
                 </>
               ) : (
                 <>
-                  <LineChartIcon className="h-3.5 w-3.5" />
+                  <UL0Icon name="chartline" size={14} />
                   <span>View as chart</span>
                 </>
               )}
@@ -492,7 +471,7 @@ export function OverviewClient({
         <div className="rounded-xl border border-border bg-surface-2 p-5 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-foreground">Top Performing Links</h3>
+              <h3 className="text-sm font-bold text-foreground">Top Performing Links</h3>
               <p className="text-[11px] text-muted-foreground">Most active slugs by total click volume</p>
             </div>
             <Link
@@ -500,7 +479,7 @@ export function OverviewClient({
               className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
             >
               <span>View all</span>
-              <ArrowRight className="h-3 w-3" />
+              <UL0Icon name="arrowright" size={11} />
             </Link>
           </div>
 
@@ -515,7 +494,7 @@ export function OverviewClient({
                 return (
                   <div
                     key={link.$id}
-                    className="flex items-center justify-between gap-3 p-3 rounded-lg border border-border bg-surface-1 hover:border-primary/30 transition-all group"
+                    className="flex items-center justify-between gap-3 p-3 rounded-2xl border border-border bg-surface-1 hover:border-primary/40 transition-all group"
                   >
                     <div className="min-w-0 flex-1 space-y-0.5">
                       <div className="flex items-center gap-1.5 font-mono text-xs">
@@ -541,13 +520,13 @@ export function OverviewClient({
                       <button
                         type="button"
                         onClick={() => handleCopy(shortUrl, link.$id)}
-                        className="p-1.5 rounded-md hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors"
+                        className="p-2 rounded-full hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                         title="Copy short link"
                       >
                         {copiedId === link.$id ? (
-                          <Check className="h-3.5 w-3.5 text-emerald-500" />
+                          <UL0Icon name="check" size={14} />
                         ) : (
-                          <Copy className="h-3.5 w-3.5" />
+                          <UL0Icon name="copy" size={14} />
                         )}
                       </button>
 
@@ -555,10 +534,10 @@ export function OverviewClient({
                         href={shortUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-md hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors"
+                        className="p-2 rounded-full hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors"
                         title="Open short link"
                       >
-                        <ExternalLink className="h-3.5 w-3.5" />
+                        <UL0Icon name="external" size={14} />
                       </a>
                     </div>
                   </div>
@@ -569,13 +548,13 @@ export function OverviewClient({
         </div>
 
         {/* Top Traffic Sources */}
-        <div className="rounded-xl border border-border bg-surface-2 p-5 space-y-4 shadow-2xs">
+        <div className="rounded-2xl border border-border bg-card p-5 space-y-4 shadow-2xs">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-sm font-semibold text-foreground">Top Traffic Channels</h3>
+              <h3 className="text-sm font-bold text-foreground">Top Traffic Channels</h3>
               <p className="text-[11px] text-muted-foreground">Distribution by referrer source</p>
             </div>
-            <span className="px-2 py-0.5 rounded text-[10px] font-mono text-muted-foreground bg-surface-3">
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold text-muted-foreground bg-surface-2 border border-border/80">
               {range}
             </span>
           </div>
@@ -589,9 +568,9 @@ export function OverviewClient({
               {topSources.map((source, idx) => (
                 <div key={idx} className="space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-foreground">{source.name}</span>
+                    <span className="font-semibold text-foreground">{source.name}</span>
                     <div className="flex items-center gap-2 font-mono">
-                      <span className="font-semibold text-foreground">{source.clicks}</span>
+                      <span className="font-bold text-foreground">{source.clicks}</span>
                       <span className="text-[11px] text-muted-foreground">({source.percent}%)</span>
                     </div>
                   </div>
@@ -610,10 +589,10 @@ export function OverviewClient({
 
       {/* 6. Contextual Upgrade Banner for Free Users */}
       {isFreePlan && (
-        <div className="rounded-xl border border-primary/20 bg-gradient-to-r from-primary/10 via-surface-2 to-surface-1 p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
+        <div className="rounded-3xl border border-primary/20 bg-surface-2 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary text-white">
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary text-primary-foreground">
                 Pro Advantage
               </span>
               <h4 className="text-sm font-bold text-foreground">
@@ -626,10 +605,10 @@ export function OverviewClient({
           </div>
           <Link
             href="/dashboard/billing"
-            className="shrink-0 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-xs font-semibold text-white hover:bg-primary/90 transition-all shadow-xs"
+            className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-xs font-semibold text-primary-foreground hover:opacity-90 transition-all shadow-xs"
           >
             <span>Upgrade to Pro ($3)</span>
-            <ArrowRight className="h-3.5 w-3.5" />
+            <UL0Icon name="arrowright" size={12} />
           </Link>
         </div>
       )}

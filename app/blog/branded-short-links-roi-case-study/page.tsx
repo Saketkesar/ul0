@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, Sparkles, TrendingUp, ShieldCheck, Award } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Why Branded Short Links Increase CTR by 39%: Case Study (2026) | ul0",
@@ -28,7 +28,7 @@ export default function BrandedLinksRoiCaseStudyPage() {
         <article className="mx-auto max-w-3xl space-y-8">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link href="/blog" className="hover:text-foreground inline-flex items-center gap-1">
-              <ArrowLeft className="h-3 w-3" /> Back to blog
+              <UL0Icon name="arrowleft" className="h-3 w-3" /> Back to blog
             </Link>
             <span>/</span>
             <span className="text-foreground">Marketing Benchmarks</span>
@@ -36,7 +36,7 @@ export default function BrandedLinksRoiCaseStudyPage() {
 
           <header className="space-y-4">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-purple-500/10 text-purple-500 border border-purple-500/20">
-              <Sparkles className="h-3 w-3" />
+              <UL0Icon name="sparkles" className="h-3 w-3" />
               Industry Data 2026
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl leading-tight">

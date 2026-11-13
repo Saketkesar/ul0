@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, QrCode, TrendingUp, Sparkles, BookOpen } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "QR Code Marketing Guide 2026 - Best Practices for Business | ul0",
@@ -71,7 +71,7 @@ export default function QrCodeMarketingGuidePage() {
             href="/blog" 
             className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground mb-6"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <UL0Icon name="arrowleft" className="h-4 w-4" />
             Back to Blog
           </Link>
 
@@ -104,7 +104,7 @@ export default function QrCodeMarketingGuidePage() {
             <h2 className="text-2xl font-bold mt-8">Best Practices for High Scan Rates</h2>
             <div className="space-y-4 my-6">
               <div className="flex gap-4 p-4 bg-muted/30 rounded-lg">
-                <QrCode className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                <UL0Icon name="qr" className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold text-foreground">1. Keep the Destination URL Short</h3>
                   <p className="text-muted-foreground text-sm">
@@ -114,7 +114,7 @@ export default function QrCodeMarketingGuidePage() {
               </div>
 
               <div className="flex gap-4 p-4 bg-muted/30 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                <UL0Icon name="chartline" className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold text-foreground">2. Add a Clear Call to Action (CTA)</h3>
                   <p className="text-muted-foreground text-sm">
@@ -124,7 +124,7 @@ export default function QrCodeMarketingGuidePage() {
               </div>
 
               <div className="flex gap-4 p-4 bg-muted/30 rounded-lg">
-                <Sparkles className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                <UL0Icon name="sparkles" className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold text-foreground">3. Optimize for Mobile Landing Pages</h3>
                   <p className="text-muted-foreground text-sm">
@@ -134,7 +134,7 @@ export default function QrCodeMarketingGuidePage() {
               </div>
 
               <div className="flex gap-4 p-4 bg-muted/30 rounded-lg">
-                <BookOpen className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
+                <UL0Icon name="docs" className="h-6 w-6 text-primary flex-shrink-0 mt-1" />
                 <div>
                   <h3 className="font-semibold text-foreground">4. Test Across Devices and Lighting</h3>
                   <p className="text-muted-foreground text-sm">

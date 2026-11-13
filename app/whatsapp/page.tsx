@@ -4,24 +4,7 @@ import React, { useState, useEffect, useRef, useMemo } from "react"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import {
-  MessageCircle,
-  Copy,
-  Check,
-  ExternalLink,
-  QrCode,
-  Download,
-  Sparkles,
-  Zap,
-  Globe,
-  Share2,
-  RefreshCw,
-  Info,
-  CheckCircle2,
-  ArrowRight,
-  ShieldCheck,
-  HelpCircle,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import QRCode from "qrcode"
 import { toast } from "sonner"
 import { getShortUrl } from "@/lib/utils/link-url"
@@ -227,7 +210,7 @@ export default function WhatsAppLinkGeneratorPage() {
 
           <div className="container mx-auto px-4 sm:px-6 max-w-4xl text-center space-y-4">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono font-medium bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-              <MessageCircle className="h-3.5 w-3.5" />
+              <UL0Icon name="whatsapp" animated={true} size={15} />
               <span>WhatsApp Click-to-Chat Studio · 100% Free</span>
             </div>
 
@@ -286,8 +269,8 @@ export default function WhatsAppLinkGeneratorPage() {
                       />
                     </div>
 
-                    <p className="text-[11px] text-muted-foreground flex items-center gap-1">
-                      <Info className="h-3 w-3 shrink-0 text-muted-foreground" />
+                    <p className="text-[11px] text-muted-foreground flex items-center gap-1.5">
+                      <UL0Icon name="info" size={12} />
                       <span>
                         Recipient will receive message at:{" "}
                         <strong className="text-foreground font-mono">
@@ -368,27 +351,27 @@ export default function WhatsAppLinkGeneratorPage() {
                 </div>
 
                 {/* Conversion Tips Box */}
-                <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 space-y-2 text-xs text-muted-foreground">
-                  <div className="flex items-center gap-2 font-bold text-emerald-500">
-                    <Sparkles className="h-4 w-4" />
+                <div className="rounded-2xl border border-primary/20 bg-surface-2 p-4 space-y-2 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-2 font-bold text-primary">
+                    <UL0Icon name="sparkles" animated={true} size={14} />
                     <span>Pro Growth Tip for Bio Links:</span>
                   </div>
                   <p className="leading-relaxed">
-                    Raw <code className="text-emerald-500 font-mono">wa.me</code> links expose your private phone number on public profiles. Shortening through UL0 hides your phone number, prevents bot scrapers, and tracks the exact count of clicks from Instagram and TikTok.
+                    Raw <code className="text-primary font-mono">wa.me</code> links expose your private phone number on public profiles. Shortening through UL0 hides your phone number, prevents bot scrapers, and tracks the exact count of clicks from Instagram and TikTok.
                   </p>
                 </div>
               </div>
 
               {/* Right Column: Output & Live Preview (5 cols) */}
               <div className="lg:col-span-5 space-y-6">
-                <div className="rounded-2xl border border-border bg-surface-2 p-5 sm:p-7 shadow-2xs space-y-6">
+                <div className="rounded-3xl border border-border bg-card p-5 sm:p-7 shadow-2xs space-y-6">
                   <div className="flex items-center justify-between border-b border-border pb-3">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-foreground flex items-center gap-2">
-                      <Zap className="h-4 w-4 text-emerald-500" />
+                      <UL0Icon name="bolt" size={15} />
                       <span>Generated Link &amp; QR</span>
                     </h3>
                     {rawWaLink && (
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/20">
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-surface-3 text-primary font-bold border border-primary/20">
                         Ready to Share
                       </span>
                     )}
@@ -401,23 +384,23 @@ export default function WhatsAppLinkGeneratorPage() {
                         <span className="text-xs font-semibold text-muted-foreground">
                           Direct WhatsApp Click Link:
                         </span>
-                        <div className="p-3 rounded-xl border border-border bg-surface-1 font-mono text-xs text-emerald-500 break-all select-all">
+                        <div className="p-3 rounded-2xl border border-border bg-surface-2 font-mono text-xs text-primary break-all select-all">
                           {rawWaLink}
                         </div>
                         <div className="flex items-center gap-2 pt-1">
                           <button
                             type="button"
                             onClick={handleCopyRaw}
-                            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-surface-1 hover:bg-surface-3 text-xs font-bold py-2.5 transition-colors cursor-pointer text-foreground"
+                            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full border border-border bg-card hover:bg-surface-2 text-xs font-semibold py-2.5 transition-colors cursor-pointer text-foreground shadow-2xs"
                           >
                             {copiedRaw ? (
                               <>
-                                <Check className="h-3.5 w-3.5 text-emerald-500" />
+                                <UL0Icon name="check" size={14} />
                                 <span>Copied!</span>
                               </>
                             ) : (
                               <>
-                                <Copy className="h-3.5 w-3.5" />
+                                <UL0Icon name="copy" size={14} />
                                 <span>Copy wa.me</span>
                               </>
                             )}
@@ -425,9 +408,9 @@ export default function WhatsAppLinkGeneratorPage() {
                           <button
                             type="button"
                             onClick={handleTestLink}
-                            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 transition-all shadow-md cursor-pointer"
+                            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-primary hover:opacity-90 text-primary-foreground text-xs font-semibold px-4 py-2.5 transition-all shadow-xs cursor-pointer"
                           >
-                            <ExternalLink className="h-3.5 w-3.5" />
+                            <UL0Icon name="external" size={14} />
                             <span>Test Chat</span>
                           </button>
                         </div>
@@ -442,23 +425,23 @@ export default function WhatsAppLinkGeneratorPage() {
 
                         {shortUrl ? (
                           <div className="space-y-2">
-                            <div className="p-3 rounded-xl border border-primary/30 bg-primary/5 font-mono text-xs font-bold text-primary break-all select-all flex items-center justify-between gap-2">
+                            <div className="p-3 rounded-2xl border border-primary/30 bg-surface-3 font-mono text-xs font-bold text-primary break-all select-all flex items-center justify-between gap-2">
                               <span>{shortUrl}</span>
-                              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                              <UL0Icon name="check" size={16} />
                             </div>
                             <button
                               type="button"
                               onClick={handleCopyShort}
-                              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold py-2.5 transition-all shadow-md cursor-pointer"
+                              className="w-full inline-flex items-center justify-center gap-2 rounded-full bg-primary hover:opacity-90 text-primary-foreground text-xs font-bold py-2.5 transition-all shadow-xs cursor-pointer"
                             >
                               {copiedShort ? (
                                 <>
-                                  <Check className="h-3.5 w-3.5" />
+                                  <UL0Icon name="check" size={14} />
                                   <span>Copied Short Link!</span>
                                 </>
                               ) : (
                                 <>
-                                  <Copy className="h-3.5 w-3.5" />
+                                  <UL0Icon name="copy" size={14} />
                                   <span>Copy Trackable Link</span>
                                 </>
                               )}
@@ -469,19 +452,19 @@ export default function WhatsAppLinkGeneratorPage() {
                             type="button"
                             onClick={handleCreateShortLink}
                             disabled={shortening}
-                            className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-primary bg-primary/10 hover:bg-primary/20 text-primary text-xs font-bold py-2.5 transition-all cursor-pointer shadow-xs"
+                            className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-primary/30 bg-surface-3 hover:bg-surface-3/80 text-primary text-xs font-semibold py-2.5 transition-all cursor-pointer shadow-2xs"
                           >
                             {shortening ? (
-                              <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                              <UL0Icon name="loading" animated={true} size={14} />
                             ) : (
-                              <Zap className="h-3.5 w-3.5" />
+                              <UL0Icon name="bolt" size={14} />
                             )}
                             <span>Create Short Link (ul0.site/r/...)</span>
                           </button>
                         )}
 
                         {shortenError && (
-                          <p className="text-xs text-red-500">{shortenError}</p>
+                          <p className="text-xs text-destructive">{shortenError}</p>
                         )}
                       </div>
 
@@ -526,17 +509,17 @@ export default function WhatsAppLinkGeneratorPage() {
                         <button
                           type="button"
                           onClick={handleDownloadQr}
-                          className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-1 hover:bg-surface-3 text-xs font-semibold py-2.5 transition-colors cursor-pointer text-foreground"
+                          className="w-full inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card hover:bg-surface-2 text-xs font-semibold py-2.5 transition-colors cursor-pointer text-foreground shadow-2xs"
                         >
-                          <Download className="h-3.5 w-3.5" />
+                          <UL0Icon name="download" size={14} />
                           <span>Download High-Res QR (PNG)</span>
                         </button>
                       </div>
                     </div>
                   ) : (
                     <div className="py-12 text-center space-y-2">
-                      <div className="h-12 w-12 rounded-2xl bg-surface-3 text-muted-foreground flex items-center justify-center mx-auto">
-                        <MessageCircle className="h-6 w-6" />
+                      <div className="h-12 w-12 rounded-2xl bg-surface-2 text-muted-foreground flex items-center justify-center mx-auto">
+                        <UL0Icon name="whatsapp" size={24} />
                       </div>
                       <h4 className="text-sm font-bold text-foreground">Awaiting Phone Number</h4>
                       <p className="text-xs text-muted-foreground max-w-xs mx-auto">

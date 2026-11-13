@@ -6,7 +6,7 @@ import { DEFAULT_HOST } from "@/lib/appwrite/config"
 import { getAccountByClerkId } from "@/lib/appwrite/accounts"
 import { getActivePlan } from "@/lib/plan.server"
 import { LinkDetailClient } from "@/components/dashboard/link-detail-client"
-import { Lock } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface Props {
   params: Promise<{ id: string }>
@@ -36,8 +36,8 @@ export default async function LinkDetailPage({ params }: Props) {
     return (
       <div className="min-h-[60vh] flex items-center justify-center p-6 text-center">
         <div className="max-w-md space-y-3">
-          <div className="mx-auto h-12 w-12 rounded-xl bg-red-500/10 flex items-center justify-center text-red-500">
-            <Lock className="h-6 w-6" />
+          <div className="mx-auto h-12 w-12 rounded-2xl bg-red-500/10 flex items-center justify-center text-red-500">
+            <UL0Icon name="lock" className="h-6 w-6" />
           </div>
           <h1 className="text-xl font-bold text-foreground">Access Denied</h1>
           <p className="text-xs text-muted-foreground">

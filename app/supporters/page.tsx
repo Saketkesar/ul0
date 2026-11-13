@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Heart, Star } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Supporters — ul0",
@@ -31,29 +31,31 @@ export default function SupportersPage() {
         <section className="relative overflow-hidden py-16 sm:py-24">
           <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-rose-500/8 via-background to-background" />
           <div className="container mx-auto px-4 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-500/10 border border-rose-500/20">
-              <Heart className="h-8 w-8 text-rose-500" />
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-3xl bg-rose-500/10 border border-rose-500/20 shadow-2xs">
+              <UL0Icon name="heart" animated={true} size={36} />
             </div>
-            <h1 className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
+            <h1 className="mb-4 text-3xl font-extrabold tracking-tight text-foreground sm:text-5xl">
               Supporters
             </h1>
-            <p className="mx-auto mb-8 max-w-xl text-base text-muted-foreground">
+            <p className="mx-auto mb-8 max-w-xl text-base text-muted-foreground leading-relaxed">
               These amazing people keep ul0 free for everyone. Thank you.
             </p>
 
             {SUPPORTERS.length === 0 ? (
-              <div className="mx-auto max-w-md rounded-2xl border border-dashed border-rose-500/30 bg-rose-500/5 px-8 py-12">
-                <Star className="mx-auto mb-4 h-10 w-10 text-rose-400" />
-                <p className="mb-2 font-semibold text-foreground">No supporters yet</p>
-                <p className="mb-6 text-sm text-muted-foreground">
+              <div className="mx-auto max-w-md rounded-3xl border border-dashed border-rose-500/30 bg-rose-500/5 px-8 py-12 shadow-2xs">
+                <div className="mb-4 flex justify-center">
+                  <UL0Icon name="star" animated={true} size={40} />
+                </div>
+                <p className="mb-2 font-bold text-foreground">No supporters yet</p>
+                <p className="mb-6 text-sm text-muted-foreground leading-relaxed">
                   Be the very first person to support ul0 and your name will appear here.
                 </p>
                 <a
                   href="/api/donate"
-                  className="inline-flex items-center gap-2 rounded-xl bg-rose-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-500/25 transition-all hover:bg-rose-600 hover:-translate-y-0.5"
+                  className="inline-flex items-center gap-2 rounded-full bg-rose-500 px-7 py-3 text-sm font-bold text-white shadow-lg shadow-rose-500/25 transition-all hover:bg-rose-600 hover:shadow-rose-500/40"
                 >
-                  <Heart className="h-4 w-4" />
-                  Become the first supporter
+                  <UL0Icon name="heart" size={16} />
+                  <span>Become the first supporter</span>
                 </a>
               </div>
             ) : (

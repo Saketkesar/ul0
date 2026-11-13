@@ -1,44 +1,52 @@
-import { Link2, Globe, BarChart3, QrCode, ShieldCheck, Scissors, Users, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { UL0Icon, UL0IconName } from "@/components/ul0-icon"
 
-const features = [
+interface FeatureItem {
+  icon: UL0IconName
+  badge: string
+  title: string
+  description: string
+  href: string
+}
+
+const features: FeatureItem[] = [
   {
-    icon: Link2,
+    icon: "link",
     badge: "Core",
     title: "Instant URL Shortener",
     description: "Shorten links in milliseconds with permanent 301 edge redirects. Custom aliases, zero link expiration, and no signup needed.",
     href: "/",
   },
   {
-    icon: Globe,
+    icon: "domain",
     badge: "Branding",
     title: "Custom Branded Domains",
     description: "Connect your own domain (e.g., link.yourbrand.com) in 60 seconds with automatic SSL. One domain is included free on all plans.",
     href: "/custom-domain-landing",
   },
   {
-    icon: QrCode,
+    icon: "qr",
     badge: "Vector Studio",
     title: "Dynamic Vector QR Codes",
     description: "Generate high-resolution PNG & SVG vector QR codes. Customize colors, add logos, and print on menus, packaging, and cards.",
     href: "/qr",
   },
   {
-    icon: BarChart3,
+    icon: "chartline",
     badge: "Privacy First",
     title: "Real-Time Click Analytics",
     description: "Inspect visitor country, device type, browser, and referrers in real time without invasive tracking cookies or GDPR consent popups.",
     href: "/features",
   },
   {
-    icon: Scissors,
+    icon: "scissors",
     badge: "PWA App",
     title: "Files & PDF Tools Suite",
     description: "Split, merge, convert images to PDF, extract pages, and scan documents with your camera. 100% client-side privacy, installable as a phone app.",
     href: "/files",
   },
   {
-    icon: Users,
+    icon: "splitbill",
     badge: "Bill Splitter",
     title: "Group Expense Splitter",
     description: "Split dinners, trips, and roommate expenses with clean shareable links. Friends can settle via instant UPI QR codes without downloading an app.",
@@ -48,11 +56,12 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section className="py-16 sm:py-20 border-t border-border/80" id="features">
+    <section className="py-16 sm:py-24 border-t border-border/60" id="features">
       <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
         <div className="text-center space-y-2 mb-12">
-          <span className="text-xs font-mono font-medium text-muted-foreground uppercase tracking-wider">
-            Platform Capabilities
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary">
+            <UL0Icon name="sparkles" size={14} />
+            <span>Platform Capabilities</span>
           </span>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
             Simple tools for links, QR codes &amp; documents
@@ -62,26 +71,26 @@ export function FeaturesSection() {
           </p>
         </div>
 
-        {/* Notion-style Clean Card Grid */}
+        {/* Heytaby / Bharpai Style Rounded Card Grid */}
         <div className="grid gap-4 sm:gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature) => (
             <Link
               key={feature.title}
               href={feature.href}
-              className="group rounded-lg border border-border/80 bg-card p-5 space-y-3 hover:border-foreground/30 hover:bg-muted/20 transition-all flex flex-col justify-between"
+              className="group rounded-3xl border border-border/60 bg-card/70 p-6 space-y-4 hover:border-primary/40 hover:bg-card hover:shadow-sm transition-all flex flex-col justify-between"
             >
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="p-2 rounded border border-border/80 bg-muted/40 text-foreground">
-                    <feature.icon className="h-4 w-4" />
+                  <div className="w-10 h-10 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:scale-105 transition-transform">
+                    <UL0Icon name={feature.icon} animated size={22} />
                   </div>
-                  <span className="text-[10px] font-mono text-muted-foreground px-2 py-0.5 rounded border border-border/60 bg-muted/30">
+                  <span className="text-[11px] font-mono text-primary px-2.5 py-0.5 rounded-full border border-primary/20 bg-primary/5 font-semibold">
                     {feature.badge}
                   </span>
                 </div>
 
-                <div className="space-y-1">
-                  <h3 className="text-sm font-semibold text-foreground group-hover:text-primary transition-colors">
+                <div className="space-y-1.5">
+                  <h3 className="text-base font-semibold text-foreground group-hover:text-primary transition-colors">
                     {feature.title}
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed">
@@ -90,9 +99,9 @@ export function FeaturesSection() {
                 </div>
               </div>
 
-              <div className="pt-2 text-[11px] font-medium text-foreground/80 flex items-center gap-1 group-hover:text-primary transition-colors">
+              <div className="pt-2 text-xs font-semibold text-primary flex items-center gap-1.5">
                 <span>Explore tool</span>
-                <ArrowRight className="h-3 w-3 group-hover:translate-x-0.5 transition-transform" />
+                <UL0Icon name="arrowright" size={14} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
           ))}

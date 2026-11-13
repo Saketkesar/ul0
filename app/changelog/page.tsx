@@ -2,8 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Sparkles, CheckCircle2, Zap, Shield, GitCommit, ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Changelog — Product Updates & Release Notes | UL0",
@@ -111,8 +110,8 @@ export default function ChangelogPage() {
 
           {/* Heading */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-4">
-              <Sparkles className="h-3.5 w-3.5" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-2 border border-border text-foreground text-xs font-semibold mb-4 shadow-2xs">
+              <UL0Icon name="sparkles" animated={true} size={14} />
               <span>Continuous Improvement</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
@@ -132,7 +131,7 @@ export default function ChangelogPage() {
 
                 <div className="space-y-3">
                   <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-md bg-primary text-primary-foreground">
+                    <span className="text-xs font-mono font-bold px-2.5 py-0.5 rounded-full bg-primary text-primary-foreground shadow-2xs">
                       {rel.version}
                     </span>
                     <span className="text-xs text-muted-foreground">{rel.date}</span>
@@ -140,7 +139,7 @@ export default function ChangelogPage() {
                       {rel.tags.map((tag, i) => (
                         <span
                           key={i}
-                          className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground border border-border"
+                          className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-surface-2 text-muted-foreground border border-border"
                         >
                           {tag}
                         </span>
@@ -151,12 +150,12 @@ export default function ChangelogPage() {
                   <h3 className="text-xl font-bold text-foreground">{rel.title}</h3>
                   <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">{rel.description}</p>
 
-                  <div className="p-4 rounded-2xl border border-border bg-card shadow-xs">
-                    <ul className="space-y-2">
+                  <div className="p-5 rounded-3xl border border-border bg-card shadow-2xs">
+                    <ul className="space-y-2.5">
                       {rel.changes.map((change, cIdx) => (
                         <li key={cIdx} className="text-xs text-muted-foreground flex items-start gap-2.5">
-                          <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
-                          <span>{change}</span>
+                          <UL0Icon name="check" size={14} className="mt-0.5 shrink-0" />
+                          <span className="leading-relaxed">{change}</span>
                         </li>
                       ))}
                     </ul>
@@ -167,16 +166,18 @@ export default function ChangelogPage() {
           </div>
 
           {/* Feedback & Newsletter */}
-          <div className="mt-16 rounded-2xl border border-border bg-card p-6 text-center space-y-3">
+          <div className="mt-16 rounded-3xl border border-border bg-card p-6 sm:p-8 text-center space-y-3 shadow-2xs">
             <h4 className="text-base font-bold text-foreground">Have a Feature Request?</h4>
             <p className="text-xs text-muted-foreground max-w-md mx-auto">
               We ship updates weekly based on user feedback. Let us know what integrations or analytics you&apos;d like to see next.
             </p>
             <div className="pt-2">
-              <Link href="/contact">
-                <Button variant="outline" size="sm" className="rounded-xl text-xs gap-1.5">
-                  Submit Feedback <ArrowRight className="h-3 w-3" />
-                </Button>
+              <Link
+                href="/contact"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-border bg-surface-2 hover:bg-muted text-foreground text-xs font-semibold shadow-2xs transition-colors"
+              >
+                <span>Submit Feedback</span>
+                <UL0Icon name="arrowright" size={12} />
               </Link>
             </div>
           </div>

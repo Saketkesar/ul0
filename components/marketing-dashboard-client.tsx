@@ -2,33 +2,7 @@
 
 import React, { useState, useMemo } from "react"
 import Link from "next/link"
-import {
-  Link2,
-  Copy,
-  Check,
-  Plus,
-  Trash2,
-  ExternalLink,
-  Loader2,
-  TrendingUp,
-  Eye,
-  Target,
-  Percent,
-  AlertCircle,
-  Zap,
-  MousePointerClick,
-  Clock,
-  Sparkles,
-  BookOpen,
-  Search,
-  Filter,
-  CheckCircle2,
-  X,
-  Shuffle,
-  ShieldCheck,
-  ArrowUpRight,
-  SlidersHorizontal,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { toast } from "sonner"
 import type { MarketingLinkDoc } from "@/lib/appwrite/marketing-links"
 import type { BlogMeta } from "@/lib/blog-discovery"
@@ -227,18 +201,18 @@ export function MarketingDashboardClient({
             <button
               type="button"
               onClick={() => openCreateModal("auto_skip")}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black px-4 py-2.5 text-xs font-bold transition-all shadow-md shadow-amber-500/20 hover:scale-[1.02] cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-full bg-amber-500 hover:bg-amber-400 text-black px-4 py-2.5 text-xs font-bold transition-all shadow-xs cursor-pointer"
             >
-              <Zap className="h-4 w-4 fill-black" />
+              <UL0Icon name="bolt" size={16} />
               <span>+ Auto-Skip Link (5s)</span>
             </button>
 
             <button
               type="button"
               onClick={() => openCreateModal("button")}
-              className="inline-flex items-center gap-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 text-xs font-bold transition-all shadow-md hover:scale-[1.02] cursor-pointer"
+              className="inline-flex items-center gap-2 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2.5 text-xs font-bold transition-all shadow-xs cursor-pointer"
             >
-              <MousePointerClick className="h-4 w-4" />
+              <UL0Icon name="target" size={16} />
               <span>+ Button Unlock Link</span>
             </button>
           </div>
@@ -247,11 +221,11 @@ export function MarketingDashboardClient({
 
       {/* KPI Stat Cards */}
       <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-xl border border-border bg-surface-2 p-4 sm:p-5 shadow-2xs space-y-2">
+        <div className="rounded-2xl border border-border bg-surface-2 p-4 sm:p-5 shadow-2xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">Total Links</span>
-            <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center">
-              <Link2 className="h-4 w-4" />
+            <div className="h-8 w-8 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center">
+              <UL0Icon name="link" size={16} />
             </div>
           </div>
           <div>
@@ -264,11 +238,11 @@ export function MarketingDashboardClient({
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface-2 p-4 sm:p-5 shadow-2xs space-y-2">
+        <div className="rounded-2xl border border-border bg-surface-2 p-4 sm:p-5 shadow-2xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">Gate Impressions</span>
-            <div className="h-8 w-8 rounded-lg bg-purple-500/10 text-purple-500 flex items-center justify-center">
-              <Eye className="h-4 w-4" />
+            <div className="h-8 w-8 rounded-full bg-purple-500/10 text-purple-500 flex items-center justify-center">
+              <UL0Icon name="eye" size={16} />
             </div>
           </div>
           <div>
@@ -281,11 +255,11 @@ export function MarketingDashboardClient({
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface-2 p-4 sm:p-5 shadow-2xs space-y-2">
+        <div className="rounded-2xl border border-border bg-surface-2 p-4 sm:p-5 shadow-2xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">Completions</span>
-            <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
-              <Target className="h-4 w-4" />
+            <div className="h-8 w-8 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+              <UL0Icon name="target" size={16} />
             </div>
           </div>
           <div>
@@ -298,11 +272,11 @@ export function MarketingDashboardClient({
           </div>
         </div>
 
-        <div className="rounded-xl border border-border bg-surface-2 p-4 sm:p-5 shadow-2xs space-y-2">
+        <div className="rounded-2xl border border-border bg-surface-2 p-4 sm:p-5 shadow-2xs space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-muted-foreground">Completion Rate</span>
-            <div className="h-8 w-8 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center">
-              <Percent className="h-4 w-4" />
+            <div className="h-8 w-8 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center">
+              <UL0Icon name="percent" size={16} />
             </div>
           </div>
           <div>
@@ -334,9 +308,9 @@ export function MarketingDashboardClient({
               <div className="flex items-center gap-2">
                 <span className="p-2 rounded-xl bg-primary/10 text-primary">
                   {linkType === "auto_skip" ? (
-                    <Zap className="h-5 w-5 text-amber-500 fill-amber-500" />
+                    <UL0Icon name="bolt" size={20} />
                   ) : (
-                    <MousePointerClick className="h-5 w-5 text-primary" />
+                    <UL0Icon name="target" size={20} />
                   )}
                 </span>
                 <div>
@@ -357,9 +331,9 @@ export function MarketingDashboardClient({
             <button
               type="button"
               onClick={() => setShowCreate(false)}
-              className="p-1.5 rounded-lg text-muted-foreground hover:bg-surface-3 hover:text-foreground transition-colors cursor-pointer"
+              className="p-1.5 rounded-full text-muted-foreground hover:bg-surface-3 hover:text-foreground transition-colors cursor-pointer"
             >
-              <X className="h-5 w-5" />
+              <UL0Icon name="close" size={20} />
             </button>
           </div>
 
@@ -376,7 +350,7 @@ export function MarketingDashboardClient({
                     setLinkType("auto_skip")
                     setTimerSeconds(5)
                   }}
-                  className={`flex items-start gap-3 p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
+                  className={`flex items-start gap-3 p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
                     linkType === "auto_skip"
                       ? "border-amber-500 bg-amber-500/10 shadow-xs ring-1 ring-amber-500/30"
                       : "border-border hover:bg-surface-3"
@@ -389,11 +363,11 @@ export function MarketingDashboardClient({
                         : "bg-surface-3 text-muted-foreground"
                     }`}
                   >
-                    <Zap className="h-4 w-4" />
+                    <UL0Icon name="bolt" size={16} />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
-                      <span>⚡ Auto-Skip Mode</span>
+                      <span>Auto-Skip Mode</span>
                       <span className="text-[10px] bg-amber-500/20 text-amber-500 font-mono px-1.5 py-0.5 rounded font-bold">
                         Highest Volume
                       </span>
@@ -407,7 +381,7 @@ export function MarketingDashboardClient({
                 <button
                   type="button"
                   onClick={() => setLinkType("button")}
-                  className={`flex items-start gap-3 p-3.5 rounded-xl border text-left transition-all cursor-pointer ${
+                  className={`flex items-start gap-3 p-3.5 rounded-2xl border text-left transition-all cursor-pointer ${
                     linkType === "button"
                       ? "border-primary bg-primary/10 shadow-xs ring-1 ring-primary/30"
                       : "border-border hover:bg-surface-3"
@@ -420,7 +394,7 @@ export function MarketingDashboardClient({
                         : "bg-surface-3 text-muted-foreground"
                     }`}
                   >
-                    <MousePointerClick className="h-4 w-4" />
+                    <UL0Icon name="target" size={16} />
                   </div>
                   <div>
                     <div className="text-xs font-bold text-foreground flex items-center gap-1.5">
@@ -544,7 +518,7 @@ export function MarketingDashboardClient({
                       rel="noopener noreferrer"
                       className="inline-flex items-center text-primary hover:underline ml-1"
                     >
-                      <ExternalLink className="h-3 w-3" />
+                      <UL0Icon name="external" size={12} />
                     </a>
                   </p>
                 </div>
@@ -553,7 +527,7 @@ export function MarketingDashboardClient({
                   <select
                     value={blogCount}
                     onChange={(e) => setBlogCount(parseInt(e.target.value, 10))}
-                    className="w-full rounded-xl border border-border bg-surface-1 px-3 py-2.5 text-xs text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors cursor-pointer"
+                    className="w-full rounded-2xl border border-border bg-surface-1 px-3 py-2.5 text-xs text-foreground outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors cursor-pointer"
                   >
                     {Array.from(
                       { length: Math.min(maxBlogCount, totalBlogsAvailable) },
@@ -575,7 +549,7 @@ export function MarketingDashboardClient({
             {/* Step 5: Timer Seconds */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5 text-amber-500" />
+                <UL0Icon name="clock" size={14} />
                 <span>5. Countdown Duration</span>
               </label>
               <div className="flex items-center gap-2 flex-wrap">
@@ -584,7 +558,7 @@ export function MarketingDashboardClient({
                     key={sec}
                     type="button"
                     onClick={() => setTimerSeconds(sec)}
-                    className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all border cursor-pointer ${
+                    className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all border cursor-pointer ${
                       timerSeconds === sec
                         ? "border-amber-500 bg-amber-500/10 text-amber-500 shadow-xs"
                         : "border-border bg-surface-1 hover:bg-surface-3 text-muted-foreground"
@@ -606,19 +580,19 @@ export function MarketingDashboardClient({
               <button
                 type="submit"
                 disabled={creating}
-                className="inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-5 py-2.5 text-xs sm:text-sm font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-md cursor-pointer"
+                className="inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-5 py-2.5 text-xs sm:text-sm font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-xs cursor-pointer"
               >
                 {creating ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <UL0Icon name="loading" size={16} className="animate-spin" />
                 ) : (
-                  <Plus className="h-4 w-4" />
+                  <UL0Icon name="plus" size={16} />
                 )}
                 <span>Create {linkType === "auto_skip" ? "Auto-Skip" : "Button"} Gate</span>
               </button>
               <button
                 type="button"
                 onClick={() => setShowCreate(false)}
-                className="px-4 py-2.5 rounded-xl border border-border text-xs sm:text-sm font-medium text-muted-foreground hover:bg-surface-3 hover:text-foreground transition-colors cursor-pointer"
+                className="px-4 py-2.5 rounded-full border border-border text-xs sm:text-sm font-medium text-muted-foreground hover:bg-surface-3 hover:text-foreground transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -633,13 +607,13 @@ export function MarketingDashboardClient({
         <div className="p-4 sm:p-5 border-b border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2 flex-1 max-w-md">
             <div className="relative w-full">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+              <UL0Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search by alias, destination, or blog slug..."
-                className="w-full rounded-lg border border-border bg-surface-1 pl-9 pr-3 py-1.5 text-xs text-foreground outline-none focus:border-primary transition-colors"
+                className="w-full rounded-full border border-border bg-surface-1 pl-9 pr-3 py-1.5 text-xs text-foreground outline-none focus:border-primary transition-colors"
               />
             </div>
           </div>
@@ -677,7 +651,7 @@ export function MarketingDashboardClient({
         {filteredLinks.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 text-center space-y-3">
             <div className="h-12 w-12 rounded-2xl bg-surface-3 flex items-center justify-center text-muted-foreground">
-              <Link2 className="h-6 w-6" />
+              <UL0Icon name="link" size={24} />
             </div>
             <div className="space-y-1">
               <h3 className="text-sm font-bold text-foreground">No marketing links found</h3>
@@ -691,9 +665,9 @@ export function MarketingDashboardClient({
               <button
                 type="button"
                 onClick={() => openCreateModal("auto_skip")}
-                className="mt-2 inline-flex items-center gap-2 rounded-xl bg-primary text-primary-foreground px-4 py-2 text-xs font-bold shadow-xs hover:bg-primary/90 transition-all cursor-pointer"
+                className="mt-2 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-2 text-xs font-bold shadow-xs hover:bg-primary/90 transition-all cursor-pointer"
               >
-                <Plus className="h-3.5 w-3.5" />
+                <UL0Icon name="plus" size={14} />
                 <span>Create Marketing Link</span>
               </button>
             )}
@@ -728,23 +702,23 @@ export function MarketingDashboardClient({
                           <button
                             type="button"
                             onClick={() => copyUrl(link.alias, link.$id)}
-                            className="p-1 rounded hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                            className="p-1 rounded-full hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                             title="Copy link"
                           >
                             {copiedId === link.$id ? (
-                              <Check className="h-3.5 w-3.5 text-emerald-500" />
+                              <UL0Icon name="check" size={14} />
                             ) : (
-                              <Copy className="h-3.5 w-3.5" />
+                              <UL0Icon name="copy" size={14} />
                             )}
                           </button>
                           <a
                             href={`https://ul0.site/go/${link.alias}`}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1 rounded hover:bg-surface-3 text-muted-foreground hover:text-primary transition-colors cursor-pointer"
+                            className="p-1 rounded-full hover:bg-surface-3 text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                             title="Test open link"
                           >
-                            <ExternalLink className="h-3.5 w-3.5" />
+                            <UL0Icon name="external" size={14} />
                           </a>
                         </div>
                       </td>
@@ -752,12 +726,12 @@ export function MarketingDashboardClient({
                       <td className="px-4 py-4 whitespace-nowrap">
                         {link.link_type === "auto_skip" ? (
                           <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
-                            <Zap className="h-3 w-3 fill-amber-500" />
+                            <UL0Icon name="bolt" size={12} />
                             Auto-Skip ({link.timer_seconds || 5}s)
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium bg-blue-500/10 text-blue-500 border border-blue-500/20">
-                            <MousePointerClick className="h-3 w-3" />
+                            <UL0Icon name="target" size={12} />
                             Button ({link.timer_seconds || 5}s)
                           </span>
                         )}
@@ -777,12 +751,12 @@ export function MarketingDashboardClient({
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1 text-primary hover:underline font-mono text-[11px]"
                           >
-                            <BookOpen className="h-3 w-3" />
+                            <UL0Icon name="blog" size={12} />
                             <span>/blog/{link.target_slug}</span>
                           </Link>
                         ) : (
                           <span className="inline-flex items-center gap-1 text-muted-foreground text-[11px]">
-                            <Shuffle className="h-3 w-3" />
+                            <UL0Icon name="tools" size={12} />
                             <span>{link.blog_count || 1} random article{(link.blog_count || 1) > 1 ? "s" : ""}</span>
                           </span>
                         )}
@@ -834,10 +808,10 @@ export function MarketingDashboardClient({
                         <button
                           type="button"
                           onClick={() => setDeleteTarget(link)}
-                          className="p-1.5 rounded-lg text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors cursor-pointer"
+                          className="p-1.5 rounded-full text-muted-foreground hover:bg-red-500/10 hover:text-red-500 transition-colors cursor-pointer"
                           title="Delete link"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <UL0Icon name="trash" size={16} />
                         </button>
                       </td>
                     </tr>
@@ -858,12 +832,12 @@ export function MarketingDashboardClient({
                         </span>
                         {link.link_type === "auto_skip" ? (
                           <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold bg-amber-500/10 text-amber-500 border border-amber-500/20">
-                            <Zap className="h-3 w-3 fill-amber-500" />
+                            <UL0Icon name="bolt" size={12} />
                             Auto-Skip ({link.timer_seconds || 5}s)
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-medium bg-blue-500/10 text-blue-500 border border-blue-500/20">
-                            <MousePointerClick className="h-3 w-3" />
+                            <UL0Icon name="target" size={12} />
                             Button ({link.timer_seconds || 5}s)
                           </span>
                         )}
@@ -884,7 +858,7 @@ export function MarketingDashboardClient({
                       }`}
                     >
                       {togglingId === link.$id ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
+                        <UL0Icon name="loading" size={12} className="animate-spin" />
                       ) : (
                         <span
                           className={`h-1.5 w-1.5 rounded-full ${
@@ -897,7 +871,7 @@ export function MarketingDashboardClient({
                   </div>
 
                   {/* Telemetry row */}
-                  <div className="flex items-center justify-between text-xs bg-surface-1 p-2.5 rounded-xl border border-border">
+                  <div className="flex items-center justify-between text-xs bg-surface-1 p-2.5 rounded-2xl border border-border">
                     <div>
                       <span className="text-[10px] text-muted-foreground block">Opens</span>
                       <span className="font-mono font-bold text-foreground">
@@ -935,31 +909,31 @@ export function MarketingDashboardClient({
                       <button
                         type="button"
                         onClick={() => copyUrl(link.alias, link.$id)}
-                        className="p-1.5 rounded-lg border border-border text-muted-foreground hover:bg-surface-3 hover:text-foreground cursor-pointer"
+                        className="p-1.5 rounded-full border border-border text-muted-foreground hover:bg-surface-3 hover:text-foreground cursor-pointer"
                         title="Copy"
                       >
                         {copiedId === link.$id ? (
-                          <Check className="h-3.5 w-3.5 text-emerald-500" />
+                          <UL0Icon name="check" size={14} />
                         ) : (
-                          <Copy className="h-3.5 w-3.5" />
+                          <UL0Icon name="copy" size={14} />
                         )}
                       </button>
                       <a
                         href={`https://ul0.site/go/${link.alias}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-lg border border-border text-muted-foreground hover:bg-surface-3 hover:text-foreground cursor-pointer"
+                        className="p-1.5 rounded-full border border-border text-muted-foreground hover:bg-surface-3 hover:text-foreground cursor-pointer"
                         title="Open"
                       >
-                        <ExternalLink className="h-3.5 w-3.5" />
+                        <UL0Icon name="external" size={14} />
                       </a>
                       <button
                         type="button"
                         onClick={() => setDeleteTarget(link)}
-                        className="p-1.5 rounded-lg border border-border text-muted-foreground hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
+                        className="p-1.5 rounded-full border border-border text-muted-foreground hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
                         title="Delete"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <UL0Icon name="trash" size={14} />
                       </button>
                     </div>
                   </div>
@@ -976,7 +950,7 @@ export function MarketingDashboardClient({
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
               <DialogTitle className="text-base font-bold text-red-500 flex items-center gap-2">
-                <Trash2 className="h-4 w-4" />
+                <UL0Icon name="trash" size={16} />
                 <span>Confirm Marketing Link Deletion</span>
               </DialogTitle>
               <DialogDescription className="text-xs leading-relaxed">
@@ -992,7 +966,7 @@ export function MarketingDashboardClient({
               <button
                 type="button"
                 onClick={() => setDeleteTarget(null)}
-                className="px-3.5 py-1.5 rounded-lg border border-border text-xs font-medium text-foreground hover:bg-surface-2 transition-colors cursor-pointer"
+                className="px-3.5 py-1.5 rounded-full border border-border text-xs font-medium text-foreground hover:bg-surface-2 transition-colors cursor-pointer"
               >
                 Cancel
               </button>
@@ -1000,9 +974,9 @@ export function MarketingDashboardClient({
                 type="button"
                 onClick={handleDelete}
                 disabled={deletingId === deleteTarget.$id}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-red-600 text-white text-xs font-semibold hover:bg-red-700 disabled:opacity-50 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-red-600 text-white text-xs font-semibold hover:bg-red-700 disabled:opacity-50 transition-colors cursor-pointer"
               >
-                {deletingId === deleteTarget.$id && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+                {deletingId === deleteTarget.$id && <UL0Icon name="loading" size={14} className="animate-spin" />}
                 <span>Delete Permanently</span>
               </button>
             </div>

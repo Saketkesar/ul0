@@ -3,18 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import {
-  Copy,
-  Check,
-  Search,
-  UploadCloud,
-  FileText,
-  Shield,
-  Plus,
-  ArrowRight,
-  Loader2,
-  X,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export interface BlockedThreatItem {
   id: string
@@ -135,7 +124,7 @@ export function ThreatRadarClient({
       <div className="space-y-3 border-b border-neutral-200 dark:border-neutral-800 pb-5">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <Shield className="h-7 w-7 text-primary shrink-0" />
+            <UL0Icon name="shield" animated={true} size={28} className="text-primary shrink-0" />
             <Image
               src="/ul0.png"
               alt="ul0"
@@ -146,27 +135,27 @@ export function ThreatRadarClient({
           </div>
 
           {/* Notion View Switcher */}
-          <div className="flex items-center gap-1 p-0.5 bg-neutral-100 dark:bg-neutral-800/60 rounded-md border border-neutral-200 dark:border-neutral-700 text-xs">
+          <div className="flex items-center gap-1 p-1 bg-surface-2 rounded-full border border-border text-xs">
             <button
               onClick={() => setActiveTab("directory")}
-              className={`px-2.5 py-1 rounded transition-colors font-medium ${
+              className={`px-3 py-1 rounded-full transition-all font-semibold cursor-pointer ${
                 activeTab === "directory"
-                  ? "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 shadow-xs"
-                  : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
+                  ? "bg-primary text-primary-foreground shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
               Banned Links ({threats.length})
             </button>
             <button
               onClick={() => setActiveTab("submit")}
-              className={`px-2.5 py-1 rounded transition-colors font-medium flex items-center gap-1 ${
+              className={`px-3 py-1 rounded-full transition-all font-semibold flex items-center gap-1.5 cursor-pointer ${
                 activeTab === "submit"
-                  ? "bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 shadow-xs"
-                  : "text-neutral-500 hover:text-neutral-900 dark:hover:text-neutral-200"
+                  ? "bg-primary text-primary-foreground shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Plus className="h-3 w-3" />
-              <span>Submit Phishing (+ Karma)</span>
+              <UL0Icon name="plus" size={12} />
+              <span>Submit Phishing</span>
             </button>
           </div>
         </div>
@@ -180,9 +169,9 @@ export function ThreatRadarClient({
           </p>
         </div>
 
-        {/* Notion Callout Box */}
-        <div className="flex items-start gap-2.5 p-3 rounded-md bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 text-xs text-neutral-600 dark:text-neutral-300">
-          <span className="text-sm select-none">ℹ️</span>
+        {/* Callout Box */}
+        <div className="flex items-start gap-2.5 p-4 rounded-2xl bg-surface-2 border border-border text-xs text-muted-foreground">
+          <UL0Icon name="info" size={16} className="mt-0.5 shrink-0" />
           <div className="space-y-0.5">
             <p className="font-semibold text-neutral-900 dark:text-neutral-100">
               Zero Backlink Protection
@@ -218,38 +207,38 @@ export function ThreatRadarClient({
           {/* Search bar */}
           <div className="flex items-center justify-between gap-3 pt-1">
             <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
+              <UL0Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search slug, brand or domain..."
-                className="w-full pl-8 pr-3 py-1.5 bg-transparent border border-neutral-200 dark:border-neutral-700 rounded-md text-xs focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500"
+                className="w-full pl-9 pr-3.5 py-2 bg-card border border-border rounded-full text-xs focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs"
               />
             </div>
 
-            <span className="text-xs text-neutral-400 font-mono">
+            <span className="text-xs text-muted-foreground font-mono">
               {filteredThreats.length} item{filteredThreats.length === 1 ? "" : "s"}
             </span>
           </div>
 
-          {/* Clean Notion Table */}
-          <div className="border border-neutral-200 dark:border-neutral-800 rounded-md overflow-hidden bg-white dark:bg-neutral-900/50">
+          {/* Clean Table */}
+          <div className="border border-border rounded-3xl overflow-hidden bg-card shadow-2xs">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50/75 dark:bg-neutral-800/40 text-neutral-500 dark:text-neutral-400 font-medium">
-                    <th className="py-2 px-3 w-36">Short Link</th>
-                    <th className="py-2 px-3">Defanged Destination (No Backlink)</th>
-                    <th className="py-2 px-3 w-32">Spoofed Brand</th>
-                    <th className="py-2 px-3 w-24">Status</th>
-                    <th className="py-2 px-3 w-28 text-right">Date</th>
+                  <tr className="border-b border-border bg-surface-2 text-muted-foreground font-semibold">
+                    <th className="py-2.5 px-3.5 w-36">Short Link</th>
+                    <th className="py-2.5 px-3.5">Defanged Destination (No Backlink)</th>
+                    <th className="py-2.5 px-3.5 w-32">Spoofed Brand</th>
+                    <th className="py-2.5 px-3.5 w-24">Status</th>
+                    <th className="py-2.5 px-3.5 w-28 text-right">Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-neutral-200 dark:divide-neutral-800">
+                <tbody className="divide-y divide-border">
                   {filteredThreats.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="py-6 text-center text-neutral-400 text-xs">
+                      <td colSpan={5} className="py-6 text-center text-muted-foreground text-xs">
                         No blocked links match your search.
                       </td>
                     </tr>
@@ -257,10 +246,10 @@ export function ThreatRadarClient({
                     filteredThreats.map((threat) => (
                       <tr
                         key={threat.id}
-                        className="hover:bg-neutral-50/50 dark:hover:bg-neutral-800/30 transition-colors"
+                        className="hover:bg-muted/10 transition-colors"
                       >
                         {/* Short Link */}
-                        <td className="py-2.5 px-3 font-mono font-medium text-neutral-900 dark:text-neutral-100">
+                        <td className="py-3 px-3.5 font-mono font-bold text-foreground">
                           <Link
                             href={`/r/${threat.slug}`}
                             target="_blank"
@@ -271,21 +260,17 @@ export function ThreatRadarClient({
                         </td>
 
                         {/* Defanged Target URL: NO <a> tag, zero backlink */}
-                        <td className="py-2.5 px-3 font-mono text-neutral-600 dark:text-neutral-300 max-w-md">
+                        <td className="py-3 px-3.5 font-mono text-muted-foreground max-w-md">
                           <div className="flex items-center justify-between gap-2">
                             <span className="truncate select-all" title={threat.defangedUrl}>
                               {threat.defangedUrl}
                             </span>
                             <button
                               onClick={() => copyText(threat.id, threat.defangedUrl)}
-                              className="shrink-0 p-1 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition-colors"
+                              className="shrink-0 p-1.5 hover:bg-surface-2 rounded-full text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                               title="Copy defanged text"
                             >
-                              {copiedId === threat.id ? (
-                                <Check className="h-3 w-3 text-neutral-900 dark:text-neutral-100" />
-                              ) : (
-                                <Copy className="h-3 w-3" />
-                              )}
+                              <UL0Icon name={copiedId === threat.id ? "check" : "copy"} size={12} />
                             </button>
                           </div>
                         </td>
@@ -390,8 +375,8 @@ export function ThreatRadarClient({
                 Proof Screenshot / Image
               </label>
               <div className="flex items-center gap-2.5">
-                <label className="cursor-pointer px-3 py-1.5 bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 border border-neutral-200 dark:border-neutral-700 rounded-md font-medium text-neutral-700 dark:text-neutral-300 flex items-center gap-1.5 transition-colors text-xs">
-                  <UploadCloud className="h-3.5 w-3.5 text-neutral-400" />
+                <label className="cursor-pointer px-4 py-2 bg-surface-2 hover:bg-muted border border-border rounded-full font-semibold text-foreground flex items-center gap-2 transition-colors text-xs shadow-2xs">
+                  <UL0Icon name="upload" size={14} />
                   <span className="truncate max-w-[200px]">
                     {proofFile ? proofFile.name : "Attach Screenshot"}
                   </span>
@@ -410,14 +395,14 @@ export function ThreatRadarClient({
                   <button
                     type="button"
                     onClick={() => setProofFile(null)}
-                    className="p-1 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
+                    className="p-1.5 text-muted-foreground hover:text-foreground cursor-pointer"
                     title="Remove file"
                   >
-                    <X className="h-3.5 w-3.5" />
+                    <UL0Icon name="close" size={14} />
                   </button>
                 )}
               </div>
-              <p className="text-[11px] text-neutral-400">
+              <p className="text-[11px] text-muted-foreground">
                 Upload screenshot showing fake login, phishing message, or impersonation.
               </p>
             </div>
@@ -432,9 +417,9 @@ export function ThreatRadarClient({
                 value={reporterEmail}
                 onChange={(e) => setReporterEmail(e.target.value)}
                 placeholder="email@example.com or @telegram"
-                className="w-full px-3 py-1.5 bg-transparent border border-neutral-200 dark:border-neutral-700 rounded-md focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 text-xs"
+                className="w-full px-3.5 py-2 bg-card border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary text-xs shadow-2xs"
               />
-              <p className="text-[11px] text-neutral-400">
+              <p className="text-[11px] text-muted-foreground">
                 Optional. We will notify you once the link is neutralized.
               </p>
             </div>
@@ -449,24 +434,24 @@ export function ThreatRadarClient({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Where did you receive this link? (Telegram group, SMS, email phishing...)"
-                className="w-full px-3 py-1.5 bg-transparent border border-neutral-200 dark:border-neutral-700 rounded-md focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 resize-none text-xs"
+                className="w-full px-3.5 py-2 bg-card border border-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary resize-none text-xs shadow-2xs"
               />
             </div>
 
             <button
               type="submit"
               disabled={submitting}
-              className="px-4 py-2 rounded-md bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 font-medium hover:opacity-90 disabled:opacity-50 transition-opacity flex items-center justify-center gap-1.5 text-xs"
+              className="px-6 py-2.5 rounded-full bg-primary hover:opacity-90 disabled:opacity-50 text-primary-foreground font-semibold transition-opacity flex items-center justify-center gap-2 text-xs shadow-2xs cursor-pointer"
             >
               {submitting ? (
                 <>
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <UL0Icon name="loading" animated={true} size={14} />
                   <span>Submitting...</span>
                 </>
               ) : (
                 <>
                   <span>Submit Phishing Report</span>
-                  <ArrowRight className="h-3 w-3" />
+                  <UL0Icon name="arrowright" size={12} />
                 </>
               )}
             </button>

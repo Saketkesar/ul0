@@ -1,12 +1,12 @@
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Link2, Search, ArrowRight } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export default function NotFound() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground px-4 py-16">
-      <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-center space-y-6">
+      <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8 text-center space-y-6">
         <div className="flex justify-center">
           <Image
             src="/ul0.png"
@@ -29,15 +29,15 @@ export default function NotFound() {
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-border">
-          <Button asChild size="sm" className="flex-1 text-xs font-semibold">
+          <Button asChild size="sm" className="flex-1 text-xs font-semibold rounded-full">
             <Link href="/">
-              <Link2 className="h-3.5 w-3.5 mr-1" />
+              <UL0Icon name="link" className="h-3.5 w-3.5 mr-1" />
               <span>Shorten a link</span>
             </Link>
           </Button>
-          <Button asChild variant="outline" size="sm" className="flex-1 text-xs">
+          <Button asChild variant="outline" size="sm" className="flex-1 text-xs rounded-full">
             <Link href="/tools">
-              <Search className="h-3.5 w-3.5 mr-1" />
+              <UL0Icon name="search" className="h-3.5 w-3.5 mr-1" />
               <span>Browse tools</span>
             </Link>
           </Button>

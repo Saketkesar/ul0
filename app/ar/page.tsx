@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
 import Link from "next/link"
-import { Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "اختصار الروابط مجانا - تقصير الرابط | ul0",
@@ -81,6 +81,10 @@ export default function ArabicPage() {
       <main className="flex-1">
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-4">
+              <UL0Icon name="lang-ar" size={18} />
+              <span>العربية · النسخة الدولية</span>
+            </div>
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">اختصار الروابط مجانا</h1>
             <p className="text-xl text-muted-foreground mb-2">الأداة رقم 1 لاختصار الروابط مجانا</p>
             <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
@@ -95,33 +99,33 @@ export default function ArabicPage() {
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold text-center mb-8">لماذا ul0؟</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-              <div className="bg-background p-6 rounded-lg border">
-                <Zap className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="bolt" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">سريع جدا</h3>
                 <p className="text-sm text-muted-foreground">اختصر الروابط في أقل من ثانية. بدون انتظار.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Shield className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="shield" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">آمن 100%</h3>
                 <p className="text-sm text-muted-foreground">روابطك آمنة. بدون سبام وبدون فيروسات.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Globe className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="domain" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">مجاني دائما</h3>
                 <p className="text-sm text-muted-foreground">بدون تكاليف خفية. روابط غير محدودة.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Users className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="team" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">تقسيم المصاريف</h3>
                 <p className="text-sm text-muted-foreground">قسّم الفواتير مع الأصدقاء بسهولة.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <QrCode className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="qr" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">رمز QR</h3>
                 <p className="text-sm text-muted-foreground">أنشئ أكواد QR لكل رابط فورا.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Wifi className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="wifi" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">QR للواي فاي</h3>
                 <p className="text-sm text-muted-foreground">أنشئ أكواد QR للواي فاي لمشاركة كلمات المرور.</p>
               </div>
@@ -133,15 +137,15 @@ export default function ArabicPage() {
           <div className="container mx-auto px-4 max-w-3xl">
             <h2 className="text-2xl font-bold text-center mb-8">الأسئلة الشائعة</h2>
             <div className="space-y-4">
-              <div className="bg-background p-5 rounded-lg border">
+              <div className="bg-background p-5 rounded-2xl border border-border/60">
                 <h3 className="font-semibold mb-2">هل الأداة مجانية حقا؟</h3>
                 <p className="text-sm text-muted-foreground">نعم، ul0 مجاني 100% وغير محدود وبدون رسوم خفية.</p>
               </div>
-              <div className="bg-background p-5 rounded-lg border">
+              <div className="bg-background p-5 rounded-2xl border border-border/60">
                 <h3 className="font-semibold mb-2">هل أحتاج إلى حساب؟</h3>
                 <p className="text-sm text-muted-foreground">لا، يمكنك اختصار الروابط فورا بدون تسجيل.</p>
               </div>
-              <div className="bg-background p-5 rounded-lg border">
+              <div className="bg-background p-5 rounded-2xl border border-border/60">
                 <h3 className="font-semibold mb-2">هل يمكنني إنشاء أكواد QR؟</h3>
                 <p className="text-sm text-muted-foreground">نعم، أنشئ رمز QR مجاني لكل رابط.</p>
               </div>
@@ -154,10 +158,10 @@ export default function ArabicPage() {
             <h2 className="text-2xl font-bold mb-4">ابدأ الآن – مجاني 100%!</h2>
             <p className="text-muted-foreground mb-6">تريد تقسيم المصاريف مع الأصدقاء؟ جرّب ميزة Split.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/split" className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium">
+              <Link href="/split" className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium shadow-xs">
                 تقسيم المصاريف →
               </Link>
-              <Link href="/qr" className="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 font-medium">
+              <Link href="/qr" className="inline-flex items-center justify-center rounded-full border border-border bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 font-medium shadow-xs">
                 إنشاء رمز QR →
               </Link>
             </div>

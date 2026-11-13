@@ -18,7 +18,7 @@ import {
 import { DEFAULT_HOST } from "@/lib/appwrite/config"
 import { getDomainByName } from "@/lib/appwrite/domains"
 import { parseUserAgent, parseLanguage, isUniqueVisitor } from "@/lib/utils/analytics"
-import { Lock, AlertCircle, AlertTriangle, ExternalLink, ShieldCheck, ArrowRight, Flag } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   robots: {
@@ -296,18 +296,18 @@ function renderLinkPreviewPage(link: LinkDoc, destinationUrl: string) {
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-4">
-      <div className="w-full max-w-lg rounded-xl border border-border bg-card p-6 sm:p-8 space-y-6">
+      <div className="w-full max-w-lg rounded-3xl border border-border bg-card p-6 sm:p-8 space-y-6">
         <div className="flex items-center justify-between border-b border-border pb-4">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-md bg-primary/10 text-primary flex items-center justify-center">
-              <ShieldCheck className="h-4 w-4" />
+          <div className="flex items-center gap-2.5">
+            <div className="h-9 w-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+              <UL0Icon name="shield" className="h-4.5 w-4.5" />
             </div>
             <div>
               <h1 className="text-sm font-semibold text-foreground">Link Safety Inspection</h1>
               <p className="text-[11px] text-muted-foreground font-mono">ul0.site/r/{link.slug}</p>
             </div>
           </div>
-          <span className="text-[10px] font-mono font-medium px-2 py-0.5 rounded border border-border bg-muted/40 text-muted-foreground">
+          <span className="text-[10px] font-mono font-medium px-2.5 py-0.5 rounded-full border border-border bg-muted/40 text-muted-foreground">
             Preview Mode
           </span>
         </div>
@@ -317,7 +317,7 @@ function renderLinkPreviewPage(link: LinkDoc, destinationUrl: string) {
             <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
               Destination Domain
             </span>
-            <div className="p-3 rounded-md border border-border bg-muted/30 font-mono text-sm font-semibold text-foreground">
+            <div className="p-3 rounded-2xl border border-border bg-muted/30 font-mono text-sm font-semibold text-foreground">
               {hostname}
             </div>
           </div>
@@ -326,17 +326,17 @@ function renderLinkPreviewPage(link: LinkDoc, destinationUrl: string) {
             <span className="text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
               Full Target URL
             </span>
-            <div className="p-3 rounded-md border border-border bg-muted/20 font-mono text-xs text-muted-foreground break-all select-all">
+            <div className="p-3 rounded-2xl border border-border bg-muted/20 font-mono text-xs text-muted-foreground break-all select-all">
               {destinationUrl}
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
-            <div className="p-3 rounded-md border border-border bg-card space-y-0.5">
+            <div className="p-3 rounded-2xl border border-border bg-card space-y-0.5">
               <span className="text-muted-foreground text-[11px]">Safety Status</span>
               <p className="font-semibold text-emerald-600 dark:text-emerald-400">Screened Clean</p>
             </div>
-            <div className="p-3 rounded-md border border-border bg-card space-y-0.5">
+            <div className="p-3 rounded-2xl border border-border bg-card space-y-0.5">
               <span className="text-muted-foreground text-[11px]">Redirect Type</span>
               <p className="font-semibold text-foreground">307 Temporary</p>
             </div>
@@ -346,10 +346,10 @@ function renderLinkPreviewPage(link: LinkDoc, destinationUrl: string) {
         <div className="space-y-2 pt-2 border-t border-border">
           <a
             href={destinationUrl}
-            className="w-full inline-flex items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="w-full inline-flex items-center justify-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             <span>Continue to destination</span>
-            <ArrowRight className="h-3.5 w-3.5" />
+            <UL0Icon name="arrowright" className="h-3.5 w-3.5" />
           </a>
           <div className="flex items-center justify-between text-xs pt-1">
             <Link href="/" className="text-muted-foreground hover:text-foreground">
@@ -359,7 +359,7 @@ function renderLinkPreviewPage(link: LinkDoc, destinationUrl: string) {
               href={`/report-abuse?url=${encodeURIComponent(`https://ul0.site/r/${link.slug}`)}`}
               className="text-destructive hover:underline inline-flex items-center gap-1"
             >
-              <Flag className="h-3 w-3" />
+              <UL0Icon name="flag" className="h-3 w-3" />
               <span>Report abuse</span>
             </Link>
           </div>
@@ -372,9 +372,9 @@ function renderLinkPreviewPage(link: LinkDoc, destinationUrl: string) {
 function renderPasswordPage(isWrong: boolean) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-4">
-      <div className="w-full max-w-md space-y-5 rounded-xl border border-border bg-card p-6 sm:p-8 text-center">
-        <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-lg bg-primary/10 text-primary">
-          <Lock className="h-5 w-5" />
+      <div className="w-full max-w-md space-y-5 rounded-3xl border border-border bg-card p-6 sm:p-8 text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <UL0Icon name="lock" className="h-5 w-5" />
         </div>
 
         <div className="space-y-1">
@@ -390,19 +390,19 @@ function renderPasswordPage(isWrong: boolean) {
               type="password"
               name="password"
               placeholder="Enter passcode"
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
+              className="w-full rounded-full border border-border bg-background px-4 py-2 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
               required
               autoFocus
             />
             {isWrong && (
               <p className="text-xs text-destructive mt-1 font-medium flex items-center gap-1">
-                <AlertCircle className="h-3 w-3" /> Incorrect password. Please try again.
+                <UL0Icon name="warning" className="h-3 w-3" /> Incorrect password. Please try again.
               </p>
             )}
           </div>
           <button
             type="submit"
-            className="w-full rounded-md bg-primary py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="w-full rounded-full bg-primary py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             Access Link
           </button>
@@ -415,9 +415,9 @@ function renderPasswordPage(isWrong: boolean) {
 function renderExpiredPage(message: string) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-4">
-      <div className="w-full max-w-md space-y-5 rounded-xl border border-border bg-card p-6 sm:p-8 text-center">
-        <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-lg bg-muted text-muted-foreground">
-          <AlertCircle className="h-5 w-5" />
+      <div className="w-full max-w-md space-y-5 rounded-3xl border border-border bg-card p-6 sm:p-8 text-center">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
+          <UL0Icon name="warning" className="h-5 w-5" />
         </div>
 
         <div className="space-y-1">
@@ -428,7 +428,7 @@ function renderExpiredPage(message: string) {
         <div className="pt-2">
           <Link
             href="/"
-            className="inline-flex items-center justify-center w-full rounded-md border border-border bg-card px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted transition-colors"
+            className="inline-flex items-center justify-center w-full rounded-full border border-border bg-card px-4 py-2.5 text-xs font-semibold text-foreground hover:bg-muted transition-colors"
           >
             Go to ul0.site
           </Link>
@@ -466,10 +466,10 @@ function renderPhishingPage(
 ) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground p-4">
-      <div className="w-full max-w-xl space-y-5 rounded-xl border border-destructive/40 bg-card p-6 sm:p-8">
+      <div className="w-full max-w-xl space-y-5 rounded-3xl border border-destructive/40 bg-card p-6 sm:p-8">
         <div className="flex items-center gap-3 border-b border-border pb-4">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
-            <AlertTriangle className="h-5 w-5" />
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-destructive/10 text-destructive">
+            <UL0Icon name="warning" className="h-5 w-5" />
           </div>
           <div>
             <h2 className="text-base font-semibold text-destructive">
@@ -481,7 +481,7 @@ function renderPhishingPage(
           </div>
         </div>
 
-        <div className="rounded-lg bg-muted/40 border border-border p-3.5 space-y-2 text-xs text-muted-foreground">
+        <div className="rounded-2xl bg-muted/40 border border-border p-3.5 space-y-2 text-xs text-muted-foreground">
           <p>
             The destination URL is flagged: <span className="font-mono text-destructive break-all">{suspiciousUrl}</span>
           </p>
@@ -490,14 +490,14 @@ function renderPhishingPage(
         <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-border">
           <Link
             href="/"
-            className="flex-1 inline-flex items-center justify-center rounded-md bg-foreground text-background px-4 py-2 text-xs font-semibold hover:bg-foreground/90 transition-colors"
+            className="flex-1 inline-flex items-center justify-center rounded-full bg-foreground text-background px-4 py-2.5 text-xs font-semibold hover:bg-foreground/90 transition-colors"
           >
             Back to Safety (ul0.site)
           </Link>
           <a
             href={suspiciousUrl}
             rel="noopener noreferrer"
-            className="flex-1 inline-flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+            className="flex-1 inline-flex items-center justify-center rounded-full border border-border bg-card px-4 py-2.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
           >
             Proceed anyway (unrecommended)
           </a>

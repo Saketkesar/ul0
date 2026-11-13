@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, ArrowRight, Sparkles } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { getPublishedSanityPosts } from "@/lib/sanity/client"
 
 export const revalidate = 60 // Revalidate blog directory every 60 seconds for scheduled posts
@@ -418,7 +418,7 @@ export default async function BlogPage() {
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="text-center mb-10 space-y-3">
             <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
-              <Sparkles className="h-3.5 w-3.5" /> Technical Guides & Strategies
+              <UL0Icon name="sparkles" className="h-3.5 w-3.5" /> Technical Guides & Strategies
             </span>
             <h1 className="text-3xl font-bold tracking-tight sm:text-4xl text-foreground">
               UL0 Resource & Knowledge Hub
@@ -460,7 +460,7 @@ export default async function BlogPage() {
                   <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t border-border">
                     <div className="flex items-center gap-3">
                       <span className="flex items-center gap-1">
-                        <Calendar className="h-3.5 w-3.5" />
+                        <UL0Icon name="calendar" className="h-3.5 w-3.5" />
                         {new Date(post.date).toLocaleDateString("en-US", {
                           month: "short",
                           day: "numeric",
@@ -468,7 +468,7 @@ export default async function BlogPage() {
                         })}
                       </span>
                       <span className="flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5" />
+                        <UL0Icon name="clock" className="h-3.5 w-3.5" />
                         {post.readTime}
                       </span>
                     </div>
@@ -477,7 +477,7 @@ export default async function BlogPage() {
                     href={`/blog/${post.slug}`}
                     className="inline-flex items-center gap-1 text-primary hover:underline mt-3 text-xs font-semibold"
                   >
-                    Read Guide <ArrowRight className="h-3.5 w-3.5" />
+                    Read Guide <UL0Icon name="arrowright" className="h-3.5 w-3.5" />
                   </Link>
                 </CardContent>
               </Card>
@@ -493,7 +493,7 @@ export default async function BlogPage() {
             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <Link
                 href="/"
-                className="inline-flex items-center justify-center rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 text-xs font-semibold shadow-sm transition-colors"
+                className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-6 text-xs font-semibold shadow-sm transition-colors"
               >
                 Shorten a URL Free
               </Link>

@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
 import Link from "next/link"
-import { Link2, Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Rút gọn Link Miễn Phí - Công cụ Rút gọn URL | ul0",
@@ -57,6 +57,10 @@ export default function VietnamesePage() {
         {/* Hero Section */}
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-4">
+              <UL0Icon name="lang-vi" size={18} />
+              <span>Tiếng Việt · Vietnam Edition</span>
+            </div>
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">
               Rút gọn Link Miễn Phí
             </h1>
@@ -79,43 +83,43 @@ export default function VietnamesePage() {
               Tại sao chọn ul0?
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-              <div className="bg-background p-6 rounded-lg border">
-                <Zap className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="bolt" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Siêu Nhanh</h3>
                 <p className="text-sm text-muted-foreground">
                   Rút gọn link trong chưa đầy 1 giây. Không cần chờ đợi.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Shield className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="shield" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">100% An toàn</h3>
                 <p className="text-sm text-muted-foreground">
                   Link của bạn được bảo mật. Không spam, không virus.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Globe className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="domain" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Luôn Miễn Phí</h3>
                 <p className="text-sm text-muted-foreground">
                   Không có chi phí ẩn. Rút gọn không giới hạn.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Users className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="team" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Chia Chi Phí</h3>
                 <p className="text-sm text-muted-foreground">
                   Chia tiền với bạn bè. Nhanh chóng và dễ dàng.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <QrCode className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="qr" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Mã QR</h3>
                 <p className="text-sm text-muted-foreground">
                   Tạo mã QR cho thanh toán nhanh chóng.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Wifi className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="wifi" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">QR WiFi</h3>
                 <p className="text-sm text-muted-foreground">
                   Tạo mã QR WiFi để chia sẻ mật khẩu dễ dàng.
@@ -132,20 +136,24 @@ export default function VietnamesePage() {
               Sử dụng ở đâu?
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 max-w-4xl mx-auto text-center">
-              <div className="p-4 bg-blue-500/10 rounded-lg">
-                <p className="font-semibold text-blue-600">Zalo</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="chat" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">Zalo</p>
                 <p className="text-sm text-muted-foreground">Chat & chia sẻ</p>
               </div>
-              <div className="p-4 bg-blue-600/10 rounded-lg">
-                <p className="font-semibold text-blue-700">Facebook</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="facebook" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">Facebook</p>
                 <p className="text-sm text-muted-foreground">Bài đăng & tin nhắn</p>
               </div>
-              <div className="p-4 bg-slate-500/10 rounded-lg">
-                <p className="font-semibold text-slate-600">TikTok</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="mobile" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">TikTok</p>
                 <p className="text-sm text-muted-foreground">Bio profile</p>
               </div>
-              <div className="p-4 bg-pink-500/10 rounded-lg">
-                <p className="font-semibold text-pink-600">Instagram</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="instagram" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">Instagram</p>
                 <p className="text-sm text-muted-foreground">Link trong bio</p>
               </div>
             </div>
@@ -164,13 +172,13 @@ export default function VietnamesePage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href="/split"
-                className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium"
+                className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium shadow-xs"
               >
                 Chia Chi Phí →
               </Link>
               <Link 
                 href="/qr"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 font-medium"
+                className="inline-flex items-center justify-center rounded-full border border-border bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 font-medium shadow-xs"
               >
                 Tạo Mã QR →
               </Link>

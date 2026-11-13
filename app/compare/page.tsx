@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { COMPETITORS } from "@/lib/comparisons"
-import { ArrowRight, Check, X } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Compare URL Shorteners — UL0 vs Bitly, Dub, TinyURL, Short.io",
@@ -53,11 +53,11 @@ export default function CompareHubPage() {
               </p>
             </div>
 
-            <div className="rounded-xl border border-border bg-card overflow-hidden">
+            <div className="rounded-3xl border border-border bg-card overflow-hidden shadow-2xs">
               <div className="overflow-x-auto">
                 <table className="w-full text-xs text-left border-collapse">
                   <thead>
-                    <tr className="bg-muted/40 border-b border-border">
+                    <tr className="bg-surface-2 border-b border-border">
                       <th className="p-4 font-semibold text-foreground">Platform</th>
                       <th className="p-4 font-semibold text-center">Free Short Links</th>
                       <th className="p-4 font-semibold text-center">Free Custom Domain</th>
@@ -67,12 +67,12 @@ export default function CompareHubPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
-                    <tr className="bg-muted/20 font-medium text-foreground">
+                    <tr className="bg-surface-2/60 font-medium text-foreground">
                       <td className="p-4 flex items-center gap-2 font-bold">
-                        <span className="w-2 h-2 rounded-full bg-foreground" />
+                        <span className="w-2.5 h-2.5 rounded-full bg-primary inline-block" />
                         <span>UL0</span>
                       </td>
-                      <td className="p-4 text-center font-mono">Unlimited</td>
+                      <td className="p-4 text-center font-mono font-semibold text-primary">Unlimited</td>
                       <td className="p-4 text-center font-mono font-semibold text-foreground">1 domain free</td>
                       <td className="p-4 text-center font-mono">Yes</td>
                       <td className="p-4 text-center font-mono font-semibold text-foreground">$3 / mo</td>
@@ -102,10 +102,10 @@ export default function CompareHubPage() {
                         <td className="p-4 text-right">
                           <Link
                             href={`/compare/${c.slug}`}
-                            className="inline-flex items-center gap-1 text-xs font-medium text-foreground hover:underline underline-offset-4"
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline"
                           >
                             <span>Compare</span>
-                            <ArrowRight className="h-3 w-3" />
+                            <UL0Icon name="arrowright" size={12} />
                           </Link>
                         </td>
                       </tr>
@@ -137,12 +137,12 @@ export default function CompareHubPage() {
               {competitorList.map((c) => (
                 <div
                   key={c.slug}
-                  className="rounded-xl border border-border bg-card p-5 flex flex-col justify-between hover:border-foreground/30 transition-colors"
+                  className="rounded-3xl border border-border bg-card p-6 flex flex-col justify-between hover:border-primary/40 transition-all shadow-2xs group"
                 >
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <h3 className="text-base font-bold text-foreground">UL0 vs {c.name}</h3>
-                      <span className="text-[11px] font-mono px-2 py-0.5 rounded-md border border-border bg-muted/40 text-muted-foreground">
+                      <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full border border-border bg-surface-2 text-muted-foreground font-medium">
                         {c.paidStartPrice}
                       </span>
                     </div>
@@ -151,7 +151,7 @@ export default function CompareHubPage() {
                       {c.tagline}
                     </p>
 
-                    <div className="pt-2 border-t border-border space-y-1.5 text-xs text-muted-foreground font-mono">
+                    <div className="pt-3 border-t border-border space-y-1.5 text-xs text-muted-foreground font-mono">
                       <div className="flex items-center justify-between">
                         <span>Free custom domain:</span>
                         <span className="text-foreground font-medium">
@@ -170,10 +170,10 @@ export default function CompareHubPage() {
                   <div className="pt-4 mt-4 border-t border-border">
                     <Link
                       href={`/compare/${c.slug}`}
-                      className="inline-flex items-center justify-between w-full text-xs font-semibold text-foreground hover:underline underline-offset-4"
+                      className="inline-flex items-center justify-between w-full text-xs font-semibold text-primary group-hover:underline"
                     >
                       <span>Read full comparison</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <UL0Icon name="arrowright" size={12} />
                     </Link>
                   </div>
                 </div>

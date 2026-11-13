@@ -3,7 +3,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft, Check, Calendar, Clock, User, ExternalLink, ChevronRight, Globe, QrCode, ShieldCheck } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
@@ -68,7 +68,7 @@ export default function TravelMarketingGuidePage() {
             href="/blog"
             className="inline-flex items-center text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 mr-1.5" />
+            <UL0Icon name="arrowleft" className="h-4 w-4 mr-1.5" />
             <span>Back to All Guides</span>
           </Link>
 
@@ -83,17 +83,17 @@ export default function TravelMarketingGuidePage() {
 
             <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-2">
               <div className="flex items-center gap-1.5 font-medium text-foreground">
-                <User className="h-3.5 w-3.5 text-primary" />
+                <UL0Icon name="user" className="h-3.5 w-3.5 text-primary" />
                 <span>Saket Kesar</span>
               </div>
               <span>•</span>
               <div className="flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5" />
+                <UL0Icon name="calendar" className="h-3.5 w-3.5" />
                 <span>Nov 12, 2026</span>
               </div>
               <span>•</span>
               <div className="flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5" />
+                <UL0Icon name="clock" className="h-3.5 w-3.5" />
                 <span>6 min read</span>
               </div>
             </div>

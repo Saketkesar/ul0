@@ -2,21 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  User,
-  Server,
-  Globe,
-  ShieldCheck,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
-  Copy,
-  Terminal,
-  HelpCircle,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
@@ -109,7 +95,7 @@ export default function CustomDomainDnsSetupGuidePage() {
             href="/blog"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <UL0Icon name="arrowleft" className="mr-2 h-4 w-4" />
             Back to Blog Guides
           </Link>
 
@@ -123,17 +109,17 @@ export default function CustomDomainDnsSetupGuidePage() {
             </h1>
             <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y py-4">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-primary" />
+                <UL0Icon name="user" className="h-4 w-4 text-primary" />
                 <Link href="/about" className="hover:underline text-foreground font-medium">
                   Saket Kesar
                 </Link>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
+                <UL0Icon name="calendar" className="h-4 w-4 text-primary" />
                 <span>Updated Oct 6, 2026</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
+                <UL0Icon name="clock" className="h-4 w-4 text-primary" />
                 <span>9 min read (1,600+ words)</span>
               </div>
             </div>
@@ -143,7 +129,7 @@ export default function CustomDomainDnsSetupGuidePage() {
             {/* Quick Context Callout */}
             <div className="not-prose rounded-2xl border border-primary/20 bg-primary/5 p-6 space-y-3">
               <div className="flex items-center gap-2 text-sm font-bold text-primary">
-                <Globe className="h-4 w-4" />
+                <UL0Icon name="domain" className="h-4 w-4" />
                 <span>Why Branded Custom Domains Matter in 2026</span>
               </div>
               <p className="text-sm text-muted-foreground leading-relaxed">
@@ -295,7 +281,7 @@ export default function CustomDomainDnsSetupGuidePage() {
                 {/* Issue 1 */}
                 <div className="rounded-xl border p-5 bg-card space-y-2">
                   <div className="flex items-center gap-2 font-bold text-foreground text-sm">
-                    <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+                    <UL0Icon name="warning" className="h-4 w-4 text-amber-500 shrink-0" />
                     <span>Issue 1: SSL Certificate Pending / Cipher Mismatch Error</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
@@ -309,7 +295,7 @@ export default function CustomDomainDnsSetupGuidePage() {
                 {/* Issue 2 */}
                 <div className="rounded-xl border p-5 bg-card space-y-2">
                   <div className="flex items-center gap-2 font-bold text-foreground text-sm">
-                    <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+                    <UL0Icon name="warning" className="h-4 w-4 text-amber-500 shrink-0" />
                     <span>Issue 2: DNS_PROBE_FINISHED_NXDOMAIN</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
@@ -323,7 +309,7 @@ export default function CustomDomainDnsSetupGuidePage() {
                 {/* Issue 3 */}
                 <div className="rounded-xl border p-5 bg-card space-y-2">
                   <div className="flex items-center gap-2 font-bold text-foreground text-sm">
-                    <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+                    <UL0Icon name="warning" className="h-4 w-4 text-amber-500 shrink-0" />
                     <span>Issue 3: CAA Record Restrictions</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
@@ -337,7 +323,7 @@ export default function CustomDomainDnsSetupGuidePage() {
                 {/* Issue 4 */}
                 <div className="rounded-xl border p-5 bg-card space-y-2">
                   <div className="flex items-center gap-2 font-bold text-foreground text-sm">
-                    <AlertTriangle className="h-4 w-4 text-amber-500 shrink-0" />
+                    <UL0Icon name="warning" className="h-4 w-4 text-amber-500 shrink-0" />
                     <span>Issue 4: Conflicting A Records on the Same Hostname</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
@@ -358,7 +344,7 @@ export default function CustomDomainDnsSetupGuidePage() {
               </p>
               <div className="not-prose rounded-xl border bg-muted/60 p-4 font-mono text-xs space-y-2">
                 <div className="text-muted-foreground flex items-center gap-1.5 text-[11px]">
-                  <Terminal className="h-3.5 w-3.5 text-primary" />
+                  <UL0Icon name="terminal" className="h-3.5 w-3.5 text-primary" />
                   <span>Terminal command:</span>
                 </div>
                 <div className="bg-background p-3 rounded-lg border text-foreground font-bold flex justify-between items-center">

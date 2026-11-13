@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
 import Link from "next/link"
-import { Link2, Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Acortador de URL Gratis - Acortar Enlaces y Códigos QR | ul0",
@@ -54,6 +54,10 @@ export default function SpanishPage() {
         {/* Hero Section */}
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-4">
+              <UL0Icon name="lang-es" size={18} />
+              <span>Español · Edición Global</span>
+            </div>
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">
                Acortador de URL Gratis
             </h1>
@@ -76,43 +80,43 @@ export default function SpanishPage() {
               ¿Por qué elegir ul0?
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-              <div className="bg-background p-6 rounded-lg border">
-                <Zap className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="bolt" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Super Rápido</h3>
                 <p className="text-sm text-muted-foreground">
                   Acorta enlaces en menos de 1 segundo. Sin esperas.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Shield className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="shield" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">100% Seguro</h3>
                 <p className="text-sm text-muted-foreground">
                   Tus enlaces están seguros. Sin spam, sin virus.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Globe className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="domain" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Siempre Gratis</h3>
                 <p className="text-sm text-muted-foreground">
                   Sin costos ocultos. Acorta enlaces ilimitados.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Users className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="team" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Dividir Gastos</h3>
                 <p className="text-sm text-muted-foreground">
                   Divide cuentas con amigos. Fácil y rápido.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <QrCode className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="qr" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Código QR</h3>
                 <p className="text-sm text-muted-foreground">
                   Genera códigos QR para pagos instantáneos.
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Wifi className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="wifi" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">QR WiFi</h3>
                 <p className="text-sm text-muted-foreground">
                   Crea QR WiFi para compartir contraseñas fácilmente.
@@ -129,20 +133,24 @@ export default function SpanishPage() {
               ¿Dónde usar?
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 max-w-4xl mx-auto text-center">
-              <div className="p-4 bg-green-500/10 rounded-lg">
-                <p className="font-semibold text-green-600">WhatsApp</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="whatsapp" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">WhatsApp</p>
                 <p className="text-sm text-muted-foreground">Estados y chats</p>
               </div>
-              <div className="p-4 bg-pink-500/10 rounded-lg">
-                <p className="font-semibold text-pink-600">Instagram</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="instagram" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">Instagram</p>
                 <p className="text-sm text-muted-foreground">Link en bio</p>
               </div>
-              <div className="p-4 bg-slate-500/10 rounded-lg">
-                <p className="font-semibold text-slate-600">TikTok</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="mobile" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">TikTok</p>
                 <p className="text-sm text-muted-foreground">Bio del perfil</p>
               </div>
-              <div className="p-4 bg-blue-500/10 rounded-lg">
-                <p className="font-semibold text-blue-600">Twitter/X</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="x" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">Twitter/X</p>
                 <p className="text-sm text-muted-foreground">Tweets y bio</p>
               </div>
             </div>
@@ -161,13 +169,13 @@ export default function SpanishPage() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 href="/split"
-                className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium"
+                className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium shadow-xs"
               >
                 Dividir Gastos →
               </Link>
               <Link 
                 href="/qr"
-                className="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 font-medium"
+                className="inline-flex items-center justify-center rounded-full border border-border bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 font-medium shadow-xs"
               >
                 Crear Código QR →
               </Link>

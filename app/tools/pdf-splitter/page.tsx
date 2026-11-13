@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PdfSplitterClient } from "./pdf-splitter-client"
-import { HelpCircle, ShieldCheck, Zap, Scissors, Layers, Download, CheckCircle2 } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "PDF Splitter — Extract, Rename & Download Pages Separately Online | UL0",
@@ -86,8 +86,8 @@ export default function PdfSplitterPage() {
 
           {/* Heading */}
           <div className="text-center mb-10">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-4">
-              <Scissors className="h-3.5 w-3.5" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold mb-4 select-none">
+              <UL0Icon name="scissors" size={14} />
               <span>100% Client-Side • Private &amp; Instant</span>
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
@@ -113,26 +113,32 @@ export default function PdfSplitterPage() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3 text-xs">
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <ShieldCheck className="h-5 w-5 text-emerald-500 mb-2" />
-                <h4 className="font-bold text-foreground mb-1">Zero Cloud Uploads</h4>
-                <p className="text-muted-foreground">
+              <div className="p-5 rounded-2xl border border-border bg-card shadow-2xs hover:border-primary/40 transition-colors">
+                <div className="mb-3">
+                  <UL0Icon name="shield" animated={true} size={28} />
+                </div>
+                <h4 className="font-bold text-foreground mb-1 text-sm">Zero Cloud Uploads</h4>
+                <p className="text-muted-foreground leading-relaxed">
                   Your files remain strictly inside your browser memory. Ideal for confidential legal filings, financial statements, and contracts.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <Layers className="h-5 w-5 text-blue-500 mb-2" />
-                <h4 className="font-bold text-foreground mb-1">Exact Vector Preservation</h4>
-                <p className="text-muted-foreground">
+              <div className="p-5 rounded-2xl border border-border bg-card shadow-2xs hover:border-primary/40 transition-colors">
+                <div className="mb-3">
+                  <UL0Icon name="docs" animated={true} size={28} />
+                </div>
+                <h4 className="font-bold text-foreground mb-1 text-sm">Exact Vector Preservation</h4>
+                <p className="text-muted-foreground leading-relaxed">
                   Extracted pages preserve 100% of their original crisp text, embedded fonts, and vector artwork without re-encoding.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <Download className="h-5 w-5 text-purple-500 mb-2" />
-                <h4 className="font-bold text-foreground mb-1">Flexible Batch Downloads</h4>
-                <p className="text-muted-foreground">
+              <div className="p-5 rounded-2xl border border-border bg-card shadow-2xs hover:border-primary/40 transition-colors">
+                <div className="mb-3">
+                  <UL0Icon name="download" animated={true} size={28} />
+                </div>
+                <h4 className="font-bold text-foreground mb-1 text-sm">Flexible Batch Downloads</h4>
+                <p className="text-muted-foreground leading-relaxed">
                   Download individual single pages with custom filenames, merge selected pages, or download everything as a ZIP package.
                 </p>
               </div>
@@ -143,12 +149,12 @@ export default function PdfSplitterPage() {
               <h3 className="text-lg font-bold text-foreground mb-4">Frequently Asked Questions</h3>
               <div className="space-y-3">
                 {faqSchema.mainEntity.map((item, idx) => (
-                  <div key={idx} className="rounded-xl border border-border bg-card p-4">
-                    <h4 className="text-xs font-semibold text-foreground mb-1.5 flex items-center gap-1.5">
-                      <HelpCircle className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <div key={idx} className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-2xs">
+                    <h4 className="text-xs sm:text-sm font-semibold text-foreground mb-1.5 flex items-center gap-2">
+                      <UL0Icon name="faq" size={16} />
                       <span>{item.name}</span>
                     </h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed pl-5">
+                    <p className="text-xs text-muted-foreground leading-relaxed pl-6">
                       {item.acceptedAnswer.text}
                     </p>
                   </div>

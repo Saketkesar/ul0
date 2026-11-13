@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { PricingSection } from "./pricing-section"
-import { ExternalLink, Check, ChevronRight } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import Link from "next/link"
 
 export const metadata: Metadata = {
@@ -55,7 +55,7 @@ export default function PricingPage() {
           <PricingSection />
 
           {/* Customer Portal Banner */}
-          <div className="rounded-lg border border-border bg-card p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="rounded-3xl border border-border bg-card p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
             <div className="space-y-1 text-center sm:text-left">
               <h3 className="text-sm font-semibold text-foreground">Existing Customer Billing Portal</h3>
               <p className="text-xs text-muted-foreground">
@@ -66,41 +66,41 @@ export default function PricingPage() {
               href="https://polar.sh/ul0-link/portal"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-4 py-2 text-xs font-semibold text-foreground hover:bg-muted transition-colors shrink-0"
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface-2 px-5 py-2.5 text-xs font-semibold text-foreground hover:bg-muted transition-colors shrink-0 shadow-2xs"
             >
               <span>Manage Billing</span>
-              <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+              <UL0Icon name="external" size={14} />
             </a>
           </div>
 
           {/* Compare Link */}
-          <div className="rounded-lg border border-border bg-card/40 p-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+          <div className="rounded-3xl border border-border bg-card/40 p-6 sm:p-7 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs shadow-2xs">
             <div className="space-y-1 text-center sm:text-left">
-              <h4 className="font-semibold text-foreground">Evaluating other link shorteners?</h4>
+              <h4 className="font-semibold text-foreground text-sm">Evaluating other link shorteners?</h4>
               <p className="text-muted-foreground">
                 Read our dated, verified comparison matrix against Bitly, Short.io, Dub, and TinyURL.
               </p>
             </div>
             <Link
               href="/compare"
-              className="inline-flex items-center gap-1 text-primary hover:underline font-semibold shrink-0"
+              className="inline-flex items-center gap-1.5 text-primary hover:underline font-semibold shrink-0"
             >
               <span>View competitor breakdown</span>
-              <ChevronRight className="h-3.5 w-3.5" />
+              <UL0Icon name="arrowright" size={12} />
             </Link>
           </div>
 
           {/* FAQ */}
           <div className="space-y-6 max-w-3xl mx-auto">
             <div className="text-center space-y-1">
-              <h2 className="text-xl font-semibold text-foreground">Billing &amp; Account FAQ</h2>
+              <h2 className="text-xl font-bold text-foreground">Billing &amp; Account FAQ</h2>
               <p className="text-xs text-muted-foreground">Answers to common billing questions.</p>
             </div>
 
             <div className="space-y-3">
               {BILLING_FAQS.map((faq) => (
-                <div key={faq.q} className="rounded-md border border-border bg-card p-4 space-y-1.5 text-xs">
-                  <h4 className="font-semibold text-foreground">{faq.q}</h4>
+                <div key={faq.q} className="rounded-2xl border border-border bg-card p-5 space-y-1.5 text-xs shadow-2xs">
+                  <h4 className="font-semibold text-foreground text-sm">{faq.q}</h4>
                   <p className="text-muted-foreground leading-relaxed">{faq.a}</p>
                 </div>
               ))}

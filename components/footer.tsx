@@ -2,24 +2,25 @@
 
 import React, { useState, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { BrandLogo } from "@/components/brand-logo"
+import { UL0Icon } from "@/components/ul0-icon"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { ShieldCheck, Globe, Moon, Sun } from "lucide-react"
 
 const LANGUAGES = [
-  { code: "en", name: "English", href: "/" },
-  { code: "es", name: "Español", href: "/es" },
-  { code: "pt", name: "Português", href: "/pt" },
-  { code: "de", name: "Deutsch", href: "/de" },
-  { code: "fr", name: "Français", href: "/fr" },
-  { code: "id", name: "Indonesia", href: "/id" },
-  { code: "hi", name: "हिन्दी", href: "/hi" },
+  { code: "en", name: "English", href: "/", icon: "lang-en" },
+  { code: "es", name: "Español", href: "/es", icon: "lang-es" },
+  { code: "pt", name: "Português", href: "/pt", icon: "lang-pt" },
+  { code: "de", name: "Deutsch", href: "/de", icon: "lang-de" },
+  { code: "fr", name: "Français", href: "/fr", icon: "lang-fr" },
+  { code: "id", name: "Indonesia", href: "/id", icon: "language" },
+  { code: "hi", name: "हिन्दी", href: "/hi", icon: "lang-hi" },
+  { code: "ar", name: "العربية", href: "/ar", icon: "lang-ar" },
+  { code: "ja", name: "日本語", href: "/ja", icon: "lang-ja" },
 ]
 
 export function Footer() {
@@ -235,7 +236,7 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/icons" className="hover:text-foreground transition-colors font-medium text-[#EE6123]">
+                <Link href="/icons" className="hover:text-foreground transition-colors font-semibold text-primary">
                   Our Icons &amp; Color Scheme
                 </Link>
               </li>
@@ -252,7 +253,7 @@ export function Footer() {
         <div className="pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
           <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
             <Link href="/" aria-label="UL0 Homepage">
-              <BrandLogo iconSize="sm" />
+              <BrandLogo height={24} />
             </Link>
             <span className="hidden sm:inline text-muted-foreground/40">•</span>
             <span>Zero-tracking cookies • Client-side private tools</span>
@@ -264,23 +265,24 @@ export function Footer() {
             {/* Live Status indicator */}
             <Link
               href="/status"
-              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-border bg-background hover:bg-muted text-[11px] font-medium text-foreground transition-colors"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border bg-card hover:bg-muted text-[11px] font-medium text-foreground transition-colors"
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 inline-block" />
+              <UL0Icon name="status" size={13} />
               <span>All Systems Operational</span>
             </Link>
 
             {/* Language Dropdown */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded border border-border bg-background hover:bg-muted text-[11px] font-medium text-foreground outline-none">
-                <Globe className="h-3 w-3 text-muted-foreground" />
+              <DropdownMenuTrigger className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-border bg-card hover:bg-muted text-[11px] font-medium text-foreground outline-none cursor-pointer">
+                <UL0Icon name="language" size={14} />
                 <span>Language</span>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-36 p-1">
+              <DropdownMenuContent align="end" className="w-40 p-1.5 rounded-xl border border-border shadow-md">
                 {LANGUAGES.map((lang) => (
                   <DropdownMenuItem key={lang.code} asChild>
-                    <Link href={lang.href} className="text-xs py-1 cursor-pointer">
-                      {lang.name}
+                    <Link href={lang.href} className="text-xs py-1.5 px-2 flex items-center gap-2 cursor-pointer rounded-lg">
+                      <UL0Icon name={lang.icon} size={16} />
+                      <span>{lang.name}</span>
                     </Link>
                   </DropdownMenuItem>
                 ))}
@@ -291,11 +293,11 @@ export function Footer() {
             <button
               type="button"
               onClick={toggleTheme}
-              className="inline-flex items-center justify-center h-7 w-7 rounded border border-border bg-background hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+              className="inline-flex items-center justify-center h-7 w-7 rounded-lg border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
               title={isDark ? "Switch to light mode" : "Switch to dark mode"}
               aria-label="Toggle theme"
             >
-              {isDark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
+              <UL0Icon name="palette" size={14} />
             </button>
           </div>
         </div>

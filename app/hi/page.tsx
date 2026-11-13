@@ -3,9 +3,8 @@ import { hreflangAlternates } from "@/lib/i18n"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
-import { FeaturesSection } from "@/components/features-section"
 import Link from "next/link"
-import { Link2, Zap, Shield, Globe, Users, QrCode } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "मुफ्त URL शॉर्टनर - बिना साइनअप लिंक छोटा करें और QR कोड बनाएं | ul0",
@@ -55,6 +54,10 @@ export default function HindiPage() {
         {/* Hero Section */}
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-4">
+              <UL0Icon name="lang-hi" size={18} />
+              <span>हिन्दी · India Edition</span>
+            </div>
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4">
               मुफ्त URL शॉर्टनर
             </h1>
@@ -77,43 +80,43 @@ export default function HindiPage() {
               ul0 क्यों चुनें?
             </h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-              <div className="bg-background p-6 rounded-lg border">
-                <Zap className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="bolt" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">बिजली की तरह तेज़</h3>
                 <p className="text-sm text-muted-foreground">
                   1 सेकंड से भी कम समय में लिंक शॉर्ट करें। कोई इंतज़ार नहीं।
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Shield className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="shield" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">100% सुरक्षित</h3>
                 <p className="text-sm text-muted-foreground">
                   आपके लिंक सुरक्षित हैं। कोई स्पैम नहीं, कोई वायरस नहीं।
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Globe className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="domain" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">हमेशा मुफ्त</h3>
                 <p className="text-sm text-muted-foreground">
                   कोई छिपे हुए चार्ज नहीं। अनलिमिटेड लिंक शॉर्ट करें।
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Users className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="team" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">खर्च बांटें</h3>
                 <p className="text-sm text-muted-foreground">
                   दोस्तों के साथ बिल स्प्लिट करें। UPI QR कोड के साथ।
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <QrCode className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="qr" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">UPI पेमेंट</h3>
                 <p className="text-sm text-muted-foreground">
                   PhonePe, GPay, Paytm से तुरंत पेमेंट करें।
                 </p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Link2 className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="link" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">कोई साइनअप नहीं</h3>
                 <p className="text-sm text-muted-foreground">
                   अकाउंट बनाने की ज़रूरत नहीं। तुरंत इस्तेमाल करें।
@@ -130,20 +133,24 @@ export default function HindiPage() {
               कहाँ इस्तेमाल करें?
             </h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 max-w-4xl mx-auto text-center">
-              <div className="p-4 bg-green-500/10 rounded-lg">
-                <p className="font-semibold text-green-600">WhatsApp</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="whatsapp" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">WhatsApp</p>
                 <p className="text-sm text-muted-foreground">स्टेटस और चैट में शेयर करें</p>
               </div>
-              <div className="p-4 bg-pink-500/10 rounded-lg">
-                <p className="font-semibold text-pink-600">Instagram</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="instagram" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">Instagram</p>
                 <p className="text-sm text-muted-foreground">Bio में लिंक डालें</p>
               </div>
-              <div className="p-4 bg-blue-500/10 rounded-lg">
-                <p className="font-semibold text-blue-600">Facebook</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="facebook" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">Facebook</p>
                 <p className="text-sm text-muted-foreground">पोस्ट में शेयर करें</p>
               </div>
-              <div className="p-4 bg-red-500/10 rounded-lg">
-                <p className="font-semibold text-red-600">YouTube</p>
+              <div className="p-4 bg-primary/5 border border-primary/20 rounded-2xl">
+                <UL0Icon name="video" size={24} className="mb-1 mx-auto" />
+                <p className="font-semibold text-primary">YouTube</p>
                 <p className="text-sm text-muted-foreground">Description में डालें</p>
               </div>
             </div>
@@ -161,7 +168,7 @@ export default function HindiPage() {
             </p>
             <Link 
               href="/split"
-              className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium"
+              className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium shadow-xs"
             >
               खर्च बांटें →
             </Link>

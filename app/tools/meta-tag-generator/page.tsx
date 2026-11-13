@@ -3,7 +3,7 @@ import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { MetaTagClient } from "./meta-tag-client"
-import { HelpCircle, Code, Search, Globe, CheckCircle2 } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Meta Tag Generator — Generate SEO & Social Meta Tags Online | UL0",
@@ -97,26 +97,32 @@ export default function MetaTagGeneratorPage() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3 text-xs">
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <Search className="h-5 w-5 text-blue-500 mb-2" />
-                <h4 className="font-bold text-foreground mb-1">Title Tag Optimization</h4>
-                <p className="text-muted-foreground">
+              <div className="p-5 rounded-2xl border border-border bg-card shadow-2xs hover:border-primary/40 transition-colors">
+                <div className="mb-3">
+                  <UL0Icon name="search" animated={true} size={28} />
+                </div>
+                <h4 className="font-bold text-foreground mb-1 text-sm">Title Tag Optimization</h4>
+                <p className="text-muted-foreground leading-relaxed">
                   Front-load your primary target keywords and keep brand identifiers at the end separated by a dash or vertical pipe.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <Globe className="h-5 w-5 text-emerald-500 mb-2" />
-                <h4 className="font-bold text-foreground mb-1">Canonical Link Defense</h4>
-                <p className="text-muted-foreground">
+              <div className="p-5 rounded-2xl border border-border bg-card shadow-2xs hover:border-primary/40 transition-colors">
+                <div className="mb-3">
+                  <UL0Icon name="domain" animated={true} size={28} />
+                </div>
+                <h4 className="font-bold text-foreground mb-1 text-sm">Canonical Link Defense</h4>
+                <p className="text-muted-foreground leading-relaxed">
                   Always declare a canonical URL to protect ranking authority when distributing links across newsletters and ad campaigns with UTM parameters.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl border border-border bg-card">
-                <Code className="h-5 w-5 text-purple-500 mb-2" />
-                <h4 className="font-bold text-foreground mb-1">Robots Directives</h4>
-                <p className="text-muted-foreground">
+              <div className="p-5 rounded-2xl border border-border bg-card shadow-2xs hover:border-primary/40 transition-colors">
+                <div className="mb-3">
+                  <UL0Icon name="code" animated={true} size={28} />
+                </div>
+                <h4 className="font-bold text-foreground mb-1 text-sm">Robots Directives</h4>
+                <p className="text-muted-foreground leading-relaxed">
                   Direct search engine crawlers precisely using index/noindex directives to keep staging or admin routes out of public indices.
                 </p>
               </div>
@@ -127,12 +133,12 @@ export default function MetaTagGeneratorPage() {
               <h3 className="text-lg font-bold text-foreground mb-4">Frequently Asked Questions</h3>
               <div className="space-y-3">
                 {faqSchema.mainEntity.map((item, idx) => (
-                  <div key={idx} className="rounded-xl border border-border bg-card p-4">
-                    <h4 className="text-xs font-semibold text-foreground mb-1.5 flex items-center gap-1.5">
-                      <HelpCircle className="h-3.5 w-3.5 text-primary shrink-0" />
+                  <div key={idx} className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-2xs">
+                    <h4 className="text-xs sm:text-sm font-semibold text-foreground mb-1.5 flex items-center gap-2">
+                      <UL0Icon name="faq" size={16} />
                       <span>{item.name}</span>
                     </h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed pl-5">{item.acceptedAnswer.text}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed pl-6">{item.acceptedAnswer.text}</p>
                   </div>
                 ))}
               </div>

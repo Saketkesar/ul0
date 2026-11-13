@@ -2,17 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import {
-  Home,
-  CheckCircle2,
-  ArrowRight,
-  QrCode,
-  Smartphone,
-  Eye,
-  HelpCircle,
-  MapPin,
-  TrendingUp,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Real Estate QR Codes & Listing Link Tracking | UL0",
@@ -82,7 +72,7 @@ export default function RealEstateUseCasePage() {
           {/* Hero */}
           <div className="mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-semibold text-amber-500 mb-4">
-              <Home className="h-3.5 w-3.5" />
+              <UL0Icon name="home" className="h-3.5 w-3.5" />
               Real Estate Marketing
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-5 leading-tight">
@@ -94,13 +84,13 @@ export default function RealEstateUseCasePage() {
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/qr"
-                className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Create a Property QR Code
               </Link>
               <Link
                 href="/"
-                className="rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Shorten an MLS Listing URL
               </Link>
@@ -109,9 +99,9 @@ export default function RealEstateUseCasePage() {
 
           {/* Key Benefits */}
           <div className="grid gap-6 md:grid-cols-3 mb-16">
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-amber-500/10 text-amber-500 p-3 w-fit mb-4">
-                <QrCode className="h-5 w-5" />
+                <UL0Icon name="qr" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Drive-By Yard Sign Scans</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -119,9 +109,9 @@ export default function RealEstateUseCasePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-emerald-500/10 text-emerald-500 p-3 w-fit mb-4">
-                <Smartphone className="h-5 w-5" />
+                <UL0Icon name="mobile" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Open House Digital Sign-In</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -129,9 +119,9 @@ export default function RealEstateUseCasePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-blue-500/10 text-blue-500 p-3 w-fit mb-4">
-                <TrendingUp className="h-5 w-5" />
+                <UL0Icon name="chartline" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Seller Proof of Marketing</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -141,11 +131,11 @@ export default function RealEstateUseCasePage() {
           </div>
 
           {/* Real World Property Workflow */}
-          <div className="mb-16 rounded-2xl border border-border bg-card p-8">
+          <div className="mb-16 rounded-3xl border border-border shadow-xs bg-card p-8">
             <h2 className="text-xl font-bold text-foreground mb-6">Real Estate Marketing Touchpoints</h2>
             <div className="space-y-4">
               <div className="flex items-start gap-4 p-4 rounded-xl bg-muted/20 border border-border/50">
-                <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <UL0Icon name="target" className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-sm text-foreground">Sign Riders &amp; Postcards</h4>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -155,7 +145,7 @@ export default function RealEstateUseCasePage() {
               </div>
 
               <div className="flex items-start gap-4 p-4 rounded-xl bg-muted/20 border border-border/50">
-                <Eye className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <UL0Icon name="target" className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-sm text-foreground">Single-Property Branded Domains</h4>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -165,7 +155,7 @@ export default function RealEstateUseCasePage() {
               </div>
 
               <div className="flex items-start gap-4 p-4 rounded-xl bg-muted/20 border border-border/50">
-                <CheckCircle2 className="h-5 w-5 text-primary shrink-0 mt-0.5" />
+                <UL0Icon name="check" className="h-5 w-5 text-primary shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-bold text-sm text-foreground">Dynamic Status Updates</h4>
                   <p className="text-xs text-muted-foreground mt-1">
@@ -183,9 +173,9 @@ export default function RealEstateUseCasePage() {
             </h2>
             <div className="space-y-4 max-w-3xl mx-auto">
               {faqSchema.mainEntity.map((item, idx) => (
-                <div key={idx} className="rounded-xl border border-border bg-card p-5">
+                <div key={idx} className="rounded-2xl border border-border shadow-xs bg-card p-5">
                   <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4 text-primary shrink-0" />
+                    <UL0Icon name="bulb" className="h-4 w-4 text-primary shrink-0" />
                     <span>{item.name}</span>
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed pl-6">
@@ -207,13 +197,13 @@ export default function RealEstateUseCasePage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/qr"
-                className="rounded-xl bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Create Listing QR Code
               </Link>
               <Link
                 href="/pricing"
-                className="rounded-xl border border-border bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 View Plans
               </Link>

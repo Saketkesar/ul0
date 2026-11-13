@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, Sparkles, Smartphone, Eye, Zap, ShieldCheck } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
@@ -29,7 +29,7 @@ export default function TikTokBioLinkGuidePage() {
         <article className="mx-auto max-w-3xl space-y-8">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link href="/blog" className="hover:text-foreground inline-flex items-center gap-1">
-              <ArrowLeft className="h-3 w-3" /> Back to blog
+              <UL0Icon name="arrowleft" className="h-3 w-3" /> Back to blog
             </Link>
             <span>/</span>
             <span className="text-foreground">Social Media Strategy</span>
@@ -37,7 +37,7 @@ export default function TikTokBioLinkGuidePage() {
 
           <header className="space-y-4">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-              <Sparkles className="h-3 w-3" />
+              <UL0Icon name="sparkles" className="h-3 w-3" />
               Creator Playbook 2026
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl leading-tight">

@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Calendar, Clock, User, Shield, AlertTriangle, CheckCircle2 } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
@@ -69,7 +69,7 @@ export default function QrCodeSecurityGuidePage() {
             href="/blog"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-8 transition-colors"
           >
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <UL0Icon name="arrowleft" className="mr-2 h-4 w-4" />
             Back to Blog
           </Link>
 
@@ -83,15 +83,15 @@ export default function QrCodeSecurityGuidePage() {
             </h1>
             <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y py-4">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-primary" />
+                <UL0Icon name="user" className="h-4 w-4 text-primary" />
                 <span>Saket Kesar</span>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
+                <UL0Icon name="calendar" className="h-4 w-4 text-primary" />
                 <span>August 10, 2026</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
+                <UL0Icon name="clock" className="h-4 w-4 text-primary" />
                 <span>8 min read</span>
               </div>
             </div>

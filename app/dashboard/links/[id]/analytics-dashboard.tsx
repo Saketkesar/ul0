@@ -15,28 +15,7 @@ import {
   Bar,
   Legend,
 } from "recharts"
-import {
-  MousePointerClick,
-  Users,
-  Clock,
-  Globe,
-  Monitor,
-  Search,
-  Download,
-  AlertCircle,
-  QrCode,
-  Sparkles,
-  RefreshCw,
-  Terminal,
-  Activity,
-  UserCheck,
-  Zap,
-  ShieldCheck,
-  Calendar,
-  Layers,
-  Percent,
-  Cpu,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface ClickRecord {
   $id: string
@@ -305,10 +284,10 @@ export function AnalyticsDashboard({
   return (
     <div className="space-y-6">
       {/* Realtime Dashboard Header */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-white border border-gray-250/60 rounded-xl p-4 sm:p-5 shadow-2xs">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-white border border-gray-250/60 rounded-3xl p-5 sm:p-6 shadow-2xs">
         <div>
           <h2 className="text-base font-bold tracking-tight text-gray-900 flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-emerald-500" />
+            <UL0Icon name="sparkles" className="h-4 w-4 text-emerald-500" />
             Link Analytics Engine
           </h2>
           <p className="text-xs text-gray-500 mt-0.5">
@@ -319,16 +298,16 @@ export function AnalyticsDashboard({
           <button
             onClick={refreshData}
             disabled={loading}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-250 bg-white px-3.5 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-all active:scale-98 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full border border-gray-250 bg-white px-4 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50 transition-all active:scale-98 cursor-pointer"
           >
-            <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
+            <UL0Icon name="loading" className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
             Sync Now
           </button>
           <button
             onClick={exportCSV}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-gray-950 px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800 transition-all active:scale-98 shadow-xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-full bg-gray-950 px-4 py-2 text-xs font-semibold text-white hover:bg-gray-800 transition-all active:scale-98 shadow-xs cursor-pointer"
           >
-            <Download className="h-3 w-3" />
+            <UL0Icon name="download" className="h-3 w-3" />
             Export CSV
           </button>
         </div>
@@ -337,11 +316,11 @@ export function AnalyticsDashboard({
       {/* 16 Premium Analytics Indicators Grid */}
       <div className="grid gap-4.5 grid-cols-2 lg:grid-cols-4">
         {/* Total Clicks */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total Clicks</span>
             <div className="rounded-md bg-emerald-50 p-1 text-emerald-600">
-              <MousePointerClick className="h-4.5 w-4.5" />
+              <UL0Icon name="target" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-gray-900 tracking-tight">{clicks.length}</p>
@@ -349,11 +328,11 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Today's Clicks */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Today&apos;s Clicks</span>
             <div className="rounded-md bg-blue-50 p-1 text-blue-600">
-              <Clock className="h-4.5 w-4.5" />
+              <UL0Icon name="clock" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-gray-900 tracking-tight">{stats.todayClicks}</p>
@@ -361,11 +340,11 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Unique Visitors */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Unique Visitors</span>
             <div className="rounded-md bg-purple-50 p-1 text-purple-600">
-              <Users className="h-4.5 w-4.5" />
+              <UL0Icon name="team" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-gray-900 tracking-tight">{stats.uniqueVisitors}</p>
@@ -373,14 +352,14 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Live Visitors */}
-        <div className="rounded-xl border border-rose-100 bg-rose-500/2 p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-rose-100 bg-rose-500/2 p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-rose-600 tracking-wider flex items-center gap-1.5">
               <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-ping" />
               Live Clicks
             </span>
             <div className="rounded-md bg-rose-50 p-1 text-rose-600">
-              <Activity className="h-4.5 w-4.5" />
+              <UL0Icon name="status" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-rose-700 tracking-tight">{stats.liveVisitors}</p>
@@ -388,11 +367,11 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Avg Daily Clicks */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Avg Daily Clicks</span>
             <div className="rounded-md bg-gray-50 p-1 text-gray-600">
-              <Calendar className="h-4.5 w-4.5" />
+              <UL0Icon name="calendar" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-gray-900 tracking-tight">{stats.avgDailyClicks}</p>
@@ -400,11 +379,11 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Returning Visitors */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Returning Clicks</span>
             <div className="rounded-md bg-orange-50 p-1 text-orange-600">
-              <UserCheck className="h-4.5 w-4.5" />
+              <UL0Icon name="user" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-gray-900 tracking-tight">{stats.returningVisitors}</p>
@@ -412,11 +391,11 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Peak Hour */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Peak Hour</span>
             <div className="rounded-md bg-sky-50 p-1 text-sky-600">
-              <Zap className="h-4.5 w-4.5" />
+              <UL0Icon name="bolt" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-gray-900 tracking-tight">{stats.peakHour}</p>
@@ -424,11 +403,11 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Conversion Rate */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Conversion Rate</span>
             <div className="rounded-md bg-yellow-50 p-1 text-yellow-600">
-              <Percent className="h-4.5 w-4.5" />
+              <UL0Icon name="percent" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-gray-900 tracking-tight">{conversionRate}</p>
@@ -436,11 +415,11 @@ export function AnalyticsDashboard({
         </div>
 
         {/* QR scans */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">QR Code Scans</span>
             <div className="rounded-md bg-cyan-50 p-1 text-cyan-600">
-              <QrCode className="h-4.5 w-4.5" />
+              <UL0Icon name="qr" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-gray-900 tracking-tight">{stats.qrScans}</p>
@@ -448,11 +427,11 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Bot Traffic */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Bot Traffic</span>
             <div className="rounded-md bg-amber-50 p-1 text-amber-600">
-              <Cpu className="h-4.5 w-4.5" />
+              <UL0Icon name="server" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-gray-900 tracking-tight">{stats.botTraffic}</p>
@@ -460,11 +439,11 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Link Health */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Link Health</span>
             <div className="rounded-md bg-green-50 p-1 text-green-600">
-              <ShieldCheck className="h-4.5 w-4.5" />
+              <UL0Icon name="shield" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-green-650 tracking-tight">100%</p>
@@ -472,11 +451,11 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Expiration status */}
-        <div className="rounded-xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
+        <div className="rounded-2xl border border-gray-200/90 bg-white p-4.5 shadow-3xs transition-all hover:shadow-xs">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Expiration Status</span>
             <div className="rounded-md bg-indigo-50 p-1 text-indigo-600">
-              <Layers className="h-4.5 w-4.5" />
+              <UL0Icon name="docs" className="h-4.5 w-4.5" />
             </div>
           </div>
           <p className="text-xl font-extrabold text-gray-900 tracking-tight truncate">
@@ -570,10 +549,10 @@ export function AnalyticsDashboard({
       {/* Double Column Breakdown */}
       <div className="grid gap-5 md:grid-cols-2">
         {/* Device & Browser Breakdowns */}
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-xs space-y-6">
+        <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xs space-y-6">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 flex items-center gap-1.5">
-              <Monitor className="h-4 w-4 text-gray-400" />
+              <UL0Icon name="desktop" className="h-4 w-4 text-gray-400" />
               Device Distribution
             </h3>
             <div className="h-40 w-full flex items-center justify-center">
@@ -618,10 +597,10 @@ export function AnalyticsDashboard({
         </div>
 
         {/* Locations & Referrers Bar Charts */}
-        <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-xs space-y-6">
+        <div className="rounded-3xl border border-gray-200 bg-white p-6 shadow-xs space-y-6">
           <div>
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 flex items-center gap-1.5">
-              <Globe className="h-4 w-4 text-gray-400" />
+              <UL0Icon name="domain" className="h-4 w-4 text-gray-400" />
               Top Locations
             </h3>
             <div className="h-40 w-full">
@@ -644,7 +623,7 @@ export function AnalyticsDashboard({
 
           <div className="border-t border-gray-100 pt-4">
             <h3 className="text-xs font-bold uppercase tracking-wider text-gray-400 mb-3 flex items-center gap-1.5">
-              <Search className="h-4 w-4 text-gray-400" />
+              <UL0Icon name="search" className="h-4 w-4 text-gray-400" />
               Top Referrers
             </h3>
             <div className="h-40 w-full">
@@ -690,8 +669,8 @@ export function AnalyticsDashboard({
                 return (
                   <div key={c.$id} className="flex items-start justify-between border-b border-gray-100 pb-2.5 last:border-0 last:pb-0">
                     <div className="flex items-start gap-2.5">
-                      <div className="rounded-md bg-gray-50 border border-gray-200 p-1.5 text-gray-650 shrink-0">
-                        <Terminal className="h-3.5 w-3.5" />
+                      <div className="rounded-xl bg-gray-50 border border-gray-200 p-1.5 text-gray-650 shrink-0">
+                        <UL0Icon name="terminal" className="h-3.5 w-3.5" />
                       </div>
                       <div className="space-y-0.5">
                         <div className="flex items-center gap-1.5 flex-wrap">

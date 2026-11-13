@@ -3,34 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import {
-  ArrowLeft,
-  Copy,
-  Check,
-  ExternalLink,
-  QrCode,
-  Sliders,
-  BarChart3,
-  Settings,
-  Lock,
-  Layers,
-  Globe,
-  Smartphone,
-  Calendar,
-  Sparkles,
-  TrendingUp,
-  Download,
-  AlertTriangle,
-  RefreshCw,
-  Clock,
-  Shield,
-  FileSpreadsheet,
-  Trash2,
-  Table as TableIcon,
-  LineChart as LineChartIcon,
-  Activity,
-  Plus,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import {
   AreaChart,
   Area,
@@ -283,13 +256,13 @@ export function LinkDetailClient({
           href="/dashboard/links"
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="h-3.5 w-3.5" />
+          <UL0Icon name="arrowleft" size={14} />
           <span>Back to links</span>
         </Link>
       </div>
 
       {/* Header Card */}
-      <div className="rounded-xl border border-border bg-surface-2 p-5 sm:p-6 shadow-2xs space-y-4">
+      <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-2xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2 flex-wrap">
@@ -300,19 +273,19 @@ export function LinkDetailClient({
               <button
                 type="button"
                 onClick={handleCopy}
-                className="p-1.5 rounded-md hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors"
+                className="p-1.5 rounded-full hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                 title="Copy short URL"
               >
-                {copied ? <Check className="h-4 w-4 text-emerald-500" /> : <Copy className="h-4 w-4" />}
+                {copied ? <UL0Icon name="check" size={16} /> : <UL0Icon name="copy" size={16} />}
               </button>
               <a
                 href={shortUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-1.5 rounded-md hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors"
+                className="p-1.5 rounded-full hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors"
                 title="Open destination"
               >
-                <ExternalLink className="h-4 w-4" />
+                <UL0Icon name="external" size={16} />
               </a>
             </div>
 
@@ -324,7 +297,7 @@ export function LinkDetailClient({
 
           {/* Quick Header Stats */}
           <div className="flex items-center gap-3 shrink-0">
-            <div className="px-3.5 py-1.5 rounded-lg border border-border bg-surface-1 text-right">
+            <div className="px-3.5 py-1.5 rounded-xl border border-border bg-surface-2 text-right">
               <span className="block text-xs text-muted-foreground">Lifetime Clicks</span>
               <span className="text-lg font-mono font-bold text-primary">
                 {link.clicks_count?.toLocaleString() || 0}
@@ -336,25 +309,25 @@ export function LinkDetailClient({
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-        <TabsList className="bg-surface-2 border border-border p-1 rounded-xl">
-          <TabsTrigger value="overview" className="gap-2 text-xs">
-            <Activity className="h-3.5 w-3.5" />
+        <TabsList className="bg-card border border-border p-1 rounded-2xl">
+          <TabsTrigger value="overview" className="gap-2 text-xs rounded-xl">
+            <UL0Icon name="status" size={14} />
             <span>Overview</span>
           </TabsTrigger>
-          <TabsTrigger value="analytics" className="gap-2 text-xs">
-            <BarChart3 className="h-3.5 w-3.5" />
+          <TabsTrigger value="analytics" className="gap-2 text-xs rounded-xl">
+            <UL0Icon name="chartline" size={14} />
             <span>Full Analytics</span>
           </TabsTrigger>
-          <TabsTrigger value="targeting" className="gap-2 text-xs">
-            <Sliders className="h-3.5 w-3.5" />
+          <TabsTrigger value="targeting" className="gap-2 text-xs rounded-xl">
+            <UL0Icon name="target" size={14} />
             <span>Targeting &amp; Rules</span>
           </TabsTrigger>
-          <TabsTrigger value="qr" className="gap-2 text-xs">
-            <QrCode className="h-3.5 w-3.5" />
+          <TabsTrigger value="qr" className="gap-2 text-xs rounded-xl">
+            <UL0Icon name="qr" size={14} />
             <span>QR Studio</span>
           </TabsTrigger>
-          <TabsTrigger value="settings" className="gap-2 text-xs">
-            <Settings className="h-3.5 w-3.5" />
+          <TabsTrigger value="settings" className="gap-2 text-xs rounded-xl">
+            <UL0Icon name="settings" size={14} />
             <span>Settings</span>
           </TabsTrigger>
         </TabsList>
@@ -362,13 +335,13 @@ export function LinkDetailClient({
         {/* 1. OVERVIEW TAB */}
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div className="rounded-xl border border-border bg-surface-2 p-4 space-y-1 shadow-2xs">
+            <div className="rounded-2xl border border-border bg-card p-4 space-y-1 shadow-2xs">
               <span className="text-xs text-muted-foreground">Period Clicks</span>
               <p className="text-2xl font-bold font-mono text-foreground">
                 {analyticsData?.totalClicks ?? link.clicks_count ?? 0}
               </p>
-              <span className="text-[11px] text-emerald-500 font-semibold flex items-center gap-0.5">
-                <TrendingUp className="h-3 w-3" />
+              <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-0.5">
+                <UL0Icon name="chartline" size={12} />
                 {analyticsData?.clicksDelta ? `${analyticsData.clicksDelta}%` : "Tracked"}
               </span>
             </div>

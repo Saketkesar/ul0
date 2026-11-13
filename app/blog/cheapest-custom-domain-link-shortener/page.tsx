@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, Sparkles, User, Calendar, Clock, ArrowRight, ExternalLink } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
@@ -225,7 +225,7 @@ export default function CheapestCustomDomainPage() {
             href="/blog"
             className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6 transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 mr-1.5" />
+            <UL0Icon name="arrowleft" className="h-4 w-4 mr-1.5" />
             Back to Blog Guides
           </Link>
 
@@ -239,17 +239,17 @@ export default function CheapestCustomDomainPage() {
             </h1>
             <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground border-y py-3">
               <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-primary" />
+                <UL0Icon name="user" className="h-4 w-4 text-primary" />
                 <Link href="/about" className="hover:underline text-foreground font-medium">
                   Saket Kesar
                 </Link>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
+                <UL0Icon name="calendar" className="h-4 w-4 text-primary" />
                 <span>Updated Oct 6, 2026</span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-primary" />
+                <UL0Icon name="clock" className="h-4 w-4 text-primary" />
                 <span>7 min read</span>
               </div>
             </div>
@@ -266,7 +266,7 @@ export default function CheapestCustomDomainPage() {
 
             {/* Winner Callout */}
             <div className="not-prose rounded-2xl border border-primary/20 bg-primary/5 p-6 my-6 flex items-start gap-4">
-              <Sparkles className="h-5 w-5 text-primary mt-1 shrink-0" />
+              <UL0Icon name="sparkles" className="h-5 w-5 text-primary mt-1 shrink-0" />
               <div className="space-y-1">
                 <h3 className="font-bold text-foreground text-base">The Free &amp; Budget Leader: UL0</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
@@ -348,7 +348,7 @@ export default function CheapestCustomDomainPage() {
                       <ul className="space-y-1.5 text-muted-foreground">
                         {alt.features.map((f) => (
                           <li key={f} className="flex items-start gap-1.5">
-                            <Check className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
+                            <UL0Icon name="check" className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
                             <span>{f}</span>
                           </li>
                         ))}
@@ -383,7 +383,7 @@ export default function CheapestCustomDomainPage() {
                         className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1"
                       >
                         <span>Visit {alt.name}</span>
-                        <ExternalLink className="h-3 w-3 opacity-60" />
+                        <UL0Icon name="external" className="h-3 w-3 opacity-60" />
                       </a>
                     )}
                   </div>

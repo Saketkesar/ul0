@@ -3,28 +3,7 @@
 import React, { useState, useMemo, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import {
-  Search,
-  Filter,
-  ArrowUpDown,
-  Download,
-  Trash2,
-  Copy,
-  Check,
-  ExternalLink,
-  QrCode,
-  BarChart3,
-  Sliders,
-  MoreVertical,
-  Lock,
-  Calendar,
-  Layers,
-  Sparkles,
-  AlertCircle,
-  Plus,
-  X,
-  FileSpreadsheet,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -275,16 +254,16 @@ export function LinksClient({
         const t = JSON.parse(link.targeting_json)
         if (t.password) {
           chips.push(
-            <span key="pw" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono border border-border bg-card text-muted-foreground">
-              <Lock className="h-2.5 w-2.5" />
+            <span key="pw" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-mono border border-border bg-card text-muted-foreground">
+              <UL0Icon name="lock" className="h-2.5 w-2.5" />
               <span>Password</span>
             </span>
           )
         }
         if (t.ab_rules?.length) {
           chips.push(
-            <span key="ab" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-mono border border-border bg-card text-muted-foreground">
-              <Layers className="h-2.5 w-2.5" />
+            <span key="ab" className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-mono border border-border bg-card text-muted-foreground">
+              <UL0Icon name="docs" className="h-2.5 w-2.5" />
               <span>A/B</span>
             </span>
           )
@@ -312,25 +291,25 @@ export function LinksClient({
           <button
             type="button"
             onClick={handleExportCsv}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-border bg-surface-2 text-xs font-medium text-foreground hover:bg-surface-3 transition-colors shadow-2xs"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full border border-border bg-surface-2 text-xs font-semibold text-foreground hover:bg-surface-3 transition-colors shadow-2xs"
           >
-            <Download className="h-3.5 w-3.5" />
+            <UL0Icon name="download" className="h-3.5 w-3.5" />
             <span>Export CSV</span>
           </button>
         </div>
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-3 rounded-xl border border-border bg-surface-2">
+      <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 p-3 rounded-2xl border border-border bg-surface-2">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+          <UL0Icon name="search" className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search slug, destination, title..."
-            className="w-full pl-9 pr-3 py-1.5 rounded-lg border border-border bg-surface-1 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+            className="w-full pl-9 pr-3 py-1.5 rounded-full border border-border bg-surface-1 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
           />
         </div>
 
@@ -382,9 +361,9 @@ export function LinksClient({
 
       {/* Links Table (Desktop) & Cards (Mobile) */}
       {filteredLinks.length === 0 ? (
-        <div className="rounded-xl border border-border bg-surface-1 p-12 text-center space-y-3">
-          <div className="mx-auto h-10 w-10 rounded-xl bg-surface-2 flex items-center justify-center text-muted-foreground">
-            <Search className="h-5 w-5" />
+        <div className="rounded-3xl border border-border bg-surface-1 p-12 text-center space-y-3">
+          <div className="mx-auto h-12 w-12 rounded-2xl bg-surface-2 flex items-center justify-center text-muted-foreground">
+            <UL0Icon name="search" className="h-5 w-5" />
           </div>
           <h3 className="text-sm font-semibold text-foreground">No matching links found</h3>
           <p className="text-xs text-muted-foreground max-w-sm mx-auto">
@@ -392,7 +371,7 @@ export function LinksClient({
           </p>
         </div>
       ) : (
-        <div className="rounded-xl border border-border bg-surface-1 overflow-hidden shadow-2xs">
+        <div className="rounded-3xl border border-border bg-surface-1 overflow-hidden shadow-2xs">
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full text-left text-xs">
@@ -456,9 +435,9 @@ export function LinksClient({
                             title="Copy link"
                           >
                             {copiedId === link.$id ? (
-                              <Check className="h-3 w-3 text-emerald-500" />
+                              <UL0Icon name="check" className="h-3 w-3 text-emerald-500" />
                             ) : (
-                              <Copy className="h-3 w-3" />
+                              <UL0Icon name="copy" className="h-3 w-3" />
                             )}
                           </button>
                         </div>
@@ -473,8 +452,8 @@ export function LinksClient({
 
                       {/* Clicks */}
                       <td className="py-3 px-4 text-right">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-border bg-muted/30 font-mono text-xs font-semibold text-foreground">
-                          <BarChart3 className="w-3 h-3 text-muted-foreground" />
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full border border-border bg-muted/30 font-mono text-xs font-semibold text-foreground">
+                          <UL0Icon name="chartline" className="w-3 h-3 text-muted-foreground" />
                           <span>{link.clicks_count?.toLocaleString() || 0}</span>
                         </span>
                       </td>
@@ -502,18 +481,18 @@ export function LinksClient({
                           <button
                             type="button"
                             onClick={() => setQrModalLink(link)}
-                            className="p-1.5 rounded-md border border-border bg-card text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                            className="p-1.5 rounded-full border border-border bg-card text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
                             title="View QR Code"
                           >
-                            <QrCode className="h-3.5 w-3.5" />
+                            <UL0Icon name="qr" className="h-3.5 w-3.5" />
                           </button>
 
                           <Link
                             href={`/dashboard/links/${link.$id}`}
-                            className="p-1.5 rounded-md border border-border bg-card text-muted-foreground hover:text-foreground transition-colors"
+                            className="p-1.5 rounded-full border border-border bg-card text-muted-foreground hover:text-foreground transition-colors"
                             title="View Analytics"
                           >
-                            <BarChart3 className="h-3.5 w-3.5" />
+                            <UL0Icon name="chartline" className="h-3.5 w-3.5" />
                           </Link>
 
                           <DropdownMenu>
@@ -521,24 +500,24 @@ export function LinksClient({
                               <button
                                 type="button"
                                 aria-label="Open link options"
-                                className="p-1.5 rounded-md hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors"
+                                className="p-1.5 rounded-full hover:bg-surface-3 text-muted-foreground hover:text-foreground transition-colors"
                               >
-                                <MoreVertical className="h-3.5 w-3.5" />
+                                <UL0Icon name="tools" className="h-3.5 w-3.5" />
                               </button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-44">
+                            <DropdownMenuContent align="end" className="w-44 rounded-2xl">
                               <DropdownMenuItem
                                 onClick={() => window.open(shortUrl, "_blank")}
                                 className="gap-2 text-xs"
                               >
-                                <ExternalLink className="h-3.5 w-3.5" />
+                                <UL0Icon name="external" className="h-3.5 w-3.5" />
                                 <span>Open destination</span>
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 onClick={() => handleCopy(shortUrl, link.$id)}
                                 className="gap-2 text-xs"
                               >
-                                <Copy className="h-3.5 w-3.5" />
+                                <UL0Icon name="copy" className="h-3.5 w-3.5" />
                                 <span>Copy link</span>
                               </DropdownMenuItem>
                               <DropdownMenuItem asChild>
@@ -546,7 +525,7 @@ export function LinksClient({
                                   href={`/dashboard/links/${link.$id}?tab=targeting`}
                                   className="gap-2 text-xs flex items-center"
                                 >
-                                  <Sliders className="h-3.5 w-3.5" />
+                                  <UL0Icon name="settings" className="h-3.5 w-3.5" />
                                   <span>Edit rules &amp; targeting</span>
                                 </Link>
                               </DropdownMenuItem>
@@ -555,7 +534,7 @@ export function LinksClient({
                                 onClick={() => setDeletePendingId(link.$id)}
                                 className="gap-2 text-xs text-red-500 focus:text-red-500"
                               >
-                                <Trash2 className="h-3.5 w-3.5" />
+                                <UL0Icon name="trash" className="h-3.5 w-3.5" />
                                 <span>Delete link</span>
                               </DropdownMenuItem>
                             </DropdownMenuContent>
@@ -603,20 +582,20 @@ export function LinksClient({
                         onClick={() => handleCopy(shortUrl, link.$id)}
                         className="p-1.5 rounded hover:bg-surface-2 text-muted-foreground"
                       >
-                        <Copy className="h-3.5 w-3.5" />
+                        <UL0Icon name="copy" className="h-3.5 w-3.5" />
                       </button>
                       <button
                         type="button"
                         onClick={() => setQrModalLink(link)}
                         className="p-1.5 rounded hover:bg-surface-2 text-muted-foreground"
                       >
-                        <QrCode className="h-3.5 w-3.5" />
+                        <UL0Icon name="qr" className="h-3.5 w-3.5" />
                       </button>
                       <Link
                         href={`/dashboard/links/${link.$id}`}
                         className="p-1.5 rounded hover:bg-surface-2 text-muted-foreground"
                       >
-                        <BarChart3 className="h-3.5 w-3.5" />
+                        <UL0Icon name="chartline" className="h-3.5 w-3.5" />
                       </Link>
                     </div>
                   </div>
@@ -630,7 +609,7 @@ export function LinksClient({
       {/* QR Code Quick View Dialog */}
       {qrModalLink && (
         <Dialog open={Boolean(qrModalLink)} onOpenChange={() => setQrModalLink(null)}>
-          <DialogContent className="sm:max-w-md text-center">
+          <DialogContent className="sm:max-w-md text-center rounded-3xl">
             <DialogHeader>
               <DialogTitle className="text-base font-bold">
                 QR Code for {getShortDisplayPrefix(qrModalLink.host)}{qrModalLink.slug}
@@ -641,12 +620,12 @@ export function LinksClient({
             </DialogHeader>
 
             <div className="py-6 flex flex-col items-center justify-center">
-              <div className="p-4 bg-white rounded-2xl shadow-md border border-border flex items-center justify-center min-w-[200px] min-h-[200px]">
+              <div className="p-4 bg-white rounded-3xl shadow-md border border-border flex items-center justify-center min-w-[200px] min-h-[200px]">
                 {qrModalDataUrl ? (
                   <img
                     src={qrModalDataUrl}
                     alt={`QR code for ${qrModalLink.slug}`}
-                    className="w-48 h-48 rounded"
+                    className="w-48 h-48 rounded-2xl"
                   />
                 ) : (
                   <div className="w-48 h-48 rounded bg-muted/30 animate-pulse" />
@@ -657,10 +636,10 @@ export function LinksClient({
             <div className="flex items-center justify-center gap-2">
               <Link
                 href={`/dashboard/links/${qrModalLink.$id}?tab=qr`}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-xs font-semibold text-white hover:bg-primary/90 transition-all"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-primary text-xs font-semibold text-white hover:bg-primary/90 transition-all"
               >
                 <span>Customize in Studio</span>
-                <Sparkles className="h-3.5 w-3.5" />
+                <UL0Icon name="sparkles" className="h-3.5 w-3.5" />
               </Link>
             </div>
           </DialogContent>
@@ -670,10 +649,10 @@ export function LinksClient({
       {/* Delete Confirmation Dialog */}
       {deletePendingId && (
         <Dialog open={Boolean(deletePendingId)} onOpenChange={() => setDeletePendingId(null)}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md rounded-3xl">
             <DialogHeader>
               <DialogTitle className="text-base font-bold text-red-500 flex items-center gap-2">
-                <AlertCircle className="h-5 w-5" />
+                <UL0Icon name="warning" className="h-5 w-5" />
                 <span>Delete Link</span>
               </DialogTitle>
               <DialogDescription className="text-xs leading-relaxed">

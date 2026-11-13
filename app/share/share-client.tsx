@@ -1,13 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect, useRef, useCallback } from "react"
-import { useSearchParams } from "next/navigation"
-import {
-  Upload, Download, Copy, Check, Zap, Lock,
-  FileIcon, QrCode, ArrowRight, Share2, AlertCircle,
-  FileCheck, Globe, RefreshCcw, X,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 // ─── REAL BROWSER SVGs (from browser icons.txt) ──────────────────────────────
 function BraveIcon({ size = 16 }: { size?: number }) {
@@ -124,7 +118,7 @@ function BrowserIcon({ browser, os, size = 16 }: { browser: string; os?: string;
   if (o.includes("ios") || o.includes("macos")) return <AppleIcon size={size} />
   if (o.includes("windows")) return <WindowsIcon size={size} />
   if (o.includes("linux")) return <LinuxIcon size={size} />
-  return <Globe width={size} height={size} style={{ color: "#94a3b8" }} />
+  return <UL0Icon name="domain" width={size} height={size} style={{ color: "#94a3b8" }} />
 }
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
@@ -549,7 +543,7 @@ export function ShareClient() {
               boxShadow: mode === m ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
             }}
           >
-            {m === "send" ? <Upload style={{ width: 13, height: 13 }} /> : <Download style={{ width: 13, height: 13 }} />}
+            {m === "send" ? <UL0Icon name="upload" style={{ width: 13, height: 13 }} /> : <UL0Icon name="download" style={{ width: 13, height: 13 }} />}
             {m === "send" ? "Send" : "Receive"}
           </button>
         ))}
@@ -593,7 +587,7 @@ export function ShareClient() {
               </span>
             )}
             <span style={{ ...pillStyle, color: "#22c55e", borderColor: "#dcfce7", background: "#f0fdf4" }}>
-              <Lock style={{ width: 10, height: 10 }} />E2EE
+              <UL0Icon name="lock" style={{ width: 10, height: 10 }} />E2EE
             </span>
           </div>
         </div>
@@ -612,10 +606,10 @@ export function ShareClient() {
             alignItems: "flex-start",
             gap: "8px",
           }}>
-            <AlertCircle style={{ width: 14, height: 14, flexShrink: 0, marginTop: 1 }} />
+            <UL0Icon name="warning" style={{ width: 14, height: 14, flexShrink: 0, marginTop: 1 }} />
             <span style={{ flex: 1 }}>{error}</span>
             <button onClick={() => setError(null)} style={{ background: "none", border: "none", cursor: "pointer", color: "#dc2626", padding: 0 }}>
-              <X style={{ width: 14, height: 14 }} />
+              <UL0Icon name="close" style={{ width: 14, height: 14 }} />
             </button>
           </div>
         )}
@@ -650,7 +644,7 @@ export function ShareClient() {
                       background: "#dcfce7", display: "flex", alignItems: "center", justifyContent: "center",
                       margin: "0 auto 10px",
                     }}>
-                      <FileCheck style={{ width: 22, height: 22, color: "#16a34a" }} />
+                      <UL0Icon name="check" style={{ width: 22, height: 22, color: "#16a34a" }} />
                     </div>
                     <p style={{ margin: "0 0 2px", fontWeight: 600, fontSize: 14, color: "#111827" }}>{file.name}</p>
                     <p style={{ margin: 0, fontSize: 12, color: "#6b7280", fontFamily: "ui-monospace, monospace" }}>{formatBytes(file.size)}</p>
@@ -666,7 +660,7 @@ export function ShareClient() {
                       background: "#f3f4f6", border: "1px solid #e5e7eb",
                       display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px",
                     }}>
-                      <Upload style={{ width: 20, height: 20, color: "#9ca3af" }} />
+                      <UL0Icon name="upload" style={{ width: 20, height: 20, color: "#9ca3af" }} />
                     </div>
                     <p style={{ margin: "0 0 4px", fontWeight: 500, fontSize: 14, color: "#374151" }}>Drop any file here</p>
                     <p style={{ margin: 0, fontSize: 12, color: "#9ca3af" }}>or click to browse · no size limit</p>
@@ -694,7 +688,7 @@ export function ShareClient() {
                         display: "flex", alignItems: "center", gap: 4, cursor: "pointer",
                         color: copied ? "#16a34a" : "#374151", transition: "all 0.15s",
                       }}>
-                        {copied ? <Check style={{ width: 12, height: 12 }} /> : <Copy style={{ width: 12, height: 12 }} />}
+                        {copied ? <UL0Icon name="check" style={{ width: 12, height: 12 }} /> : <UL0Icon name="copy" style={{ width: 12, height: 12 }} />}
                         {copied ? "Copied" : "Copy"}
                       </button>
                       <button onClick={() => setShowQr(!showQr)} style={{
@@ -702,7 +696,7 @@ export function ShareClient() {
                         border: "1px solid #e5e7eb", background: "#fff",
                         display: "flex", alignItems: "center", cursor: "pointer", color: "#6b7280",
                       }}>
-                        <QrCode style={{ width: 13, height: 13 }} />
+                        <UL0Icon name="qr" style={{ width: 13, height: 13 }} />
                       </button>
                     </div>
                   </div>
@@ -721,7 +715,7 @@ export function ShareClient() {
                     background: copiedLink ? "#22c55e" : "#111827",
                     color: "#fff", transition: "all 0.15s",
                   }}>
-                    {copiedLink ? <Check style={{ width: 12, height: 12 }} /> : <Share2 style={{ width: 12, height: 12 }} />}
+                    {copiedLink ? <UL0Icon name="check" style={{ width: 12, height: 12 }} /> : <UL0Icon name="link" style={{ width: 12, height: 12 }} />}
                     {copiedLink ? "Copied!" : "Share Link"}
                   </button>
                 </div>
@@ -750,7 +744,7 @@ export function ShareClient() {
                     transition: "all 0.15s",
                   }}
                 >
-                  <Zap style={{ width: 15, height: 15 }} />
+                  <UL0Icon name="bolt" style={{ width: 15, height: 15 }} />
                   {isConnected ? "Send File" : "Waiting for receiver to connect…"}
                 </button>
               )}
@@ -819,7 +813,7 @@ export function ShareClient() {
                           display: "flex", alignItems: "center", gap: 6,
                         }}
                       >
-                        Connect <ArrowRight style={{ width: 14, height: 14 }} />
+                        Connect <UL0Icon name="arrowright" style={{ width: 14, height: 14 }} />
                       </button>
                     </div>
                     <p style={{ margin: "8px 0 0", fontSize: 11, color: "#9ca3af", textAlign: "center" }}>
@@ -855,7 +849,7 @@ export function ShareClient() {
                           background: "#f3f4f6", border: "1px solid #e5e7eb",
                           display: "flex", alignItems: "center", justifyContent: "center",
                         }}>
-                          <FileIcon style={{ width: 18, height: 18, color: "#6b7280" }} />
+                          <UL0Icon name="docs" style={{ width: 18, height: 18, color: "#6b7280" }} />
                         </div>
                         <div style={{ minWidth: 0 }}>
                           <p style={{ margin: "0 0 2px", fontWeight: 600, fontSize: 13, color: "#111827", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -892,7 +886,7 @@ export function ShareClient() {
                               background: "#111827", color: "#fff",
                               fontSize: 13, fontWeight: 600, textDecoration: "none",
                             }}>
-                              <Download style={{ width: 14, height: 14 }} />
+                              <UL0Icon name="download" style={{ width: 14, height: 14 }} />
                               Download Again
                             </a>
                           )}
@@ -901,7 +895,7 @@ export function ShareClient() {
 
                       {!receiving && !recvDone && (
                         <div style={{ padding: "16px 14px", textAlign: "center" }}>
-                          <RefreshCcw style={{ width: 16, height: 16, color: "#9ca3af", animation: "spin 1.5s linear infinite", display: "inline-block" }} />
+                          <UL0Icon name="refresh" style={{ width: 16, height: 16, color: "#9ca3af", animation: "spin 1.5s linear infinite", display: "inline-block" }} />
                           <p style={{ margin: "8px 0 0", fontSize: 12, color: "#9ca3af" }}>Waiting for sender to start…</p>
                         </div>
                       )}
@@ -911,7 +905,7 @@ export function ShareClient() {
                       padding: "24px 16px", textAlign: "center",
                       border: "1.5px dashed #e5e7eb", borderRadius: "10px",
                     }}>
-                      <RefreshCcw style={{ width: 18, height: 18, color: "#d1d5db", display: "inline-block" }} />
+                      <UL0Icon name="refresh" style={{ width: 18, height: 18, color: "#d1d5db", display: "inline-block" }} />
                       <p style={{ margin: "10px 0 0", fontSize: 12, color: "#9ca3af" }}>Waiting for sender to pick a file and start the transfer…</p>
                     </div>
                   )}
@@ -923,9 +917,9 @@ export function ShareClient() {
           {/* Footer trust row */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, paddingTop: 4 }}>
             {[
-              { icon: <Lock style={{ width: 10, height: 10 }} />, text: "End-to-end encrypted" },
-              { icon: <Zap style={{ width: 10, height: 10 }} />, text: "No file size limit" },
-              { icon: <Globe style={{ width: 10, height: 10 }} />, text: "No server storage" },
+              { icon: <UL0Icon name="lock" style={{ width: 10, height: 10 }} />, text: "End-to-end encrypted" },
+              { icon: <UL0Icon name="bolt" style={{ width: 10, height: 10 }} />, text: "No file size limit" },
+              { icon: <UL0Icon name="domain" style={{ width: 10, height: 10 }} />, text: "No server storage" },
             ].map(({ icon, text }) => (
               <div key={text} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, color: "#9ca3af" }}>
                 {icon} {text}

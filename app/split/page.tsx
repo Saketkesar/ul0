@@ -7,23 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { 
-  Plus, 
-  Trash2, 
-  Users, 
-  Receipt, 
-  Calculator, 
-  Link2, 
-  Loader2,
-  ArrowRight,
-  ChevronDown,
-  ChevronUp,
-  Calendar,
-  Banknote,
-  Wallet,
-  CreditCard,
-  Smartphone
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import {
   Select,
   SelectContent,
@@ -60,15 +44,15 @@ const PaymentIcon = ({ method, className = "h-4 w-4" }: { method: PaymentMethod;
     case 'revolut':
       return <SiRevolut className={className} />
     case 'gcash':
-      return <Wallet className={className} />
+      return <UL0Icon name="wallet" size={16} />
     case 'grabpay':
-      return <Smartphone className={className} />
+      return <UL0Icon name="mobile" size={16} />
     case 'paytm':
       return <SiPaytm className={className} />
     case 'other':
       return <BsBank2 className={className} />
     default:
-      return <CreditCard className={className} />
+      return <UL0Icon name="billing" size={16} />
   }
 }
 
@@ -517,30 +501,30 @@ export default function SplitExpensePage() {
               </p>
             </div>
 
-            {/* Dub-style Progress Steps */}
-            <div className="mx-auto mb-8 flex max-w-md items-center justify-center p-1 rounded-lg border border-border bg-card shadow-2xs">
+            {/* Bharpai-style Progress Steps */}
+            <div className="mx-auto mb-8 flex max-w-md items-center justify-center p-1.5 rounded-full border border-border bg-card shadow-2xs">
               <div
-                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-mono font-medium transition-colors ${
-                  step === "members" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                  step === "members" ? "bg-primary text-primary-foreground shadow-2xs" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <Users className="h-3.5 w-3.5" />
+                <UL0Icon name="team" size={14} />
                 <span>1. Members</span>
               </div>
               <div
-                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-mono font-medium transition-colors ${
-                  step === "expenses" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                  step === "expenses" ? "bg-primary text-primary-foreground shadow-2xs" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <Receipt className="h-3.5 w-3.5" />
+                <UL0Icon name="docs" size={14} />
                 <span>2. Expenses</span>
               </div>
               <div
-                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-mono font-medium transition-colors ${
-                  step === "summary" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                  step === "summary" ? "bg-primary text-primary-foreground shadow-2xs" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <Calculator className="h-3.5 w-3.5" />
+                <UL0Icon name="splitbill" size={14} />
                 <span>3. Summary</span>
               </div>
             </div>
@@ -548,10 +532,10 @@ export default function SplitExpensePage() {
           <div className="mx-auto max-w-2xl">
             {/* Step 1: Members */}
             {step === "members" && (
-              <Card>
+              <Card className="rounded-3xl border-border bg-card shadow-2xs">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-                    <Users className="h-5 w-5 text-primary" />
+                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl font-bold">
+                    <UL0Icon name="team" animated={true} size={22} />
                     Add Members
                   </CardTitle>
                   <CardDescription className="text-xs sm:text-sm">
@@ -560,30 +544,30 @@ export default function SplitExpensePage() {
                 </CardHeader>
                 <CardContent className="space-y-4 sm:space-y-6">
                   <div className="space-y-2">
-                    <Label htmlFor="groupName" className="text-sm">
+                    <Label htmlFor="groupName" className="text-sm font-semibold">
                       Group / Event Name
                     </Label>
                     <Input
                       id="groupName"
-                      placeholder="Trip to Goa, Dinner Party, etc."
+                      placeholder="Trip to Goa, Dinner Party, Flat Expenses..."
                       value={groupName}
                       onChange={(e) => setGroupName(e.target.value)}
-                      className="h-10"
+                      className="h-10 rounded-xl"
                     />
                   </div>
 
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <Label className="text-sm">Members ({members.length})</Label>
+                      <Label className="text-sm font-semibold">Members ({members.length})</Label>
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         onClick={addMember}
-                        className="gap-1 bg-transparent"
+                        className="gap-1 rounded-full text-xs"
                       >
-                        <Plus className="h-3 w-3" />
-                        Add
+                        <UL0Icon name="plus" size={12} />
+                        Add Member
                       </Button>
                     </div>
 
@@ -591,7 +575,7 @@ export default function SplitExpensePage() {
                       {members.map((member, index) => (
                         <div
                           key={member.id}
-                          className="flex flex-col gap-2 rounded-lg border border-border bg-muted/20 p-3"
+                          className="flex flex-col gap-2 rounded-2xl border border-border bg-surface-2/60 p-3.5"
                         >
                           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:gap-3">
                             <div className="flex-1 space-y-1">
@@ -600,7 +584,7 @@ export default function SplitExpensePage() {
                                 placeholder={`Person ${index + 1}`}
                                 value={member.name}
                                 onChange={(e) => updateMember(member.id, "name", e.target.value)}
-                                className={`h-9 ${serverFieldErrors[`members[${index}].name`] ? 'border-destructive' : ''}`}
+                                className={`h-9 rounded-xl ${serverFieldErrors[`members[${index}].name`] ? 'border-destructive' : ''}`}
                               />
                               {serverFieldErrors[`members[${index}].name`] && (
                                 <p className="text-xs text-destructive mt-1">{serverFieldErrors[`members[${index}].name`]}</p>
@@ -612,7 +596,7 @@ export default function SplitExpensePage() {
                                 value={member.paymentMethod}
                                 onValueChange={(value) => updateMember(member.id, "paymentMethod", value as PaymentMethod)}
                               >
-                                <SelectTrigger className="h-9">
+                                <SelectTrigger className="h-9 rounded-xl">
                                   <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -637,7 +621,7 @@ export default function SplitExpensePage() {
                                 placeholder={PAYMENT_METHODS[member.paymentMethod].placeholder}
                                 value={member.paymentId}
                                 onChange={(e) => updateMember(member.id, "paymentId", e.target.value)}
-                                className={`h-9 ${serverFieldErrors[`members[${index}].paymentId`] ? 'border-destructive' : ''}`}
+                                className={`h-9 rounded-xl ${serverFieldErrors[`members[${index}].paymentId`] ? 'border-destructive' : ''}`}
                               />
                               {serverFieldErrors[`members[${index}].paymentId`] && (
                                 <p className="text-xs text-destructive mt-1">{serverFieldErrors[`members[${index}].paymentId`]}</p>
@@ -648,10 +632,10 @@ export default function SplitExpensePage() {
                                 type="button"
                                 variant="ghost"
                                 size="icon"
-                                className="h-9 w-9 flex-shrink-0 text-destructive hover:bg-destructive/10"
+                                className="h-9 w-9 flex-shrink-0 text-destructive hover:bg-destructive/10 rounded-full"
                                 onClick={() => removeMember(member.id)}
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <UL0Icon name="trash" size={14} />
                               </Button>
                             )}
                           </div>
@@ -661,13 +645,13 @@ export default function SplitExpensePage() {
                   </div>
 
                   <Button
-                    className="w-full"
+                    className="w-full rounded-full bg-primary text-primary-foreground hover:opacity-90 font-semibold"
                     size="lg"
                     onClick={() => setStep("expenses")}
                     disabled={!isStepValid()}
                   >
-                    Continue to Expenses
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <span>Continue to Expenses</span>
+                    <UL0Icon name="arrowright" size={14} />
                   </Button>
                 </CardContent>
               </Card>
@@ -675,10 +659,10 @@ export default function SplitExpensePage() {
 
             {/* Step 2: Expenses */}
             {step === "expenses" && (
-              <Card>
+              <Card className="rounded-3xl border-border bg-card shadow-2xs">
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-                    <Receipt className="h-5 w-5 text-primary" />
+                  <CardTitle className="flex items-center gap-2 text-lg sm:text-xl font-bold">
+                    <UL0Icon name="docs" animated={true} size={22} />
                     Add Expenses
                   </CardTitle>
                   <CardDescription className="text-xs sm:text-sm">
@@ -688,9 +672,9 @@ export default function SplitExpensePage() {
                 <CardContent className="space-y-4 sm:space-y-6">
                   <div className="space-y-3">
                     <div className="space-y-2">
-                      <Label className="text-sm">Currency</Label>
+                      <Label className="text-sm font-semibold">Currency</Label>
                       <Select value={currency} onValueChange={(value) => setCurrency(value as CurrencyCode)}>
-                        <SelectTrigger className="h-10 w-full sm:w-44">
+                        <SelectTrigger className="h-10 w-full sm:w-44 rounded-xl">
                           <SelectValue placeholder="Select currency" />
                         </SelectTrigger>
                         <SelectContent>
@@ -701,47 +685,51 @@ export default function SplitExpensePage() {
                     </div>
 
                     {expenses.length === 0 ? (
-                      <div className="rounded-lg border border-dashed border-border p-8 text-center">
-                        <Receipt className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
+                      <div className="rounded-2xl border border-dashed border-border p-8 text-center space-y-2">
+                        <div className="flex justify-center">
+                          <UL0Icon name="docs" size={32} />
+                        </div>
                         <p className="text-sm text-muted-foreground">No expenses added yet</p>
                       </div>
                     ) : (
                       expenses.map((expense) => (
                         <div
                           key={expense.id}
-                          className="rounded-lg border border-border bg-muted/20 p-3"
+                          className="rounded-2xl border border-border bg-surface-2/60 p-3.5 space-y-3"
                         >
                           <div className="flex items-start justify-between gap-2">
                             <div className="flex-1 space-y-3">
                               <div className="flex flex-col gap-2 sm:flex-row">
                                 <Input
-                                  placeholder="Expense title"
+                                  placeholder="Expense title (e.g. Dinner, Fuel, Airbnb)"
                                   value={expense.title}
                                   onChange={(e) => updateExpense(expense.id, "title", e.target.value)}
-                                  className="h-9"
+                                  className="h-9 rounded-xl"
                                 />
                                 <div className="relative flex items-center">
-                                  <Banknote className="absolute left-3 h-4 w-4 text-muted-foreground" />
+                                  <div className="absolute left-3 pointer-events-none">
+                                    <UL0Icon name="coin" size={14} />
+                                  </div>
                                   <Input
                                     type="number"
                                     placeholder="Amount"
                                     value={expense.amount || ""}
                                     onChange={(e) => updateExpense(expense.id, "amount", Number(e.target.value) || 0)}
-                                    className="h-9 w-full pl-8 sm:w-32"
+                                    className="h-9 w-full pl-9 sm:w-32 rounded-xl"
                                   />
                                 </div>
                               </div>
 
                               {/* Date Picker */}
                               <div className="flex items-center gap-2">
-                                <Calendar className="h-4 w-4 text-muted-foreground" />
+                                <UL0Icon name="calendar" size={14} />
                                 <div className="flex gap-1 flex-wrap">
                                   {/* Quick date buttons */}
                                   <Button
                                     type="button"
                                     variant={expense.date === new Date().toISOString().split('T')[0] ? "default" : "outline"}
                                     size="sm"
-                                    className="h-7 text-xs px-2"
+                                    className="h-7 text-xs px-2.5 rounded-full"
                                     onClick={() => updateExpense(expense.id, "date", new Date().toISOString().split('T')[0])}
                                   >
                                     Today
@@ -750,7 +738,7 @@ export default function SplitExpensePage() {
                                     type="button"
                                     variant={expense.date === new Date(Date.now() - 86400000).toISOString().split('T')[0] ? "default" : "outline"}
                                     size="sm"
-                                    className="h-7 text-xs px-2"
+                                    className="h-7 text-xs px-2.5 rounded-full"
                                     onClick={() => updateExpense(expense.id, "date", new Date(Date.now() - 86400000).toISOString().split('T')[0])}
                                   >
                                     Yesterday
@@ -760,7 +748,7 @@ export default function SplitExpensePage() {
                                       type="date"
                                       value={expense.date}
                                       onChange={(e) => updateExpense(expense.id, "date", e.target.value)}
-                                      className="h-7 text-xs w-32 cursor-pointer"
+                                      className="h-7 text-xs w-32 cursor-pointer rounded-full"
                                     />
                                   </div>
                                 </div>
@@ -773,7 +761,7 @@ export default function SplitExpensePage() {
                                     value={expense.paidBy}
                                     onValueChange={(v: string) => updateExpense(expense.id, "paidBy", v)}
                                   >
-                                    <SelectTrigger className="h-8 w-full sm:w-40">
+                                    <SelectTrigger className="h-8 w-full sm:w-40 rounded-xl">
                                       <SelectValue placeholder="Select" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -793,7 +781,7 @@ export default function SplitExpensePage() {
                                       type="button"
                                       variant={expense.splitType === "equal" ? "default" : "outline"}
                                       size="sm"
-                                      className="h-8 text-xs"
+                                      className="h-8 text-xs rounded-full"
                                       onClick={() => updateExpense(expense.id, "splitType", "equal")}
                                     >
                                       50-50
@@ -802,7 +790,7 @@ export default function SplitExpensePage() {
                                       type="button"
                                       variant={expense.splitType === "custom" ? "default" : "outline"}
                                       size="sm"
-                                      className="h-8 text-xs"
+                                      className="h-8 text-xs rounded-full"
                                       onClick={() => updateExpense(expense.id, "splitType", "custom")}
                                     >
                                       Custom
@@ -820,11 +808,7 @@ export default function SplitExpensePage() {
                                   onClick={() => setExpandedExpense(expandedExpense === expense.id ? null : expense.id)}
                                 >
                                   <span>Edit individual splits</span>
-                                  {expandedExpense === expense.id ? (
-                                    <ChevronUp className="h-3 w-3" />
-                                  ) : (
-                                    <ChevronDown className="h-3 w-3" />
-                                  )}
+                                  <UL0Icon name={expandedExpense === expense.id ? "arrowup" : "arrowdown"} size={10} />
                                 </Button>
                               )}
 
@@ -836,12 +820,14 @@ export default function SplitExpensePage() {
                                         {m.name || `Person ${members.indexOf(m) + 1}`}
                                       </span>
                                       <div className="relative flex items-center">
-                                        <Banknote className="absolute left-2 h-3 w-3 text-muted-foreground" />
+                                        <div className="absolute left-2 pointer-events-none">
+                                          <UL0Icon name="coin" size={12} />
+                                        </div>
                                         <Input
                                           type="number"
                                           value={expense.splits.find(s => s.memberId === m.id)?.amount || ""}
                                           onChange={(e) => updateExpenseSplit(expense.id, m.id, Number(e.target.value) || 0)}
-                                          className="h-7 w-24 pl-6 text-xs"
+                                          className="h-7 w-24 pl-6 text-xs rounded-lg"
                                         />
                                       </div>
                                     </div>
@@ -854,10 +840,10 @@ export default function SplitExpensePage() {
                               type="button"
                               variant="ghost"
                               size="icon"
-                              className="h-8 w-8 flex-shrink-0 text-destructive hover:bg-destructive/10"
+                              className="h-8 w-8 flex-shrink-0 text-destructive hover:bg-destructive/10 rounded-full"
                               onClick={() => removeExpense(expense.id)}
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <UL0Icon name="trash" size={14} />
                             </Button>
                           </div>
                         </div>
@@ -868,16 +854,16 @@ export default function SplitExpensePage() {
                   <Button
                     type="button"
                     variant="outline"
-                    className="w-full gap-2 bg-transparent"
+                    className="w-full gap-2 rounded-full font-semibold"
                     onClick={addExpense}
                   >
-                    <Plus className="h-4 w-4" />
-                    Add Expense
+                    <UL0Icon name="plus" size={14} />
+                    <span>Add Expense</span>
                   </Button>
 
                   {expenses.length > 0 && (
-                    <div className="flex items-center justify-between rounded-lg bg-primary/5 p-3">
-                      <span className="text-sm font-medium">Total Expenses</span>
+                    <div className="flex items-center justify-between rounded-2xl bg-surface-3 p-3.5 border border-primary/20">
+                      <span className="text-sm font-semibold text-foreground">Total Expenses</span>
                       <span className="text-lg font-bold text-primary">{formatMoney(totalExpenses)}</span>
                     </div>
                   )}
@@ -885,18 +871,18 @@ export default function SplitExpensePage() {
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
-                      className="flex-1 bg-transparent"
+                      className="flex-1 rounded-full"
                       onClick={() => setStep("members")}
                     >
                       Back
                     </Button>
                     <Button
-                      className="flex-1"
+                      className="flex-1 rounded-full bg-primary text-primary-foreground hover:opacity-90 font-semibold"
                       onClick={() => setStep("summary")}
                       disabled={!isStepValid()}
                     >
-                      View Summary
-                      <ArrowRight className="ml-2 h-4 w-4" />
+                      <span>View Summary</span>
+                      <UL0Icon name="arrowright" size={14} />
                     </Button>
                   </div>
                 </CardContent>
@@ -906,10 +892,10 @@ export default function SplitExpensePage() {
             {/* Step 3: Summary */}
             {step === "summary" && (
               <div className="space-y-4">
-                <Card>
+                <Card className="rounded-3xl border-border bg-card shadow-2xs">
                   <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-                      <Calculator className="h-5 w-5 text-primary" />
+                    <CardTitle className="flex items-center gap-2 text-lg sm:text-xl font-bold">
+                      <UL0Icon name="splitbill" animated={true} size={22} />
                       {groupName}
                     </CardTitle>
                     <CardDescription className="text-xs sm:text-sm">
@@ -919,25 +905,25 @@ export default function SplitExpensePage() {
                   <CardContent className="space-y-4">
                     {/* Expenses Summary */}
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium">Expenses</Label>
+                      <Label className="text-sm font-semibold">Expenses</Label>
                       {expenses.map((exp) => (
-                        <div key={exp.id} className="flex items-center justify-between rounded-lg bg-muted/20 p-3">
+                        <div key={exp.id} className="flex items-center justify-between rounded-2xl bg-surface-2/60 p-3 border border-border/60">
                           <div>
-                            <p className="font-medium text-sm">{exp.title}</p>
+                            <p className="font-semibold text-sm">{exp.title}</p>
                             <p className="text-xs text-muted-foreground">
                               Paid by {getMemberName(exp.paidBy)}
                             </p>
                           </div>
-                          <span className="font-semibold">{formatMoney(exp.amount)}</span>
+                          <span className="font-bold">{formatMoney(exp.amount)}</span>
                         </div>
                       ))}
                     </div>
 
                     {/* Settlements */}
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium">Who Owes Who</Label>
+                      <Label className="text-sm font-semibold">Who Owes Who</Label>
                       {settlements.length === 0 ? (
-                        <div className="rounded-lg bg-green-500/10 p-3 text-center text-sm font-medium text-green-600">
+                        <div className="rounded-2xl bg-surface-3 p-3.5 text-center text-sm font-semibold text-primary border border-primary/20">
                           Everyone is settled up.
                         </div>
                       ) : (
@@ -945,18 +931,18 @@ export default function SplitExpensePage() {
                           const toMember = getMember(settlement.to)
                           const paymentLink = toMember ? getPaymentLink(toMember, settlement.amount) : ''
                           return (
-                            <div key={idx} className="flex flex-col gap-2 rounded-lg border border-border bg-muted/20 p-3">
+                            <div key={idx} className="flex flex-col gap-2 rounded-2xl border border-border bg-surface-2/60 p-3.5">
                               <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                  <span className="font-medium text-sm">{getMemberName(settlement.from)}</span>
-                                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                                  <span className="font-medium text-sm">{getMemberName(settlement.to)}</span>
+                                  <span className="font-semibold text-sm">{getMemberName(settlement.from)}</span>
+                                  <UL0Icon name="arrowright" size={12} />
+                                  <span className="font-semibold text-sm">{getMemberName(settlement.to)}</span>
                                 </div>
                                 <span className="font-bold text-primary">{formatMoney(settlement.amount)}</span>
                               </div>
                               {toMember && (
                                 <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                                  <span className="font-mono bg-muted px-1.5 py-0.5 rounded flex items-center gap-1">
+                                  <span className="font-mono bg-muted px-2 py-0.5 rounded-full flex items-center gap-1">
                                     <PaymentIcon method={toMember.paymentMethod} className="h-3 w-3" />
                                     {PAYMENT_METHODS[toMember.paymentMethod].name}
                                   </span>
@@ -971,7 +957,7 @@ export default function SplitExpensePage() {
                                       href={paymentLink} 
                                       target="_blank" 
                                       rel="noopener noreferrer"
-                                      className="ml-auto text-xs bg-primary text-primary-foreground px-2 py-1 rounded hover:bg-primary/90"
+                                      className="ml-auto text-xs bg-primary text-primary-foreground px-3 py-1 rounded-full font-semibold hover:opacity-90"
                                     >
                                       Pay Now
                                     </a>
@@ -987,20 +973,23 @@ export default function SplitExpensePage() {
                 </Card>
 
                 {generatedLink ? (
-                  <Card className="border-primary">
+                  <Card className="rounded-3xl border-primary/40 bg-card shadow-2xs">
                     <CardContent className="pt-6 space-y-4">
-                      <div className="text-center">
-                        <Link2 className="mx-auto mb-2 h-8 w-8 text-primary" />
-                        <p className="text-sm font-medium mb-2">Your split link is ready!</p>
-                        <p className="text-xs text-muted-foreground mb-4">Valid for 24 hours</p>
+                      <div className="text-center space-y-1">
+                        <div className="flex justify-center">
+                          <UL0Icon name="link" animated={true} size={32} />
+                        </div>
+                        <p className="text-sm font-bold text-foreground">Your split link is ready!</p>
+                        <p className="text-xs text-muted-foreground">Valid for 24 hours</p>
                       </div>
                       <div className="flex gap-2">
-                        <Input value={generatedLink} readOnly className="flex-1 text-xs" />
-                        <Button onClick={copyLink} variant="outline">
-                          Copy
+                        <Input value={generatedLink} readOnly className="flex-1 text-xs font-mono rounded-full bg-muted/30" />
+                        <Button onClick={copyLink} variant="outline" className="rounded-full">
+                          <UL0Icon name="copy" size={14} />
+                          <span>Copy</span>
                         </Button>
                       </div>
-                      <Button className="w-full" asChild>
+                      <Button className="w-full rounded-full bg-primary text-primary-foreground hover:opacity-90 font-semibold" asChild>
                         <a href={generatedLink} target="_blank" rel="noopener noreferrer">
                           Open Split Page
                         </a>
@@ -1010,30 +999,30 @@ export default function SplitExpensePage() {
                 ) : (
                   <>
                     {rateLimitError && (
-                      <p className="text-sm text-red-500 text-center mb-2">
+                      <p className="text-sm text-destructive text-center mb-2">
                         {cooldown > 0 ? `Please wait ${cooldown} seconds before creating another split session.` : rateLimitError}
                       </p>
                     )}
                     <Button
-                      className="w-full"
+                      className="w-full rounded-full bg-primary text-primary-foreground hover:opacity-90 font-semibold"
                       size="lg"
                       onClick={generateSplitLink}
                       disabled={isGenerating || cooldown > 0}
                     >
                       {isGenerating ? (
                         <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Generating...
+                          <UL0Icon name="loading" animated={true} size={16} />
+                          <span className="ml-2">Generating...</span>
                         </>
                       ) : cooldown > 0 ? (
                         <>
-                          <Loader2 className="mr-2 h-4 w-4" />
-                          Wait {cooldown}s
+                          <UL0Icon name="clock" size={16} />
+                          <span className="ml-2">Wait {cooldown}s</span>
                         </>
                       ) : (
                         <>
-                          <Link2 className="mr-2 h-4 w-4" />
-                          Generate Split Link
+                          <UL0Icon name="link" size={16} />
+                          <span className="ml-2">Generate Split Link</span>
                         </>
                       )}
                     </Button>
@@ -1042,7 +1031,7 @@ export default function SplitExpensePage() {
 
                 <Button
                   variant="outline"
-                  className="w-full bg-transparent"
+                  className="w-full rounded-full"
                   onClick={() => setStep("expenses")}
                 >
                   Back to Expenses

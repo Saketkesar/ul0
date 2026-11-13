@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Globe, ShieldCheck, TrendingUp, Check, X, Sparkles, ExternalLink } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "URL Shortener with Custom Domain: Free Setup & Comparison 2026 | UL0",
@@ -191,7 +191,7 @@ export default function CustomDomainShortLinksGuidePage() {
             href="/blog"
             className="inline-flex items-center text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 mr-1.5" />
+            <UL0Icon name="arrowleft" className="h-4 w-4 mr-1.5" />
             <span>Back to All Guides</span>
           </Link>
 
@@ -230,7 +230,7 @@ export default function CustomDomainShortLinksGuidePage() {
             <div className="grid gap-4 sm:grid-cols-3 my-6 not-prose">
               <div className="rounded-xl border border-border bg-card p-5 space-y-2">
                 <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                  <TrendingUp className="h-4 w-4" />
+                  <UL0Icon name="chartline" className="h-4 w-4" />
                 </div>
                 <h3 className="text-sm font-bold text-foreground">39% Higher CTR</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
@@ -240,7 +240,7 @@ export default function CustomDomainShortLinksGuidePage() {
 
               <div className="rounded-xl border border-border bg-card p-5 space-y-2">
                 <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                  <ShieldCheck className="h-4 w-4" />
+                  <UL0Icon name="shield" className="h-4 w-4" />
                 </div>
                 <h3 className="text-sm font-bold text-foreground">Spam Filter Protection</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
@@ -250,7 +250,7 @@ export default function CustomDomainShortLinksGuidePage() {
 
               <div className="rounded-xl border border-border bg-card p-5 space-y-2">
                 <div className="h-8 w-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-                  <Globe className="h-4 w-4" />
+                  <UL0Icon name="domain" className="h-4 w-4" />
                 </div>
                 <h3 className="text-sm font-bold text-foreground">100% Asset Ownership</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
@@ -295,11 +295,11 @@ export default function CustomDomainShortLinksGuidePage() {
                       <td className="p-3 sm:p-4">
                         {c.sslIncluded ? (
                           <span className="text-emerald-500 font-semibold inline-flex items-center gap-1">
-                            <Check className="h-3.5 w-3.5" /> Included
+                            <UL0Icon name="check" className="h-3.5 w-3.5" /> Included
                           </span>
                         ) : (
                           <span className="text-rose-500 font-semibold inline-flex items-center gap-1">
-                            <X className="h-3.5 w-3.5" /> None
+                            <UL0Icon name="close" className="h-3.5 w-3.5" /> None
                           </span>
                         )}
                       </td>
@@ -358,7 +358,7 @@ export default function CustomDomainShortLinksGuidePage() {
             {/* Embedded Conversion Card */}
             <div className="my-10 p-6 sm:p-8 rounded-2xl border border-primary/30 bg-primary/5 text-center space-y-4 not-prose">
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary bg-primary/10 px-3 py-1 rounded-full">
-                <Sparkles className="h-3.5 w-3.5" /> 100% Free Custom Domain Setup
+                <UL0Icon name="sparkles" className="h-3.5 w-3.5" /> 100% Free Custom Domain Setup
               </span>
               <h3 className="text-xl sm:text-2xl font-bold text-foreground">
                 Connect Your Branded Custom Domain with UL0 Today
@@ -369,7 +369,7 @@ export default function CustomDomainShortLinksGuidePage() {
               <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   href="/"
-                  className="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                  className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
                 >
                   <span>Shorten a URL Free</span>
                 </Link>

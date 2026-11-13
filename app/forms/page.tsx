@@ -7,16 +7,7 @@ import { FormsListClient } from "@/components/dashboard/forms-list-client"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
-import {
-  FileSpreadsheet,
-  ShieldCheck,
-  Zap,
-  ArrowRight,
-  Share2,
-  Lock,
-  CheckCircle2,
-  ExternalLink,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Forms to Google Sheets — Zero-DB Form Builder | UL0",
@@ -49,8 +40,8 @@ export default async function FormsPage() {
         {/* Hero */}
         <section className="py-16 md:py-24 border-b border-border bg-card/30">
           <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-primary/20 bg-primary/10 text-primary text-xs font-medium">
-              <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-primary/20 bg-primary/10 text-primary text-xs font-medium">
+              <UL0Icon name="shield" className="w-3.5 h-3.5" />
               <span>Zero-DB Privacy Architecture</span>
             </div>
 
@@ -63,13 +54,13 @@ export default async function FormsPage() {
             </p>
 
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-              <Button asChild size="lg" className="w-full sm:w-auto h-11 px-6">
+              <Button asChild size="lg" className="w-full sm:w-auto h-11 px-6 rounded-full">
                 <Link href="/forms/new">
                   <span>Create a form free</span>
-                  <ArrowRight className="w-4 h-4 ml-1.5" />
+                  <UL0Icon name="arrowright" className="w-4 h-4 ml-1.5" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto h-11 px-6">
+              <Button asChild variant="outline" size="lg" className="w-full sm:w-auto h-11 px-6 rounded-full border-border/80">
                 <Link href="/tools">Browse all utilities</Link>
               </Button>
             </div>
@@ -111,9 +102,9 @@ export default async function FormsPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="p-6 rounded-xl border border-border bg-card space-y-3">
-                <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center border border-emerald-500/20">
-                  <Lock className="w-4 h-4" />
+              <div className="p-6 rounded-2xl border border-border bg-card space-y-3">
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center border border-emerald-500/20">
+                  <UL0Icon name="lock" className="w-4 h-4" />
                 </div>
                 <h3 className="text-base font-semibold text-foreground">100% Private Ownership</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
@@ -121,9 +112,9 @@ export default async function FormsPage() {
                 </p>
               </div>
 
-              <div className="p-6 rounded-xl border border-border bg-card space-y-3">
-                <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
-                  <Zap className="w-4 h-4" />
+              <div className="p-6 rounded-2xl border border-border bg-card space-y-3">
+                <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+                  <UL0Icon name="bolt" className="w-4 h-4" />
                 </div>
                 <h3 className="text-base font-semibold text-foreground">3-Minute Setup</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
@@ -131,9 +122,9 @@ export default async function FormsPage() {
                 </p>
               </div>
 
-              <div className="p-6 rounded-xl border border-border bg-card space-y-3">
-                <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
-                  <Share2 className="w-4 h-4" />
+              <div className="p-6 rounded-2xl border border-border bg-card space-y-3">
+                <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
+                  <UL0Icon name="link" className="w-4 h-4" />
                 </div>
                 <h3 className="text-base font-semibold text-foreground">Hosted at ul0.site/e/[slug]</h3>
                 <p className="text-xs text-muted-foreground leading-relaxed">
@@ -154,7 +145,7 @@ export default async function FormsPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="p-5 rounded-xl border border-border bg-card space-y-2">
+              <div className="p-5 rounded-2xl border border-border bg-card space-y-2">
                 <div className="text-xs font-mono font-semibold text-primary">01</div>
                 <h3 className="text-sm font-semibold text-foreground">Configure form fields</h3>
                 <p className="text-xs text-muted-foreground">
@@ -162,7 +153,7 @@ export default async function FormsPage() {
                 </p>
               </div>
 
-              <div className="p-5 rounded-xl border border-border bg-card space-y-2">
+              <div className="p-5 rounded-2xl border border-border bg-card space-y-2">
                 <div className="text-xs font-mono font-semibold text-primary">02</div>
                 <h3 className="text-sm font-semibold text-foreground">Connect your Google Sheet</h3>
                 <p className="text-xs text-muted-foreground">
@@ -170,7 +161,7 @@ export default async function FormsPage() {
                 </p>
               </div>
 
-              <div className="p-5 rounded-xl border border-border bg-card space-y-2">
+              <div className="p-5 rounded-2xl border border-border bg-card space-y-2">
                 <div className="text-xs font-mono font-semibold text-primary">03</div>
                 <h3 className="text-sm font-semibold text-foreground">Share and collect responses</h3>
                 <p className="text-xs text-muted-foreground">
@@ -191,10 +182,10 @@ export default async function FormsPage() {
               Completely free forever. No credit card required.
             </p>
             <div>
-              <Button asChild size="lg" className="h-11 px-8">
+              <Button asChild size="lg" className="h-11 px-8 rounded-full">
                 <Link href="/forms/new">
                   <span>Start building now</span>
-                  <ArrowRight className="w-4 h-4 ml-1.5" />
+                  <UL0Icon name="arrowright" className="w-4 h-4 ml-1.5" />
                 </Link>
               </Button>
             </div>

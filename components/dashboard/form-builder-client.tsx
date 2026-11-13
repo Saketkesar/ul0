@@ -13,32 +13,7 @@ import {
 import { generateAppsScript } from "@/lib/forms/appscript"
 import { isValidAppsScriptUrl } from "@/lib/forms/client"
 import QRCode from "qrcode"
-import {
-  ArrowLeft,
-  Check,
-  Copy,
-  Download,
-  ExternalLink,
-  Eye,
-  GripVertical,
-  HelpCircle,
-  MoveDown,
-  MoveUp,
-  Plus,
-  RefreshCw,
-  Settings,
-  Sparkles,
-  Trash2,
-  X,
-  AlertTriangle,
-  Play,
-  Pause,
-  FileSpreadsheet,
-  Code2,
-  Link2,
-  Palette,
-  Share2,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface FormBuilderClientProps {
   initialForm: FormDoc
@@ -47,13 +22,13 @@ interface FormBuilderClientProps {
 }
 
 const WIZARD_STEPS = [
-  { id: 1, label: "Basics", icon: Settings },
-  { id: 2, label: "Fields", icon: Plus },
-  { id: 3, label: "Template", icon: FileSpreadsheet },
-  { id: 4, label: "Script", icon: Code2 },
-  { id: 5, label: "Connect", icon: Link2 },
-  { id: 6, label: "Design", icon: Palette },
-  { id: 7, label: "Share", icon: Share2 },
+  { id: 1, label: "Basics", icon: "settings" },
+  { id: 2, label: "Fields", icon: "plus" },
+  { id: 3, label: "Template", icon: "docs" },
+  { id: 4, label: "Script", icon: "code" },
+  { id: 5, label: "Connect", icon: "link" },
+  { id: 6, label: "Design", icon: "palette" },
+  { id: 7, label: "Share", icon: "share" },
 ]
 
 export function FormBuilderClient({ initialForm, initialSecret, userEmail }: FormBuilderClientProps) {
@@ -291,10 +266,10 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
           <div className="flex items-center gap-3">
             <Link
               href="/forms"
-              className="p-1.5 rounded-md hover:bg-[var(--surface-3)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+              className="p-1.5 rounded-full hover:bg-[var(--surface-3)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
               title="Back to all forms"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <UL0Icon name="arrowleft" size={16} />
             </Link>
             <div>
               <div className="flex items-center gap-2">
@@ -320,9 +295,8 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
           </div>
 
           {/* Wizard Step Selector */}
-          <nav className="hidden md:flex items-center gap-1 bg-[var(--surface-3)] p-1 rounded-lg border border-[var(--border)]">
+          <nav className="hidden md:flex items-center gap-1 bg-[var(--surface-3)] p-1 rounded-full border border-[var(--border)]">
             {WIZARD_STEPS.map((s) => {
-              const Icon = s.icon
               const isActive = currentStep === s.id
               return (
                 <button
@@ -332,13 +306,13 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                     setCurrentStep(s.id)
                     debouncedSave({ step: s.id })
                   }}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all cursor-pointer ${
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all cursor-pointer ${
                     isActive
                       ? "bg-[var(--card)] text-[var(--foreground)] shadow-xs"
                       : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                   }`}
                 >
-                  <Icon className="w-3.5 h-3.5" />
+                  <UL0Icon name={s.icon} size={14} />
                   <span>{s.label}</span>
                 </button>
               )
@@ -362,18 +336,18 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                 href={`/e/${slug}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--surface-3)] text-xs font-medium hover:border-[var(--primary)] transition-colors"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-3)] text-xs font-medium hover:border-[var(--primary)] transition-colors"
               >
-                <Eye className="w-3.5 h-3.5" />
+                <UL0Icon name="eye" size={14} />
                 <span className="hidden sm:inline">Preview</span>
               </a>
             )}
 
             <Link
               href={`/forms/${form.id}/entries`}
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
             >
-              <FileSpreadsheet className="w-3.5 h-3.5" />
+              <UL0Icon name="docs" size={14} />
               <span>Entries</span>
             </Link>
           </div>
@@ -406,8 +380,8 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Phishing warning if detected */}
         {phishingWarnings.length > 0 && (
-          <div className="mb-6 p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 text-amber-500 flex items-start gap-3">
-            <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <div className="mb-6 p-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-amber-500 flex items-start gap-3">
+            <UL0Icon name="warning" size={20} className="shrink-0 mt-0.5" />
             <div className="text-xs leading-relaxed">
               <strong className="block text-sm font-semibold mb-0.5">Sensitive Field Warning</strong>
               Your form contains labels matching restricted terms: (
@@ -550,10 +524,10 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                             e.stopPropagation()
                             moveField(idx, "up")
                           }}
-                          className="p-1 rounded hover:bg-[var(--surface-3)] text-[var(--muted-foreground)] disabled:opacity-20 cursor-pointer"
+                          className="p-1 rounded-full hover:bg-[var(--surface-3)] text-[var(--muted-foreground)] disabled:opacity-20 cursor-pointer"
                           title="Move up"
                         >
-                          <MoveUp className="w-3 h-3" />
+                          <UL0Icon name="arrowup" size={12} />
                         </button>
                         <button
                           type="button"
@@ -562,17 +536,17 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                             e.stopPropagation()
                             moveField(idx, "down")
                           }}
-                          className="p-1 rounded hover:bg-[var(--surface-3)] text-[var(--muted-foreground)] disabled:opacity-20 cursor-pointer"
+                          className="p-1 rounded-full hover:bg-[var(--surface-3)] text-[var(--muted-foreground)] disabled:opacity-20 cursor-pointer"
                           title="Move down"
                         >
-                          <MoveDown className="w-3 h-3" />
+                          <UL0Icon name="arrowdown" size={12} />
                         </button>
                       </div>
 
                       <div className="pl-6">
                         <div className="flex items-center justify-between gap-2 mb-1.5">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-[var(--surface-3)] text-[var(--muted-foreground)] border border-[var(--border)] font-mono text-[10px]">
+                            <span className="text-xs font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded-full bg-[var(--surface-3)] text-[var(--muted-foreground)] border border-[var(--border)] font-mono text-[10px]">
                               {field.type.replace(/_/g, " ")}
                             </span>
                             {field.required && (
@@ -624,9 +598,9 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                       setSlashInsertIndex(fields.length)
                       setSlashMenuOpen(true)
                     }}
-                    className="w-full py-3 rounded-xl border border-dashed border-[var(--border)] hover:border-[var(--primary)] text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-3 rounded-2xl border border-dashed border-[var(--border)] hover:border-[var(--primary)] text-xs font-medium text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <Plus className="w-4 h-4" />
+                    <UL0Icon name="plus" size={16} />
                     <span>Add block or question (Type / to browse)</span>
                   </button>
                 </div>
@@ -634,7 +608,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
             </div>
 
             {/* Right Settings Panel */}
-            <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl p-5 sticky top-20 space-y-5">
+            <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-5 sticky top-20 space-y-5">
               <div className="flex items-center justify-between pb-3 border-b border-[var(--border)]">
                 <h3 className="text-sm font-bold text-[var(--foreground)]">Block Settings</h3>
                 {selectedField && (
@@ -643,7 +617,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                     onClick={() => removeField(selectedField.id)}
                     className="text-xs text-rose-500 hover:underline flex items-center gap-1 cursor-pointer"
                   >
-                    <Trash2 className="w-3.5 h-3.5" />
+                    <UL0Icon name="trash" size={14} />
                     <span>Delete</span>
                   </button>
                 )}
@@ -724,7 +698,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                               className="p-1 hover:text-rose-500 cursor-pointer"
                               title="Remove option"
                             >
-                              <X className="w-3.5 h-3.5" />
+                              <UL0Icon name="close" size={14} />
                             </button>
                           </div>
                         ))}
@@ -743,7 +717,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                         }}
                         className="text-xs font-semibold text-[var(--primary)] hover:underline flex items-center gap-1 cursor-pointer pt-1"
                       >
-                        <Plus className="w-3.5 h-3.5" />
+                        <UL0Icon name="plus" size={14} />
                         <span>Add option</span>
                       </button>
                     </div>
@@ -766,7 +740,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
 
         {/* STEP 3: SHEET TEMPLATE */}
         {currentStep === 3 && (
-          <div className="max-w-2xl mx-auto bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 sm:p-8 space-y-6">
+          <div className="max-w-2xl mx-auto bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 sm:p-8 space-y-6">
             <div>
               <h2 className="text-lg font-bold text-[var(--foreground)]">
                 Download Spreadsheet Template
@@ -776,7 +750,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
               </p>
             </div>
 
-            <div className="p-3 bg-[var(--surface-3)] border border-[var(--border)] rounded-xl flex items-center justify-center">
+            <div className="p-3 bg-[var(--surface-3)] border border-[var(--border)] rounded-2xl flex items-center justify-center">
               <img
                 src="/ul0-forms-sheets-clear.webp"
                 alt="Form to Google Sheet diagram"
@@ -784,10 +758,10 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
               />
             </div>
 
-            <div className="p-4 bg-[var(--surface-3)] border border-[var(--border)] rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="p-4 bg-[var(--surface-3)] border border-[var(--border)] rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <div className="text-sm font-bold text-[var(--foreground)] flex items-center gap-2">
-                  <FileSpreadsheet className="w-4 h-4 text-emerald-500" />
+                  <UL0Icon name="docs" size={16} />
                   <span>{slug}-template.xlsx</span>
                 </div>
                 <p className="text-xs text-[var(--muted-foreground)] mt-0.5">
@@ -798,9 +772,9 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
               <a
                 href={`/api/forms/${form.id}/xlsx`}
                 download={`${slug}-template.xlsx`}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors cursor-pointer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold transition-colors cursor-pointer"
               >
-                <Download className="w-4 h-4" />
+                <UL0Icon name="download" size={16} />
                 <span>Download .xlsx</span>
               </a>
             </div>
@@ -923,7 +897,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                     onClick={handleRegenerateSecret}
                     className="text-xs text-[var(--muted-foreground)] hover:text-amber-500 flex items-center gap-1 cursor-pointer"
                   >
-                    <RefreshCw className="w-3 h-3" />
+                    <UL0Icon name="refresh" size={12} />
                     <span>Regenerate secret</span>
                   </button>
 
@@ -934,9 +908,9 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                       setScriptCopied(true)
                       setTimeout(() => setScriptCopied(false), 2000)
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[var(--primary)] text-white text-xs font-semibold cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[var(--primary)] text-white text-xs font-semibold cursor-pointer"
                   >
-                    {scriptCopied ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    {scriptCopied ? <UL0Icon name="check" size={14} /> : <UL0Icon name="copy" size={14} />}
                     <span>{scriptCopied ? "Copied!" : "Copy code"}</span>
                   </button>
                 </div>
@@ -1016,16 +990,16 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                 type="button"
                 disabled={isTestingConnection || !scriptUrl}
                 onClick={handleTestConnection}
-                className="w-full h-11 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                className="w-full h-11 rounded-full bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 {isTestingConnection ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
+                    <UL0Icon name="loading" size={16} className="animate-spin" />
                     <span>Testing connection with Google Sheets...</span>
                   </>
                 ) : (
                   <>
-                    <Check className="w-4 h-4" />
+                    <UL0Icon name="check" size={16} />
                     <span>Test connection</span>
                   </>
                 )}
@@ -1034,14 +1008,14 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
               {/* Diagnostic Results Banner */}
               {testResult && (
                 <div
-                  className={`p-4 rounded-xl border text-xs leading-relaxed ${
+                  className={`p-4 rounded-2xl border text-xs leading-relaxed ${
                     testResult.ok
                       ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-500"
                       : "bg-rose-500/10 border-rose-500/30 text-rose-500"
                   }`}
                 >
                   <div className="font-semibold text-sm mb-1">
-                    {testResult.ok ? "✓ Connection Verified!" : "Connection Failed"}
+                    {testResult.ok ? "Connection Verified!" : "Connection Failed"}
                   </div>
                   <div>{testResult.message || (testResult as any).error}</div>
                 </div>
@@ -1052,16 +1026,16 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
               <button
                 type="button"
                 onClick={() => setCurrentStep(4)}
-                className="px-4 py-2 rounded-lg border border-[var(--border)] text-xs font-medium cursor-pointer"
+                className="px-4 py-2 rounded-full border border-[var(--border)] text-xs font-medium cursor-pointer"
               >
-                ← Back
+                Back
               </button>
               <button
                 type="button"
                 onClick={() => setCurrentStep(6)}
-                className="px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer"
+                className="px-5 py-2.5 rounded-full bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer"
               >
-                Next: Design →
+                Next: Design
               </button>
             </div>
           </div>
@@ -1069,7 +1043,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
 
         {/* STEP 6: DESIGN */}
         {currentStep === 6 && (
-          <div className="max-w-2xl mx-auto bg-[var(--card)] border border-[var(--border)] rounded-xl p-6 sm:p-8 space-y-6">
+          <div className="max-w-2xl mx-auto bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 sm:p-8 space-y-6">
             <div>
               <h2 className="text-lg font-bold text-[var(--foreground)]">Form Design &amp; Theme</h2>
               <p className="text-xs text-[var(--muted-foreground)] mt-1">
@@ -1100,7 +1074,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                       style={{ background: accent.hex }}
                       title={accent.label}
                     >
-                      {isSelected && <Check className="w-4 h-4 text-white" />}
+                      {isSelected && <UL0Icon name="check" size={16} />}
                     </button>
                   )
                 })}
@@ -1263,8 +1237,8 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
               <label className="block text-xs font-semibold text-[var(--foreground)] text-left">
                 Permanent Public URL
               </label>
-              <div className="flex items-center gap-2 p-2.5 rounded-lg border border-[var(--border)] bg-[var(--surface-3)] font-mono text-xs">
-                <span className="flex-1 truncate text-[var(--foreground)] text-left">
+              <div className="flex items-center gap-2 p-2.5 rounded-full border border-[var(--border)] bg-[var(--surface-3)] font-mono text-xs">
+                <span className="flex-1 truncate text-[var(--foreground)] text-left px-2">
                   https://ul0.site/e/{slug}
                 </span>
                 <button
@@ -1274,19 +1248,19 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                     setLinkCopied(true)
                     setTimeout(() => setLinkCopied(false), 2000)
                   }}
-                  className="p-1.5 rounded hover:bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer"
+                  className="p-1.5 rounded-full hover:bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer"
                   title="Copy link"
                 >
-                  {linkCopied ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
+                  {linkCopied ? <UL0Icon name="check" size={16} /> : <UL0Icon name="copy" size={16} />}
                 </button>
                 <a
                   href={`/e/${slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="p-1.5 rounded hover:bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
+                  className="p-1.5 rounded-full hover:bg-[var(--card)] text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
                   title="Open in new tab"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <UL0Icon name="external" size={16} />
                 </a>
               </div>
             </div>
@@ -1294,16 +1268,16 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
             {/* QR Code Container */}
             {qrCanvasUrl && (
               <div className="pt-2 flex flex-col items-center">
-                <div className="p-4 bg-white rounded-xl border border-[var(--border)] shadow-xs inline-block">
+                <div className="p-4 bg-white rounded-2xl border border-[var(--border)] shadow-xs inline-block">
                   <img src={qrCanvasUrl} alt="Form QR Code" className="w-44 h-44 object-contain" />
                 </div>
                 <div className="flex items-center gap-2 mt-3">
                   <a
                     href={qrCanvasUrl}
                     download={`${slug}-qr.png`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-[var(--border)] bg-[var(--surface-3)] text-xs font-medium hover:border-[var(--primary)] transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-3)] text-xs font-medium hover:border-[var(--primary)] transition-colors"
                   >
-                    <Download className="w-3.5 h-3.5" />
+                    <UL0Icon name="download" size={14} />
                     <span>Download QR</span>
                   </a>
                 </div>
@@ -1314,16 +1288,16 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
               <button
                 type="button"
                 onClick={() => setCurrentStep(6)}
-                className="px-4 py-2 rounded-lg border border-[var(--border)] text-xs font-medium cursor-pointer"
+                className="px-4 py-2 rounded-full border border-[var(--border)] text-xs font-medium cursor-pointer"
               >
-                ← Back
+                Back
               </button>
 
               <Link
                 href={`/forms/${form.id}/entries`}
-                className="px-5 py-2.5 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+                className="px-5 py-2.5 rounded-full bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
               >
-                View Sheet Responses →
+                View Sheet Responses
               </Link>
             </div>
           </div>
@@ -1333,7 +1307,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
       {/* Slash Block Menu Modal */}
       {slashMenuOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-          <div className="bg-[var(--card)] border border-[var(--border)] rounded-xl max-w-sm w-full p-4 shadow-xl space-y-3">
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-2xl max-w-sm w-full p-4 shadow-xl space-y-3">
             <div className="flex items-center justify-between border-b border-[var(--border)] pb-2">
               <span className="text-xs font-bold text-[var(--foreground)]">Insert Block or Field</span>
               <button
@@ -1341,7 +1315,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                 onClick={() => setSlashMenuOpen(false)}
                 className="p-1 hover:text-rose-500 cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <UL0Icon name="close" size={16} />
               </button>
             </div>
 

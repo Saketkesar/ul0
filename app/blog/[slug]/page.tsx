@@ -6,7 +6,7 @@ import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { sanityFetch, SanityPost } from "@/lib/sanity/client"
-import { ArrowLeft, Calendar, User, Clock, Sparkles, ChevronRight } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const revalidate = 60 // Revalidate dynamic blog posts every 60 seconds (supports scheduled posts)
 
@@ -142,7 +142,7 @@ export default async function DynamicSanityBlogPostPage({ params }: Props) {
             href="/blog"
             className="inline-flex items-center text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
           >
-            <ArrowLeft className="h-4 w-4 mr-1.5" />
+            <UL0Icon name="arrowleft" className="h-4 w-4 mr-1.5" />
             <span>Back to All Guides</span>
           </Link>
 
@@ -157,17 +157,17 @@ export default async function DynamicSanityBlogPostPage({ params }: Props) {
 
             <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-2">
               <div className="flex items-center gap-1.5 font-medium text-foreground">
-                <User className="h-3.5 w-3.5 text-primary" />
+                <UL0Icon name="user" className="h-3.5 w-3.5 text-primary" />
                 <span>Saket Kesar</span>
               </div>
               <span>•</span>
               <div className="flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5" />
+                <UL0Icon name="calendar" className="h-3.5 w-3.5" />
                 <span>{new Date(post.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
               </div>
               <span>•</span>
               <div className="flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5" />
+                <UL0Icon name="clock" className="h-3.5 w-3.5" />
                 <span>6 min read</span>
               </div>
             </div>
@@ -201,10 +201,10 @@ export default async function DynamicSanityBlogPostPage({ params }: Props) {
             <div className="pt-2 flex items-center justify-center gap-3">
               <Link
                 href="/"
-                className="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 <span>Shorten Link Free</span>
-                <ChevronRight className="h-3.5 w-3.5 ml-1" />
+                <UL0Icon name="arrowright" className="h-3.5 w-3.5 ml-1" />
               </Link>
               <Link
                 href="/custom-domain-landing"

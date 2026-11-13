@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { Trash2, Lock, RefreshCw } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface DeleteLinkButtonProps {
   linkId: string
@@ -56,10 +56,10 @@ export function DeleteLinkButton({ linkId, canDelete, redirectOnDelete = false }
     return (
       <button
         onClick={handleDelete}
-        className="rounded-md p-2 text-muted-foreground/35 hover:text-primary transition-colors"
+        className="rounded-full p-2 text-muted-foreground/35 hover:text-primary transition-colors"
         title="Upgrade plan to delete links"
       >
-        <Lock className="h-4 w-4" />
+        <UL0Icon name="lock" className="h-4 w-4" />
       </button>
     )
   }
@@ -68,10 +68,10 @@ export function DeleteLinkButton({ linkId, canDelete, redirectOnDelete = false }
     <button
       onClick={handleDelete}
       disabled={loading}
-      className="rounded-md p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors disabled:opacity-50"
+      className="rounded-full p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors disabled:opacity-50"
       title="Delete link"
     >
-      {loading ? <RefreshCw className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+      {loading ? <UL0Icon name="loading" className="h-4 w-4 animate-spin" /> : <UL0Icon name="trash" className="h-4 w-4" />}
     </button>
   )
 }

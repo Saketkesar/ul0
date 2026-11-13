@@ -2,21 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import {
-  Briefcase,
-  Megaphone,
-  Home,
-  UtensilsCrossed,
-  Sparkles,
-  ShoppingBag,
-  Rocket,
-  Calendar,
-  ArrowRight,
-  ShieldCheck,
-  BarChart3,
-  QrCode,
-  Globe,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Short Link & QR Use Cases for Every Business",
@@ -48,7 +34,7 @@ const USE_CASES = [
   {
     title: "Small Businesses",
     slug: "small-business",
-    icon: <Briefcase className="h-6 w-6 text-emerald-500" />,
+    icon: <UL0Icon name="cart" className="h-6 w-6 text-emerald-500" />,
     description: "Build local brand trust with branded links, print trackable flyer QR codes, and measure physical-to-digital conversions.",
     badge: "Local & Retail",
     highlights: ["Branded short links", "Flyer QR code tracking", "Zero monthly minimums"],
@@ -56,7 +42,7 @@ const USE_CASES = [
   {
     title: "Marketing Agencies",
     slug: "marketing-agencies",
-    icon: <Megaphone className="h-6 w-6 text-blue-500" />,
+    icon: <UL0Icon name="campaign" className="h-6 w-6 text-primary" />,
     description: "Manage client campaigns with standardized UTM parameter taxonomy, multichannel attribution, and exportable reports.",
     badge: "Campaign Analytics",
     highlights: ["Standardized UTM taxonomy", "Client domain delegation", "Multi-channel tracking"],
@@ -64,7 +50,7 @@ const USE_CASES = [
   {
     title: "Real Estate",
     slug: "real-estate",
-    icon: <Home className="h-6 w-6 text-amber-500" />,
+    icon: <UL0Icon name="home" className="h-6 w-6 text-amber-500" />,
     description: "Generate trackable QR codes for yard signs, open house flyers, MLS virtual tours, and measure buyer interest by neighborhood.",
     badge: "Property Marketing",
     highlights: ["Yard sign QR codes", "Virtual tour link tracking", "Open house visitor capture"],
@@ -72,7 +58,7 @@ const USE_CASES = [
   {
     title: "Restaurants & Bars",
     slug: "restaurants",
-    icon: <UtensilsCrossed className="h-6 w-6 text-rose-500" />,
+    icon: <UL0Icon name="splitbill" className="h-6 w-6 text-rose-500" />,
     description: "Dine-in menu QR codes that never expire, promotional SMS links, and hour-by-hour scan volume tracking.",
     badge: "Hospitality",
     highlights: ["Dynamic menu QR codes", "SMS marketing links", "Peak hour scan metrics"],
@@ -80,7 +66,7 @@ const USE_CASES = [
   {
     title: "Content Creators",
     slug: "creators",
-    icon: <Sparkles className="h-6 w-6 text-purple-500" />,
+    icon: <UL0Icon name="sparkles" className="h-6 w-6 text-purple-500" />,
     description: "Optimize Instagram bio links, track YouTube video description clicks, and measure sponsor affiliate conversions.",
     badge: "Social Media",
     highlights: ["Link in bio tracking", "Sponsor click verification", "Clean branded vanity URLs"],
@@ -88,7 +74,7 @@ const USE_CASES = [
   {
     title: "E-Commerce Brands",
     slug: "ecommerce",
-    icon: <ShoppingBag className="h-6 w-6 text-cyan-500" />,
+    icon: <UL0Icon name="cart" className="h-6 w-6 text-cyan-500" />,
     description: "Insert dynamic QR codes into product packaging, track seasonal promotional SMS, and protect brand affiliate equity.",
     badge: "Direct-to-Consumer",
     highlights: ["Unboxing QR codes", "Affiliate link attribution", "Seasonal campaign redirection"],
@@ -96,7 +82,7 @@ const USE_CASES = [
   {
     title: "Startups & Tech",
     slug: "startups",
-    icon: <Rocket className="h-6 w-6 text-indigo-500" />,
+    icon: <UL0Icon name="bolt" className="h-6 w-6 text-primary" />,
     description: "Pitch deck tracking, Product Hunt launch links, developer REST API integration, and investor update CTR analytics.",
     badge: "Growth & Developers",
     highlights: ["REST API & Webhooks", "Pitch deck access metrics", "Launch campaign attribution"],
@@ -104,7 +90,7 @@ const USE_CASES = [
   {
     title: "Events & Conferences",
     slug: "events",
-    icon: <Calendar className="h-6 w-6 text-emerald-400" />,
+    icon: <UL0Icon name="calendar" className="h-6 w-6 text-emerald-400" />,
     description: "Print trackable badge QR codes, distribute session schedule links, and monitor booth attendee engagement in real time.",
     badge: "Live Experiences",
     highlights: ["Badge QR check-ins", "Booth collateral tracking", "Real-time attendee analytics"],
@@ -120,8 +106,8 @@ export default function UseCasesIndexPage() {
         <div className="container mx-auto px-4 max-w-6xl">
           {/* Header */}
           <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-4">
-              <Globe className="h-3.5 w-3.5" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-4">
+              <UL0Icon name="domain" className="h-3.5 w-3.5" />
               Tailored Link Management Workflows
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-4">
@@ -138,14 +124,14 @@ export default function UseCasesIndexPage() {
               <Link
                 key={uc.slug}
                 href={`/use-cases/${uc.slug}`}
-                className="group relative rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md transition-all hover:border-primary/50 flex flex-col justify-between"
+                className="group relative rounded-3xl border border-border bg-card p-6 shadow-xs hover:shadow-md transition-all hover:border-primary/50 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between gap-2 mb-4">
-                    <div className="rounded-xl bg-muted p-3 group-hover:scale-105 transition-transform">
+                    <div className="rounded-2xl bg-muted p-3 group-hover:scale-105 transition-transform">
                       {uc.icon}
                     </div>
-                    <span className="text-[11px] font-mono font-semibold px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
+                    <span className="text-[11px] font-mono font-semibold px-2.5 py-1 rounded-full bg-secondary text-secondary-foreground">
                       {uc.badge}
                     </span>
                   </div>
@@ -170,7 +156,7 @@ export default function UseCasesIndexPage() {
 
                   <div className="flex items-center gap-1.5 text-xs font-semibold text-primary group-hover:underline">
                     <span>Explore {uc.title} workflow</span>
-                    <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                    <UL0Icon name="arrowright" className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
               </Link>
@@ -178,7 +164,7 @@ export default function UseCasesIndexPage() {
           </div>
 
           {/* Bottom Callout */}
-          <div className="mt-16 rounded-3xl border border-primary/20 bg-primary/5 p-8 sm:p-12 text-center max-w-4xl mx-auto">
+          <div className="mt-16 rounded-3xl border border-primary/20 bg-primary/5 p-8 sm:p-12 text-center max-w-4xl mx-auto shadow-xs">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground mb-3">
               Ready to elevate your link infrastructure?
             </h2>
@@ -188,13 +174,13 @@ export default function UseCasesIndexPage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/"
-                className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-xs"
               >
                 Shorten a Link Free
               </Link>
               <Link
                 href="/pricing"
-                className="rounded-xl border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-full border border-border bg-background px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 View Plans &amp; Custom Domains
               </Link>

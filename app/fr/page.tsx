@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
 import Link from "next/link"
-import { Zap, Shield, Globe, Users, QrCode, Wifi } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Raccourcisseur d'URL Gratuit - Liens et Codes QR sans Inscription | ul0",
@@ -78,6 +78,10 @@ export default function FrenchPage() {
       <main className="flex-1">
         <section className="py-12 sm:py-20 bg-gradient-to-b from-primary/5 to-background">
           <div className="container mx-auto px-4 text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-semibold text-primary mb-4">
+              <UL0Icon name="lang-fr" size={18} />
+              <span>Français · Édition Mondiale</span>
+            </div>
             <h1 className="text-3xl font-bold tracking-tight sm:text-5xl mb-4"> Raccourcisseur d'URL Gratuit</h1>
             <p className="text-xl text-muted-foreground mb-2">#1 Raccourcisseur de Liens Gratuit</p>
             <p className="text-muted-foreground max-w-2xl mx-auto mb-8">
@@ -92,33 +96,33 @@ export default function FrenchPage() {
           <div className="container mx-auto px-4">
             <h2 className="text-2xl font-bold text-center mb-8">Pourquoi choisir ul0 ?</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
-              <div className="bg-background p-6 rounded-lg border">
-                <Zap className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="bolt" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Ultra Rapide</h3>
                 <p className="text-sm text-muted-foreground">Raccourcissez vos liens en moins d'une seconde.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Shield className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="shield" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">100% Sécurisé</h3>
                 <p className="text-sm text-muted-foreground">Vos liens sont protégés. Pas de spam, pas de virus.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Globe className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="domain" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Toujours Gratuit</h3>
                 <p className="text-sm text-muted-foreground">Aucun coût caché. Liens illimités.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Users className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="team" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">Partager les Dépenses</h3>
                 <p className="text-sm text-muted-foreground">Partagez les additions entre amis facilement.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <QrCode className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="qr" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">QR Code</h3>
                 <p className="text-sm text-muted-foreground">Générez des QR codes pour chaque lien instantanément.</p>
               </div>
-              <div className="bg-background p-6 rounded-lg border">
-                <Wifi className="h-10 w-10 text-primary mb-4" />
+              <div className="bg-background p-6 rounded-2xl border border-border/60">
+                <UL0Icon name="wifi" animated size={36} className="mb-4" />
                 <h3 className="font-semibold mb-2">QR WiFi</h3>
                 <p className="text-sm text-muted-foreground">Créez des QR codes WiFi pour partager vos mots de passe.</p>
               </div>
@@ -130,15 +134,15 @@ export default function FrenchPage() {
           <div className="container mx-auto px-4 max-w-3xl">
             <h2 className="text-2xl font-bold text-center mb-8">Questions fréquentes</h2>
             <div className="space-y-4">
-              <div className="bg-background p-5 rounded-lg border">
+              <div className="bg-background p-5 rounded-2xl border border-border/60">
                 <h3 className="font-semibold mb-2">Le raccourcisseur d'URL est-il vraiment gratuit ?</h3>
                 <p className="text-sm text-muted-foreground">Oui, ul0 est 100% gratuit, illimité et sans frais cachés.</p>
               </div>
-              <div className="bg-background p-5 rounded-lg border">
+              <div className="bg-background p-5 rounded-2xl border border-border/60">
                 <h3 className="font-semibold mb-2">Dois-je créer un compte ?</h3>
                 <p className="text-sm text-muted-foreground">Non, vous pouvez raccourcir vos liens immédiatement sans inscription.</p>
               </div>
-              <div className="bg-background p-5 rounded-lg border">
+              <div className="bg-background p-5 rounded-2xl border border-border/60">
                 <h3 className="font-semibold mb-2">Puis-je créer des QR codes ?</h3>
                 <p className="text-sm text-muted-foreground">Oui, générez gratuitement un QR code pour chaque lien.</p>
               </div>
@@ -151,10 +155,10 @@ export default function FrenchPage() {
             <h2 className="text-2xl font-bold mb-4">Commencez maintenant – 100% gratuit !</h2>
             <p className="text-muted-foreground mb-6">Envie de partager les dépenses entre amis ? Essayez notre fonction Split.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/split" className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium">
+              <Link href="/split" className="inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 h-11 px-8 font-medium shadow-xs">
                 Partager les dépenses →
               </Link>
-              <Link href="/qr" className="inline-flex items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 font-medium">
+              <Link href="/qr" className="inline-flex items-center justify-center rounded-full border border-border bg-background hover:bg-accent hover:text-accent-foreground h-11 px-8 font-medium shadow-xs">
                 Créer un QR code →
               </Link>
             </div>

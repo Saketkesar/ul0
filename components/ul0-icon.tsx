@@ -1,5 +1,4 @@
 import React from "react"
-import Image from "next/image"
 
 export type UL0IconName =
   | "analytics"
@@ -56,9 +55,28 @@ export type UL0IconName =
   | "info"
   | "instagram"
   | "instant"
+  | "lang-ar"
+  | "lang-bn"
+  | "lang-de"
+  | "lang-en"
+  | "lang-es"
+  | "lang-fr"
+  | "lang-hi"
+  | "lang-it"
+  | "lang-ja"
+  | "lang-ko"
+  | "lang-pt"
+  | "lang-ru"
+  | "lang-ta"
+  | "lang-tr"
+  | "lang-vi"
+  | "lang-zh"
+  | "language"
+  | "laptop"
   | "link"
-  | "linkinbio"
   | "linkedin"
+  | "linkinbio"
+  | "loading"
   | "lock"
   | "login"
   | "logout"
@@ -122,6 +140,7 @@ export type UL0IconName =
 interface UL0IconProps {
   name: UL0IconName | string
   variant?: "clean" | "tile"
+  animated?: boolean
   size?: number
   className?: string
   alt?: string
@@ -130,20 +149,25 @@ interface UL0IconProps {
 export function UL0Icon({
   name,
   variant = "clean",
+  animated = false,
   size = 24,
   className = "",
   alt,
 }: UL0IconProps) {
-  const iconPath = `/ul0-icon-kit/svg/${variant}/ul0-${name}.svg`
+  // Strip ul0- prefix if caller passes "ul0-link"
+  const cleanName = name.replace(/^ul0-/, "")
+  const folder = animated ? "svg-animated" : "svg"
+  const iconPath = `/ul0-icon-kit/${folder}/${variant}/ul0-${cleanName}.svg`
+
   return (
     <span
-      className={`inline-flex items-center justify-center shrink-0 ${className}`}
+      className={`inline-flex items-center justify-center shrink-0 transition-transform duration-200 ${className}`}
       style={{ width: size, height: size }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={iconPath}
-        alt={alt || `${name} icon`}
+        alt={alt || `${cleanName} icon`}
         width={size}
         height={size}
         className="w-full h-full object-contain pointer-events-none select-none"

@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, ShieldCheck, Zap, Globe, QrCode, Sparkles } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Cómo Acortar Links Gratis en 2026: Guía Sin Registro",
@@ -97,7 +97,7 @@ export default function AcortarLinkGratisPage() {
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link href="/blog" className="hover:text-foreground inline-flex items-center gap-1">
-              <ArrowLeft className="h-3 w-3" /> Volver al blog
+              <UL0Icon name="arrowleft" className="h-3 w-3" /> Volver al blog
             </Link>
             <span>/</span>
             <span className="text-foreground">Guía en Español</span>
@@ -106,7 +106,7 @@ export default function AcortarLinkGratisPage() {
           {/* Header */}
           <div className="space-y-4">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-              <Sparkles className="h-3 w-3" />
+              <UL0Icon name="sparkles" className="h-3 w-3" />
               Guía Oficial de Acortamiento 2026
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl lg:text-5xl leading-tight">
@@ -120,7 +120,7 @@ export default function AcortarLinkGratisPage() {
           {/* CTA Box */}
           <div className="rounded-2xl border border-primary/30 bg-primary/5 p-6 space-y-3">
             <div className="flex items-center gap-2 font-semibold text-foreground">
-              <Zap className="h-5 w-5 text-primary" />
+              <UL0Icon name="bolt" className="h-5 w-5 text-primary" />
               <span>¿Necesitas acortar un enlace ahora mismo?</span>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -128,7 +128,7 @@ export default function AcortarLinkGratisPage() {
             </p>
             <Link
               href="/"
-              className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:opacity-90 transition-all"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:opacity-90 transition-all"
             >
               Acortar mi link gratis ahora →
             </Link>
@@ -259,7 +259,7 @@ export default function AcortarLinkGratisPage() {
               Uno de los mayores temores al utilizar enlaces cortos es que oculten sitios de phishing o descargas de malware. En <strong>ul0</strong>, todos los destinos son examinados contra bases de datos globales de amenazas en tiempo real.
             </p>
             <div className="flex items-start gap-3 p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
-              <ShieldCheck className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+              <UL0Icon name="shield" className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
               <div className="text-xs space-y-1">
                 <span className="font-semibold text-foreground">Radar de Amenazas Activo</span>
                 <p>
@@ -311,7 +311,7 @@ export default function AcortarLinkGratisPage() {
             <div className="flex justify-center gap-3 pt-2">
               <Link
                 href="/"
-                className="rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:opacity-90 transition-all"
+                className="rounded-full bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground shadow-sm hover:opacity-90 transition-all"
               >
                 Acortar link gratis
               </Link>

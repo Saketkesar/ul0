@@ -4,7 +4,7 @@ import React, { useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { AlertCircle, RotateCcw } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export default function GlobalError({
   error,
@@ -19,7 +19,7 @@ export default function GlobalError({
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-background text-foreground px-4 py-16">
-      <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-center space-y-6">
+      <div className="w-full max-w-md rounded-3xl border border-border bg-card p-8 text-center space-y-6">
         <div className="flex justify-center">
           <Image
             src="/ul0.png"
@@ -42,11 +42,11 @@ export default function GlobalError({
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2 pt-2 border-t border-border">
-          <Button onClick={() => reset()} size="sm" className="flex-1 text-xs font-semibold gap-1.5">
-            <RotateCcw className="h-3.5 w-3.5" />
+          <Button onClick={() => reset()} size="sm" className="flex-1 text-xs font-semibold gap-1.5 rounded-full">
+            <UL0Icon name="refresh" className="h-3.5 w-3.5" />
             <span>Try again</span>
           </Button>
-          <Button asChild variant="outline" size="sm" className="flex-1 text-xs">
+          <Button asChild variant="outline" size="sm" className="flex-1 text-xs rounded-full">
             <Link href="/">Back to home</Link>
           </Button>
         </div>

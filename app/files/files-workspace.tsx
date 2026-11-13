@@ -1,39 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useRef, useCallback } from "react"
-import { PDFDocument, degrees } from "pdf-lib"
-import { jsPDF } from "jspdf"
-import JSZip from "jszip"
-import {
-  Scissors,
-  FileStack,
-  ImageIcon,
-  ScanLine,
-  Download,
-  Upload,
-  Trash2,
-  Plus,
-  Smartphone,
-  Share2,
-  Check,
-  ArrowRight,
-  ShieldCheck,
-  MoveUp,
-  MoveDown,
-  Info,
-  Loader2,
-  Camera,
-  X,
-  FileDown,
-  Layers,
-  Sparkles,
-  RotateCw,
-  Scaling,
-  FileEdit,
-  Maximize2,
-  Sliders,
-  RefreshCw,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { Button } from "@/components/ui/button"
 import { PdfSplitterClient } from "@/app/tools/pdf-splitter/pdf-splitter-client"
 
@@ -801,7 +769,7 @@ export function FilesWorkspace() {
               <span>Client-Side Workspace</span>
               <span>•</span>
               <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                <ShieldCheck className="h-3.5 w-3.5" /> 100% Private
+                <UL0Icon name="shield" className="h-3.5 w-3.5" /> 100% Private
               </span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
@@ -817,7 +785,7 @@ export function FilesWorkspace() {
           <div className="flex items-center gap-2 shrink-0">
             {isInstalled ? (
               <div className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-600 bg-emerald-500/10 px-3 py-1.5 rounded-md border border-emerald-500/20">
-                <Check className="h-3.5 w-3.5" />
+                <UL0Icon name="check" className="h-3.5 w-3.5" />
                 <span>App Installed</span>
               </div>
             ) : (
@@ -828,7 +796,7 @@ export function FilesWorkspace() {
                 className="gap-2 text-xs font-medium border-border/80 hover:bg-muted cursor-pointer"
                 title="Install UL0 Files as an app on your phone or desktop"
               >
-                <Smartphone className="h-4 w-4 text-foreground/80" />
+                <UL0Icon name="mobile" className="h-4 w-4 text-foreground/80" />
                 <span>Add to Home Screen</span>
               </Button>
             )}
@@ -845,7 +813,7 @@ export function FilesWorkspace() {
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
-            <Scissors className="h-3.5 w-3.5" />
+            <UL0Icon name="scissors" className="h-3.5 w-3.5" />
             <span>Split PDF</span>
           </button>
 
@@ -857,7 +825,7 @@ export function FilesWorkspace() {
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
-            <FileStack className="h-3.5 w-3.5" />
+            <UL0Icon name="docs" className="h-3.5 w-3.5" />
             <span>Merge PDFs</span>
           </button>
 
@@ -869,7 +837,7 @@ export function FilesWorkspace() {
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
-            <ImageIcon className="h-3.5 w-3.5" />
+            <UL0Icon name="image" className="h-3.5 w-3.5" />
             <span>Image to PDF</span>
           </button>
 
@@ -881,7 +849,7 @@ export function FilesWorkspace() {
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
-            <FileDown className="h-3.5 w-3.5" />
+            <UL0Icon name="download" className="h-3.5 w-3.5" />
             <span>PDF to Images</span>
           </button>
 
@@ -893,7 +861,7 @@ export function FilesWorkspace() {
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
-            <Scaling className="h-3.5 w-3.5" />
+            <UL0Icon name="tools" className="h-3.5 w-3.5" />
             <span>Resize &amp; Convert</span>
           </button>
 
@@ -905,7 +873,7 @@ export function FilesWorkspace() {
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
-            <RotateCw className="h-3.5 w-3.5" />
+            <UL0Icon name="refresh" className="h-3.5 w-3.5" />
             <span>Rotate PDF</span>
           </button>
 
@@ -917,7 +885,7 @@ export function FilesWorkspace() {
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
-            <FileEdit className="h-3.5 w-3.5" />
+            <UL0Icon name="edit" className="h-3.5 w-3.5" />
             <span>Text to PDF</span>
           </button>
 
@@ -929,7 +897,7 @@ export function FilesWorkspace() {
                 : "text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
-            <ScanLine className="h-3.5 w-3.5" />
+            <UL0Icon name="qr" className="h-3.5 w-3.5" />
             <span>Document Scanner</span>
           </button>
         </div>
@@ -940,14 +908,14 @@ export function FilesWorkspace() {
         <div className="rounded-lg border border-border bg-card p-4 space-y-3 shadow-xs">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 font-semibold text-xs text-foreground">
-              <Smartphone className="h-4 w-4" />
+              <UL0Icon name="mobile" className="h-4 w-4" />
               <span>How to install UL0 Files on your phone</span>
             </div>
             <button
               onClick={() => setShowIosGuide(false)}
               className="text-muted-foreground hover:text-foreground cursor-pointer"
             >
-              <X className="h-4 w-4" />
+              <UL0Icon name="close" className="h-4 w-4" />
             </button>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs text-muted-foreground pt-1">
@@ -1013,7 +981,7 @@ export function FilesWorkspace() {
                 onClick={() => mergeInputRef.current?.click()}
                 className="gap-1.5 text-xs font-medium cursor-pointer"
               >
-                <Plus className="h-3.5 w-3.5" />
+                <UL0Icon name="plus" className="h-3.5 w-3.5" />
                 <span>Add PDFs</span>
               </Button>
 
@@ -1025,9 +993,9 @@ export function FilesWorkspace() {
                   className="gap-1.5 text-xs font-medium bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
                 >
                   {isMerging ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <UL0Icon name="loading" className="h-3.5 w-3.5 animate-spin" />
                   ) : (
-                    <Download className="h-3.5 w-3.5" />
+                    <UL0Icon name="download" className="h-3.5 w-3.5" />
                   )}
                   <span>Merge {mergeFiles.length} PDFs</span>
                 </Button>
@@ -1040,7 +1008,7 @@ export function FilesWorkspace() {
               onClick={() => mergeInputRef.current?.click()}
               className="border-2 border-dashed border-border/80 rounded-lg p-10 text-center space-y-3 cursor-pointer hover:border-foreground/30 hover:bg-muted/30 transition-colors"
             >
-              <FileStack className="h-8 w-8 mx-auto text-muted-foreground/60" />
+              <UL0Icon name="docs" className="h-8 w-8 mx-auto text-muted-foreground/60" />
               <div className="space-y-1">
                 <div className="text-sm font-medium text-foreground">Click to select PDF files</div>
                 <div className="text-xs text-muted-foreground">
@@ -1078,7 +1046,7 @@ export function FilesWorkspace() {
                         className="p-1 rounded text-muted-foreground hover:text-foreground disabled:opacity-30 cursor-pointer"
                         title="Move Up"
                       >
-                        <MoveUp className="h-3.5 w-3.5" />
+                        <UL0Icon name="arrowup" className="h-3.5 w-3.5" />
                       </button>
                       <button
                         disabled={idx === mergeFiles.length - 1}
@@ -1086,14 +1054,14 @@ export function FilesWorkspace() {
                         className="p-1 rounded text-muted-foreground hover:text-foreground disabled:opacity-30 cursor-pointer"
                         title="Move Down"
                       >
-                        <MoveDown className="h-3.5 w-3.5" />
+                        <UL0Icon name="arrowdown" className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => removeMergeItem(item.id)}
                         className="p-1 rounded text-muted-foreground hover:text-rose-500 cursor-pointer"
                         title="Remove"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <UL0Icon name="trash" className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
@@ -1132,7 +1100,7 @@ export function FilesWorkspace() {
                 onClick={() => imageInputRef.current?.click()}
                 className="gap-1.5 text-xs font-medium cursor-pointer"
               >
-                <Plus className="h-3.5 w-3.5" />
+                <UL0Icon name="plus" className="h-3.5 w-3.5" />
                 <span>Add Images</span>
               </Button>
 
@@ -1144,9 +1112,9 @@ export function FilesWorkspace() {
                   className="gap-1.5 text-xs font-medium bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
                 >
                   {isConvertingImages ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <UL0Icon name="loading" className="h-3.5 w-3.5 animate-spin" />
                   ) : (
-                    <Download className="h-3.5 w-3.5" />
+                    <UL0Icon name="download" className="h-3.5 w-3.5" />
                   )}
                   <span>Export PDF ({imageItems.length})</span>
                 </Button>
@@ -1159,7 +1127,7 @@ export function FilesWorkspace() {
               onClick={() => imageInputRef.current?.click()}
               className="border-2 border-dashed border-border/80 rounded-lg p-10 text-center space-y-3 cursor-pointer hover:border-foreground/30 hover:bg-muted/30 transition-colors"
             >
-              <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground/60" />
+              <UL0Icon name="image" className="h-8 w-8 mx-auto text-muted-foreground/60" />
               <div className="space-y-1">
                 <div className="text-sm font-medium text-foreground">Click to select photos</div>
                 <div className="text-xs text-muted-foreground">
@@ -1193,7 +1161,7 @@ export function FilesWorkspace() {
                         className="hover:text-foreground disabled:opacity-30 cursor-pointer"
                         title="Move Left"
                       >
-                        <MoveUp className="h-3 w-3 rotate-[-90deg]" />
+                        <UL0Icon name="arrowup" className="h-3 w-3 rotate-[-90deg]" />
                       </button>
                       <button
                         disabled={idx === imageItems.length - 1}
@@ -1201,14 +1169,14 @@ export function FilesWorkspace() {
                         className="hover:text-foreground disabled:opacity-30 cursor-pointer"
                         title="Move Right"
                       >
-                        <MoveDown className="h-3 w-3 rotate-[-90deg]" />
+                        <UL0Icon name="arrowdown" className="h-3 w-3 rotate-[-90deg]" />
                       </button>
                       <button
                         onClick={() => removeImageItem(item.id)}
                         className="hover:text-rose-500 cursor-pointer"
                         title="Delete"
                       >
-                        <Trash2 className="h-3 w-3" />
+                        <UL0Icon name="trash" className="h-3 w-3" />
                       </button>
                     </div>
                   </div>
@@ -1246,7 +1214,7 @@ export function FilesWorkspace() {
                 onClick={() => pdfToImageInputRef.current?.click()}
                 className="gap-1.5 text-xs font-medium cursor-pointer"
               >
-                <Upload className="h-3.5 w-3.5" />
+                <UL0Icon name="upload" className="h-3.5 w-3.5" />
                 <span>Upload PDF</span>
               </Button>
 
@@ -1258,9 +1226,9 @@ export function FilesWorkspace() {
                   className="gap-1.5 text-xs font-medium bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
                 >
                   {isDownloadingAllZip ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <UL0Icon name="loading" className="h-3.5 w-3.5 animate-spin" />
                   ) : (
-                    <Download className="h-3.5 w-3.5" />
+                    <UL0Icon name="download" className="h-3.5 w-3.5" />
                   )}
                   <span>Download All as ZIP</span>
                 </Button>
@@ -1270,7 +1238,7 @@ export function FilesWorkspace() {
 
           {isExtractingImages ? (
             <div className="p-12 text-center space-y-2 text-xs text-muted-foreground">
-              <Loader2 className="h-6 w-6 animate-spin mx-auto text-foreground" />
+              <UL0Icon name="loading" className="h-6 w-6 animate-spin mx-auto text-foreground" />
               <div>Rendering PDF pages to PNG images in browser...</div>
             </div>
           ) : extractedImages.length === 0 ? (
@@ -1278,7 +1246,7 @@ export function FilesWorkspace() {
               onClick={() => pdfToImageInputRef.current?.click()}
               className="border-2 border-dashed border-border/80 rounded-lg p-10 text-center space-y-3 cursor-pointer hover:border-foreground/30 hover:bg-muted/30 transition-colors"
             >
-              <FileDown className="h-8 w-8 mx-auto text-muted-foreground/60" />
+              <UL0Icon name="download" className="h-8 w-8 mx-auto text-muted-foreground/60" />
               <div className="space-y-1">
                 <div className="text-sm font-medium text-foreground">Click to select PDF document</div>
                 <div className="text-xs text-muted-foreground">
@@ -1309,7 +1277,7 @@ export function FilesWorkspace() {
                       download={`page_${item.page}.png`}
                       className="inline-flex items-center gap-1 text-[11px] font-medium text-foreground hover:underline"
                     >
-                      <Download className="h-3 w-3" />
+                      <UL0Icon name="download" className="h-3 w-3" />
                       <span>PNG</span>
                     </a>
                   </div>
@@ -1347,7 +1315,7 @@ export function FilesWorkspace() {
                 onClick={() => resizerInputRef.current?.click()}
                 className="gap-1.5 text-xs font-medium cursor-pointer"
               >
-                <Upload className="h-3.5 w-3.5" />
+                <UL0Icon name="upload" className="h-3.5 w-3.5" />
                 <span>Choose Image</span>
               </Button>
             </div>
@@ -1358,7 +1326,7 @@ export function FilesWorkspace() {
               onClick={() => resizerInputRef.current?.click()}
               className="border-2 border-dashed border-border/80 rounded-lg p-10 text-center space-y-3 cursor-pointer hover:border-foreground/30 hover:bg-muted/30 transition-colors"
             >
-              <Scaling className="h-8 w-8 mx-auto text-muted-foreground/60" />
+              <UL0Icon name="tools" className="h-8 w-8 mx-auto text-muted-foreground/60" />
               <div className="space-y-1">
                 <div className="text-sm font-medium text-foreground">Click to select an image to resize</div>
                 <div className="text-xs text-muted-foreground">
@@ -1480,9 +1448,9 @@ export function FilesWorkspace() {
                   className="w-full bg-foreground text-background hover:bg-foreground/90 text-xs font-medium cursor-pointer"
                 >
                   {isProcessingResize ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin mr-1.5" />
+                    <UL0Icon name="loading" className="h-3.5 w-3.5 animate-spin mr-1.5" />
                   ) : (
-                    <Scaling className="h-3.5 w-3.5 mr-1.5" />
+                    <UL0Icon name="tools" className="h-3.5 w-3.5 mr-1.5" />
                   )}
                   <span>Process Resize &amp; Convert</span>
                 </Button>
@@ -1517,7 +1485,7 @@ export function FilesWorkspace() {
                       }`}
                       className="inline-flex items-center justify-center gap-1.5 w-full py-2 rounded-md bg-foreground text-background text-xs font-medium hover:bg-foreground/90 transition-colors"
                     >
-                      <Download className="h-3.5 w-3.5" />
+                      <UL0Icon name="download" className="h-3.5 w-3.5" />
                       <span>Download Resized Image</span>
                     </a>
                   </div>
@@ -1555,7 +1523,7 @@ export function FilesWorkspace() {
                 onClick={() => rotateInputRef.current?.click()}
                 className="gap-1.5 text-xs font-medium cursor-pointer"
               >
-                <Upload className="h-3.5 w-3.5" />
+                <UL0Icon name="upload" className="h-3.5 w-3.5" />
                 <span>Upload PDF</span>
               </Button>
 
@@ -1567,7 +1535,7 @@ export function FilesWorkspace() {
                     onClick={rotateAllPages}
                     className="gap-1.5 text-xs font-medium cursor-pointer"
                   >
-                    <RotateCw className="h-3.5 w-3.5" />
+                    <UL0Icon name="refresh" className="h-3.5 w-3.5" />
                     <span>Rotate All 90°</span>
                   </Button>
 
@@ -1578,9 +1546,9 @@ export function FilesWorkspace() {
                     className="gap-1.5 text-xs font-medium bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
                   >
                     {isSavingRotatedPdf ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      <UL0Icon name="loading" className="h-3.5 w-3.5 animate-spin" />
                     ) : (
-                      <Download className="h-3.5 w-3.5" />
+                      <UL0Icon name="download" className="h-3.5 w-3.5" />
                     )}
                     <span>Save PDF</span>
                   </Button>
@@ -1591,7 +1559,7 @@ export function FilesWorkspace() {
 
           {isRenderingRotate ? (
             <div className="p-12 text-center space-y-2 text-xs text-muted-foreground">
-              <Loader2 className="h-6 w-6 animate-spin mx-auto text-foreground" />
+              <UL0Icon name="loading" className="h-6 w-6 animate-spin mx-auto text-foreground" />
               <div>Reading PDF pages for orientation check...</div>
             </div>
           ) : rotatePages.length === 0 ? (
@@ -1599,7 +1567,7 @@ export function FilesWorkspace() {
               onClick={() => rotateInputRef.current?.click()}
               className="border-2 border-dashed border-border/80 rounded-lg p-10 text-center space-y-3 cursor-pointer hover:border-foreground/30 hover:bg-muted/30 transition-colors"
             >
-              <RotateCw className="h-8 w-8 mx-auto text-muted-foreground/60" />
+              <UL0Icon name="refresh" className="h-8 w-8 mx-auto text-muted-foreground/60" />
               <div className="space-y-1">
                 <div className="text-sm font-medium text-foreground">Click to select PDF document</div>
                 <div className="text-xs text-muted-foreground">
@@ -1643,7 +1611,7 @@ export function FilesWorkspace() {
                         className="p-1 rounded hover:bg-muted text-muted-foreground hover:text-foreground cursor-pointer"
                         title="Rotate 90° Clockwise"
                       >
-                        <RotateCw className="h-3.5 w-3.5" />
+                        <UL0Icon name="refresh" className="h-3.5 w-3.5" />
                       </button>
                       <button
                         onClick={() => toggleDeletePage(idx)}
@@ -1654,7 +1622,7 @@ export function FilesWorkspace() {
                         }`}
                         title={item.deleted ? "Restore Page" : "Delete Page"}
                       >
-                        {item.deleted ? <RefreshCw className="h-3.5 w-3.5" /> : <Trash2 className="h-3.5 w-3.5" />}
+                        {item.deleted ? <UL0Icon name="refresh" className="h-3.5 w-3.5" /> : <UL0Icon name="trash" className="h-3.5 w-3.5" />}
                       </button>
                     </div>
                   </div>
@@ -1683,7 +1651,7 @@ export function FilesWorkspace() {
               onClick={handleExportTextToPdf}
               className="gap-1.5 text-xs font-medium bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
             >
-              <Download className="h-3.5 w-3.5" />
+              <UL0Icon name="download" className="h-3.5 w-3.5" />
               <span>Export PDF Document</span>
             </Button>
           </div>
@@ -1768,7 +1736,7 @@ export function FilesWorkspace() {
                   onClick={startCamera}
                   className="gap-1.5 text-xs font-medium cursor-pointer"
                 >
-                  <Camera className="h-3.5 w-3.5" />
+                  <UL0Icon name="image" className="h-3.5 w-3.5" />
                   <span>Start Camera</span>
                 </Button>
               ) : (
@@ -1778,7 +1746,7 @@ export function FilesWorkspace() {
                   onClick={stopCamera}
                   className="gap-1.5 text-xs font-medium text-rose-500 cursor-pointer"
                 >
-                  <X className="h-3.5 w-3.5" />
+                  <UL0Icon name="close" className="h-3.5 w-3.5" />
                   <span>Stop Camera</span>
                 </Button>
               )}
@@ -1789,7 +1757,7 @@ export function FilesWorkspace() {
                   onClick={exportScannedPdf}
                   className="gap-1.5 text-xs font-medium bg-foreground text-background hover:bg-foreground/90 cursor-pointer"
                 >
-                  <Download className="h-3.5 w-3.5" />
+                  <UL0Icon name="download" className="h-3.5 w-3.5" />
                   <span>Export PDF ({scannerPages.length})</span>
                 </Button>
               )}
@@ -1809,7 +1777,7 @@ export function FilesWorkspace() {
                   onClick={capturePhoto}
                   className="gap-2 bg-foreground text-background hover:bg-foreground/90 cursor-pointer font-medium"
                 >
-                  <Camera className="h-4 w-4" />
+                  <UL0Icon name="image" className="h-4 w-4" />
                   <span>Capture Page ({scannerPages.length + 1})</span>
                 </Button>
               </div>
@@ -1837,7 +1805,7 @@ export function FilesWorkspace() {
                         }
                         className="hover:text-rose-500 cursor-pointer"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <UL0Icon name="trash" className="h-3.5 w-3.5" />
                       </button>
                     </div>
                   </div>
@@ -1850,7 +1818,7 @@ export function FilesWorkspace() {
 
       {/* Notion Callout Box: Privacy & Offline Guarantee */}
       <div className="rounded-lg border border-border bg-muted/30 p-4 flex items-start gap-3 text-xs text-muted-foreground">
-        <ShieldCheck className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+        <UL0Icon name="shield" className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
         <div className="space-y-1 leading-relaxed">
           <div className="font-semibold text-foreground">Why UL0 Files is 100% Private</div>
           <div>

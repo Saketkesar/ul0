@@ -2,16 +2,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import {
-  UtensilsCrossed,
-  CheckCircle2,
-  ArrowRight,
-  QrCode,
-  Wifi,
-  HelpCircle,
-  Clock,
-  Smartphone,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Restaurant Menu QR Codes & Hospitality Link Tracking | UL0",
@@ -81,7 +72,7 @@ export default function RestaurantsUseCasePage() {
           {/* Hero */}
           <div className="mb-14">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-xs font-semibold text-rose-500 mb-4">
-              <UtensilsCrossed className="h-3.5 w-3.5" />
+              <UL0Icon name="splitbill" className="h-3.5 w-3.5" />
               Hospitality &amp; Dining
             </div>
             <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-foreground mb-5 leading-tight">
@@ -93,13 +84,13 @@ export default function RestaurantsUseCasePage() {
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
                 href="/qr"
-                className="rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Create Restaurant Menu QR
               </Link>
               <Link
                 href="/wifi"
-                className="rounded-xl border border-border bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-card px-6 py-3 text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Make Guest WiFi QR Code
               </Link>
@@ -108,9 +99,9 @@ export default function RestaurantsUseCasePage() {
 
           {/* Feature Grid */}
           <div className="grid gap-6 md:grid-cols-3 mb-16">
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-rose-500/10 text-rose-500 p-3 w-fit mb-4">
-                <QrCode className="h-5 w-5" />
+                <UL0Icon name="qr" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Permanent Table Codes</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -118,9 +109,9 @@ export default function RestaurantsUseCasePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-amber-500/10 text-amber-500 p-3 w-fit mb-4">
-                <Clock className="h-5 w-5" />
+                <UL0Icon name="clock" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">Rush Hour Scan Analytics</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -128,9 +119,9 @@ export default function RestaurantsUseCasePage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card p-6">
+            <div className="rounded-3xl border border-border shadow-xs bg-card p-6">
               <div className="rounded-xl bg-emerald-500/10 text-emerald-500 p-3 w-fit mb-4">
-                <Wifi className="h-5 w-5" />
+                <UL0Icon name="wifi" className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-foreground mb-2">One-Tap Guest WiFi</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">
@@ -146,9 +137,9 @@ export default function RestaurantsUseCasePage() {
             </h2>
             <div className="space-y-4 max-w-3xl mx-auto">
               {faqSchema.mainEntity.map((item, idx) => (
-                <div key={idx} className="rounded-xl border border-border bg-card p-5">
+                <div key={idx} className="rounded-2xl border border-border shadow-xs bg-card p-5">
                   <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                    <HelpCircle className="h-4 w-4 text-primary shrink-0" />
+                    <UL0Icon name="bulb" className="h-4 w-4 text-primary shrink-0" />
                     <span>{item.name}</span>
                   </h3>
                   <p className="text-xs text-muted-foreground leading-relaxed pl-6">
@@ -170,13 +161,13 @@ export default function RestaurantsUseCasePage() {
             <div className="flex flex-wrap items-center justify-center gap-3">
               <Link
                 href="/qr"
-                className="rounded-xl bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
+                className="rounded-full bg-primary px-6 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
               >
                 Generate Menu QR Code
               </Link>
               <Link
                 href="/wifi"
-                className="rounded-xl border border-border bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
+                className="rounded-2xl border border-border shadow-xs bg-background px-6 py-2.5 text-xs sm:text-sm font-semibold text-foreground hover:bg-accent transition-colors"
               >
                 Create Guest WiFi QR
               </Link>

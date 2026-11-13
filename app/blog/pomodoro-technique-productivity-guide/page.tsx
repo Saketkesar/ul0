@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Timer, Brain, CheckCircle2 } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "The Science of the Pomodoro Technique: Boost Deep Work & Focus in 2026 | ul0",
@@ -67,7 +67,7 @@ export default function PomodoroProductivityGuidePage() {
             href="/blog" 
             className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground mb-6"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <UL0Icon name="arrowleft" className="h-4 w-4" />
             Back to Blog
           </Link>
 

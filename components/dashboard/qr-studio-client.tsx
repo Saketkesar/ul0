@@ -1,27 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback, useMemo } from "react"
-import {
-  QrCode,
-  Download,
-  Copy,
-  Check,
-  ExternalLink,
-  Edit3,
-  Trash2,
-  RefreshCw,
-  Plus,
-  Search,
-  X,
-  Monitor,
-  Smartphone,
-  Tablet,
-  BarChart3,
-  Wand2,
-  Image as ImageIcon,
-  Sparkles,
-  Link2,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import QRCode from "qrcode"
 import {
   AreaChart,
@@ -1395,12 +1375,12 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                       >
                         {isCleaningLogo ? (
                           <>
-                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                            <UL0Icon name="loading" size={14} className="animate-spin" />
                             <span>Uploading to CDN &amp; Cleaning...</span>
                           </>
                         ) : (
                           <>
-                            <ImageIcon className="w-3.5 h-3.5" />
+                            <UL0Icon name="image" size={14} />
                             <span>{customLogoUrl ? "Replace Brand Logo" : "Upload Brand Logo"}</span>
                           </>
                         )}
@@ -1414,7 +1394,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                             style={{ width: "28px", height: "28px", objectFit: "contain", borderRadius: "6px", background: "var(--card)", border: "1px solid var(--border)", padding: "2px" }}
                           />
                           <span style={{ fontSize: "11px", color: "#16a34a", fontWeight: 500 }}>
-                            ✓ Cleaned &amp; hosted on CDN
+                            Cleaned &amp; hosted on CDN
                           </span>
                           <button
                             type="button"
@@ -1454,7 +1434,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 disabled={isSubmitting}
                 style={{ ...s.btnPrimary, width: "100%", justifyContent: "center", opacity: isSubmitting ? 0.6 : 1 }}
               >
-                {isSubmitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
+                {isSubmitting ? <UL0Icon name="loading" size={16} className="animate-spin" /> : <UL0Icon name="plus" size={16} />}
                 <span>Generate Dynamic QR</span>
               </button>
             </form>
@@ -1539,7 +1519,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     onClick={() => copyToClipboard(previewDynamicUrl, "preview")}
                     style={{ background: "none", border: "none", cursor: "pointer", padding: "4px", color: "var(--muted-foreground)", flexShrink: 0 }}
                   >
-                    {copiedId === "preview" ? <Check className="w-3.5 h-3.5" style={{ color: "#16a34a" }} /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedId === "preview" ? <UL0Icon name="check" size={14} /> : <UL0Icon name="copy" size={14} />}
                   </button>
                 </div>
 
@@ -1550,7 +1530,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     onClick={() => downloadPng(studioCanvasRef.current, previewSlug)}
                     style={s.btnSecondary}
                   >
-                    <Download className="w-3.5 h-3.5" />
+                    <UL0Icon name="download" size={14} />
                     <span>PNG</span>
                   </button>
                   <button
@@ -1558,7 +1538,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                     onClick={() => downloadSvg(previewDynamicUrl, previewSlug)}
                     style={s.btnSecondary}
                   >
-                    <Download className="w-3.5 h-3.5" />
+                    <UL0Icon name="download" size={14} />
                     <span>SVG</span>
                   </button>
                 </div>
@@ -1681,9 +1661,10 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
           {/* Search bar */}
           <div className="flex flex-col sm:flex-row sm:items-center gap-2.5">
             <div className="relative flex-1 sm:max-w-[360px]">
-              <Search
-                className="w-4 h-4"
-                style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--muted-foreground)" }}
+              <UL0Icon
+                name="search"
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60"
               />
               <input
                 type="text"
@@ -1694,20 +1675,20 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
               />
             </div>
             <button type="button" onClick={() => setView("create")} style={s.btnPrimary} className="self-start sm:self-auto">
-              <Plus className="w-3.5 h-3.5" />
+              <UL0Icon name="plus" size={14} />
               <span>New QR</span>
             </button>
           </div>
 
           {filteredLinks.length === 0 ? (
             <div style={{ ...s.card, textAlign: "center", padding: "60px 20px" }}>
-              <QrCode className="w-10 h-10 mx-auto" style={{ color: "var(--muted-foreground)", marginBottom: "12px", opacity: 0.5 }} />
+              <UL0Icon name="qr" size={40} className="mx-auto mb-3 opacity-60" />
               <p style={{ fontSize: "14px", fontWeight: 600, color: "var(--foreground)", margin: 0 }}>No QR codes found</p>
               <p style={{ fontSize: "13px", color: "var(--muted-foreground)", margin: "4px 0 16px" }}>
                 {searchQuery ? "No matches for your search." : "Create your first dynamic QR code."}
               </p>
               <button type="button" onClick={() => { setSearchQuery(""); setView("create") }} style={s.btnPrimary}>
-                <Plus className="w-3.5 h-3.5" />
+                <UL0Icon name="plus" size={14} />
                 <span>Create QR</span>
               </button>
             </div>
@@ -1799,7 +1780,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                       style={{ ...s.btnSecondary, padding: "6px 8px", fontSize: "11px" }}
                       title="Copy link"
                     >
-                      {copiedId === item.id ? <Check className="w-3 h-3" style={{ color: "#16a34a" }} /> : <Copy className="w-3 h-3" />}
+                      {copiedId === item.id ? <UL0Icon name="check" size={12} /> : <UL0Icon name="copy" size={12} />}
                     </button>
                     <button
                       type="button"
@@ -1820,7 +1801,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                       style={{ ...s.btnSecondary, padding: "6px 8px", fontSize: "11px" }}
                       title="Edit Destination URL"
                     >
-                      <Edit3 className="w-3 h-3" />
+                      <UL0Icon name="edit" size={12} />
                     </button>
                     <button
                       type="button"
@@ -1828,7 +1809,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                       style={{ ...s.btnSecondary, padding: "6px 8px", fontSize: "11px" }}
                       title="View & Download QR"
                     >
-                      <QrCode className="w-3 h-3" />
+                      <UL0Icon name="qr" size={12} />
                     </button>
                     <button
                       type="button"
@@ -1836,7 +1817,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                       style={{ ...s.btnSecondary, padding: "6px 8px", fontSize: "11px", color: "#dc2626" }}
                       title="Delete"
                     >
-                      <Trash2 className="w-3 h-3" />
+                      <UL0Icon name="trash" size={12} />
                     </button>
                   </div>
                 </div>
@@ -2002,9 +1983,9 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
 
               <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                 {[
-                  { name: "Mobile Phone", key: "mobile", icon: <Smartphone className="w-4 h-4 text-foreground" /> },
-                  { name: "Desktop", key: "desktop", icon: <Monitor className="w-4 h-4 text-foreground" /> },
-                  { name: "Tablet", key: "tablet", icon: <Tablet className="w-4 h-4 text-foreground" /> },
+                  { name: "Mobile Phone", key: "mobile", icon: <UL0Icon name="mobile" size={16} /> },
+                  { name: "Desktop", key: "desktop", icon: <UL0Icon name="desktop" size={16} /> },
+                  { name: "Tablet", key: "tablet", icon: <UL0Icon name="tablet" size={16} /> },
                 ].map((d) => {
                   const count = analytics.deviceCounts[d.key] || 0
                   const total = Object.values(analytics.deviceCounts).reduce((a, c) => a + c, 0)
@@ -2064,7 +2045,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 onClick={() => setEditingItem(null)}
                 style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted-foreground)", padding: "4px" }}
               >
-                <X className="w-4 h-4" />
+                <UL0Icon name="close" size={16} />
               </button>
             </div>
 
@@ -2195,7 +2176,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                   disabled={isUpdating}
                   style={{ ...s.btnPrimary, opacity: isUpdating ? 0.6 : 1 }}
                 >
-                  {isUpdating ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                  {isUpdating ? <UL0Icon name="loading" size={14} className="animate-spin" /> : <UL0Icon name="check" size={14} />}
                   <span>Save Destination</span>
                 </button>
               </div>
@@ -2229,7 +2210,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 onClick={() => setPreviewItem(null)}
                 style={{ background: "none", border: "none", cursor: "pointer", color: "var(--muted-foreground)", padding: "4px" }}
               >
-                <X className="w-4 h-4" />
+                <UL0Icon name="close" size={16} />
               </button>
             </div>
 
@@ -2245,7 +2226,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 onClick={() => downloadPng(previewModalCanvasRef.current, previewItem.slug)}
                 style={s.btnPrimary}
               >
-                <Download className="w-3.5 h-3.5" />
+                <UL0Icon name="download" size={14} />
                 <span>PNG</span>
               </button>
               <button
@@ -2253,7 +2234,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                 onClick={() => downloadSvg(previewItem.dynamicUrl, previewItem.slug)}
                 style={s.btnSecondary}
               >
-                <Download className="w-3.5 h-3.5" />
+                <UL0Icon name="download" size={14} />
                 <span>SVG</span>
               </button>
             </div>

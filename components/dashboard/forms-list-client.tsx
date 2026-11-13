@@ -4,19 +4,7 @@ import React, { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import type { FormDoc } from "@/lib/forms/schema"
-import {
-  Plus,
-  FileSpreadsheet,
-  ExternalLink,
-  Copy,
-  Check,
-  MoreVertical,
-  Play,
-  Pause,
-  Trash2,
-  TableProperties,
-  Edit3,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface FormsListClientProps {
   initialForms: FormDoc[]
@@ -88,9 +76,9 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
 
         <Link
           href="/forms/new"
-          className="inline-flex items-center justify-center gap-1.5 px-4 h-10 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity self-start sm:self-auto cursor-pointer"
+          className="inline-flex items-center justify-center gap-1.5 px-4 h-10 rounded-full bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity self-start sm:self-auto cursor-pointer"
         >
-          <Plus className="w-4 h-4" />
+          <UL0Icon name="plus" size={16} />
           <span>New form</span>
         </Link>
       </div>
@@ -138,9 +126,9 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
           </p>
           <Link
             href="/forms/new"
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <UL0Icon name="plus" size={14} />
             <span>Create your first form</span>
           </Link>
         </div>
@@ -178,9 +166,9 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
                             title="Copy link"
                           >
                             {copiedSlug === form.slug ? (
-                              <Check className="w-3 h-3 text-emerald-500" />
+                              <UL0Icon name="check" size={12} />
                             ) : (
-                              <Copy className="w-3 h-3" />
+                              <UL0Icon name="copy" size={12} />
                             )}
                           </button>
                           {form.status === "live" && (
@@ -191,7 +179,7 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
                               className="hover:text-[var(--foreground)] transition-colors p-0.5"
                               title="Open public form"
                             >
-                              <ExternalLink className="w-3 h-3" />
+                              <UL0Icon name="external" size={12} />
                             </a>
                           )}
                         </div>
@@ -233,20 +221,20 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
                           {/* Entries Button */}
                           <Link
                             href={`/forms/${form.id}/entries`}
-                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-[var(--primary)] text-xs font-medium transition-colors"
+                            className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-[var(--primary)] text-xs font-medium transition-colors"
                             title="View Sheet Entries"
                           >
-                            <TableProperties className="w-3.5 h-3.5" />
+                            <UL0Icon name="docs" size={14} />
                             <span className="hidden sm:inline">Entries</span>
                           </Link>
 
                           {/* Edit / Builder Button */}
                           <Link
                             href={`/forms/${form.id}`}
-                            className="p-1.5 rounded-md border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-[var(--primary)] text-xs transition-colors"
+                            className="p-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-[var(--primary)] text-xs transition-colors"
                             title="Edit form & settings"
                           >
-                            <Edit3 className="w-3.5 h-3.5" />
+                            <UL0Icon name="edit" size={14} />
                           </Link>
 
                           {/* Pause / Resume Toggle */}
@@ -254,13 +242,13 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
                             type="button"
                             disabled={busyId === form.id}
                             onClick={() => toggleStatus(form)}
-                            className="p-1.5 rounded-md border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-[var(--primary)] text-xs transition-colors cursor-pointer disabled:opacity-50"
+                            className="p-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-[var(--primary)] text-xs transition-colors cursor-pointer disabled:opacity-50"
                             title={form.status === "live" ? "Pause form" : "Make form live"}
                           >
                             {form.status === "live" ? (
-                              <Pause className="w-3.5 h-3.5 text-amber-500" />
+                              <UL0Icon name="clock" size={14} />
                             ) : (
-                              <Play className="w-3.5 h-3.5 text-emerald-500" />
+                              <UL0Icon name="play" size={14} />
                             )}
                           </button>
 
@@ -269,10 +257,10 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
                             type="button"
                             disabled={busyId === form.id}
                             onClick={() => handleDelete(form)}
-                            className="p-1.5 rounded-md border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-rose-500 text-xs transition-colors cursor-pointer disabled:opacity-50"
+                            className="p-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-rose-500 text-xs transition-colors cursor-pointer disabled:opacity-50"
                             title="Delete form"
                           >
-                            <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                            <UL0Icon name="trash" size={14} />
                           </button>
                         </div>
                       </td>

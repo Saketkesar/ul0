@@ -2,18 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import {
-  Globe,
-  Plus,
-  CheckCircle2,
-  AlertCircle,
-  Loader2,
-  Trash2,
-  RefreshCw,
-  Shield,
-  Copy,
-  ArrowLeft,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface DomainDoc {
   $id: string
@@ -199,12 +188,12 @@ export function DomainsClient({
         href="/dashboard"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
       >
-        <ArrowLeft className="h-4 w-4" />
+        <UL0Icon name="arrowleft" className="h-4 w-4" />
         Back to Dashboard
       </Link>
 
       {/* Connect Domain Form */}
-      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+      <div className="rounded-3xl border border-border bg-card p-6 shadow-sm">
         <h2 className="text-lg font-semibold mb-4">Connect a Domain</h2>
         <p className="text-sm text-muted-foreground mb-4">
           Point your domain&apos;s CNAME record to{" "}
@@ -221,24 +210,24 @@ export function DomainsClient({
               value={newDomain}
               onChange={(e) => setNewDomain(e.target.value)}
               placeholder="go.yoursite.com"
-              className="flex-1 rounded-lg border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+              className="flex-1 rounded-full border border-border bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
               disabled={loading}
             />
             <button
               type="submit"
               disabled={loading || !newDomain.trim()}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
             >
               {loading ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
+                <UL0Icon name="loading" className="h-4 w-4 animate-spin" />
               ) : (
-                <Plus className="h-4 w-4" />
+                <UL0Icon name="plus" className="h-4 w-4" />
               )}
               Connect
             </button>
           </form>
         ) : (
-          <div className="rounded-lg border border-amber-500/20 bg-amber-500/5 p-4 text-sm">
+          <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4 text-sm">
             <p className="font-medium text-amber-600">Domain limit reached</p>
             <p className="mt-1 text-muted-foreground">
               Your {currentPlan} plan allows {maxDomains} domain(s).{" "}
@@ -268,7 +257,7 @@ export function DomainsClient({
         {domains.length === 0 ? (
           <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
             <div className="rounded-full bg-muted p-4 mb-4">
-              <Globe className="h-8 w-8 text-muted-foreground" />
+              <UL0Icon name="domain" className="h-8 w-8 text-muted-foreground" />
             </div>
             <h3 className="text-lg font-medium">No domains connected</h3>
             <p className="mt-1 text-sm text-muted-foreground max-w-sm">
@@ -283,26 +272,26 @@ export function DomainsClient({
                 <div className="flex items-center justify-between gap-4">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <Globe className="h-4 w-4 text-muted-foreground" />
+                      <UL0Icon name="domain" className="h-4 w-4 text-muted-foreground" />
                       <span className="font-medium">{domain.domain}</span>
 
                       {/* Status badge */}
                       {domain.status === "verified" ? (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-600">
-                          <CheckCircle2 className="h-3 w-3" />
+                        <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 px-2.5 py-0.5 text-xs font-medium text-green-600">
+                          <UL0Icon name="check" className="h-3 w-3" />
                           Verified
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2 py-0.5 text-xs font-medium text-amber-600">
-                          <AlertCircle className="h-3 w-3" />
+                        <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-600">
+                          <UL0Icon name="warning" className="h-3 w-3" />
                           Unverified
                         </span>
                       )}
 
                       {/* SSL badge */}
                       {domain.ssl_status === "active" && (
-                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-xs font-medium text-blue-600">
-                          <Shield className="h-3 w-3" />
+                        <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2.5 py-0.5 text-xs font-medium text-blue-600">
+                          <UL0Icon name="shield" className="h-3 w-3" />
                           SSL
                         </span>
                       )}
@@ -333,17 +322,17 @@ export function DomainsClient({
                             onChange={(e) =>
                               setBrandLogoEdit((prev) => ({ ...prev, [domain.$id]: e.target.value }))
                             }
-                            className="flex-1 rounded-md border border-border bg-background px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary/50"
+                            className="flex-1 rounded-full border border-border bg-background px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary/50"
                           />
                           <button
                             onClick={() => handleSaveBrandLogo(domain.$id)}
                             disabled={savingLogo === domain.$id}
-                            className="inline-flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors whitespace-nowrap"
+                            className="inline-flex items-center gap-1 rounded-full bg-primary px-3.5 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors whitespace-nowrap"
                           >
                             {savingLogo === domain.$id ? (
-                              <Loader2 className="h-3 w-3 animate-spin" />
+                              <UL0Icon name="loading" className="h-3 w-3 animate-spin" />
                             ) : (
-                              <CheckCircle2 className="h-3 w-3" />
+                              <UL0Icon name="check" className="h-3 w-3" />
                             )}
                             Save
                           </button>
@@ -357,12 +346,12 @@ export function DomainsClient({
                       <button
                         onClick={() => handleVerify(domain.$id)}
                         disabled={verifying === domain.$id}
-                        className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-sm font-medium hover:bg-accent transition-colors disabled:opacity-50"
+                        className="inline-flex items-center gap-1.5 rounded-full border border-border px-3.5 py-1.5 text-sm font-semibold hover:bg-accent transition-colors disabled:opacity-50"
                       >
                         {verifying === domain.$id ? (
-                          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                          <UL0Icon name="loading" className="h-3.5 w-3.5 animate-spin" />
                         ) : (
-                          <RefreshCw className="h-3.5 w-3.5" />
+                          <UL0Icon name="loading" className="h-3.5 w-3.5" />
                         )}
                         Verify
                       </button>
@@ -370,12 +359,12 @@ export function DomainsClient({
                     <button
                       onClick={() => handleRemove(domain.$id)}
                       disabled={removing === domain.$id}
-                      className="inline-flex items-center gap-1.5 rounded-md border border-destructive/30 px-3 py-1.5 text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-destructive/30 px-3.5 py-1.5 text-sm font-semibold text-destructive hover:bg-destructive/10 transition-colors disabled:opacity-50"
                     >
                       {removing === domain.$id ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        <UL0Icon name="loading" className="h-3.5 w-3.5 animate-spin" />
                       ) : (
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <UL0Icon name="trash" className="h-3.5 w-3.5" />
                       )}
                       Remove
                     </button>
@@ -414,9 +403,9 @@ export function DomainsClient({
                             className="text-muted-foreground hover:text-foreground"
                           >
                             {copied === `cname-${domain.$id}` ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                              <UL0Icon name="check" className="h-3.5 w-3.5 text-green-500" />
                             ) : (
-                              <Copy className="h-3.5 w-3.5" />
+                              <UL0Icon name="copy" className="h-3.5 w-3.5" />
                             )}
                           </button>
                         </div>
@@ -426,7 +415,7 @@ export function DomainsClient({
                       {verificationDetails[domain.$id]?.map((v, i) => (
                         <div
                           key={i}
-                          className="flex items-center justify-between rounded bg-background px-3 py-2 text-xs font-mono"
+                          className="flex items-center justify-between rounded-xl bg-background px-3 py-2 text-xs font-mono"
                         >
                           <div>
                             <span className="text-muted-foreground">
@@ -454,9 +443,9 @@ export function DomainsClient({
                               className="text-muted-foreground hover:text-foreground"
                             >
                               {copied === `ver-${domain.$id}-${i}` ? (
-                                <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                                <UL0Icon name="check" className="h-3.5 w-3.5 text-green-500" />
                               ) : (
-                                <Copy className="h-3.5 w-3.5" />
+                                <UL0Icon name="copy" className="h-3.5 w-3.5" />
                               )}
                             </button>
                           </div>

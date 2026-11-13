@@ -3,7 +3,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Clock, ArrowLeft, Link2, CheckCircle, AlertCircle } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "How to Shorten a URL for Free in 2026 - Complete Guide | ul0",
@@ -123,7 +123,7 @@ export default function HowToShortenUrlPage() {
             href="/blog" 
             className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground mb-6"
           >
-            <ArrowLeft className="h-4 w-4" />
+            <UL0Icon name="arrowleft" className="h-4 w-4" />
             Back to Blog
           </Link>
 
@@ -135,11 +135,11 @@ export default function HowToShortenUrlPage() {
             </h1>
             <div className="flex items-center gap-4 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
+                <UL0Icon name="calendar" className="h-4 w-4" />
                 March 1, 2026
               </span>
               <span className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
+                <UL0Icon name="clock" className="h-4 w-4" />
                 5 min read
               </span>
             </div>
@@ -213,23 +213,23 @@ export default function HowToShortenUrlPage() {
             <h2 className="text-2xl font-bold mt-8 mb-4">Benefits of Using Short URLs</h2>
             <ul className="space-y-2">
               <li className="flex items-start gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <UL0Icon name="check" className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
                 <span><strong>Cleaner appearance</strong> - Short links look more professional and trustworthy</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <UL0Icon name="check" className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
                 <span><strong>Easier to share</strong> - Perfect for social media with character limits</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <UL0Icon name="check" className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
                 <span><strong>Memorable</strong> - Short URLs are easier to remember and type</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <UL0Icon name="check" className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
                 <span><strong>Print-friendly</strong> - Ideal for business cards, flyers, and posters</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <UL0Icon name="check" className="h-5 w-5 text-green-500 flex-shrink-0 mt-0.5" />
                 <span><strong>QR code friendly</strong> - Shorter URLs create simpler QR codes</span>
               </li>
             </ul>
@@ -275,7 +275,7 @@ export default function HowToShortenUrlPage() {
                 href="/"
                 className="inline-flex items-center gap-2 bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-md font-medium"
               >
-                <Link2 className="h-4 w-4" />
+                <UL0Icon name="link" className="h-4 w-4" />
                 Shorten a URL Now
               </Link>
             </div>

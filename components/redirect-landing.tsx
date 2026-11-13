@@ -5,21 +5,7 @@ import type React from "react"
 import { useEffect, useState, useCallback } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import {
-  ExternalLink,
-  Smartphone,
-  Globe,
-  Shield,
-  SkipForward,
-  Youtube,
-  Instagram,
-  Facebook,
-  Twitter,
-  X as XIcon,
-  Sparkles,
-  ArrowRight,
-  Clock,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { AdBanner } from "@/components/ad-banner"
 
 interface Props {
@@ -31,11 +17,11 @@ interface Props {
   brandLogoUrl?: string | null
 }
 
-const APP_CONFIGS: Record<string, { name: string; icon: React.ElementType; getDeepLink: (url: URL) => string | null }> =
+const APP_CONFIGS: Record<string, { name: string; icon: string; getDeepLink: (url: URL) => string | null }> =
   {
     youtube: {
       name: "YouTube",
-      icon: Youtube,
+      icon: "video",
       getDeepLink: (url) => {
         if (url.hostname.includes("youtu.be")) {
           return `youtube://watch?v=${url.pathname.slice(1)}`
@@ -50,47 +36,47 @@ const APP_CONFIGS: Record<string, { name: string; icon: React.ElementType; getDe
     },
     instagram: {
       name: "Instagram",
-      icon: Instagram,
+      icon: "instagram",
       getDeepLink: (url) => `instagram://` + url.pathname,
     },
     facebook: {
       name: "Facebook",
-      icon: Facebook,
+      icon: "facebook",
       getDeepLink: (url) => `fb://facewebmodal/f?href=${encodeURIComponent(url.href)}`,
     },
     twitter: {
       name: "X (Twitter)",
-      icon: Twitter,
+      icon: "x",
       getDeepLink: (url) => `twitter://` + url.pathname,
     },
     pinterest: {
       name: "Pinterest",
-      icon: Globe,
+      icon: "image",
       getDeepLink: (url) => `pinterest://` + url.pathname,
     },
     tiktok: {
       name: "TikTok",
-      icon: Globe,
+      icon: "video",
       getDeepLink: (url) => `snssdk1128://` + url.pathname,
     },
     snapchat: {
       name: "Snapchat",
-      icon: Globe,
+      icon: "chat",
       getDeepLink: (url) => `snapchat://` + url.pathname,
     },
     spotify: {
       name: "Spotify",
-      icon: Globe,
+      icon: "music",
       getDeepLink: (url) => url.href.replace("https://open.spotify.com", "spotify://"),
     },
     linkedin: {
       name: "LinkedIn",
-      icon: Globe,
+      icon: "linkedin",
       getDeepLink: (url) => `linkedin://` + url.pathname,
     },
     whatsapp: {
       name: "WhatsApp",
-      icon: Globe,
+      icon: "whatsapp",
       getDeepLink: (url) =>
         url.href
           .replace("https://wa.me", "whatsapp://send?phone=")
@@ -98,22 +84,22 @@ const APP_CONFIGS: Record<string, { name: string; icon: React.ElementType; getDe
     },
     telegram: {
       name: "Telegram",
-      icon: Globe,
+      icon: "telegram",
       getDeepLink: (url) => `tg://resolve?domain=${url.pathname.slice(1)}`,
     },
     reddit: {
       name: "Reddit",
-      icon: Globe,
+      icon: "chat",
       getDeepLink: (url) => `reddit://` + url.pathname,
     },
     amazon: {
       name: "Amazon",
-      icon: Globe,
+      icon: "cart",
       getDeepLink: (url) => `com.amazon.mobile.shopping://` + url.pathname,
     },
     flipkart: {
       name: "Flipkart",
-      icon: Globe,
+      icon: "cart",
       getDeepLink: (url) => `flipkart://` + url.pathname,
     },
   }
@@ -213,7 +199,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
   }
 
   const appConfig = detectedApp ? APP_CONFIGS[detectedApp] : null
-  const AppIcon = appConfig?.icon || Globe
+  const appIconName = appConfig?.icon || "domain"
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -232,7 +218,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
       <header className="border-b border-border bg-card px-4 py-3">
         <div className="container mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Globe className="h-4 w-4" />
+            <UL0Icon name="domain" className="h-4 w-4" />
             <span className="hidden sm:inline">Redirecting to: </span>
             <span className="max-w-[150px] truncate font-medium text-foreground sm:max-w-xs">
               {domain || "external site"}
@@ -243,13 +229,13 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-bold tabular-nums text-primary">{countdown}s</span>
                 <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground font-medium bg-muted/60 px-2.5 py-1 rounded-md border border-border">
-                  <Clock className="h-3.5 w-3.5 animate-spin text-primary" />
+                  <UL0Icon name="clock" className="h-3.5 w-3.5 animate-spin text-primary" />
                   <span>Please wait {countdown}s</span>
                 </div>
               </div>
             ) : (
-              <Button size="sm" onClick={redirect} className="gap-1.5 font-semibold text-xs shadow-xs">
-                <SkipForward className="h-3.5 w-3.5" />
+              <Button size="sm" onClick={redirect} className="gap-1.5 font-semibold text-xs shadow-xs rounded-full">
+                <UL0Icon name="arrowright" className="h-3.5 w-3.5" />
                 <span>Continue</span>
               </Button>
             )}
@@ -280,18 +266,18 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
 
           {/* App Detection & Buttons */}
           {isMobile && detectedApp && (
-            <div className="flex flex-col items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4 w-full">
+            <div className="flex flex-col items-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-4 w-full">
               <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-                <AppIcon className="h-5 w-5 text-primary" />
+                <UL0Icon name={appIconName} className="h-5 w-5 text-primary" />
                 <span>Open in {appConfig?.name}</span>
               </div>
               <div className="flex flex-wrap justify-center gap-2">
-                <Button onClick={handleOpenInApp} size="sm" className="gap-2">
-                  <Smartphone className="h-4 w-4" />
+                <Button onClick={handleOpenInApp} size="sm" className="gap-2 rounded-full">
+                  <UL0Icon name="mobile" className="h-4 w-4" />
                   Open App
                 </Button>
-                <Button variant="outline" size="sm" onClick={redirect} className="gap-2 bg-transparent">
-                  <Globe className="h-4 w-4" />
+                <Button variant="outline" size="sm" onClick={redirect} className="gap-2 bg-transparent rounded-full">
+                  <UL0Icon name="domain" className="h-4 w-4" />
                   Browser
                 </Button>
               </div>
@@ -300,24 +286,24 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
 
           {/* Trust Badge */}
           <div className="flex items-center gap-2 rounded-full bg-emerald-500/10 px-3.5 py-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-            <Shield className="h-3.5 w-3.5" />
+            <UL0Icon name="shield" className="h-3.5 w-3.5" />
             <span>Link verified safe</span>
           </div>
 
           {/* Destination URL */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/20 px-4 py-3 rounded-xl border border-border/50 max-w-md w-full justify-center">
-            <ExternalLink className="h-4 w-4 flex-shrink-0" />
+          <div className="flex items-center gap-2 text-sm text-muted-foreground bg-muted/20 px-4 py-3 rounded-2xl border border-border/50 max-w-md w-full justify-center">
+            <UL0Icon name="external" className="h-4 w-4 flex-shrink-0" />
             <span className="truncate">{longUrl}</span>
           </div>
 
           {/* Viral Conversion Card for Link Visitors */}
-          <div className="w-full max-w-md rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/10 via-background to-background p-4 text-left shadow-xs transition-all">
+          <div className="w-full max-w-md rounded-3xl border border-primary/25 bg-gradient-to-b from-primary/10 via-background to-background p-5 text-left shadow-xs transition-all">
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
-                <Sparkles className="h-3.5 w-3.5" />
+                <UL0Icon name="sparkles" className="h-3.5 w-3.5" />
                 <span>Created with UL0</span>
               </div>
-              <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
+              <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
                 100% Free • No Signup
               </span>
             </div>
@@ -329,16 +315,16 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
                 href="https://ul0.site"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:opacity-90 px-3.5 py-1.5 rounded-lg transition-all"
+                className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:opacity-90 px-3.5 py-1.5 rounded-full transition-all"
               >
                 <span>Create Free Link</span>
-                <ArrowRight className="h-3.5 w-3.5" />
+                <UL0Icon name="arrowright" className="h-3.5 w-3.5" />
               </a>
               <a
                 href="https://ul0.site/split"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted px-3 py-1.5 rounded-lg transition-colors border border-border/50"
+                className="inline-flex items-center justify-center text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted px-3.5 py-1.5 rounded-full transition-colors border border-border/50"
               >
                 <span>Split a Bill</span>
               </a>
@@ -392,7 +378,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
               ) : (
                 <span className="text-xs font-medium text-muted-foreground font-mono">{customHost}</span>
               )}
-              <XIcon className="h-3 w-3 text-muted-foreground/50 shrink-0" />
+              <UL0Icon name="close" className="h-3 w-3 text-muted-foreground/50 shrink-0" />
               <a href="https://ul0.site" target="_blank" rel="noopener noreferrer">
                 <Image
                   src="/ul0.png"

@@ -10,7 +10,7 @@ import {
   DialogTrigger,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { Plus, Loader2, Link2, AlertCircle, CheckCircle2 } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface DomainDoc {
   $id: string
@@ -148,8 +148,8 @@ export function CreateLinkButton({ verifiedDomains }: CreateLinkButtonProps) {
       }
     }}>
       <DialogTrigger asChild>
-        <button className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90">
-          <Plus className="h-4 w-4" />
+        <button className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+          <UL0Icon name="plus" className="h-4 w-4" />
           Create Link
         </button>
       </DialogTrigger>
@@ -337,7 +337,7 @@ export function CreateLinkButton({ verifiedDomains }: CreateLinkButtonProps) {
 
             {error && (
               <div className="rounded-lg bg-destructive/10 px-4 py-2 text-xs text-destructive flex items-center gap-1.5">
-                <AlertCircle className="h-4 w-4 shrink-0" />
+                <UL0Icon name="warning" className="h-4 w-4 shrink-0" />
                 <span>{error}</span>
               </div>
             )}
@@ -345,9 +345,9 @@ export function CreateLinkButton({ verifiedDomains }: CreateLinkButtonProps) {
             <button
               type="submit"
               disabled={loading || !longUrl.trim()}
-              className="w-full inline-flex justify-center items-center gap-1.5 rounded-lg bg-primary py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
+              className="w-full inline-flex justify-center items-center gap-1.5 rounded-full bg-primary py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 transition-colors"
             >
-              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {loading && <UL0Icon name="loading" className="h-4 w-4 animate-spin" />}
               {loading ? "Creating..." : "Create Short Link"}
             </button>
           </form>

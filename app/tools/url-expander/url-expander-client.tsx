@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState } from "react"
-import { Search, Loader2, ArrowRight, ShieldCheck, AlertTriangle, ExternalLink, Copy, Check, Globe, Lock, ShieldAlert } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface ExpanderResult {
   success: boolean
@@ -62,42 +62,42 @@ export function UrlExpanderClient() {
   return (
     <div className="w-full">
       {/* Input Form */}
-      <form onSubmit={handleExpand} className="relative flex flex-col sm:flex-row gap-2">
+      <form onSubmit={handleExpand} className="relative flex flex-col sm:flex-row gap-2.5">
         <div className="relative flex-1">
-          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted-foreground">
-            <Search className="h-4 w-4" />
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-muted-foreground">
+            <UL0Icon name="search" size={18} />
           </div>
           <input
             type="text"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="Paste short link (e.g. bit.ly/3xY..., tinyurl.com/..., t.co/...)"
-            className="w-full pl-10 pr-4 py-3 text-sm bg-card border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all shadow-sm"
+            className="w-full pl-11 pr-4 py-3.5 text-sm bg-card border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all shadow-2xs"
           />
         </div>
-        <Button
+        <button
           type="submit"
           disabled={loading || !url.trim()}
-          className="h-auto py-3 px-6 text-sm font-semibold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm"
+          className="h-auto py-3.5 px-7 text-sm font-semibold rounded-full bg-primary hover:opacity-90 disabled:opacity-50 text-primary-foreground shadow-2xs transition-all cursor-pointer inline-flex items-center justify-center gap-2"
         >
           {loading ? (
             <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Expanding...
+              <UL0Icon name="loading" animated={true} size={16} />
+              <span>Expanding...</span>
             </>
           ) : (
-            "Expand URL"
+            <span>Expand URL</span>
           )}
-        </Button>
+        </button>
       </form>
 
       {/* Preset quick test links */}
-      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+      <div className="mt-3.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground px-2">
         <span>Try testing:</span>
         <button
           type="button"
           onClick={() => setUrl("https://t.co/1P9vP9h7vF")}
-          className="hover:text-foreground underline decoration-dotted"
+          className="hover:text-foreground underline decoration-dotted cursor-pointer"
         >
           t.co sample
         </button>
@@ -105,7 +105,7 @@ export function UrlExpanderClient() {
         <button
           type="button"
           onClick={() => setUrl("https://tinyurl.com/app")}
-          className="hover:text-foreground underline decoration-dotted"
+          className="hover:text-foreground underline decoration-dotted cursor-pointer"
         >
           tinyurl.com/app
         </button>
@@ -113,8 +113,8 @@ export function UrlExpanderClient() {
 
       {/* Error message */}
       {error && (
-        <div className="mt-6 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-xs sm:text-sm flex items-start gap-2.5">
-          <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+        <div className="mt-6 p-4 rounded-2xl bg-destructive/10 border border-destructive/20 text-destructive text-xs sm:text-sm flex items-start gap-2.5">
+          <UL0Icon name="warning" size={16} className="shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
@@ -124,23 +124,24 @@ export function UrlExpanderClient() {
         <div className="mt-8 space-y-6 animate-in fade-in-50 duration-200">
           {/* Safety Status Banner */}
           <div
-            className={`p-4 rounded-2xl border flex items-center justify-between gap-4 ${
+            className={`p-5 rounded-3xl border flex items-center justify-between gap-4 ${
               result.isSafe
-                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400"
+                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
                 : "bg-destructive/10 border-destructive/30 text-destructive"
             }`}
           >
-            <div className="flex items-center gap-3">
-              {result.isSafe ? (
-                <ShieldCheck className="h-6 w-6 shrink-0" />
-              ) : (
-                <ShieldAlert className="h-6 w-6 shrink-0" />
-              )}
+            <div className="flex items-center gap-3.5">
+              <UL0Icon
+                name={result.isSafe ? "shield" : "warning"}
+                animated={true}
+                size={32}
+                className="shrink-0"
+              />
               <div>
                 <h3 className="text-sm font-bold">
                   {result.isSafe ? "Safe Destination Link" : "Caution: Potential Security Risk"}
                 </h3>
-                <p className="text-xs opacity-90">
+                <p className="text-xs opacity-90 mt-0.5">
                   {result.threatFlag ||
                     (result.isSafe
                       ? "No known phishing signals or malicious redirects detected."
@@ -149,21 +150,21 @@ export function UrlExpanderClient() {
               </div>
             </div>
             <div className="text-right shrink-0">
-              <span className="text-xs font-mono px-2 py-0.5 rounded bg-background/50 border border-border">
+              <span className="text-xs font-mono px-3 py-1 rounded-full bg-background/60 border border-border">
                 {result.hopsCount} {result.hopsCount === 1 ? "Hop" : "Hops"}
               </span>
             </div>
           </div>
 
           {/* Destination Card */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-5">
-            <div className="flex items-start justify-between gap-4">
+          <div className="rounded-3xl border border-border bg-card p-6 sm:p-7 shadow-2xs space-y-5">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div className="flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={result.favicon}
                   alt={result.domain}
-                  className="h-8 w-8 rounded-lg border border-border bg-muted p-1"
+                  className="h-9 w-9 rounded-xl border border-border bg-muted p-1"
                   onError={(e) => {
                     ;(e.target as HTMLElement).style.display = "none"
                   }}
@@ -171,11 +172,11 @@ export function UrlExpanderClient() {
                 <div>
                   <h4 className="text-base font-bold text-foreground leading-snug">{result.title}</h4>
                   <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
-                    <Globe className="h-3 w-3" />
+                    <UL0Icon name="domain" size={14} />
                     <span>{result.domain}</span>
                     {result.isHttps && (
-                      <span className="inline-flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-medium">
-                        <Lock className="h-2.5 w-2.5" /> HTTPS
+                      <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                        <UL0Icon name="lock" size={12} /> HTTPS
                       </span>
                     )}
                   </p>
@@ -183,29 +184,28 @@ export function UrlExpanderClient() {
               </div>
 
               <div className="flex items-center gap-2">
-                <Button
-                  size="sm"
-                  variant="outline"
+                <button
+                  type="button"
                   onClick={() => copyToClipboard(result.finalUrl)}
-                  className="h-8 text-xs gap-1.5 rounded-lg"
+                  className="h-9 px-3.5 text-xs font-semibold rounded-full border border-border bg-surface-2 hover:bg-muted text-foreground flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
-                  {copied ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
-                  {copied ? "Copied" : "Copy Target"}
-                </Button>
+                  <UL0Icon name={copied ? "check" : "copy"} size={14} />
+                  <span>{copied ? "Copied" : "Copy Target"}</span>
+                </button>
                 <a
                   href={result.finalUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 h-8 px-3 text-xs font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                  className="inline-flex items-center gap-1.5 h-9 px-4 text-xs font-semibold rounded-full bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
                 >
-                  Visit Link
-                  <ExternalLink className="h-3 w-3" />
+                  <span>Visit Link</span>
+                  <UL0Icon name="external" size={14} />
                 </a>
               </div>
             </div>
 
             {result.description && (
-              <p className="text-xs text-muted-foreground bg-muted/30 p-3 rounded-xl border border-border/50 leading-relaxed">
+              <p className="text-xs text-muted-foreground bg-muted/40 p-3.5 rounded-2xl border border-border/60 leading-relaxed">
                 {result.description}
               </p>
             )}

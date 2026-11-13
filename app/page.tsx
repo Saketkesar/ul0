@@ -1,32 +1,13 @@
 import React from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
-import Image from "next/image"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
 import { FloatingActionDock } from "@/components/floating-action-dock"
+import { AnimatedIconBackground } from "@/components/animated-icon-background"
+import { StatsSection } from "@/components/stats-section"
 import { UL0Icon } from "@/components/ul0-icon"
-import {
-  Link2,
-  QrCode,
-  Globe,
-  BarChart3,
-  Check,
-  ChevronRight,
-  GitBranch,
-  ShieldCheck,
-  Lock,
-  Zap,
-  ArrowRight,
-  ExternalLink,
-  MessageSquare,
-  Search,
-  Layers,
-  Sparkles,
-  Users,
-  Copy,
-} from "lucide-react"
 
 export const metadata: Metadata = {
   title: "UL0: Shorten Links the Cute, Clean Way",
@@ -118,7 +99,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground">
+    <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-[#3DDBB8]/30">
       {/* FAQ Schema for Google Rich Results */}
       <script
         type="application/ld+json"
@@ -128,85 +109,43 @@ export default function HomePage() {
       <Header />
 
       <main className="flex-1">
-        {/* 1. Hero Section - Matching UL0Homecuteclean.png */}
+        {/* 1. Hero Section - Inspired by Heytaby & Bharpai with Animated SVG Icons in Background */}
         <section
           id="shortener"
-          className="relative pt-12 pb-20 sm:pt-20 sm:pb-28 border-b border-border overflow-hidden"
+          className="relative pt-20 pb-28 sm:pt-28 sm:pb-36 border-b border-border overflow-hidden"
         >
+          {/* Animated SVG Icons Drifting in Background */}
+          <AnimatedIconBackground />
+
           <div className="container mx-auto px-4 sm:px-6 max-w-4xl text-center space-y-6 sm:space-y-8 relative z-10">
-            {/* Top Row: Floating Stickers + Badge */}
-            <div className="flex items-center justify-center gap-3 sm:gap-6 relative">
-              {/* Left tilted sticker */}
-              <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white dark:bg-[#0F1E36] border border-border/80 shadow-2xs -rotate-6 text-xs font-mono text-muted-foreground select-none">
-                ✦ ul0.in/
-              </div>
-
-              {/* Center badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-[#0F1E36] border border-border/80 shadow-2xs text-xs font-medium text-foreground select-none">
-                <span className="h-2 w-2 rounded-full bg-[#EE6123] inline-block" />
-                <span>Free link shortener, QR + custom domains</span>
-              </div>
-
-              {/* Right tilted sticker */}
-              <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0B1736] dark:bg-white text-white dark:text-[#0B1736] shadow-2xs rotate-6 text-xs font-mono select-none">
-                <UL0Icon name="qr" size={13} />
-                <span>scan me</span>
+            {/* Top Pill Badge */}
+            <div className="flex items-center justify-center">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card border border-border shadow-2xs text-xs font-medium text-foreground select-none">
+                <span className="h-2 w-2 rounded-full bg-primary inline-block animate-pulse" />
+                <span>Simple, private link shortener &amp; QR studio</span>
               </div>
             </div>
 
-            {/* Main Title: 2 lines */}
+            {/* Main Title: Clean, Large, Tactile */}
             <h1 className="text-4xl sm:text-6xl lg:text-[76px] font-extrabold tracking-tight text-foreground leading-[1.05]">
               Shorten links the<br />cute, clean way.
             </h1>
 
             {/* Subhead */}
             <p className="mx-auto max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Paste a long URL, get a tiny ul0.in link with QR and click stats.<br className="hidden sm:inline" />
-              Free, no account needed.
+              Paste a long URL, get a tiny ul0.in link with vector QR and click stats.<br className="hidden sm:inline" />
+              Free forever. No account needed.
             </p>
 
             {/* Link Shortener Form */}
             <div className="pt-2 max-w-2xl mx-auto">
               <LinkShortenerForm />
             </div>
-
-            {/* Sample Result Preview Card (Visible as Cute Inspiration) */}
-            <div className="pt-2">
-              <div className="relative max-w-xl mx-auto rounded-2xl border border-border/70 bg-white dark:bg-[#0F1E36] p-4 sm:p-5 shadow-2xs text-left">
-                <div className="absolute -top-3 left-6 px-2.5 py-0.5 rounded-full bg-[#EE6123]/10 border border-[#EE6123]/30 text-[#EE6123] text-[10px] font-bold tracking-tight select-none">
-                  no sign-up ↗
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1">
-                  <div className="flex items-center gap-3.5 w-full sm:w-auto">
-                    <div className="h-12 w-12 rounded-xl border border-border bg-white p-1 shrink-0 flex items-center justify-center">
-                      <UL0Icon name="qr" size={38} />
-                    </div>
-                    <div>
-                      <div className="text-sm sm:text-base font-bold text-foreground">
-                        ul0.in/diwali-sale
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-0.5">
-                        1,248 clicks
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full border border-border bg-card text-xs font-semibold text-foreground shadow-2xs select-none">
-                      <Copy className="h-3.5 w-3.5" />
-                      <span>Copy</span>
-                    </span>
-                    <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-[#0B1736] dark:bg-white text-white dark:text-[#0B1736] text-xs font-semibold shadow-2xs select-none">
-                      <BarChart3 className="h-3.5 w-3.5" />
-                      <span>Stats</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </section>
+
+        {/* Social Proof Stats (Bitly-inspired with 5 columns & vertical dividers) */}
+        <StatsSection />
 
         {/* 2. "Three things, done well" Section */}
         <section className="py-20 sm:py-28 border-b border-border">
@@ -222,35 +161,35 @@ export default function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-12 text-center md:text-left">
               {/* Col 1: Short links */}
-              <div className="space-y-4 flex flex-col items-center md:items-start">
-                <div className="h-14 w-14 rounded-2xl bg-[#EE6123]/10 flex items-center justify-center p-2.5">
-                  <UL0Icon name="scissors" size={36} />
+              <div className="space-y-4 flex flex-col items-center md:items-start group">
+                <div className="h-16 w-16 rounded-2xl bg-surface-2 border border-border/80 flex items-center justify-center p-3 shadow-2xs group-hover:scale-110 transition-transform">
+                  <UL0Icon name="scissors" animated={true} size={42} />
                 </div>
                 <div className="space-y-1.5">
                   <h3 className="text-lg font-bold text-foreground">Short links</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    ul0.in/your-name in 2 seconds. Works everywhere, forever.
+                    ul0.site/your-name in 2 seconds. Works everywhere, forever.
                   </p>
                 </div>
               </div>
 
               {/* Col 2: Your domain */}
-              <div className="space-y-4 flex flex-col items-center md:items-start">
-                <div className="h-14 w-14 rounded-2xl bg-[#3DDBB8]/15 flex items-center justify-center p-2.5">
-                  <UL0Icon name="domain" size={36} />
+              <div className="space-y-4 flex flex-col items-center md:items-start group">
+                <div className="h-16 w-16 rounded-2xl bg-surface-2 border border-border/80 flex items-center justify-center p-3 shadow-2xs group-hover:scale-110 transition-transform">
+                  <UL0Icon name="domain" animated={true} size={42} />
                 </div>
                 <div className="space-y-1.5">
                   <h3 className="text-lg font-bold text-foreground">Your domain</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Connect shop.in once. 1 free, setup in 5 minutes.
+                    Connect your domain once. 1 free, setup in 5 minutes.
                   </p>
                 </div>
               </div>
 
               {/* Col 3: QR + stats */}
-              <div className="space-y-4 flex flex-col items-center md:items-start">
-                <div className="h-14 w-14 rounded-2xl bg-blue-500/10 flex items-center justify-center p-2.5">
-                  <UL0Icon name="qr" size={36} />
+              <div className="space-y-4 flex flex-col items-center md:items-start group">
+                <div className="h-16 w-16 rounded-2xl bg-surface-2 border border-border/80 flex items-center justify-center p-3 shadow-2xs group-hover:scale-110 transition-transform">
+                  <UL0Icon name="qr" animated={true} size={42} />
                 </div>
                 <div className="space-y-1.5">
                   <h3 className="text-lg font-bold text-foreground">QR + stats</h3>
@@ -263,19 +202,23 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 3. "Free tiny tools" Section in Sand Beige Container */}
+        {/* 3. "Free tiny tools" Section in Soft Mint Container */}
         <section className="py-20 sm:py-28 border-b border-border">
           <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
-            <div className="rounded-3xl border border-border/60 bg-[#F5EFE6] dark:bg-[#162B4D]/30 p-6 sm:p-10 space-y-6">
+            <div className="rounded-3xl border border-border/80 bg-surface-2 dark:bg-surface-2/40 p-6 sm:p-10 space-y-6">
               <div className="flex items-center justify-between border-b border-black/5 dark:border-white/5 pb-4">
-                <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                  Free tiny tools
-                </h2>
+                <div className="flex items-center gap-2.5">
+                  <UL0Icon name="tools" size={24} />
+                  <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
+                    Free tiny tools
+                  </h2>
+                </div>
                 <Link
                   href="/tools"
-                  className="text-xs sm:text-sm font-semibold text-foreground underline hover:text-[#EE6123] transition-colors"
+                  className="text-xs sm:text-sm font-semibold text-foreground underline hover:text-primary transition-colors inline-flex items-center gap-1"
                 >
-                  View all
+                  <span>View all</span>
+                  <UL0Icon name="arrowright" size={12} />
                 </Link>
               </div>
 
@@ -284,15 +227,15 @@ export default function HomePage() {
                   <Link
                     key={tool.href}
                     href={tool.href}
-                    className="flex items-center justify-between p-4 rounded-2xl bg-white dark:bg-[#0F1E36] border border-black/5 dark:border-white/5 hover:border-[#EE6123]/40 transition-all shadow-2xs group"
+                    className="flex items-center justify-between p-4 rounded-2xl bg-card border border-border/80 hover:border-primary/50 transition-all shadow-2xs group hover:scale-[1.02]"
                   >
                     <div className="flex items-center gap-3">
-                      <UL0Icon name={tool.iconName} size={28} />
-                      <span className="text-sm font-bold text-foreground group-hover:text-[#EE6123] transition-colors">
+                      <UL0Icon name={tool.iconName} animated={true} size={30} />
+                      <span className="text-sm font-bold text-foreground group-hover:text-primary transition-colors">
                         {tool.name}
                       </span>
                     </div>
-                    <span className="text-[11px] font-medium text-muted-foreground px-2.5 py-1 rounded-full bg-muted/60">
+                    <span className="text-[11px] font-medium text-muted-foreground px-2.5 py-1 rounded-full bg-surface-2 border border-border/60">
                       {tool.tag}
                     </span>
                   </Link>
@@ -310,18 +253,21 @@ export default function HomePage() {
                 Free forever. Upgrade if you grow.
               </h2>
               <p className="text-sm text-muted-foreground">
-                No credit card required to start. No surprise bills.
+                No credit card required to start. No hidden surprises.
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
               {/* Free Plan Card */}
-              <div className="rounded-3xl border border-border bg-white dark:bg-card p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-2xs">
+              <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-2xs">
                 <div className="space-y-4">
-                  <div className="text-sm font-bold text-muted-foreground">Free</div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-bold text-muted-foreground">Free</span>
+                    <UL0Icon name="gift" size={18} />
+                  </div>
                   <div className="text-4xl font-extrabold text-foreground tracking-tight">₹0</div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    1 custom domain, unlimited short links, QR + stats.
+                    1 custom domain, unlimited short links, vector QR + stats.
                   </p>
                 </div>
                 <a
@@ -333,13 +279,16 @@ export default function HomePage() {
               </div>
 
               {/* Pro Plan Card (Dark Inverted Card with popular badge matching mockup) */}
-              <div className="rounded-3xl bg-[#18181B] text-white p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-xl relative">
+              <div className="rounded-3xl bg-[#0B1A17] dark:bg-[#0E211E] text-white p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-xl relative border border-[#3DDBB8]/20">
                 <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-bold text-white">Pro</span>
-                    <span className="px-2.5 py-0.5 rounded-full bg-[#EE6123] text-white text-[10px] font-bold">
-                      popular
-                    </span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-bold text-white">Pro</span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#3DDBB8] text-[#0B1A17] text-[10px] font-bold">
+                        popular
+                      </span>
+                    </div>
+                    <UL0Icon name="crown" size={20} animated={true} />
                   </div>
                   <div className="text-4xl font-extrabold text-white tracking-tight">
                     $3<span className="text-xs font-normal text-white/60">/mo</span>
@@ -350,21 +299,24 @@ export default function HomePage() {
                 </div>
                 <Link
                   href="/pricing"
-                  className="w-full text-center py-2.5 rounded-full bg-[#EE6123] text-white text-xs font-semibold hover:bg-[#EE6123]/90 transition-colors shadow-xs"
+                  className="w-full text-center py-2.5 rounded-full bg-[#3DDBB8] text-[#0B1A17] text-xs font-bold hover:opacity-90 transition-opacity shadow-xs"
                 >
                   Get Pro
                 </Link>
               </div>
 
               {/* Business Plan Card */}
-              <div className="rounded-3xl border border-border bg-white dark:bg-card p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-2xs">
+              <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-2xs">
                 <div className="space-y-4">
-                  <div className="text-sm font-bold text-muted-foreground">Business</div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-bold text-muted-foreground">Business</span>
+                    <UL0Icon name="diamond" size={18} />
+                  </div>
                   <div className="text-4xl font-extrabold text-foreground tracking-tight">
                     $9<span className="text-xs font-normal text-muted-foreground">/mo</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    10 domains, unlimited links, API.
+                    10 domains, unlimited links, high-speed API.
                   </p>
                 </div>
                 <Link
@@ -378,73 +330,57 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* 5. Competitor Comparison Table */}
-        <section className="py-20 sm:py-28 border-b border-border bg-card/20">
-          <div className="container mx-auto px-4 sm:px-6 max-w-5xl space-y-10">
+        {/* 5. Bharpai / Heytaby Style "Why UL0" Cards */}
+        <section className="py-20 sm:py-28 border-b border-border bg-surface-2/30">
+          <div className="container mx-auto px-4 sm:px-6 max-w-5xl space-y-12">
             <div className="text-center space-y-2 max-w-xl mx-auto">
               <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-                How UL0 compares to legacy shorteners
+                Built for people who hate clutter
               </h2>
               <p className="text-xs sm:text-sm text-muted-foreground">
-                Dated, verified comparison against Bitly, TinyURL, and Cuttly.
+                No tracking cookies, no monthly link expiration, no corporate bloat.
               </p>
             </div>
 
-            <div className="overflow-x-auto rounded-2xl border border-border bg-card">
-              <table className="w-full text-left text-xs sm:text-sm">
-                <thead>
-                  <tr className="border-b border-border bg-muted/30 text-muted-foreground font-medium">
-                    <th className="py-3.5 px-4">Feature</th>
-                    <th className="py-3.5 px-4 font-bold text-[#EE6123]">UL0</th>
-                    <th className="py-3.5 px-4">Bitly</th>
-                    <th className="py-3.5 px-4">TinyURL</th>
-                    <th className="py-3.5 px-4">Cuttly</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border">
-                  <tr>
-                    <td className="py-3.5 px-4 font-medium text-foreground">Custom domain on free</td>
-                    <td className="py-3.5 px-4 font-bold text-[#EE6123]">1 domain ($0)</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">Paid only ($35/mo)</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">Paid only ($12.99/mo)</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">Paid only ($12/mo)</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3.5 px-4 font-medium text-foreground">Free monthly link cap</td>
-                    <td className="py-3.5 px-4 font-bold text-[#EE6123]">Unlimited public links</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">5 links / month</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">Limited active links</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">30 links / month</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3.5 px-4 font-medium text-foreground">Signup required to shorten</td>
-                    <td className="py-3.5 px-4 font-bold text-[#EE6123]">No (instant)</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">Yes</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">No</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">Yes</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3.5 px-4 font-medium text-foreground">Redirect architecture</td>
-                    <td className="py-3.5 px-4 font-bold text-[#EE6123]">307 (editable live)</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">301 (cached)</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">301 (cached)</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">301 (cached)</td>
-                  </tr>
-                  <tr>
-                    <td className="py-3.5 px-4 font-medium text-foreground">Starting paid plan</td>
-                    <td className="py-3.5 px-4 font-bold text-[#EE6123]">$3 / month</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">$10–$35 / month</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">$12.99 / month</td>
-                    <td className="py-3.5 px-4 text-muted-foreground">$12 / month</td>
-                  </tr>
-                </tbody>
-              </table>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 space-y-4 shadow-2xs hover:border-primary/40 transition-all group">
+                <div className="h-14 w-14 rounded-2xl bg-surface-2 border border-border flex items-center justify-center p-2.5 group-hover:scale-105 transition-transform">
+                  <UL0Icon name="shield" animated={true} size={36} />
+                </div>
+                <h3 className="text-base font-bold text-foreground">Zero tracking cookies</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  We don&apos;t drop tracking pixels or sell click streams. Only aggregate country, device, and referrer insights.
+                </p>
+              </div>
+
+              <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 space-y-4 shadow-2xs hover:border-primary/40 transition-all group">
+                <div className="h-14 w-14 rounded-2xl bg-surface-2 border border-border flex items-center justify-center p-2.5 group-hover:scale-105 transition-transform">
+                  <UL0Icon name="bolt" animated={true} size={36} />
+                </div>
+                <h3 className="text-base font-bold text-foreground">Fast 307 edge redirects</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Sub-15ms worldwide edge routing. Unlike 301 cached links, destinations can be edited anytime without breaking.
+                </p>
+              </div>
+
+              <div className="rounded-3xl border border-border bg-card p-6 sm:p-8 space-y-4 shadow-2xs hover:border-primary/40 transition-all group">
+                <div className="h-14 w-14 rounded-2xl bg-surface-2 border border-border flex items-center justify-center p-2.5 group-hover:scale-105 transition-transform">
+                  <UL0Icon name="domain" animated={true} size={36} />
+                </div>
+                <h3 className="text-base font-bold text-foreground">1 free custom domain</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  Connect your brand domain free forever with automated SSL. No $35 monthly upsell just to use your name.
+                </p>
+              </div>
             </div>
 
             <div className="text-center pt-2">
-              <Link href="/compare" className="text-xs sm:text-sm font-semibold text-[#EE6123] hover:underline inline-flex items-center gap-1">
-                View full in-depth competitor breakdown
-                <ChevronRight className="h-4 w-4" />
+              <Link
+                href="/compare"
+                className="text-xs sm:text-sm font-semibold text-primary hover:underline inline-flex items-center gap-1.5"
+              >
+                <span>Compare features with legacy shorteners</span>
+                <UL0Icon name="arrowright" size={12} />
               </Link>
             </div>
           </div>
@@ -484,7 +420,7 @@ export default function HomePage() {
         </section>
 
         {/* 7. Final Clean CTA */}
-        <section className="py-20 sm:py-28 text-center bg-card/20">
+        <section className="py-20 sm:py-28 text-center bg-card/30">
           <div className="container mx-auto px-4 max-w-xl space-y-5">
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
               Ready to create your branded link?
@@ -495,7 +431,7 @@ export default function HomePage() {
             <div className="pt-2">
               <a
                 href="#shortener"
-                className="inline-flex items-center justify-center rounded-full bg-[#EE6123] px-8 py-3 text-sm font-semibold text-white hover:bg-[#EE6123]/90 transition-colors shadow-xs"
+                className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity shadow-xs"
               >
                 Create your free link now
               </a>

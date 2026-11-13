@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState } from "react"
-import { Copy, Check, Code, Eye, Search, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export function MetaTagClient() {
   const [title, setTitle] = useState("UL0 — Fast, Secure Link Management & Analytics")
@@ -52,9 +52,9 @@ export function MetaTagClient() {
   return (
     <div className="grid gap-8 lg:grid-cols-2 items-start">
       {/* Configuration Form */}
-      <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
+      <div className="rounded-3xl border border-border bg-card p-6 sm:p-7 shadow-2xs space-y-4">
         <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-primary" />
+          <UL0Icon name="sparkles" animated={true} size={18} />
           <span>Page Metadata Builder</span>
         </h3>
 
@@ -164,18 +164,18 @@ export function MetaTagClient() {
       {/* Previews and Code Generation */}
       <div className="space-y-6">
         {/* Live Snippet Preview */}
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
+        <div className="rounded-3xl border border-border bg-card p-6 sm:p-7 shadow-2xs space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Eye className="h-4 w-4 text-primary" />
+              <UL0Icon name="eye" animated={true} size={18} />
               <h4 className="text-sm font-bold text-foreground">Live Search &amp; Social Preview</h4>
             </div>
-            <div className="flex rounded-lg border border-border p-0.5 bg-muted text-xs">
+            <div className="flex rounded-full border border-border p-1 bg-surface-2 text-xs">
               <button
                 type="button"
                 onClick={() => setPreviewTab("google")}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  previewTab === "google" ? "bg-background text-foreground font-semibold shadow-xs" : "text-muted-foreground"
+                className={`px-3 py-1 rounded-full transition-colors cursor-pointer ${
+                  previewTab === "google" ? "bg-primary text-primary-foreground font-semibold shadow-2xs" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 Google SERP
@@ -183,8 +183,8 @@ export function MetaTagClient() {
               <button
                 type="button"
                 onClick={() => setPreviewTab("social")}
-                className={`px-2.5 py-1 rounded-md transition-colors ${
-                  previewTab === "social" ? "bg-background text-foreground font-semibold shadow-xs" : "text-muted-foreground"
+                className={`px-3 py-1 rounded-full transition-colors cursor-pointer ${
+                  previewTab === "social" ? "bg-primary text-primary-foreground font-semibold shadow-2xs" : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 Social Card
@@ -193,12 +193,12 @@ export function MetaTagClient() {
           </div>
 
           {previewTab === "google" ? (
-            <div className="p-4 rounded-xl border border-border bg-background space-y-1.5">
+            <div className="p-4 rounded-2xl border border-border bg-background space-y-1.5">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <Search className="h-3 w-3" />
+                <UL0Icon name="search" size={14} />
                 <span className="truncate">{url}</span>
               </div>
-              <h5 className="text-sm sm:text-base font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer line-clamp-1">
+              <h5 className="text-sm sm:text-base font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer line-clamp-1">
                 {title || "Page Title"}
               </h5>
               <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
@@ -206,7 +206,7 @@ export function MetaTagClient() {
               </p>
             </div>
           ) : (
-            <div className="rounded-xl border border-border overflow-hidden bg-background">
+            <div className="rounded-2xl border border-border overflow-hidden bg-background">
               <div className="aspect-[1.91/1] w-full bg-muted flex items-center justify-center text-xs text-muted-foreground">
                 {imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -222,7 +222,7 @@ export function MetaTagClient() {
                   "Image Preview"
                 )}
               </div>
-              <div className="p-3 space-y-1 border-t border-border">
+              <div className="p-3.5 space-y-1 border-t border-border">
                 <span className="text-[10px] uppercase font-mono text-muted-foreground tracking-wider">
                   {siteName}
                 </span>
@@ -234,23 +234,23 @@ export function MetaTagClient() {
         </div>
 
         {/* Copyable HTML Code Block */}
-        <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-3">
+        <div className="rounded-3xl border border-border bg-card p-6 sm:p-7 shadow-2xs space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Code className="h-4 w-4 text-primary" />
+              <UL0Icon name="code" animated={true} size={18} />
               <h4 className="text-sm font-bold text-foreground">Generated HTML Meta Tags</h4>
             </div>
-            <Button
-              size="sm"
+            <button
+              type="button"
               onClick={handleCopy}
-              className="h-8 text-xs gap-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground"
+              className="h-8 px-3.5 text-xs font-semibold gap-1.5 rounded-full bg-primary hover:opacity-90 text-primary-foreground inline-flex items-center transition-opacity cursor-pointer shadow-2xs"
             >
-              {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-              {copied ? "Copied HTML!" : "Copy HTML"}
-            </Button>
+              <UL0Icon name={copied ? "check" : "copy"} size={14} />
+              <span>{copied ? "Copied HTML!" : "Copy HTML"}</span>
+            </button>
           </div>
 
-          <pre className="p-4 rounded-xl bg-muted/60 text-foreground font-mono text-xs overflow-x-auto leading-relaxed border border-border">
+          <pre className="p-4 rounded-2xl bg-muted/60 text-foreground font-mono text-xs overflow-x-auto leading-relaxed border border-border">
             <code>{generatedHtml}</code>
           </pre>
         </div>

@@ -3,26 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import {
-  Copy,
-  Check,
-  Search,
-  ExternalLink,
-  Loader2,
-  ArrowRight,
-  ShieldCheck,
-  Globe,
-  Code2,
-  CheckCircle2,
-  Table as TableIcon,
-  LayoutGrid,
-  FileText,
-  CornerDownRight,
-  Sparkles,
-  Link2,
-  Lightbulb,
-  Folder,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { Button } from "@/components/ui/button"
 
 export interface VerifiedSite {
@@ -259,7 +240,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
         <div className="p-6 sm:p-10 -mt-10 relative">
           {/* Notion Page Icon */}
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#FFFFFF] dark:bg-[#222222] border border-neutral-200 dark:border-neutral-700 shadow-sm text-2xl mb-4 select-none">
-            <Link2 className="h-6 w-6 text-foreground" />
+            <UL0Icon name="link" className="h-6 w-6 text-foreground" />
           </div>
 
           {/* Breadcrumb Path */}
@@ -315,7 +296,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
 
           {/* Notion Callout Box */}
           <div className="mt-6 p-4 rounded-xl border border-[#E9E9E7] dark:border-[#2E2E2E] bg-[#F7F6F3] dark:bg-[#202020] flex items-start gap-3 text-xs leading-relaxed text-neutral-700 dark:text-neutral-300">
-            <Lightbulb className="h-5 w-5 text-primary shrink-0" />
+            <UL0Icon name="bulb" className="h-5 w-5 text-primary shrink-0" />
             <div>
               <strong className="font-semibold text-neutral-900 dark:text-neutral-100 block mb-0.5">
                 Zero spam. Zero obnoxious neon widgets.
@@ -511,19 +492,19 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
             </h4>
             <ul className="space-y-2 text-neutral-600 dark:text-neutral-400">
               <li className="flex items-start gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300 mt-0.5 shrink-0" />
+                <UL0Icon name="check" className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
                 <span>Genuine editorial dofollow link with no redirection hurdles.</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300 mt-0.5 shrink-0" />
+                <UL0Icon name="check" className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
                 <span>Zero intrusive scripts: Pure SVG vector graphic (&lt;2KB).</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300 mt-0.5 shrink-0" />
+                <UL0Icon name="check" className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
                 <span>Crawled continuously by Googlebot, Bingbot, and IndexNow.</span>
               </li>
               <li className="flex items-start gap-2">
-                <CheckCircle2 className="h-3.5 w-3.5 text-neutral-700 dark:text-neutral-300 mt-0.5 shrink-0" />
+                <UL0Icon name="check" className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
                 <span>Spam-free: Every site is verified live before publication.</span>
               </li>
             </ul>
@@ -630,13 +611,13 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                 >
                   {submitting ? (
                     <>
-                      <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                      <UL0Icon name="loading" className="mr-2 h-3.5 w-3.5 animate-spin" />
                       Registering Property...
                     </>
                   ) : (
                     <>
                       <span>Get Badge Snippet &amp; Continue</span>
-                      <ArrowRight className="ml-2 h-3.5 w-3.5" />
+                      <UL0Icon name="arrowright" className="ml-2 h-3.5 w-3.5" />
                     </>
                   )}
                 </Button>
@@ -688,7 +669,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                       onClick={copyCode}
                       className="text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-neutral-100 font-medium flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-md border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100"
                     >
-                      {copied ? <Check className="h-3 w-3 text-green-600" /> : <Copy className="h-3 w-3" />}
+                      {copied ? <UL0Icon name="check" className="h-3 w-3 text-primary" /> : <UL0Icon name="copy" className="h-3 w-3" />}
                       <span>{copied ? "Copied" : "Copy"}</span>
                     </button>
                   </div>
@@ -738,12 +719,12 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                   >
                     {step === "verifying" ? (
                       <>
-                        <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                        <UL0Icon name="loading" className="mr-2 h-3.5 w-3.5 animate-spin" />
                         Scanning Your Website...
                       </>
                     ) : (
                       <>
-                        <ShieldCheck className="mr-2 h-3.5 w-3.5" />
+                        <UL0Icon name="shield" className="mr-2 h-3.5 w-3.5" />
                         {step === "failed" ? "Retry Verification" : "Verify Live Badge"}
                       </>
                     )}
@@ -800,7 +781,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
         <div className="p-4 sm:p-6 border-b border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
-              <Folder className="h-4 w-4 text-muted-foreground" />
+              <UL0Icon name="folder" className="h-4 w-4 text-muted-foreground" />
               <h2 className="text-base font-bold text-neutral-900 dark:text-neutral-100">
                 Verified Backlink Partners
               </h2>
@@ -826,7 +807,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                 }`}
                 title="Table View"
               >
-                <TableIcon className="h-3.5 w-3.5" />
+                <UL0Icon name="dashboard" className="h-3.5 w-3.5" />
               </button>
               <button
                 type="button"
@@ -838,12 +819,12 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                 }`}
                 title="Gallery View"
               >
-                <LayoutGrid className="h-3.5 w-3.5" />
+                <UL0Icon name="sparkles" className="h-3.5 w-3.5" />
               </button>
             </div>
 
             <div className="relative w-full sm:w-56">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
+              <UL0Icon name="search" className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-neutral-400" />
               <input
                 type="text"
                 value={searchQuery}
@@ -858,7 +839,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
         {/* Directory Content */}
         {filteredSites.length === 0 ? (
           <div className="p-12 text-center space-y-3">
-            <Folder className="h-8 w-8 text-neutral-300 dark:text-neutral-600 mx-auto" />
+            <UL0Icon name="folder" className="h-8 w-8 text-neutral-300 dark:text-neutral-600 mx-auto" />
             <h4 className="text-xs font-semibold text-neutral-800 dark:text-neutral-200">
               {sitesList.length === 0 ? "No verified partners yet" : "No matching partners found"}
             </h4>
@@ -914,7 +895,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                           <span className="truncate max-w-[180px] sm:max-w-[240px]">
                             {site.website_name}
                           </span>
-                          <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-neutral-400" />
+                          <UL0Icon name="external" className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-neutral-400" />
                         </a>
                       </div>
                     </td>
@@ -985,7 +966,7 @@ export function BacklinkPageClient({ verifiedSites }: Props) {
                         className="font-semibold text-xs text-neutral-900 dark:text-neutral-100 hover:underline flex items-center gap-1"
                       >
                         <span className="truncate">{site.website_name}</span>
-                        <ExternalLink className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-neutral-400" />
+                        <UL0Icon name="external" className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity text-neutral-400" />
                       </a>
                       <p className="text-[11px] font-mono text-neutral-400 truncate">
                         {getDomain(site.website_url)}

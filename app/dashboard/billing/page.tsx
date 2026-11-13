@@ -7,16 +7,7 @@ import { getDomainsByOwner } from "@/lib/appwrite/domains"
 import { getUserLinksStats } from "@/lib/appwrite/links"
 import { getActivePlan } from "@/lib/plan.server"
 import { PLANS, PLAN_FEATURES, type PlanSlug } from "@/lib/plans"
-import {
-  CreditCard,
-  Check,
-  Sparkles,
-  ExternalLink,
-  ShieldCheck,
-  Globe,
-  Link2,
-  ArrowRight,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Billing & Plans",
@@ -85,17 +76,17 @@ export default async function BillingPage() {
                 href={portalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-surface-1 text-xs font-semibold text-foreground hover:bg-surface-3 transition-colors shadow-2xs"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border bg-surface-1 text-xs font-semibold text-foreground hover:bg-surface-3 transition-colors shadow-2xs"
               >
                 <span>Manage Subscription &amp; Invoices</span>
-                <ExternalLink className="h-3.5 w-3.5" />
+                <UL0Icon name="external" className="h-3.5 w-3.5" />
               </a>
             ) : (
               <Link
                 href="/pricing"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-xs font-semibold text-white hover:bg-primary/90 transition-all shadow-xs"
+                className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-primary text-xs font-semibold text-white hover:bg-primary/90 transition-all shadow-xs"
               >
-                <Sparkles className="h-3.5 w-3.5" />
+                <UL0Icon name="sparkles" className="h-3.5 w-3.5" />
                 <span>Upgrade to Pro ($3)</span>
               </Link>
             )}
@@ -105,10 +96,10 @@ export default async function BillingPage() {
         {/* Real Usage Meters */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Custom Domains Meter */}
-          <div className="space-y-2 p-4 rounded-xl border border-border bg-surface-1">
+          <div className="space-y-2 p-5 rounded-2xl border border-border bg-surface-1">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-foreground flex items-center gap-1.5">
-                <Globe className="h-3.5 w-3.5 text-primary" />
+                <UL0Icon name="domain" className="h-3.5 w-3.5 text-primary" />
                 Custom Domains
               </span>
               <span className="font-mono text-muted-foreground">
@@ -135,10 +126,10 @@ export default async function BillingPage() {
           </div>
 
           {/* Domain Short Links Meter */}
-          <div className="space-y-2 p-4 rounded-xl border border-border bg-surface-1">
+          <div className="space-y-2 p-5 rounded-2xl border border-border bg-surface-1">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-foreground flex items-center gap-1.5">
-                <Link2 className="h-3.5 w-3.5 text-primary" />
+                <UL0Icon name="link" className="h-3.5 w-3.5 text-primary" />
                 Domain Short Links
               </span>
               <span className="font-mono text-muted-foreground">
@@ -210,7 +201,7 @@ export default async function BillingPage() {
                   <ul className="space-y-2.5 pt-2 text-xs">
                     {features.map((feat, idx) => (
                       <li key={idx} className="flex items-start gap-2 text-muted-foreground">
-                        <Check className="h-4 w-4 text-primary shrink-0 mt-0.2" />
+                        <UL0Icon name="check" className="h-4 w-4 text-primary shrink-0 mt-0.2" />
                         <span className="leading-tight">{feat}</span>
                       </li>
                     ))}
@@ -222,17 +213,17 @@ export default async function BillingPage() {
                     <button
                       type="button"
                       disabled
-                      className="w-full py-2 rounded-lg border border-border bg-surface-3 text-xs font-semibold text-muted-foreground cursor-default"
+                      className="w-full py-2.5 rounded-full border border-border bg-surface-3 text-xs font-semibold text-muted-foreground cursor-default"
                     >
                       Current Plan
                     </button>
                   ) : (
                     <Link
                       href="/pricing"
-                      className="w-full inline-flex items-center justify-center gap-1.5 py-2 rounded-lg bg-primary text-xs font-semibold text-white hover:bg-primary/90 transition-all shadow-xs"
+                      className="w-full inline-flex items-center justify-center gap-1.5 py-2.5 rounded-full bg-primary text-xs font-semibold text-white hover:bg-primary/90 transition-all shadow-xs"
                     >
                       <span>Upgrade to {p.label}</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <UL0Icon name="arrowright" className="h-3.5 w-3.5" />
                     </Link>
                   )}
                 </div>

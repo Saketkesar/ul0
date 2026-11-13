@@ -3,25 +3,7 @@
 import { useState, useRef, useCallback, useEffect } from "react"
 import { jsPDF } from "jspdf"
 import { PDFDocument } from "pdf-lib"
-import {
-  ImageIcon,
-  FileStack,
-  ScanLine,
-  Upload,
-  Trash2,
-  GripVertical,
-  Download,
-  Camera,
-  RotateCcw,
-  Plus,
-  FileText,
-  ChevronUp,
-  ChevronDown,
-  X,
-  ZapIcon,
-  AlertTriangle,
-  Scissors,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { PdfAdBanner } from "./pdf-ad-banner"
 import { PdfSplitterClient } from "@/app/tools/pdf-splitter/pdf-splitter-client"
 
@@ -84,23 +66,23 @@ export function PdfTools() {
         {/* Main workspace */}
         <div className="flex-1 min-w-0">
           {/* Tab bar */}
-          <div className="flex gap-1 p-1 bg-muted/30 rounded-xl mb-6 border border-border/50">
+          <div className="flex gap-1.5 p-1.5 bg-surface-2 rounded-full mb-6 border border-border shadow-2xs">
             {([
-              { key: "split-pdf" as ActiveTab, label: "Split Pages", icon: Scissors },
-              { key: "image-to-pdf" as ActiveTab, label: "Image to PDF", icon: ImageIcon },
-              { key: "merge-pdf" as ActiveTab, label: "Merge PDFs", icon: FileStack },
-              { key: "scanner" as ActiveTab, label: "Document Scanner", icon: ScanLine },
-            ]).map(({ key, label, icon: Icon }) => (
+              { key: "split-pdf" as ActiveTab, label: "Split Pages", icon: "scissors" },
+              { key: "image-to-pdf" as ActiveTab, label: "Image to PDF", icon: "image" },
+              { key: "merge-pdf" as ActiveTab, label: "Merge PDFs", icon: "docs" },
+              { key: "scanner" as ActiveTab, label: "Document Scanner", icon: "checker" },
+            ]).map(({ key, label, icon }) => (
               <button
                 key={key}
                 onClick={() => setTab(key)}
-                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-200 ${
+                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
                   tab === key
-                    ? "bg-primary text-primary-foreground shadow-md"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                    ? "bg-primary text-primary-foreground shadow-2xs"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                <Icon className="h-4 w-4" />
+                <UL0Icon name={icon} size={16} />
                 <span className="hidden sm:inline">{label}</span>
               </button>
             ))}
@@ -222,10 +204,12 @@ function ImageToPdf() {
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => inputRef.current?.click()}
-        className="border-2 border-dashed border-border/80 rounded-2xl p-10 text-center cursor-pointer hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 group"
+        className="border-2 border-dashed border-border/80 rounded-3xl p-10 text-center cursor-pointer hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 group shadow-2xs"
       >
-        <Upload className="h-10 w-10 mx-auto mb-3 text-muted-foreground group-hover:text-primary transition-colors" />
-        <p className="text-sm font-medium text-foreground">Drop images here or click to browse</p>
+        <div className="mb-3 flex justify-center">
+          <UL0Icon name="upload" animated={true} size={40} />
+        </div>
+        <p className="text-sm font-semibold text-foreground">Drop images here or click to browse</p>
         <p className="text-xs text-muted-foreground mt-1">JPG, PNG, WebP, GIF — unlimited files</p>
         <input
           ref={inputRef}
@@ -239,39 +223,39 @@ function ImageToPdf() {
 
       {/* Image list */}
       {images.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {images.map((img, idx) => (
             <div
               key={img.id}
-              className="flex items-center gap-3 p-3 bg-card rounded-xl border border-border/60 group hover:border-primary/40 transition-colors"
+              className="flex items-center gap-3 p-3.5 bg-card rounded-2xl border border-border group hover:border-primary/40 transition-colors shadow-2xs"
             >
-              <GripVertical className="h-4 w-4 text-muted-foreground/40" />
+              <span className="font-mono text-muted-foreground select-none text-xs">⋮⋮</span>
               <img
                 src={img.preview}
                 alt={img.name}
-                className="h-12 w-12 object-cover rounded-lg border border-border/50"
+                className="h-12 w-12 object-cover rounded-xl border border-border/50"
               />
-              <span className="flex-1 text-sm truncate">{img.name}</span>
+              <span className="flex-1 text-xs sm:text-sm truncate font-medium">{img.name}</span>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => move(idx, -1)}
                   disabled={idx === 0}
-                  className="p-1.5 rounded-lg hover:bg-muted disabled:opacity-30 transition-colors"
+                  className="p-1.5 rounded-full hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
                 >
-                  <ChevronUp className="h-3.5 w-3.5" />
+                  <UL0Icon name="arrowup" size={14} />
                 </button>
                 <button
                   onClick={() => move(idx, 1)}
                   disabled={idx === images.length - 1}
-                  className="p-1.5 rounded-lg hover:bg-muted disabled:opacity-30 transition-colors"
+                  className="p-1.5 rounded-full hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
                 >
-                  <ChevronDown className="h-3.5 w-3.5" />
+                  <UL0Icon name="arrowdown" size={14} />
                 </button>
                 <button
                   onClick={() => removeImage(img.id)}
-                  className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
+                  className="p-1.5 rounded-full hover:bg-destructive/10 text-destructive transition-colors cursor-pointer"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <UL0Icon name="trash" size={14} />
                 </button>
               </div>
             </div>
@@ -323,10 +307,10 @@ function ImageToPdf() {
         <button
           onClick={generatePdf}
           disabled={generating}
-          className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+          className="w-full py-3.5 bg-primary text-primary-foreground rounded-full font-bold text-sm hover:opacity-90 disabled:opacity-60 transition-all flex items-center justify-center gap-2 shadow-2xs cursor-pointer"
         >
-          <Download className="h-4 w-4" />
-          {generating ? "Generating PDF..." : `Generate PDF (${images.length} image${images.length > 1 ? "s" : ""})`}
+          <UL0Icon name="download" size={16} />
+          <span>{generating ? "Generating PDF..." : `Generate PDF (${images.length} image${images.length > 1 ? "s" : ""})`}</span>
         </button>
       )}
     </div>
@@ -411,10 +395,12 @@ function MergePdfs() {
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => inputRef.current?.click()}
-        className="border-2 border-dashed border-border/80 rounded-2xl p-10 text-center cursor-pointer hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 group"
+        className="border-2 border-dashed border-border/80 rounded-3xl p-10 text-center cursor-pointer hover:border-primary/60 hover:bg-primary/5 transition-all duration-300 group shadow-2xs"
       >
-        <FileStack className="h-10 w-10 mx-auto mb-3 text-muted-foreground group-hover:text-primary transition-colors" />
-        <p className="text-sm font-medium text-foreground">Drop PDF files here or click to browse</p>
+        <div className="mb-3 flex justify-center">
+          <UL0Icon name="docs" animated={true} size={40} />
+        </div>
+        <p className="text-sm font-semibold text-foreground">Drop PDF files here or click to browse</p>
         <p className="text-xs text-muted-foreground mt-1">Select 2 or more PDFs to merge</p>
         <input
           ref={inputRef}
@@ -428,40 +414,40 @@ function MergePdfs() {
 
       {/* PDF list */}
       {pdfs.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {pdfs.map((pdf, idx) => (
             <div
               key={pdf.id}
-              className="flex items-center gap-3 p-3 bg-card rounded-xl border border-border/60 group hover:border-primary/40 transition-colors"
+              className="flex items-center gap-3 p-3.5 bg-card rounded-2xl border border-border group hover:border-primary/40 transition-colors shadow-2xs"
             >
-              <GripVertical className="h-4 w-4 text-muted-foreground/40" />
-              <div className="h-12 w-12 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
-                <FileText className="h-5 w-5 text-red-500" />
+              <span className="font-mono text-muted-foreground select-none text-xs">⋮⋮</span>
+              <div className="h-12 w-12 rounded-xl bg-surface-2 border border-border flex items-center justify-center shrink-0">
+                <UL0Icon name="docs" size={24} />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm truncate">{pdf.name}</p>
+                <p className="text-xs sm:text-sm font-semibold truncate">{pdf.name}</p>
                 <p className="text-xs text-muted-foreground">{pdf.pages} page{pdf.pages > 1 ? "s" : ""}</p>
               </div>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => move(idx, -1)}
                   disabled={idx === 0}
-                  className="p-1.5 rounded-lg hover:bg-muted disabled:opacity-30 transition-colors"
+                  className="p-1.5 rounded-full hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
                 >
-                  <ChevronUp className="h-3.5 w-3.5" />
+                  <UL0Icon name="arrowup" size={14} />
                 </button>
                 <button
                   onClick={() => move(idx, 1)}
                   disabled={idx === pdfs.length - 1}
-                  className="p-1.5 rounded-lg hover:bg-muted disabled:opacity-30 transition-colors"
+                  className="p-1.5 rounded-full hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
                 >
-                  <ChevronDown className="h-3.5 w-3.5" />
+                  <UL0Icon name="arrowdown" size={14} />
                 </button>
                 <button
                   onClick={() => removePdf(pdf.id)}
-                  className="p-1.5 rounded-lg hover:bg-destructive/10 text-destructive transition-colors"
+                  className="p-1.5 rounded-full hover:bg-destructive/10 text-destructive transition-colors cursor-pointer"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
+                  <UL0Icon name="trash" size={14} />
                 </button>
               </div>
             </div>
@@ -472,19 +458,19 @@ function MergePdfs() {
       {/* Options + merge */}
       {pdfs.length > 0 && (
         <>
-          <div className="flex items-center gap-3 p-4 bg-muted/20 rounded-xl border border-border/40">
+          <div className="flex items-center gap-3 p-4 bg-surface-2 rounded-2xl border border-border">
             <div className="flex-1">
-              <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Output Filename</label>
+              <label className="text-xs font-semibold text-muted-foreground mb-1.5 block">Output Filename</label>
               <input
                 type="text"
                 value={filename}
                 onChange={(e) => setFilename(e.target.value)}
                 placeholder="merged-document"
-                className="w-full px-3 py-2 bg-background border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary/40"
+                className="w-full px-3.5 py-2 bg-card border border-border rounded-xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-2xs font-mono"
               />
             </div>
             <div className="text-right shrink-0">
-              <p className="text-2xl font-bold text-foreground">{totalPages}</p>
+              <p className="text-2xl font-extrabold text-foreground tracking-tight">{totalPages}</p>
               <p className="text-xs text-muted-foreground">total pages</p>
             </div>
           </div>
@@ -492,10 +478,10 @@ function MergePdfs() {
           <button
             onClick={mergePdfs}
             disabled={merging || pdfs.length < 2}
-            className="w-full py-3 bg-primary text-primary-foreground rounded-xl font-semibold text-sm hover:bg-primary/90 disabled:opacity-60 transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20"
+            className="w-full py-3.5 bg-primary text-primary-foreground rounded-full font-bold text-sm hover:opacity-90 disabled:opacity-60 transition-all flex items-center justify-center gap-2 shadow-2xs cursor-pointer"
           >
-            <FileStack className="h-4 w-4" />
-            {merging ? "Merging..." : `Merge ${pdfs.length} PDFs`}
+            <UL0Icon name="docs" size={16} />
+            <span>{merging ? "Merging..." : `Merge ${pdfs.length} PDFs`}</span>
           </button>
         </>
       )}

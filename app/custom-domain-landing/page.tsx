@@ -6,15 +6,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { CopyField } from "@/components/copy-field"
-import {
-  Globe,
-  ShieldCheck,
-  Check,
-  ExternalLink,
-  ArrowRight,
-  AlertCircle,
-  HelpCircle,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { getDomainByName } from "@/lib/appwrite/domains"
 import { DEFAULT_HOST } from "@/lib/appwrite/config"
 
@@ -59,8 +51,8 @@ export default async function CustomDomainLandingPage() {
               className="mx-auto h-12 w-auto object-contain"
             />
           ) : (
-            <div className="mx-auto h-12 w-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
-              <Globe className="h-6 w-6" />
+            <div className="mx-auto h-14 w-14 rounded-2xl bg-primary/10 text-primary flex items-center justify-center">
+              <UL0Icon name="domain" className="h-6 w-6" />
             </div>
           )}
 
@@ -77,7 +69,7 @@ export default async function CustomDomainLandingPage() {
               className="text-xs text-muted-foreground hover:text-foreground inline-flex items-center gap-1 font-medium"
             >
               <span>Learn more about UL0</span>
-              <ArrowRight className="h-3 w-3" />
+              <UL0Icon name="arrowright" className="h-3 w-3" />
             </Link>
           </div>
         </div>
@@ -94,8 +86,8 @@ export default async function CustomDomainLandingPage() {
         <div className="container mx-auto px-4 sm:px-6 max-w-4xl space-y-16">
           {/* Header */}
           <div className="border-b border-border pb-6 space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-xs font-medium border border-border bg-muted/40 text-muted-foreground">
-              <Globe className="h-3 w-3 text-primary" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold border border-border bg-muted/40 text-muted-foreground">
+              <UL0Icon name="domain" className="h-3 w-3 text-primary" />
               <span>Branded Infrastructure</span>
             </div>
             <h1 className="text-2xl sm:text-4xl font-semibold tracking-tight text-foreground">
@@ -177,9 +169,9 @@ export default async function CustomDomainLandingPage() {
           </div>
 
           {/* Common failure states / troubleshooting */}
-          <div className="rounded-lg border border-border bg-muted/20 p-6 space-y-4 text-xs">
+          <div className="rounded-3xl border border-border bg-muted/20 p-6 space-y-4 text-xs">
             <h2 className="font-semibold text-foreground flex items-center gap-1.5 text-sm">
-              <AlertCircle className="h-4 w-4 text-primary" />
+              <UL0Icon name="warning" className="h-4 w-4 text-primary" />
               Troubleshooting DNS Verification
             </h2>
 

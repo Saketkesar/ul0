@@ -4,7 +4,7 @@ import Link from "next/link"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { COMPETITORS } from "@/lib/comparisons"
-import { Check, X, ArrowRight, ExternalLink, ArrowLeft } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface Props {
   params: Promise<{ competitor: string }>
@@ -77,8 +77,8 @@ export default async function CompetitorComparePage({ params }: Props) {
         {/* Navigation Breadcrumb */}
         <div className="border-b border-border">
           <div className="max-w-5xl mx-auto px-4 py-3 flex items-center gap-2 text-xs text-muted-foreground">
-            <Link href="/compare" className="hover:text-foreground inline-flex items-center gap-1 transition-colors">
-              <ArrowLeft className="h-3 w-3" />
+            <Link href="/compare" className="hover:text-foreground inline-flex items-center gap-1.5 transition-colors">
+              <UL0Icon name="arrowleft" size={12} />
               <span>Comparisons</span>
             </Link>
             <span className="text-muted-foreground/40">/</span>
@@ -218,10 +218,10 @@ export default async function CompetitorComparePage({ params }: Props) {
                 href={data.sourceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 hover:text-foreground underline underline-offset-4"
+                className="inline-flex items-center gap-1.5 hover:text-foreground underline underline-offset-4"
               >
                 <span>{data.name} public pricing page</span>
-                <ExternalLink className="h-3 w-3" />
+                <UL0Icon name="external" size={12} />
               </a>
             </div>
           </div>
@@ -235,21 +235,21 @@ export default async function CompetitorComparePage({ params }: Props) {
             </h2>
 
             <div className="grid gap-6 sm:grid-cols-2">
-              <div className="rounded-xl border border-border bg-card p-6 space-y-3">
+              <div className="rounded-3xl border border-border bg-card p-6 sm:p-7 space-y-3 shadow-2xs">
                 <h3 className="text-sm font-semibold text-foreground">
                   Choose UL0 if:
                 </h3>
                 <ul className="space-y-2.5 text-xs text-muted-foreground">
                   {data.whenUl0Better.map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2">
-                      <Check className="h-3.5 w-3.5 text-foreground mt-0.5 shrink-0" />
+                      <UL0Icon name="check" size={14} className="mt-0.5 shrink-0" />
                       <span className="leading-relaxed">{item}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="rounded-xl border border-border bg-card p-6 space-y-3">
+              <div className="rounded-3xl border border-border bg-card p-6 sm:p-7 space-y-3 shadow-2xs">
                 <h3 className="text-sm font-semibold text-foreground">
                   Choose {data.name} if:
                 </h3>

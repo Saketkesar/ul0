@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Check, Sparkles, BarChart2, ShieldCheck, Zap } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "UTM Campaign Tracking Guide 2026: Attribute Every Conversion | ul0",
@@ -28,7 +28,7 @@ export default function UtmTrackingGuidePage() {
         <article className="mx-auto max-w-3xl space-y-8">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Link href="/blog" className="hover:text-foreground inline-flex items-center gap-1">
-              <ArrowLeft className="h-3 w-3" /> Back to blog
+              <UL0Icon name="arrowleft" className="h-3 w-3" /> Back to blog
             </Link>
             <span>/</span>
             <span className="text-foreground">Analytics &amp; Attribution</span>
@@ -36,7 +36,7 @@ export default function UtmTrackingGuidePage() {
 
           <header className="space-y-4">
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-500 border border-blue-500/20">
-              <Sparkles className="h-3 w-3" />
+              <UL0Icon name="sparkles" className="h-3 w-3" />
               Analytics Masterclass 2026
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl leading-tight">

@@ -5,32 +5,7 @@ import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import Image from "next/image"
 import { UserButton } from "@clerk/nextjs"
-import {
-  LayoutDashboard,
-  Link2,
-  Globe,
-  BarChart3,
-  QrCode,
-  Megaphone,
-  Key,
-  CreditCard,
-  Settings,
-  ShieldCheck,
-  Search,
-  Plus,
-  Moon,
-  Sun,
-  Menu,
-  X,
-  Command,
-  HelpCircle,
-  ExternalLink,
-  ChevronRight,
-  Sparkles,
-  AlertTriangle,
-  FolderOpen,
-  FileSpreadsheet,
-} from "lucide-react"
+import { UL0Icon, UL0IconName } from "@/components/ul0-icon"
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { CreateLinkButton } from "@/app/dashboard/create-link-button"
@@ -179,7 +154,7 @@ export function DashboardShell({
   interface NavItem {
     name: string
     href: string
-    icon: React.ComponentType<{ className?: string }>
+    icon: UL0IconName
     external?: boolean
     badge?: string
   }
@@ -193,11 +168,11 @@ export function DashboardShell({
     {
       group: "Main",
       items: [
-        { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-        { name: "Links", href: "/dashboard/links", icon: Link2 },
-        { name: "QR Codes", href: "/dashboard/qr-studio", icon: QrCode },
-        { name: "Domains", href: "/dashboard/domains", icon: Globe },
-        { name: "Campaigns", href: "/dashboard/campaigns", icon: Megaphone },
+        { name: "Overview", href: "/dashboard", icon: "dashboard" },
+        { name: "Links", href: "/dashboard/links", icon: "link" },
+        { name: "QR Codes", href: "/dashboard/qr-studio", icon: "qr" },
+        { name: "Domains", href: "/dashboard/domains", icon: "domain" },
+        { name: "Campaigns", href: "/dashboard/campaigns", icon: "campaign" },
       ],
     },
     {
@@ -206,16 +181,16 @@ export function DashboardShell({
         {
           name: "API Keys",
           href: "/dashboard/keys",
-          icon: Key,
+          icon: "apikey",
           badge: plan.slug === "free_user" ? "Pro" : undefined,
         },
-        { name: "REST API Docs", href: "/docs", icon: ExternalLink, external: true },
+        { name: "REST API Docs", href: "/docs", icon: "docs", external: true },
       ],
     },
     {
       group: "Account",
       items: [
-        { name: "Billing & Plans", href: "/dashboard/billing", icon: CreditCard },
+        { name: "Billing & Plans", href: "/dashboard/billing", icon: "billing" },
       ],
     },
     ...(isAdmin
@@ -223,7 +198,7 @@ export function DashboardShell({
           {
             group: "Exclusive",
             items: [
-              { name: "Marketing Engine", href: "/dashboard/marketing", icon: ShieldCheck, badge: "Admin" },
+              { name: "Marketing Engine", href: "/dashboard/marketing", icon: "shield", badge: "Admin" },
             ],
           },
         ]
@@ -245,9 +220,9 @@ export function DashboardShell({
 
   const planBadgeStyle =
     plan.slug === "business_user"
-      ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 border-slate-700"
+      ? "bg-primary text-primary-foreground border-primary"
       : plan.slug === "pro_user"
-      ? "bg-primary/10 text-primary border-primary/20"
+      ? "bg-surface-3 text-primary border-primary/30"
       : "bg-muted text-muted-foreground border-border"
 
   const renderNavItems = () => (
@@ -259,7 +234,6 @@ export function DashboardShell({
           </div>
           <div className="space-y-1">
             {section.items.map((item) => {
-              const Icon = item.icon
               const isActive =
                 item.href === "/dashboard"
                   ? pathname === "/dashboard"
@@ -271,30 +245,26 @@ export function DashboardShell({
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground transition-colors group"
+                  className="flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-xs font-medium text-muted-foreground hover:bg-surface-2 hover:text-foreground transition-colors group"
                 >
                   <div className="flex items-center gap-3">
-                    <Icon className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    <UL0Icon name={item.icon} size={16} />
                     <span>{item.name}</span>
                   </div>
-                  <ExternalLink className="h-3 w-3 opacity-60" />
+                  <UL0Icon name="external" size={12} />
                 </a>
               ) : (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${
+                  className={`flex items-center justify-between gap-3 px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                     isActive
-                      ? "bg-primary/10 text-primary font-semibold"
-                      : "text-muted-foreground hover:bg-accent hover:text-foreground"
+                      ? "bg-surface-3 text-primary font-semibold"
+                      : "text-muted-foreground hover:bg-surface-2 hover:text-foreground"
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <Icon
-                      className={`h-4 w-4 shrink-0 ${
-                        isActive ? "text-primary" : "text-muted-foreground"
-                      }`}
-                    />
+                    <UL0Icon name={item.icon} size={16} />
                     <span>{item.name}</span>
                   </div>
                   {item.badge && (
@@ -321,9 +291,9 @@ export function DashboardShell({
             type="button"
             onClick={() => setMobileMenuOpen(true)}
             aria-label="Open sidebar menu"
-            className="md:hidden h-9 w-9 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+            className="md:hidden h-9 w-9 rounded-xl border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors cursor-pointer"
           >
-            <Menu className="h-4 w-4" />
+            <UL0Icon name="tools" size={16} />
           </button>
 
           {/* Desktop UL0 Logo */}
@@ -340,7 +310,7 @@ export function DashboardShell({
 
           {/* Plan badge */}
           <span
-            className={`hidden sm:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium border ${planBadgeStyle}`}
+            className={`hidden sm:inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold border ${planBadgeStyle}`}
           >
             {plan.label} Plan
           </span>
@@ -351,14 +321,14 @@ export function DashboardShell({
           <button
             type="button"
             onClick={() => setCommandOpen(true)}
-            className="w-full flex items-center justify-between gap-3 px-3 py-1.5 rounded-lg border border-border bg-surface-2 text-xs text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all shadow-2xs"
+            className="w-full flex items-center justify-between gap-3 px-3.5 py-1.5 rounded-full border border-border bg-surface-2 text-xs text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all shadow-2xs cursor-pointer"
           >
             <div className="flex items-center gap-2">
-              <Search className="h-3.5 w-3.5" />
+              <UL0Icon name="search" size={14} />
               <span>Search links, domains, or commands...</span>
             </div>
-            <kbd className="hidden lg:inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded border border-border bg-surface-3 text-[10px] font-mono text-muted-foreground">
-              <Command className="h-2.5 w-2.5" /> K
+            <kbd className="hidden lg:inline-flex items-center gap-0.5 px-2 py-0.5 rounded-md border border-border bg-surface-3 text-[10px] font-mono text-muted-foreground">
+              ⌘ K
             </kbd>
           </button>
         </div>
@@ -375,9 +345,9 @@ export function DashboardShell({
             type="button"
             onClick={toggleTheme}
             aria-label="Toggle light and dark mode"
-            className="h-9 w-9 rounded-lg border border-border bg-surface-2 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shadow-2xs"
+            className="h-9 w-9 rounded-full border border-border bg-surface-2 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-3 transition-colors shadow-2xs cursor-pointer"
           >
-            {isDark ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4" />}
+            <UL0Icon name="palette" size={16} />
           </button>
 
           {/* Keyboard shortcuts trigger */}
@@ -385,10 +355,10 @@ export function DashboardShell({
             type="button"
             onClick={() => setShortcutsOpen(true)}
             aria-label="Keyboard shortcuts"
-            className="hidden sm:flex h-9 w-9 rounded-lg border border-border bg-surface-2 items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors shadow-2xs"
+            className="hidden sm:flex h-9 w-9 rounded-full border border-border bg-surface-2 items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-3 transition-colors shadow-2xs cursor-pointer"
             title="Keyboard shortcuts (?)"
           >
-            <HelpCircle className="h-4 w-4" />
+            <UL0Icon name="info" size={15} />
           </button>
 
           {/* Clerk Profile */}
@@ -396,7 +366,7 @@ export function DashboardShell({
             <UserButton
               appearance={{
                 elements: {
-                  avatarBox: "h-8 w-8 rounded-lg border border-border",
+                  avatarBox: "h-8 w-8 rounded-full border border-border",
                 },
               }}
             />
@@ -412,10 +382,10 @@ export function DashboardShell({
 
           {/* Persistent Usage & Upgrade Chip */}
           <div className="mt-8 pt-4 border-t border-border/80">
-            <div className="rounded-xl border border-border bg-surface-2 p-3 space-y-2.5 shadow-2xs">
+            <div className="rounded-2xl border border-border bg-surface-2 p-3.5 space-y-3 shadow-2xs">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-medium text-foreground">Usage &amp; Limits</span>
-                <span className={`px-1.5 py-0.2 rounded text-[10px] font-medium border ${planBadgeStyle}`}>
+                <span className="font-semibold text-foreground">Usage &amp; Limits</span>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${planBadgeStyle}`}>
                   {plan.label}
                 </span>
               </div>
@@ -460,9 +430,9 @@ export function DashboardShell({
               {plan.slug === "free_user" && (
                 <Link
                   href="/dashboard/billing"
-                  className="w-full mt-2 inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary/10 border border-primary/20 py-1.5 text-xs font-semibold text-primary hover:bg-primary hover:text-white transition-all"
+                  className="w-full mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 py-2 text-xs font-semibold text-primary hover:bg-primary hover:text-white transition-all"
                 >
-                  <Sparkles className="h-3 w-3" />
+                  <UL0Icon name="sparkles" size={14} animated={true} />
                   <span>Upgrade to Pro ($3)</span>
                 </Link>
               )}
@@ -470,9 +440,9 @@ export function DashboardShell({
               {plan.slug === "pro_user" && isHighUsage && (
                 <Link
                   href="/dashboard/billing"
-                  className="w-full mt-2 inline-flex items-center justify-center gap-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 py-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-white transition-all"
+                  className="w-full mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-white transition-all"
                 >
-                  <AlertTriangle className="h-3 w-3" />
+                  <UL0Icon name="warning" size={14} />
                   <span>Upgrade to Business</span>
                 </Link>
               )}
@@ -499,9 +469,9 @@ export function DashboardShell({
                     type="button"
                     onClick={() => setMobileMenuOpen(false)}
                     aria-label="Close menu"
-                    className="p-1 rounded-md text-muted-foreground hover:text-foreground"
+                    className="p-1 rounded-md text-muted-foreground hover:text-foreground cursor-pointer"
                   >
-                    <X className="h-5 w-5" />
+                    <UL0Icon name="close" size={16} />
                   </button>
                 </div>
                 {renderNavItems()}
@@ -509,8 +479,9 @@ export function DashboardShell({
 
               <div className="pt-4 border-t border-border text-xs text-muted-foreground">
                 <p>Plan: <span className="font-semibold text-foreground">{plan.label}</span></p>
-                <Link href="/dashboard/billing" className="text-primary hover:underline font-medium mt-1 inline-block">
-                  Manage plan &amp; billing →
+                <Link href="/dashboard/billing" className="text-primary hover:underline font-semibold mt-1 inline-flex items-center gap-1">
+                  <span>Manage plan &amp; billing</span>
+                  <UL0Icon name="arrowright" size={10} />
                 </Link>
               </div>
             </div>
@@ -538,7 +509,9 @@ export function DashboardShell({
                 setCommandOpen(false)
               }}
             >
-              <LayoutDashboard className="mr-2 h-4 w-4" />
+              <div className="mr-2">
+                <UL0Icon name="dashboard" size={14} />
+              </div>
               <span>Overview</span>
             </CommandItem>
             <CommandItem
@@ -547,7 +520,9 @@ export function DashboardShell({
                 setCommandOpen(false)
               }}
             >
-              <Link2 className="mr-2 h-4 w-4" />
+              <div className="mr-2">
+                <UL0Icon name="link" size={14} />
+              </div>
               <span>All Short Links</span>
             </CommandItem>
             <CommandItem
@@ -556,7 +531,9 @@ export function DashboardShell({
                 setCommandOpen(false)
               }}
             >
-              <Globe className="mr-2 h-4 w-4" />
+              <div className="mr-2">
+                <UL0Icon name="domain" size={14} />
+              </div>
               <span>Custom Domains</span>
             </CommandItem>
             <CommandItem
@@ -565,7 +542,9 @@ export function DashboardShell({
                 setCommandOpen(false)
               }}
             >
-              <Megaphone className="mr-2 h-4 w-4" />
+              <div className="mr-2">
+                <UL0Icon name="campaign" size={14} />
+              </div>
               <span>Campaigns &amp; UTM</span>
             </CommandItem>
             <CommandItem
@@ -574,7 +553,9 @@ export function DashboardShell({
                 setCommandOpen(false)
               }}
             >
-              <Key className="mr-2 h-4 w-4" />
+              <div className="mr-2">
+                <UL0Icon name="apikey" size={14} />
+              </div>
               <span>Developer API Keys</span>
             </CommandItem>
             <CommandItem
@@ -583,7 +564,9 @@ export function DashboardShell({
                 setCommandOpen(false)
               }}
             >
-              <CreditCard className="mr-2 h-4 w-4" />
+              <div className="mr-2">
+                <UL0Icon name="billing" size={14} />
+              </div>
               <span>Billing &amp; Subscription</span>
             </CommandItem>
           </CommandGroup>
@@ -594,7 +577,9 @@ export function DashboardShell({
                 toggleTheme()
               }}
             >
-              {isDark ? <Sun className="mr-2 h-4 w-4 text-amber-400" /> : <Moon className="mr-2 h-4 w-4" />}
+              <div className="mr-2">
+                <UL0Icon name="palette" size={14} />
+              </div>
               <span>Toggle Light / Dark Theme</span>
             </CommandItem>
             <CommandItem
@@ -604,7 +589,9 @@ export function DashboardShell({
                 if (createBtn) createBtn.click()
               }}
             >
-              <Plus className="mr-2 h-4 w-4 text-primary" />
+              <div className="mr-2">
+                <UL0Icon name="plus" size={14} />
+              </div>
               <span>Create New Short Link</span>
             </CommandItem>
           </CommandGroup>
@@ -613,7 +600,7 @@ export function DashboardShell({
 
       {/* Keyboard Shortcuts Dialog */}
       <Dialog open={shortcutsOpen} onOpenChange={setShortcutsOpen}>
-        <DialogContent className="max-w-sm rounded-xl">
+        <DialogContent className="max-w-sm rounded-2xl">
           <DialogHeader>
             <DialogTitle className="text-base font-semibold">Keyboard Shortcuts</DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground">

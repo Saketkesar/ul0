@@ -4,7 +4,6 @@ import { Footer } from "@/components/footer"
 import { ThreatRadarClient, BlockedThreatItem } from "@/components/threat-radar-client"
 import { getFlaggedPhishingLinks } from "@/lib/appwrite/links"
 import { BLOCKED_DOMAINS } from "@/lib/utils/slug"
-import { ShieldAlert, ShieldCheck, Lock, ExternalLink, AlertTriangle } from "lucide-react"
 
 export const revalidate = 60 // Refresh every 60 seconds
 

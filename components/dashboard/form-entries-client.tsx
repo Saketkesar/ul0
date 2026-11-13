@@ -4,21 +4,7 @@ import React, { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
 import type { FormDoc } from "@/lib/forms/schema"
 import { INPUT_FIELD_TYPES } from "@/lib/forms/schema"
-import {
-  ArrowLeft,
-  Download,
-  ExternalLink,
-  FileSpreadsheet,
-  RefreshCw,
-  Search,
-  Trash2,
-  Edit3,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  AlertCircle,
-  CheckCircle2,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface FormEntriesClientProps {
   form: FormDoc
@@ -132,14 +118,14 @@ export function FormEntriesClient({ form }: FormEntriesClientProps) {
             href="/forms"
             className="p-1.5 rounded-md hover:bg-[var(--surface-3)] text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <UL0Icon name="arrowleft" size={16} />
           </Link>
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold text-[var(--foreground)] truncate max-w-sm">
                 {form.title}
               </h1>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--surface-3)] border border-[var(--border)] font-mono text-[var(--muted-foreground)]">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[var(--surface-3)] border border-[var(--border)] font-mono text-[var(--muted-foreground)]">
                 {total} {total === 1 ? "entry" : "entries"}
               </span>
             </div>
@@ -147,7 +133,7 @@ export function FormEntriesClient({ form }: FormEntriesClientProps) {
               <span>/e/{form.slug}</span>
               <span>·</span>
               <span className="text-emerald-500 flex items-center gap-1">
-                <CheckCircle2 className="w-3 h-3" />
+                <UL0Icon name="check" size={12} />
                 <span>Connected to Google Sheet</span>
               </span>
             </div>
@@ -159,24 +145,24 @@ export function FormEntriesClient({ form }: FormEntriesClientProps) {
             type="button"
             onClick={() => fetchEntries(offset)}
             disabled={isLoading}
-            className="p-2 rounded-lg border border-[var(--border)] hover:bg-[var(--surface-3)] text-xs font-medium cursor-pointer transition-colors"
+            className="p-2 rounded-full border border-[var(--border)] hover:bg-[var(--surface-3)] text-xs font-medium cursor-pointer transition-colors"
             title="Refresh entries"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isLoading ? "animate-spin" : ""}`} />
+            <UL0Icon name="loading" size={14} className={isLoading ? "animate-spin" : ""} />
           </button>
 
           <a
             href={`/api/forms/${form.id}/entries?export=csv`}
             download={`${form.slug}-entries.csv`}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-[var(--border)] bg-[var(--surface-3)] hover:border-[var(--primary)] text-xs font-semibold text-[var(--foreground)] transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full border border-[var(--border)] bg-[var(--surface-3)] hover:border-[var(--primary)] text-xs font-semibold text-[var(--foreground)] transition-colors"
           >
-            <Download className="w-3.5 h-3.5" />
+            <UL0Icon name="download" size={14} />
             <span>Export CSV</span>
           </a>
 
           <Link
             href={`/forms/${form.id}`}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-[var(--primary)] text-white text-xs font-semibold hover:opacity-90 transition-opacity"
           >
             <span>Edit Form</span>
           </Link>
@@ -186,13 +172,13 @@ export function FormEntriesClient({ form }: FormEntriesClientProps) {
       {/* Search Bar */}
       <div className="flex items-center justify-between gap-4">
         <div className="relative max-w-xs w-full">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--muted-foreground)]" />
+          <UL0Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 opacity-60" />
           <input
             type="text"
             value={searchFilter}
             onChange={(e) => setSearchFilter(e.target.value)}
             placeholder="Search this page..."
-            className="w-full h-9 pl-9 pr-3 text-xs bg-[var(--surface-3)] border border-[var(--border)] rounded-lg outline-none text-[var(--foreground)]"
+            className="w-full h-9 pl-9 pr-3 text-xs bg-[var(--surface-3)] border border-[var(--border)] rounded-full outline-none text-[var(--foreground)]"
           />
         </div>
 
@@ -203,8 +189,8 @@ export function FormEntriesClient({ form }: FormEntriesClientProps) {
 
       {/* Error state */}
       {fetchError && (
-        <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-500 text-xs flex items-start gap-2.5">
-          <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+        <div className="p-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-500 text-xs flex items-start gap-2.5">
+          <UL0Icon name="warning" size={16} className="shrink-0 mt-0.5" />
           <div>
             <strong className="block font-semibold mb-0.5">Could not load sheet responses</strong>
             {fetchError}
@@ -303,17 +289,17 @@ export function FormEntriesClient({ form }: FormEntriesClientProps) {
               type="button"
               disabled={offset <= 0 || isLoading}
               onClick={() => fetchEntries(Math.max(0, offset - limit))}
-              className="p-1 rounded hover:bg-[var(--card)] text-[var(--foreground)] disabled:opacity-30 cursor-pointer"
+              className="p-1 rounded-full hover:bg-[var(--card)] text-[var(--foreground)] disabled:opacity-30 cursor-pointer"
             >
-              <ChevronLeft className="w-4 h-4" />
+              <UL0Icon name="arrowleft" size={14} />
             </button>
             <button
               type="button"
               disabled={offset + limit >= total || isLoading}
               onClick={() => fetchEntries(offset + limit)}
-              className="p-1 rounded hover:bg-[var(--card)] text-[var(--foreground)] disabled:opacity-30 cursor-pointer"
+              className="p-1 rounded-full hover:bg-[var(--card)] text-[var(--foreground)] disabled:opacity-30 cursor-pointer"
             >
-              <ChevronRight className="w-4 h-4" />
+              <UL0Icon name="arrowright" size={14} />
             </button>
           </div>
         </div>
@@ -335,7 +321,7 @@ export function FormEntriesClient({ form }: FormEntriesClientProps) {
                 onClick={() => setSelectedEntry(null)}
                 className="p-1 text-[var(--muted-foreground)] hover:text-[var(--foreground)] cursor-pointer"
               >
-                <X className="w-4 h-4" />
+                <UL0Icon name="close" size={16} />
               </button>
             </div>
 
@@ -409,7 +395,7 @@ export function FormEntriesClient({ form }: FormEntriesClientProps) {
                             className="inline-flex items-center gap-1 text-[11px] text-[var(--primary)] hover:underline mt-1"
                           >
                             <span>Open original</span>
-                            <ExternalLink className="w-3 h-3" />
+                            <UL0Icon name="external" size={12} />
                           </a>
                         </div>
                       ) : (

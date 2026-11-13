@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Wrench } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "P2P File Sharing — Coming Back Soon | ul0",
@@ -18,7 +18,7 @@ export default function SharePage() {
           style={{
             background: "#fff",
             border: "1px solid #e5e7eb",
-            borderRadius: "16px",
+            borderRadius: "24px",
             padding: "48px 40px",
             maxWidth: 440,
             width: "100%",
@@ -30,7 +30,7 @@ export default function SharePage() {
             style={{
               width: 52,
               height: 52,
-              borderRadius: "12px",
+              borderRadius: "16px",
               background: "#fef3c7",
               border: "1px solid #fde68a",
               display: "flex",
@@ -39,7 +39,7 @@ export default function SharePage() {
               margin: "0 auto 20px",
             }}
           >
-            <Wrench style={{ width: 24, height: 24, color: "#d97706" }} />
+            <UL0Icon name="tools" className="w-6 h-6 text-amber-600" />
           </div>
 
           <h1
@@ -65,9 +65,9 @@ export default function SharePage() {
               display: "inline-flex",
               alignItems: "center",
               gap: 6,
-              padding: "9px 20px",
-              borderRadius: "8px",
-              background: "#111827",
+              padding: "10px 24px",
+              borderRadius: "9999px",
+              background: "#1B685C",
               color: "#fff",
               fontSize: 13,
               fontWeight: 600,

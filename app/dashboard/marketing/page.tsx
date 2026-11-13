@@ -5,7 +5,7 @@ import { MarketingDashboardClient } from "@/components/marketing-dashboard-clien
 import { listMarketingLinksByOwner } from "@/lib/appwrite/marketing-links"
 import { getTotalBlogCount, getEligibleBlogSlugs } from "@/lib/blog-discovery"
 import { isMarketingAdmin } from "@/lib/marketing-auth"
-import { ShieldCheck, Lock } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const dynamic = "force-dynamic"
 
@@ -29,7 +29,7 @@ export default async function MarketingDashboardPage() {
       <div className="min-h-[60vh] flex items-center justify-center p-4">
         <div className="max-w-md w-full p-8 rounded-2xl border border-border bg-surface-2 text-center space-y-4 shadow-sm">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-muted border border-border text-muted-foreground">
-            <Lock className="h-7 w-7" />
+            <UL0Icon name="lock" className="h-7 w-7" />
           </div>
           <h1 className="text-xl font-bold text-foreground">Access Restricted</h1>
           <p className="text-xs text-muted-foreground leading-relaxed">

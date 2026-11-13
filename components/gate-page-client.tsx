@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { Clock, CheckCircle2, ArrowRight, ShieldCheck, Loader2, Sparkles, AlertCircle, ChevronDown, Zap } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import { AdBanner } from "@/components/ad-banner"
 import { Button } from "@/components/ui/button"
 
@@ -194,7 +194,7 @@ export function GatePageClient({
                 </div>
               ) : (
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-bold shadow-sm animate-pulse">
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <UL0Icon name="loading" className="h-4 w-4 animate-spin" />
                   <span>Skipping...</span>
                 </div>
               )
@@ -206,9 +206,9 @@ export function GatePageClient({
                   className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/80 hover:bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-colors border border-border/60"
                   title="Scroll down to unlock"
                 >
-                  <Clock className="h-3.5 w-3.5 text-amber-500 animate-spin" style={{ animationDuration: "3s" }} />
+                  <UL0Icon name="clock" className="h-3.5 w-3.5 text-amber-500 animate-spin" style={{ animationDuration: "3s" }} />
                   <span className="font-mono font-bold text-amber-500">{secondsLeft}s</span>
-                  <ChevronDown className="h-3.5 w-3.5" />
+                  <UL0Icon name="arrowdown" className="h-3.5 w-3.5" />
                 </button>
               ) : (
                 <button
@@ -218,12 +218,12 @@ export function GatePageClient({
                   title="Click to continue"
                 >
                   {isSubmitting ? (
-                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    <UL0Icon name="loading" className="h-3.5 w-3.5 animate-spin" />
                   ) : (
-                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    <UL0Icon name="check" className="h-3.5 w-3.5" />
                   )}
                   <span>Continue</span>
-                  <ArrowRight className="h-3.5 w-3.5" />
+                  <UL0Icon name="arrowright" className="h-3.5 w-3.5" />
                 </button>
               )
             )}
@@ -257,11 +257,11 @@ export function GatePageClient({
               <div className="flex items-center gap-3.5 text-left w-full sm:w-auto">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
                   {isUnlocked ? (
-                    <CheckCircle2 className="h-6 w-6 text-emerald-400" />
+                    <UL0Icon name="check" className="h-6 w-6 text-emerald-400" />
                   ) : linkType === "auto_skip" ? (
-                    <Zap className="h-6 w-6 text-amber-400 animate-pulse" />
+                    <UL0Icon name="bolt" className="h-6 w-6 text-amber-400 animate-pulse" />
                   ) : (
-                    <Clock className="h-6 w-6 text-amber-400 animate-spin" style={{ animationDuration: "3s" }} />
+                    <UL0Icon name="clock" className="h-6 w-6 text-amber-400 animate-spin" style={{ animationDuration: "3s" }} />
                   )}
                 </div>
 
@@ -279,7 +279,7 @@ export function GatePageClient({
                   <h3 className="text-sm sm:text-base font-bold text-foreground truncate mt-0.5">
                     {linkType === "auto_skip"
                       ? isUnlocked
-                        ? "⚡ Auto-Skipping to Destination..."
+                        ? "Auto-Skipping to Destination..."
                         : `Auto-Skipping in ${secondsLeft}s`
                       : isUnlocked
                       ? isFinalStep
@@ -306,7 +306,7 @@ export function GatePageClient({
                       disabled={isSubmitting}
                       className="w-full sm:w-auto h-11 px-6 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm shadow-md shadow-emerald-500/25 cursor-pointer hover:scale-[1.02] transition-all"
                     >
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      <UL0Icon name="loading" className="h-4 w-4 animate-spin mr-2" />
                       <span>Skipping...</span>
                     </Button>
                   ) : (
@@ -315,7 +315,7 @@ export function GatePageClient({
                       variant="outline"
                       className="w-full sm:w-auto h-11 px-4 border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 text-amber-500 text-xs font-semibold gap-2"
                     >
-                      <ChevronDown className="h-4 w-4 animate-bounce" />
+                      <UL0Icon name="arrowdown" className="h-4 w-4 animate-bounce" />
                       <span>Scroll down to read</span>
                     </Button>
                   )
@@ -327,13 +327,13 @@ export function GatePageClient({
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <UL0Icon name="loading" className="h-4 w-4 animate-spin" />
                         <span>Advancing...</span>
                       </>
                     ) : (
                       <>
                         <span>Continue</span>
-                        <ArrowRight className="h-4 w-4" />
+                        <UL0Icon name="arrowright" className="h-4 w-4" />
                       </>
                     )}
                   </Button>
@@ -343,7 +343,7 @@ export function GatePageClient({
                     variant="outline"
                     className="w-full sm:w-auto h-11 px-4 border-border/80 bg-muted/50 hover:bg-muted text-xs font-semibold text-muted-foreground hover:text-foreground gap-2"
                   >
-                    <ChevronDown className="h-4 w-4 animate-bounce" />
+                    <UL0Icon name="arrowdown" className="h-4 w-4 animate-bounce" />
                     <span>Scroll down to read</span>
                   </Button>
                 )}
@@ -401,9 +401,9 @@ export function GatePageClient({
               {/* Step Icon */}
               <div className="mb-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-3 text-emerald-400">
                 {isUnlocked ? (
-                  <Sparkles className="h-6 w-6 text-emerald-400 animate-pulse" />
+                  <UL0Icon name="sparkles" className="h-6 w-6 text-emerald-400 animate-pulse" />
                 ) : (
-                  <Clock className="h-6 w-6 text-amber-400 animate-pulse" />
+                  <UL0Icon name="clock" className="h-6 w-6 text-amber-400 animate-pulse" />
                 )}
               </div>
 
@@ -411,8 +411,8 @@ export function GatePageClient({
               <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
                 {linkType === "auto_skip"
                   ? isUnlocked
-                    ? "⚡ Auto-Skipping to Destination..."
-                    : `⚡ Auto-Skipping in ${secondsLeft} Seconds`
+                    ? "Auto-Skipping to Destination..."
+                    : `Auto-Skipping in ${secondsLeft} Seconds`
                   : isFinalStep
                   ? isUnlocked
                     ? "Destination Link Ready!"
@@ -434,7 +434,7 @@ export function GatePageClient({
               {/* Error display if any */}
               {errorMessage && (
                 <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2 max-w-md w-full">
-                  <AlertCircle className="h-4 w-4 shrink-0" />
+                  <UL0Icon name="warning" className="h-4 w-4 shrink-0" />
                   <span>{errorMessage}</span>
                 </div>
               )}
@@ -471,12 +471,12 @@ export function GatePageClient({
                 >
                   {isSubmitting ? (
                     <span className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <UL0Icon name="loading" className="h-4 w-4 animate-spin" />
                       <span>Verifying &amp; Advancing...</span>
                     </span>
                   ) : !isUnlocked ? (
                     <span className="flex items-center gap-2">
-                      <Clock className="h-4 w-4" />
+                      <UL0Icon name="clock" className="h-4 w-4" />
                       <span>
                         {linkType === "auto_skip"
                           ? `Auto-skipping in ${secondsLeft}s...`
@@ -486,12 +486,12 @@ export function GatePageClient({
                   ) : isFinalStep ? (
                     <span className="flex items-center gap-2">
                       <span>Continue to {destinationDomain}</span>
-                      <ArrowRight className="h-4 w-4" />
+                      <UL0Icon name="arrowright" className="h-4 w-4" />
                     </span>
                   ) : (
                     <span className="flex items-center gap-2">
                       <span>Continue to Next Article (Step {stepNumber + 1} of {totalSteps})</span>
-                      <ArrowRight className="h-4 w-4" />
+                      <UL0Icon name="arrowright" className="h-4 w-4" />
                     </span>
                   )}
                 </Button>
@@ -499,7 +499,7 @@ export function GatePageClient({
 
               {/* Trust Badge */}
               <div className="mt-4 flex items-center gap-1.5 text-[11px] text-muted-foreground">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                <UL0Icon name="shield" className="h-3.5 w-3.5 text-emerald-500" />
                 <span>Protected by ul0 link verification system</span>
               </div>
             </div>

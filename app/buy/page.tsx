@@ -7,24 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
-import { 
-  DollarSign, 
-  Clock, 
-  ShoppingCart, 
-  AlertTriangle, 
-  CheckCircle2, 
-  XCircle,
-  Coffee,
-  Utensils,
-  Car,
-  Plane,
-  Smartphone,
-  Shirt,
-  Heart,
-  TrendingUp,
-  Calculator,
-  Sparkles
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 import Link from "next/link"
 import {
   Select,
@@ -65,11 +48,11 @@ const getComparisons = (price: number, currency: CurrencyCode) => {
   const priceInUSD = price * usdEquivalent[currency]
   
   return [
-    { icon: <Coffee className="h-5 w-5" />, name: "Coffees", count: Math.round(priceInUSD / 5) },
-    { icon: <Utensils className="h-5 w-5" />, name: "Meals out", count: Math.round(priceInUSD / 15) },
-    { icon: <Smartphone className="h-5 w-5" />, name: "Subscription months", count: Math.round(priceInUSD / 15) },
-    { icon: <Car className="h-5 w-5" />, name: "Commute rides", count: Math.round(priceInUSD / 12) },
-    { icon: <Plane className="h-5 w-5" />, name: "Annual passes", count: Math.round(priceInUSD / 120) },
+    { icon: <UL0Icon name="cart" className="h-5 w-5" />, name: "Coffees", count: Math.round(priceInUSD / 5) },
+    { icon: <UL0Icon name="splitbill" className="h-5 w-5" />, name: "Meals out", count: Math.round(priceInUSD / 15) },
+    { icon: <UL0Icon name="mobile" className="h-5 w-5" />, name: "Subscription months", count: Math.round(priceInUSD / 15) },
+    { icon: <UL0Icon name="rocket" className="h-5 w-5" />, name: "Commute rides", count: Math.round(priceInUSD / 12) },
+    { icon: <UL0Icon name="rocket" className="h-5 w-5" />, name: "Annual passes", count: Math.round(priceInUSD / 120) },
   ].filter(c => c.count > 0)
 }
 
@@ -78,7 +61,7 @@ const getVerdict = (hoursOfWork: number) => {
   if (hoursOfWork < 1) {
     return {
       status: "go",
-      icon: <CheckCircle2 className="h-8 w-8 text-green-500" />,
+      icon: <UL0Icon name="check" className="h-8 w-8 text-green-500" />,
       title: "Go for it",
       message: "Less than an hour of work. Enjoy it!",
       color: "text-green-500",
@@ -87,7 +70,7 @@ const getVerdict = (hoursOfWork: number) => {
   } else if (hoursOfWork < 4) {
     return {
       status: "maybe",
-      icon: <AlertTriangle className="h-8 w-8 text-yellow-500" />,
+      icon: <UL0Icon name="warning" className="h-8 w-8 text-yellow-500" />,
       title: "Think about it",
       message: "A few hours of work. Is it worth it to you?",
       color: "text-yellow-500",
@@ -96,7 +79,7 @@ const getVerdict = (hoursOfWork: number) => {
   } else if (hoursOfWork < 8) {
     return {
       status: "careful",
-      icon: <AlertTriangle className="h-8 w-8 text-orange-500" />,
+      icon: <UL0Icon name="warning" className="h-8 w-8 text-orange-500" />,
       title: "Sleep on it",
       message: "That is almost a full day of work. Consider waiting 24 hours.",
       color: "text-orange-500",
@@ -105,7 +88,7 @@ const getVerdict = (hoursOfWork: number) => {
   } else if (hoursOfWork < 40) {
     return {
       status: "warning",
-      icon: <XCircle className="h-8 w-8 text-red-500" />,
+      icon: <UL0Icon name="close" className="h-8 w-8 text-red-500" />,
       title: "Major purchase",
       message: "This costs you a week or more of work. Plan carefully.",
       color: "text-red-500",
@@ -114,7 +97,7 @@ const getVerdict = (hoursOfWork: number) => {
   } else {
     return {
       status: "stop",
-      icon: <XCircle className="h-8 w-8 text-red-600" />,
+      icon: <UL0Icon name="close" className="h-8 w-8 text-red-600" />,
       title: "Major financial commitment",
       message: "This is a significant financial decision. Verify budget allocation.",
       color: "text-red-600",
@@ -241,10 +224,13 @@ export default function ShouldIBuyPage() {
         <div className="container mx-auto px-4 max-w-2xl">
           <div className="text-center mb-8">
             <Link href="/" className="text-muted-foreground hover:text-foreground text-sm mb-4 inline-flex items-center gap-1 transition-colors">
-              ← Back to Home
+              <UL0Icon name="arrowleft" className="h-4 w-4" />
+              <span>Back to Home</span>
             </Link>
             <div className="flex items-center justify-center gap-3 mt-4 mb-3">
-              <Sparkles className="h-8 w-8 text-primary shrink-0" />
+              <div className="p-3 bg-primary/10 rounded-2xl">
+                <UL0Icon name="sparkles" className="h-8 w-8 text-primary shrink-0" />
+              </div>
               <h1 className="text-3xl sm:text-4xl font-bold text-foreground">Should I Buy This?</h1>
             </div>
             <p className="text-muted-foreground text-lg">
@@ -253,7 +239,7 @@ export default function ShouldIBuyPage() {
           </div>
 
           {!showResult ? (
-            <Card className="border-2">
+            <Card className="border-2 rounded-3xl">
               <CardContent className="p-6 sm:p-8">
                 <div className="space-y-6">
                   {/* Currency Selection */}
@@ -340,10 +326,10 @@ export default function ShouldIBuyPage() {
 
                   <Button 
                     onClick={handleCalculate} 
-                    className="w-full h-12 text-lg gap-2"
+                    className="w-full h-12 text-base font-bold gap-2 rounded-full"
                     disabled={!priceNum || !effectiveHourlyRate}
                   >
-                    <Calculator className="h-5 w-5" />
+                    <UL0Icon name="chartline" className="h-5 w-5" />
                     Calculate
                   </Button>
                 </div>
@@ -352,7 +338,7 @@ export default function ShouldIBuyPage() {
           ) : (
             <div className="space-y-6">
               {/* Verdict Card */}
-              <Card className={`border-2 ${verdict.bgColor}`}>
+              <Card className={`border-2 rounded-3xl ${verdict.bgColor}`}>
                 <CardContent className="p-6 sm:p-8 text-center">
                   <div className="flex justify-center mb-4">
                     {verdict.icon}
@@ -364,7 +350,7 @@ export default function ShouldIBuyPage() {
                     {verdict.message}
                   </p>
                   
-                  <div className="bg-background/50 rounded-xl p-6 mb-6">
+                  <div className="bg-background/50 rounded-2xl p-6 mb-6">
                     <p className="text-sm text-muted-foreground mb-2">This purchase costs you</p>
                     <p className="text-4xl sm:text-5xl font-bold text-foreground mb-2">
                       {formatTime(hoursOfWork)}
@@ -386,10 +372,10 @@ export default function ShouldIBuyPage() {
 
               {/* Comparisons Card */}
               {comparisons.length > 0 && (
-                <Card>
+                <Card className="rounded-3xl">
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5" />
+                      <UL0Icon name="chartline" className="h-5 w-5" />
                       What else could you buy?
                     </CardTitle>
                     <CardDescription>
@@ -399,10 +385,12 @@ export default function ShouldIBuyPage() {
                   <CardContent>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                       {comparisons.map((item, i) => (
-                        <div key={i} className="text-center p-4 bg-muted/50 rounded-lg">
-                          <div className="text-2xl mb-1">{item.emoji}</div>
+                        <div key={i} className="text-center p-4 bg-muted/50 rounded-2xl flex flex-col items-center justify-center">
+                          <div className="mb-2 p-2 bg-background rounded-xl border border-border/60">
+                            {item.icon}
+                          </div>
                           <div className="text-2xl font-bold">{item.count}</div>
-                          <div className="text-sm text-muted-foreground">{item.name}</div>
+                          <div className="text-xs text-muted-foreground mt-0.5">{item.name}</div>
                         </div>
                       ))}
                     </div>
@@ -411,10 +399,10 @@ export default function ShouldIBuyPage() {
               )}
 
               {/* Questions to Ask */}
-              <Card>
+              <Card className="rounded-3xl">
                 <CardHeader>
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Heart className="h-5 w-5 text-red-500" />
+                    <UL0Icon name="heart" className="h-5 w-5 text-red-500" />
                     Ask yourself...
                   </CardTitle>
                 </CardHeader>

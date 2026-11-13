@@ -1,20 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import {
-  Lock,
-  Target,
-  Smartphone,
-  GitFork,
-  Calendar,
-  Plus,
-  Trash2,
-  Save,
-  CheckCircle2,
-  HelpCircle,
-  HelpCircle as QuestionIcon,
-  Sparkles,
-} from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 interface LinkData {
   $id: string
@@ -180,25 +167,24 @@ export function TargetingEditor({ link }: TargetingEditorProps) {
           Link Controls
         </div>
         {[
-          { id: "protect", label: "Protection & Expiry", icon: Lock },
-          { id: "geo", label: "Geo Targeting", icon: Target },
-          { id: "device", label: "Device Targeting", icon: Smartphone },
-          { id: "ab", label: "A/B Testing Splits", icon: GitFork },
-          { id: "utm", label: "UTM Tag Builder", icon: Sparkles },
+          { id: "protect", label: "Protection & Expiry", icon: "lock" },
+          { id: "geo", label: "Geo Targeting", icon: "target" },
+          { id: "device", label: "Device Targeting", icon: "mobile" },
+          { id: "ab", label: "A/B Testing Splits", icon: "splitbill" },
+          { id: "utm", label: "UTM Tag Builder", icon: "sparkles" },
         ].map((tab) => {
-          const Icon = tab.icon
           const active = activeTab === tab.id
           return (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold tracking-tight transition-all text-left ${
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-xl text-xs font-semibold tracking-tight transition-all text-left ${
                 active
-                  ? "bg-gray-900 text-white shadow-xs scale-102"
+                  ? "bg-gray-900 text-white shadow-xs"
                   : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
-              <Icon className="h-4 w-4 shrink-0" />
+              <UL0Icon name={tab.icon} className="h-4 w-4 shrink-0" />
               {tab.label}
             </button>
           )
@@ -297,9 +283,9 @@ export function TargetingEditor({ link }: TargetingEditorProps) {
                     />
                     <button
                       onClick={() => removeGeoTarget(idx)}
-                      className="rounded-md p-2 text-gray-400 hover:text-red-500 transition-colors"
+                      className="rounded-full p-2 text-gray-400 hover:text-red-500 transition-colors"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <UL0Icon name="trash" className="h-4 w-4" />
                     </button>
                   </div>
                 ))}
@@ -309,7 +295,7 @@ export function TargetingEditor({ link }: TargetingEditorProps) {
                 onClick={addGeoTarget}
                 className="inline-flex items-center gap-1 text-[11px] font-bold text-gray-950 hover:underline"
               >
-                <Plus className="h-3 w-3" />
+                <UL0Icon name="plus" className="h-3 w-3" />
                 Add country redirection
               </button>
             </div>
@@ -503,20 +489,20 @@ export function TargetingEditor({ link }: TargetingEditorProps) {
           <div className="flex items-center gap-2">
             {saved && (
               <span className="text-xs font-semibold text-green-600 flex items-center gap-1 animate-in fade-in duration-300">
-                <CheckCircle2 className="h-4 w-4" /> Link targeting configuration saved!
+                <UL0Icon name="check" className="h-4 w-4" /> Link targeting configuration saved!
               </span>
             )}
           </div>
           <button
             onClick={handleSave}
             disabled={loading}
-            className="inline-flex items-center justify-center gap-1.5 rounded-lg bg-gray-900 px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-gray-800 transition-colors disabled:opacity-50"
+            className="inline-flex items-center justify-center gap-1.5 rounded-full bg-gray-900 px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-gray-800 transition-colors disabled:opacity-50"
           >
             {loading ? (
               "Saving..."
             ) : (
               <>
-                <Save className="h-4 w-4" /> Save Targeting Configurations
+                <UL0Icon name="check" className="h-4 w-4" /> Save Targeting Configurations
               </>
             )}
           </button>

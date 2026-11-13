@@ -2,7 +2,7 @@ import { Metadata } from "next"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
-import { ArrowLeft, Zap, Shield, Globe, QrCode, Wifi, Users, Download } from "lucide-react"
+import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "Free URL Shortener No Signup Required 2026 | ul0",
@@ -53,32 +53,32 @@ const blogSchema = {
 
 const features = [
   {
-    icon: Zap,
+    icon: "bolt" as const,
     title: "Instant Shortening",
     description: "Paste your URL and get a short link in seconds. No waiting, no signup forms.",
   },
   {
-    icon: Shield,
+    icon: "shield" as const,
     title: "100% Free Forever",
     description: "No hidden fees, no premium plans required for basic use. Free forever.",
   },
   {
-    icon: Globe,
+    icon: "domain" as const,
     title: "No Account Required",
     description: "Start shortening immediately without creating an account or providing email.",
   },
   {
-    icon: QrCode,
+    icon: "qr" as const,
     title: "Free QR Codes",
     description: "Generate QR codes for any URL instantly. Download in PNG or SVG format.",
   },
   {
-    icon: Wifi,
+    icon: "wifi" as const,
     title: "WiFi QR Generator",
     description: "Create QR codes for WiFi networks. Guests can connect by scanning.",
   },
   {
-    icon: Users,
+    icon: "team" as const,
     title: "Expense Splitting",
     description: "Split bills with friends using shareable links. Track who paid what.",
   },
@@ -128,7 +128,7 @@ export default function FreeURLShortenerNoSignupPage() {
             href="/blog" 
             className="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-6"
           >
-            <ArrowLeft className="h-4 w-4 mr-1" />
+            <UL0Icon name="arrowleft" className="h-4 w-4 mr-1" />
             Back to Blog
           </Link>
 
@@ -194,18 +194,17 @@ export default function FreeURLShortenerNoSignupPage() {
 
             <h2 className="text-2xl font-bold mt-8 mb-4">ul0 Features - All Free, No Account Needed</h2>
             <div className="grid md:grid-cols-2 gap-4 my-6">
-              {features.map((feature) => {
-                const Icon = feature.icon
-                return (
-                  <div key={feature.title} className="p-4 border border-border rounded-lg">
-                    <div className="flex items-center gap-3 mb-2">
-                      <Icon className="h-5 w-5 text-primary" />
-                      <h3 className="font-bold">{feature.title}</h3>
+              {features.map((feature) => (
+                <div key={feature.title} className="p-4 border border-border rounded-2xl bg-card shadow-xs">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-8 h-8 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                      <UL0Icon name={feature.icon} className="h-4 w-4 text-primary" />
                     </div>
-                    <p className="text-sm text-muted-foreground">{feature.description}</p>
+                    <h3 className="font-bold">{feature.title}</h3>
                   </div>
-                )
-              })}
+                  <p className="text-sm text-muted-foreground">{feature.description}</p>
+                </div>
+              ))}
             </div>
 
             <h2 className="text-2xl font-bold mt-8 mb-4">Use Cases for Free URL Shortening</h2>
