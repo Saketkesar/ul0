@@ -260,7 +260,7 @@ export function FormsListClient({ initialForms }: FormsListClientProps) {
                             className="p-1.5 rounded-full border border-[var(--border)] bg-[var(--surface-3)] text-[var(--foreground)] hover:border-rose-500 text-xs transition-colors cursor-pointer disabled:opacity-50"
                             title="Delete form"
                           >
-                            <UL0Icon name="trash" size={14} />
+                            <UL0Icon name="trash" size={18} />
                           </button>
                         </div>
                       </td>

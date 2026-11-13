@@ -933,7 +933,7 @@ export function MarketingDashboardClient({
                         className="p-1.5 rounded-full border border-border text-muted-foreground hover:bg-red-500/10 hover:text-red-500 cursor-pointer"
                         title="Delete"
                       >
-                        <UL0Icon name="trash" size={14} />
+                        <UL0Icon name="trash" size={18} />
                       </button>
                     </div>
                   </div>

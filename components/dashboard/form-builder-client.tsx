@@ -617,7 +617,7 @@ export function FormBuilderClient({ initialForm, initialSecret, userEmail }: For
                     onClick={() => removeField(selectedField.id)}
                     className="text-xs text-rose-500 hover:underline flex items-center gap-1 cursor-pointer"
                   >
-                    <UL0Icon name="trash" size={14} />
+                    <UL0Icon name="trash" size={18} />
                     <span>Delete</span>
                   </button>
                 )}

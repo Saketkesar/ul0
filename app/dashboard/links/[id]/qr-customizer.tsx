@@ -295,7 +295,7 @@ export function QrCustomizer({ shortUrl, slug }: QrCustomizerProps) {
                         onClick={handleRemoveLogo}
                         className="gap-1.5 text-xs h-8 rounded-full"
                       >
-                        <UL0Icon name="trash" className="h-3.5 w-3.5" />
+                        <UL0Icon name="trash" className="h-4.5 w-4.5" size={18} />
                         Remove
                       </Button>
                     )}

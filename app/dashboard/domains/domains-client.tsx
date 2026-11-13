@@ -364,7 +364,7 @@ export function DomainsClient({
                       {removing === domain.$id ? (
                         <UL0Icon name="loading" className="h-3.5 w-3.5 animate-spin" />
                       ) : (
-                        <UL0Icon name="trash" className="h-3.5 w-3.5" />
+                        <UL0Icon name="trash" className="h-4.5 w-4.5" size={18} />
                       )}
                       Remove
                     </button>

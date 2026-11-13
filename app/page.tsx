@@ -6,20 +6,19 @@ import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
 import { FloatingActionDock } from "@/components/floating-action-dock"
 import { AnimatedIconBackground } from "@/components/animated-icon-background"
-import { StatsSection } from "@/components/stats-section"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
   title: "UL0: Shorten Links the Cute, Clean Way",
   description:
-    "Paste a long URL, get a tiny ul0.in link with vector QR and click stats. 1 custom domain free forever, zero tracking cookies, no account needed.",
+    "Paste a long URL, get a tiny ul0.site link with vector QR and click stats. 1 custom domain free forever, zero tracking cookies, no account needed.",
   alternates: {
     canonical: "https://ul0.site",
   },
   openGraph: {
     title: "UL0: Shorten Links the Cute, Clean Way",
     description:
-      "Paste a long URL, get a tiny ul0.in link with vector QR and click stats. 1 custom domain free forever, zero tracking cookies, no account needed.",
+      "Paste a long URL, get a tiny ul0.site link with vector QR and click stats. 1 custom domain free forever, zero tracking cookies, no account needed.",
     url: "https://ul0.site",
     siteName: "UL0",
     type: "website",
@@ -120,8 +119,8 @@ export default function HomePage() {
           <div className="container mx-auto px-4 sm:px-6 max-w-4xl text-center space-y-6 sm:space-y-8 relative z-10">
             {/* Top Pill Badge */}
             <div className="flex items-center justify-center">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-card border border-border shadow-2xs text-xs font-medium text-foreground select-none">
-                <span className="h-2 w-2 rounded-full bg-primary inline-block animate-pulse" />
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-card/95 backdrop-blur-xs border border-border shadow-xs text-xs sm:text-sm font-medium text-foreground select-none">
+                <span className="h-2.5 w-2.5 rounded-full bg-primary inline-block animate-pulse shrink-0" />
                 <span>Simple, private link shortener &amp; QR studio</span>
               </div>
             </div>
@@ -133,7 +132,7 @@ export default function HomePage() {
 
             {/* Subhead */}
             <p className="mx-auto max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Paste a long URL, get a tiny ul0.in link with vector QR and click stats.<br className="hidden sm:inline" />
+              Paste a long URL, get a tiny ul0.site link with vector QR and click stats.<br className="hidden sm:inline" />
               Free forever. No account needed.
             </p>
 
@@ -143,9 +142,6 @@ export default function HomePage() {
             </div>
           </div>
         </section>
-
-        {/* Social Proof Stats (Bitly-inspired with 5 columns & vertical dividers) */}
-        <StatsSection />
 
         {/* 2. "Three things, done well" Section */}
         <section className="py-20 sm:py-28 border-b border-border">

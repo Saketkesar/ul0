@@ -1817,7 +1817,7 @@ export function QrStudioClient({ initialLinks, initialClicks = [], userEmail }: 
                       style={{ ...s.btnSecondary, padding: "6px 8px", fontSize: "11px", color: "#dc2626" }}
                       title="Delete"
                     >
-                      <UL0Icon name="trash" size={12} />
+                      <UL0Icon name="trash" size={18} />
                     </button>
                   </div>
                 </div>

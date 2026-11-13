@@ -635,7 +635,7 @@ export default function SplitExpensePage() {
                                 className="h-9 w-9 flex-shrink-0 text-destructive hover:bg-destructive/10 rounded-full"
                                 onClick={() => removeMember(member.id)}
                               >
-                                <UL0Icon name="trash" size={14} />
+                                <UL0Icon name="trash" size={20} />
                               </Button>
                             )}
                           </div>
@@ -843,7 +843,7 @@ export default function SplitExpensePage() {
                               className="h-8 w-8 flex-shrink-0 text-destructive hover:bg-destructive/10 rounded-full"
                               onClick={() => removeExpense(expense.id)}
                             >
-                              <UL0Icon name="trash" size={14} />
+                              <UL0Icon name="trash" size={20} />
                             </Button>
                           </div>
                         </div>

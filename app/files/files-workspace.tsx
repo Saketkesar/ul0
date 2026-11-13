@@ -1061,7 +1061,7 @@ export function FilesWorkspace() {
                         className="p-1 rounded text-muted-foreground hover:text-rose-500 cursor-pointer"
                         title="Remove"
                       >
-                        <UL0Icon name="trash" className="h-3.5 w-3.5" />
+                        <UL0Icon name="trash" className="h-4.5 w-4.5" size={18} />
                       </button>
                     </div>
                   </div>
@@ -1176,7 +1176,7 @@ export function FilesWorkspace() {
                         className="hover:text-rose-500 cursor-pointer"
                         title="Delete"
                       >
-                        <UL0Icon name="trash" className="h-3 w-3" />
+                        <UL0Icon name="trash" className="h-4.5 w-4.5" size={18} />
                       </button>
                     </div>
                   </div>
@@ -1622,7 +1622,7 @@ export function FilesWorkspace() {
                         }`}
                         title={item.deleted ? "Restore Page" : "Delete Page"}
                       >
-                        {item.deleted ? <UL0Icon name="refresh" className="h-3.5 w-3.5" /> : <UL0Icon name="trash" className="h-3.5 w-3.5" />}
+                        {item.deleted ? <UL0Icon name="refresh" className="h-3.5 w-3.5" /> : <UL0Icon name="trash" className="h-4.5 w-4.5" size={18} />}
                       </button>
                     </div>
                   </div>
@@ -1805,7 +1805,7 @@ export function FilesWorkspace() {
                         }
                         className="hover:text-rose-500 cursor-pointer"
                       >
-                        <UL0Icon name="trash" className="h-3.5 w-3.5" />
+                        <UL0Icon name="trash" className="h-4.5 w-4.5" size={18} />
                       </button>
                     </div>
                   </div>

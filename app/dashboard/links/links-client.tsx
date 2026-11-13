@@ -534,7 +534,7 @@ export function LinksClient({
                                 onClick={() => setDeletePendingId(link.$id)}
                                 className="gap-2 text-xs text-red-500 focus:text-red-500"
                               >
-                                <UL0Icon name="trash" className="h-3.5 w-3.5" />
+                                <UL0Icon name="trash" className="h-4.5 w-4.5" size={18} />
                                 <span>Delete link</span>
                               </DropdownMenuItem>
                             </DropdownMenuContent>

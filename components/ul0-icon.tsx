@@ -159,17 +159,20 @@ export function UL0Icon({
   const folder = animated ? "svg-animated" : "svg"
   const iconPath = `/ul0-icon-kit/${folder}/${variant}/ul0-${cleanName}.svg`
 
+  // Optical volume protection: custom vector artwork needs at least 16px to be comfortably legible
+  const effectiveSize = size < 16 ? Math.max(size, 16) : size
+
   return (
     <span
       className={`inline-flex items-center justify-center shrink-0 transition-transform duration-200 ${className}`}
-      style={{ width: size, height: size }}
+      style={{ width: effectiveSize, height: effectiveSize }}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={iconPath}
         alt={alt || `${cleanName} icon`}
-        width={size}
-        height={size}
+        width={effectiveSize}
+        height={effectiveSize}
         className="w-full h-full object-contain pointer-events-none select-none"
         loading="lazy"
       />

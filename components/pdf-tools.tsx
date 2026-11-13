@@ -242,20 +242,20 @@ function ImageToPdf() {
                   disabled={idx === 0}
                   className="p-1.5 rounded-full hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
                 >
-                  <UL0Icon name="arrowup" size={14} />
+                  <UL0Icon name="arrowup" size={18} />
                 </button>
                 <button
                   onClick={() => move(idx, 1)}
                   disabled={idx === images.length - 1}
                   className="p-1.5 rounded-full hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
                 >
-                  <UL0Icon name="arrowdown" size={14} />
+                  <UL0Icon name="arrowdown" size={18} />
                 </button>
                 <button
                   onClick={() => removeImage(img.id)}
                   className="p-1.5 rounded-full hover:bg-destructive/10 text-destructive transition-colors cursor-pointer"
                 >
-                  <UL0Icon name="trash" size={14} />
+                  <UL0Icon name="trash" size={18} />
                 </button>
               </div>
             </div>
@@ -434,20 +434,20 @@ function MergePdfs() {
                   disabled={idx === 0}
                   className="p-1.5 rounded-full hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
                 >
-                  <UL0Icon name="arrowup" size={14} />
+                  <UL0Icon name="arrowup" size={18} />
                 </button>
                 <button
                   onClick={() => move(idx, 1)}
                   disabled={idx === pdfs.length - 1}
                   className="p-1.5 rounded-full hover:bg-muted disabled:opacity-30 transition-colors cursor-pointer"
                 >
-                  <UL0Icon name="arrowdown" size={14} />
+                  <UL0Icon name="arrowdown" size={18} />
                 </button>
                 <button
                   onClick={() => removePdf(pdf.id)}
                   className="p-1.5 rounded-full hover:bg-destructive/10 text-destructive transition-colors cursor-pointer"
                 >
-                  <UL0Icon name="trash" size={14} />
+                  <UL0Icon name="trash" size={18} />
                 </button>
               </div>
             </div>
