@@ -77,12 +77,13 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/icon-dark-32x32.png", media: "(prefers-color-scheme: dark)" },
-      { url: "/icon-light-32x32.png", media: "(prefers-color-scheme: light)" },
-      { url: "/ul0.png", type: "image/png" },
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
     ],
-    apple: "/apple-icon.png",
-    shortcut: "/icon.svg",
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/favicon.ico",
   },
 }
 

@@ -20,7 +20,6 @@ interface CreatedLinkResult {
 
 export function LinkShortenerForm() {
   const { isSignedIn } = useAuth()
-  const [isExpanded, setIsExpanded] = useState(true)
   const [activeTab, setActiveTab] = useState<"link" | "qr">("link")
   const [longUrl, setLongUrl] = useState("")
   const [customSlug, setCustomSlug] = useState("")
@@ -35,7 +34,6 @@ export function LinkShortenerForm() {
     const handler = (e: any) => {
       if (e.detail?.tab) {
         setActiveTab(e.detail.tab)
-        setIsExpanded(true)
       }
     }
     window.addEventListener("ul0:set-tab", handler)
@@ -153,108 +151,52 @@ export function LinkShortenerForm() {
 
   return (
     <div className="w-full max-w-xl mx-auto text-center transition-all duration-300">
-      {/* 1. COLLAPSED STATE: "Start now: [🔗] [▦]" Tactile Pill (Middle of Page) */}
-      {!isExpanded ? (
-        <div className="flex items-center justify-center pt-2">
-          <div
-            onClick={() => setIsExpanded(true)}
-            className="inline-flex items-center gap-3 p-2 pl-6 rounded-full bg-[#1B685C] text-white shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transition-all select-none cursor-pointer border-2 border-white/20"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") setIsExpanded(true)
-            }}
-            aria-label="Start now: shorten link or generate QR"
-          >
-            <span className="text-sm sm:text-base font-extrabold tracking-tight">Start now:</span>
+      {/* Bitly & Bharpai-Inspired Tactile Card with ul0.site Logo */}
+      <div className="relative w-full rounded-3xl border border-border/80 bg-card/95 backdrop-blur-md p-5 sm:p-7 shadow-xl text-left transition-all">
+        {/* Header Row: ul0.site Logo + Tabs */}
+        <div className="flex items-center justify-between gap-2 pb-5 border-b border-border/60">
+          {/* ul0.site Logo */}
+          <div className="flex items-center gap-1.5 select-none shrink-0">
+            <span className="font-extrabold text-lg sm:text-xl tracking-tight text-[#1B685C] dark:text-[#3DDBB8]">
+              ul0<span className="text-[#3DDBB8] dark:text-[#87D474]">.site</span>
+            </span>
+          </div>
 
-            {/* Circular Link Button */}
+          {/* Navigation Tabs: Short Link vs QR Code */}
+          <div className="flex items-center gap-1.5 bg-muted/60 p-1 rounded-2xl border border-border/50">
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation()
+              onClick={() => {
                 setActiveTab("link")
-                setIsExpanded(true)
+                setError(null)
               }}
-              className="h-10 w-10 rounded-full bg-white text-[#1B685C] hover:bg-neutral-100 flex items-center justify-center transition-transform hover:scale-115 active:scale-95 shadow-md cursor-pointer"
-              title="Shorten a URL"
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                activeTab === "link"
+                  ? "bg-[#E6F8F4] dark:bg-[#1B685C]/30 text-[#1B685C] dark:text-[#3DDBB8] shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              <UL0Icon name="link" size={20} />
+              <UL0Icon name="link" size={16} />
+              <span>Short Link</span>
             </button>
 
-            {/* Circular QR Button */}
             <button
               type="button"
-              onClick={(e) => {
-                e.stopPropagation()
+              onClick={() => {
                 setActiveTab("qr")
-                setIsExpanded(true)
+                setError(null)
               }}
-              className="h-10 w-10 rounded-full bg-white text-[#1B685C] hover:bg-neutral-100 flex items-center justify-center transition-transform hover:scale-115 active:scale-95 shadow-md cursor-pointer"
-              title="Generate a QR code"
+              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                activeTab === "qr"
+                  ? "bg-[#E6F8F4] dark:bg-[#1B685C]/30 text-[#1B685C] dark:text-[#3DDBB8] shadow-2xs"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              <UL0Icon name="qr" size={20} />
+              <UL0Icon name="qr" size={16} />
+              <span>QR Code</span>
             </button>
           </div>
         </div>
-      ) : (
-        /* 2. EXPANDED STATE: Bitly & Bharpai-Inspired Tactile Card with ul0.site Logo */
-        <div className="relative w-full rounded-3xl border border-border/80 bg-card/95 backdrop-blur-md p-5 sm:p-7 shadow-xl text-left transition-all animate-in fade-in zoom-in-95 duration-200">
-          {/* Header Row: ul0.site Logo + Tabs + Close Button */}
-          <div className="flex items-center justify-between gap-2 pb-5 border-b border-border/60">
-            {/* ul0.site Logo */}
-            <div className="flex items-center gap-1.5 select-none shrink-0">
-              <span className="font-extrabold text-lg sm:text-xl tracking-tight text-[#1B685C] dark:text-[#3DDBB8]">
-                ul0<span className="text-[#3DDBB8] dark:text-[#87D474]">.site</span>
-              </span>
-            </div>
-
-            {/* Navigation Tabs: Short Link vs QR Code */}
-            <div className="flex items-center gap-1.5 bg-muted/60 p-1 rounded-2xl border border-border/50">
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveTab("link")
-                  setError(null)
-                }}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                  activeTab === "link"
-                    ? "bg-[#E6F8F4] dark:bg-[#1B685C]/30 text-[#1B685C] dark:text-[#3DDBB8] shadow-2xs"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <UL0Icon name="link" size={16} />
-                <span>Short Link</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  setActiveTab("qr")
-                  setError(null)
-                }}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
-                  activeTab === "qr"
-                    ? "bg-[#E6F8F4] dark:bg-[#1B685C]/30 text-[#1B685C] dark:text-[#3DDBB8] shadow-2xs"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <UL0Icon name="qr" size={16} />
-                <span>QR Code</span>
-              </button>
-            </div>
-
-            {/* Close Button to collapse back to pill */}
-            <button
-              type="button"
-              onClick={() => setIsExpanded(false)}
-              className="h-8 w-8 rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer shrink-0"
-              title="Minimize"
-              aria-label="Minimize form"
-            >
-              <UL0Icon name="close" size={16} />
-            </button>
-          </div>
 
           {/* Form Content */}
           <form onSubmit={handleSubmit} className="pt-5 space-y-4">
@@ -463,7 +405,6 @@ export function LinkShortenerForm() {
             </div>
           )}
         </div>
-      )}
-    </div>
+      </div>
   )
 }

@@ -63,23 +63,17 @@ export function AnimatedIconBackground() {
       {FLOATING_ICONS.map((item, idx) => (
         <div
           key={idx}
-          className={`absolute ${item.opacity} transition-all duration-300 drop-shadow-xs`}
+          className={`absolute ${item.opacity} transition-all duration-300 pointer-events-none select-none hover:scale-115`}
           style={{
             top: item.top,
             left: item.left,
             right: item.right,
             animation: `floatUpDown ${item.duration} ease-in-out infinite alternate`,
             animationDelay: item.delay,
+            filter: item.glowColor ? `drop-shadow(0 8px 18px ${item.glowColor})` : undefined,
           }}
         >
-          <div
-            className="p-2 rounded-2xl bg-card/60 dark:bg-card/30 backdrop-blur-2xs border border-border/40 shadow-xs hover:scale-115 transition-transform"
-            style={{
-              boxShadow: item.glowColor ? `0 8px 24px -4px ${item.glowColor}` : undefined,
-            }}
-          >
-            <UL0Icon name={item.name} animated={true} size={item.size} />
-          </div>
+          <UL0Icon name={item.name} animated={true} size={item.size} />
         </div>
       ))}
 
