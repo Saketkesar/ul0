@@ -32,6 +32,7 @@ export const RESERVED_FORM_SLUGS = new Set([
   "webhooks",
   "forms",
   "pricing",
+  "icons",
   "features",
   "status",
   "explore",

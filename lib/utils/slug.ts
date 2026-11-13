@@ -331,7 +331,7 @@ const RESERVED_SLUGS = [
   'changelog', 'features', 'compare', 'use-cases', 'tools',
   'utm', 'json', 'pdf', 'pomodoro', 'quotes', 'worldclock',
   'clock', 'countdown', 'ambient', 'buy', 'security', 'threats',
-  'backlinks', 'report-abuse', 'refund',
+  'backlinks', 'report-abuse', 'refund', 'icons',
 ]
 
 // Slug constraints

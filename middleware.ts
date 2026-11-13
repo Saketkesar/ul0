@@ -61,6 +61,7 @@ const RESERVED_PATH_PREFIXES = [
   "/docs",
   "/custom-domain-landing",
   "/forms",
+  "/icons",
   "/e",
   "/q",
   "/r",
