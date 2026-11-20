@@ -166,7 +166,8 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
             clone.querySelectorAll('button, svg, [data-testid*="actions"]').forEach((n) => n.remove())
 
             const text = (clone.textContent || "").trim()
-            const html = clone.innerHTML || ""
+            let html = clone.innerHTML || ""
+            html = html.replace(/<!--[\s\S]*?-->/g, "")
 
             if (text.length > 0) {
               results.push({ role, html, text })
@@ -186,7 +187,8 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
             })
 
             const text = (clone.textContent || "").trim()
-            const html = clone.innerHTML || ""
+            let html = clone.innerHTML || ""
+            html = html.replace(/<!--[\s\S]*?-->/g, "")
 
             if (text.length > 0) {
               results.push({ role, html, text })
@@ -496,8 +498,6 @@ export function buildDocumentHtml(
 
     .message-row {
       margin-bottom: 24px;
-      page-break-inside: avoid;
-      break-inside: avoid;
     }
 
     .role-label {
@@ -518,8 +518,6 @@ export function buildDocumentHtml(
 
     .chat-message {
       margin-bottom: 22px;
-      page-break-inside: avoid;
-      break-inside: avoid;
     }
 
     /* User messages as soft tinted blocks */
@@ -530,6 +528,8 @@ export function buildDocumentHtml(
       padding: 14px 18px;
       margin-left: 20px;
       margin-bottom: 22px;
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
 
     .user-tint-bubble .chat-author {
