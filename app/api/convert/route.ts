@@ -93,13 +93,13 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  // 3. Load with headless Chromium (Playwright) with a fast 18s timeout
+  // 3. Load with headless Chromium (Playwright) with generous 45s timeout for serverless
   const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("TIMEOUT")), 18000)
+    setTimeout(() => reject(new Error("TIMEOUT")), 45000)
   )
 
   try {
-    const scrapePromise = scrapeShareLink(validation.normalizedUrl, 14000)
+    const scrapePromise = scrapeShareLink(validation.normalizedUrl, 35000)
     const messages: ChatMessage[] = await Promise.race([scrapePromise, timeoutPromise])
 
     if (!messages || messages.length === 0) {

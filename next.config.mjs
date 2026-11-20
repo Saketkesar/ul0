@@ -1,6 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   serverExternalPackages: ['playwright', 'playwright-core', '@sparticuz/chromium'],
+  outputFileTracingIncludes: {
+    '/api/convert': ['./node_modules/@sparticuz/chromium/bin/**'],
+  },
   typescript: {
     ignoreBuildErrors: true,
   },

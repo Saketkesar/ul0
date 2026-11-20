@@ -26,16 +26,21 @@ async function getBrowser(): Promise<any> {
 
   if (isServerless) {
     try {
-      const sparticuzChromium = (await import("@sparticuz/chromium")).default
+      console.log("[Chat-to-PDF] Launching serverless Chromium...")
+      const sparticuzMod = await import("@sparticuz/chromium")
+      const sparticuzChromium: any = (sparticuzMod as any).default?.default || (sparticuzMod as any).default || sparticuzMod
       const { chromium: playwrightCore } = await import("playwright-core")
 
       // Disable graphics mode on headless AWS Lambda / Vercel
-      sparticuzChromium.setGraphicsMode = false
+      if ("setGraphicsMode" in sparticuzChromium) {
+        sparticuzChromium.setGraphicsMode = false
+      }
       const executablePath = await sparticuzChromium.executablePath()
+      console.log("[Chat-to-PDF] Chromium executablePath resolved to:", executablePath)
 
       sharedBrowser = await playwrightCore.launch({
         args: [
-          ...sparticuzChromium.args,
+          ...(sparticuzChromium.args || []),
           "--no-sandbox",
           "--disable-setuid-sandbox",
           "--disable-dev-shm-usage",
@@ -45,9 +50,10 @@ async function getBrowser(): Promise<any> {
         executablePath,
         headless: true,
       })
+      console.log("[Chat-to-PDF] Serverless Chromium launched successfully!")
       return sharedBrowser
     } catch (serverlessError) {
-      console.warn("[Chat-to-PDF] Failed serverless chromium launch, attempting playwright fallback:", serverlessError)
+      console.error("[Chat-to-PDF] Failed serverless chromium launch, attempting playwright fallback:", serverlessError)
     }
   }
 
@@ -71,7 +77,7 @@ async function getBrowser(): Promise<any> {
  * Extracts messages (role + sanitized HTML + text).
  * Timeouts after 25s.
  */
-export async function scrapeShareLink(url: string, timeoutMs = 14000): Promise<ChatMessage[]> {
+export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<ChatMessage[]> {
   const browser = await getBrowser()
   const context = await browser.newContext({
     userAgent:
@@ -85,7 +91,7 @@ export async function scrapeShareLink(url: string, timeoutMs = 14000): Promise<C
   try {
     // Navigate with timeout
     try {
-      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 9000 })
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 18000 })
     } catch (navErr) {
       console.warn("[Chat-to-PDF] Navigation timeout or warning:", navErr)
     }
@@ -94,13 +100,13 @@ export async function scrapeShareLink(url: string, timeoutMs = 14000): Promise<C
     const selectors = getPlatformSelectors(url)
 
     try {
-      await page.waitForSelector(selectors.messageContainerSelector, { timeout: 4000 })
+      await page.waitForSelector(selectors.messageContainerSelector, { timeout: 7000 })
     } catch {
       // If specific selectors didn't appear immediately, continue to inspect DOM
     }
 
-    // Give dynamic client hydration 500ms to finish rendering
-    await page.waitForTimeout(500)
+    // Give dynamic client hydration 1s to finish rendering
+    await page.waitForTimeout(1000)
 
     // Check if Cloudflare challenge or bot gate is present
     const isCloudflare = await page.evaluate(() => {
