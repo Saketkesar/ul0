@@ -50,13 +50,30 @@ export async function scrapeShareLink(url: string, timeoutMs = 25000): Promise<C
     const selectors = getPlatformSelectors(url)
 
     try {
-      await page.waitForSelector(selectors.messageContainerSelector, { timeout: 8000 })
+      await page.waitForSelector(selectors.messageContainerSelector, { timeout: 12000 })
     } catch {
       // If specific selectors didn't appear immediately, continue to inspect DOM
     }
 
-    // Give dynamic client hydration 1.5s to finish rendering
-    await page.waitForTimeout(1500)
+    // Give dynamic client hydration 1s to finish rendering
+    await page.waitForTimeout(1000)
+
+    // Check if Cloudflare challenge or bot gate is present
+    const isCloudflare = await page.evaluate(() => {
+      const title = document.title || ""
+      const body = document.body ? document.body.innerText : ""
+      return (
+        title.includes("Just a moment") ||
+        body.includes("Performing security verification") ||
+        body.includes("cf-mitigated") ||
+        document.querySelector("#challenge-running") !== null ||
+        document.querySelector(".cf-turnstile") !== null
+      )
+    })
+
+    if (isCloudflare) {
+      throw new Error("CLOUDFLARE_BLOCKED")
+    }
 
     // Extract messages inside page context
     const extracted = await page.evaluate(
@@ -66,36 +83,45 @@ export async function scrapeShareLink(url: string, timeoutMs = 25000): Promise<C
         if (platform === "chatgpt") {
           const elements = document.querySelectorAll(selectors.messageContainerSelector)
           elements.forEach((el) => {
-            const roleAttr = el.getAttribute("data-message-author-role")
+            const roleAttr = el.getAttribute("data-message-role") || el.getAttribute("data-message-author-role")
             const role: "user" | "assistant" = roleAttr === "user" ? "user" : "assistant"
 
             let contentEl = el
             if (role === "assistant") {
-              const markdownEl = el.querySelector(".markdown")
-              if (markdownEl) contentEl = markdownEl as HTMLElement
+              const assistantMd = el.querySelector("[data-assistant-markdown]") || el.querySelector(".markdown")
+              if (assistantMd) contentEl = assistantMd as HTMLElement
+            } else {
+              const userBubble = el.querySelector("[data-user-message-bubble]")
+              if (userBubble) contentEl = userBubble as HTMLElement
             }
 
-            const html = contentEl.innerHTML || ""
-            const text = contentEl.textContent || ""
+            const clone = contentEl.cloneNode(true) as HTMLElement
+            clone.querySelectorAll('button, svg, [data-testid*="actions"]').forEach((n) => n.remove())
 
-            if (text.trim().length > 0) {
+            const text = (clone.textContent || "").trim()
+            const html = clone.innerHTML || ""
+
+            if (text.length > 0) {
               results.push({ role, html, text })
             }
           })
         } else {
           // Claude
-          const containers = document.querySelectorAll(
-            '[data-testid="user-message"], .font-claude-response, [data-testid="assistant-message"]'
-          )
+          const containers = document.querySelectorAll(selectors.messageContainerSelector)
           containers.forEach((el) => {
-            const isUser =
-              el.matches('[data-testid="user-message"]') ||
-              el.getAttribute("data-message-author-role") === "user"
+            const isUser = el.getAttribute("data-testid") === "user-message"
             const role: "user" | "assistant" = isUser ? "user" : "assistant"
-            const html = el.innerHTML || ""
-            const text = el.textContent || ""
 
-            if (text.trim().length > 0) {
+            const clone = el.cloneNode(true) as HTMLElement
+            // Clean up screen-reader labels, action bars, copy buttons, report links
+            clone.querySelectorAll('.sr-only, [data-testid*="actions"], [data-testid*="copy"], button, a[href*="report"]').forEach((node) => {
+              node.remove()
+            })
+
+            const text = (clone.textContent || "").trim()
+            const html = clone.innerHTML || ""
+
+            if (text.length > 0) {
               results.push({ role, html, text })
             }
           })

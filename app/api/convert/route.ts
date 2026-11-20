@@ -127,6 +127,17 @@ export async function POST(req: NextRequest) {
       },
     })
   } catch (err: any) {
+    if (err.message === "CLOUDFLARE_BLOCKED") {
+      return NextResponse.json(
+        {
+          error:
+            "This share link is temporarily protected by Cloudflare bot verification. Please copy the conversation text and use the 'Paste text instead' option below.",
+          cloudflare: true,
+        },
+        { status: 422 }
+      )
+    }
+
     if (err.message === "TIMEOUT") {
       return NextResponse.json(
         {

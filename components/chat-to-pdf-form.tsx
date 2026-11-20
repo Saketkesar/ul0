@@ -64,6 +64,9 @@ export function ChatToPdfForm({
         try {
           errData = await res.json()
         } catch {}
+        if (errData.cloudflare) {
+          setShowFallback(true)
+        }
         throw new Error(
           errData.error ||
             "Couldn't read that chat. Make sure the link is public or paste the text instead."

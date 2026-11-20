@@ -63,19 +63,19 @@ export function getPlatformSelectors(url: string) {
   if (hostname === "claude.ai") {
     return {
       platform: "claude" as const,
-      userSelector: '[data-testid="user-message"], [data-message-author-role="user"]',
-      assistantSelector: '.font-claude-response, [data-testid="assistant-message"], [data-message-author-role="assistant"]',
-      messageContainerSelector: '[data-testid="user-message"], .font-claude-response, [data-testid="assistant-message"]',
+      userSelector: '[data-testid="user-message"]',
+      assistantSelector: '[data-testid="assistant-message"], .font-claude-response',
+      messageContainerSelector: '[data-testid="user-message"], [data-testid="assistant-message"]',
     }
   }
 
   // ChatGPT
   return {
     platform: "chatgpt" as const,
-    userSelector: '[data-message-author-role="user"]',
-    assistantSelector: '[data-message-author-role="assistant"]',
-    markdownSelector: '.markdown, [data-message-author-role="assistant"] .markdown',
-    messageContainerSelector: '[data-message-author-role]',
+    userSelector: '[data-message-role="user"], [data-message-author-role="user"], [data-user-message-bubble]',
+    assistantSelector: '[data-message-role="assistant"], [data-message-author-role="assistant"], [data-assistant-markdown]',
+    markdownSelector: '[data-assistant-markdown], .markdown, [data-message-role="assistant"] .markdown',
+    messageContainerSelector: '[data-message-role], [data-message-author-role]',
   }
 }
 
