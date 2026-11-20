@@ -46,6 +46,7 @@ async function getBrowser(): Promise<any> {
           "--disable-dev-shm-usage",
           "--disable-gpu",
           "--single-process",
+          "--disable-blink-features=AutomationControlled",
         ],
         executablePath,
         headless: true,
@@ -66,6 +67,7 @@ async function getBrowser(): Promise<any> {
       "--disable-setuid-sandbox",
       "--disable-dev-shm-usage",
       "--disable-gpu",
+      "--disable-blink-features=AutomationControlled",
     ],
   })
 
@@ -81,8 +83,17 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
   const browser = await getBrowser()
   const context = await browser.newContext({
     userAgent:
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36",
     viewport: { width: 1280, height: 900 },
+    locale: "en-US",
+  })
+
+  await context.addInitScript(() => {
+    try {
+      Object.defineProperty(navigator, "webdriver", {
+        get: () => undefined,
+      })
+    } catch {}
   })
 
   const page = await context.newPage()
@@ -91,7 +102,10 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
   try {
     // Navigate with timeout
     try {
+      console.log("[Chat-to-PDF] Navigating to URL:", url)
       await page.goto(url, { waitUntil: "domcontentloaded", timeout: 18000 })
+      const pageTitle = await page.title()
+      console.log("[Chat-to-PDF] Page loaded. Title:", pageTitle)
     } catch (navErr) {
       console.warn("[Chat-to-PDF] Navigation timeout or warning:", navErr)
     }
@@ -101,8 +115,9 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
 
     try {
       await page.waitForSelector(selectors.messageContainerSelector, { timeout: 7000 })
+      console.log("[Chat-to-PDF] Message selector found!")
     } catch {
-      // If specific selectors didn't appear immediately, continue to inspect DOM
+      console.log("[Chat-to-PDF] Specific selector not found immediately, checking full DOM")
     }
 
     // Give dynamic client hydration 1s to finish rendering
@@ -120,6 +135,8 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
         document.querySelector(".cf-turnstile") !== null
       )
     })
+
+    console.log("[Chat-to-PDF] isCloudflare:", isCloudflare)
 
     if (isCloudflare) {
       throw new Error("CLOUDFLARE_BLOCKED")
@@ -196,6 +213,8 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
       },
       { selectors, platform: selectors.platform }
     )
+
+    console.log("[Chat-to-PDF] Extracted count:", extracted.length)
 
     return extracted
   } finally {
@@ -733,7 +752,7 @@ export async function renderHtmlToPdf(
     const page = await context.newPage()
 
     try {
-      await page.setContent(html, { waitUntil: "load", timeout: 15000 })
+      await page.setContent(html, { waitUntil: "domcontentloaded", timeout: 8000 })
 
       const pdfUint8 = await page.pdf({
         format: "A4",
