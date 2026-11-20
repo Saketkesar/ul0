@@ -48,7 +48,11 @@ export async function POST(req: NextRequest) {
 
       const docType: DocType = classifyContent(messages)
       const html = buildDocumentHtml(messages, docType, "Exported Chat Notes")
-      const pdfBuffer = await renderHtmlToPdf(html)
+      const pdfBuffer = await renderHtmlToPdf(html, {
+        messages,
+        docType,
+        title: "Exported Chat Notes",
+      })
 
       return new NextResponse(new Uint8Array(pdfBuffer), {
         status: 200,
@@ -113,7 +117,10 @@ export async function POST(req: NextRequest) {
 
     // 5. Build clean HTML & Render A4 PDF with JavaScript disabled
     const docHtml = buildDocumentHtml(messages, docType, "")
-    const pdfBuffer = await Promise.race([renderHtmlToPdf(docHtml), timeoutPromise])
+    const pdfBuffer = await Promise.race([
+      renderHtmlToPdf(docHtml, { messages, docType }),
+      timeoutPromise,
+    ])
 
     // 6. Return PDF with X-Doc-Type header
     return new NextResponse(new Uint8Array(pdfBuffer), {
