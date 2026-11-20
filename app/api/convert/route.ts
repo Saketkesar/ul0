@@ -93,13 +93,13 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  // 3. Load with headless Chromium (Playwright) with a 30s timeout
+  // 3. Load with headless Chromium (Playwright) with a fast 18s timeout
   const timeoutPromise = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("TIMEOUT")), 30000)
+    setTimeout(() => reject(new Error("TIMEOUT")), 18000)
   )
 
   try {
-    const scrapePromise = scrapeShareLink(validation.normalizedUrl, 25000)
+    const scrapePromise = scrapeShareLink(validation.normalizedUrl, 14000)
     const messages: ChatMessage[] = await Promise.race([scrapePromise, timeoutPromise])
 
     if (!messages || messages.length === 0) {
@@ -107,6 +107,7 @@ export async function POST(req: NextRequest) {
         {
           error:
             "Couldn't read that chat. Make sure the link is public or use the 'Paste text instead' option below.",
+          showPaste: true,
         },
         { status: 422 }
       )
@@ -138,8 +139,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "This share link is temporarily protected by Cloudflare bot verification. Please copy the conversation text and use the 'Paste text instead' option below.",
+            "This share link is protected by Cloudflare bot verification. Please copy the conversation text and use the 'Paste text instead' option below.",
           cloudflare: true,
+          showPaste: true,
         },
         { status: 422 }
       )
@@ -149,9 +151,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json(
         {
           error:
-            "The request timed out after 30 seconds. Make sure the chat link is public and accessible, or paste the text directly.",
+            "The chat took too long to respond or is protected by bot verification. Please use the 'Paste text instead' option below to convert instantly.",
+          showPaste: true,
         },
-        { status: 504 }
+        { status: 422 }
       )
     }
 
@@ -159,6 +162,7 @@ export async function POST(req: NextRequest) {
       {
         error:
           "Couldn't read that chat. Make sure the link is public or use the 'Paste text instead' option below.",
+        showPaste: true,
       },
       { status: 422 }
     )

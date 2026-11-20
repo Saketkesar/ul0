@@ -64,7 +64,7 @@ export function ChatToPdfForm({
         try {
           errData = await res.json()
         } catch {}
-        if (errData.cloudflare) {
+        if (errData.cloudflare || errData.showPaste) {
           setShowFallback(true)
         }
         throw new Error(

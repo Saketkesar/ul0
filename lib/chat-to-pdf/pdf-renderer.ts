@@ -71,7 +71,7 @@ async function getBrowser(): Promise<any> {
  * Extracts messages (role + sanitized HTML + text).
  * Timeouts after 25s.
  */
-export async function scrapeShareLink(url: string, timeoutMs = 25000): Promise<ChatMessage[]> {
+export async function scrapeShareLink(url: string, timeoutMs = 14000): Promise<ChatMessage[]> {
   const browser = await getBrowser()
   const context = await browser.newContext({
     userAgent:
@@ -84,19 +84,23 @@ export async function scrapeShareLink(url: string, timeoutMs = 25000): Promise<C
 
   try {
     // Navigate with timeout
-    await page.goto(url, { waitUntil: "domcontentloaded", timeout: timeoutMs })
+    try {
+      await page.goto(url, { waitUntil: "domcontentloaded", timeout: 9000 })
+    } catch (navErr) {
+      console.warn("[Chat-to-PDF] Navigation timeout or warning:", navErr)
+    }
 
     // Wait a brief moment or for core elements to populate
     const selectors = getPlatformSelectors(url)
 
     try {
-      await page.waitForSelector(selectors.messageContainerSelector, { timeout: 12000 })
+      await page.waitForSelector(selectors.messageContainerSelector, { timeout: 4000 })
     } catch {
       // If specific selectors didn't appear immediately, continue to inspect DOM
     }
 
-    // Give dynamic client hydration 1s to finish rendering
-    await page.waitForTimeout(1000)
+    // Give dynamic client hydration 500ms to finish rendering
+    await page.waitForTimeout(500)
 
     // Check if Cloudflare challenge or bot gate is present
     const isCloudflare = await page.evaluate(() => {
