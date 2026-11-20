@@ -6,6 +6,20 @@ import { PDFDocument } from "pdf-lib"
 import { UL0Icon } from "@/components/ul0-icon"
 import { PdfAdBanner } from "./pdf-ad-banner"
 import { PdfSplitterClient } from "@/app/tools/pdf-splitter/pdf-splitter-client"
+import {
+  Camera,
+  Upload,
+  AlertTriangle,
+  Zap as ZapIcon,
+  RotateCcw,
+  X,
+  Plus,
+  FileText,
+  ChevronUp,
+  Trash2,
+  ChevronDown,
+  Download,
+} from "lucide-react"
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -50,7 +64,8 @@ function moveItem<T>(arr: T[], from: number, to: number): T[] {
 /* ------------------------------------------------------------------ */
 export function PdfTools() {
   const [tab, setTab] = useState<ActiveTab>("split-pdf")
-  const { bannerRef, sideRef } = PdfAdBanner()
+  const bannerRef = useRef<HTMLDivElement>(null)
+  const sideRef = useRef<HTMLDivElement>(null)
 
   return (
     <div className="w-full">

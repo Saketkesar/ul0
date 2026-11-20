@@ -58,6 +58,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const toolPages = [
     "/tools",
     "/files",
+    "/claude-chat-to-pdf",
+    "/chatgpt-chat-to-pdf",
+    "/share-link-to-pdf",
     "/tools/pdf-splitter",
     "/tools/redirect-checker",
     "/tools/url-expander",
@@ -71,6 +74,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Blog posts with actual publish dates
   const staticBlogPosts: { slug: string; published: string }[] = [
+    { slug: "how-to-save-chatgpt-chat-as-pdf", published: "2026-11-20" },
+    { slug: "how-to-export-claude-conversation-to-pdf", published: "2026-11-20" },
+    { slug: "how-to-share-chatgpt-claude-chat-link", published: "2026-11-20" },
     { slug: "travel-agency-marketing-qr-codes-branded-links-guide-2026", published: "2026-11-12" },
     { slug: "bitly-vs-ul0-feature-pricing-comparison-2026", published: "2026-11-12" },
     { slug: "how-to-create-dynamic-qr-codes-free-2026", published: "2026-11-12" },

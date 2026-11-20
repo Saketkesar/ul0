@@ -1,6 +1,9 @@
 "use client"
 
 import React, { useState, useEffect, useRef, useCallback } from "react"
+import { PDFDocument, degrees } from "pdf-lib"
+import { jsPDF } from "jspdf"
+import JSZip from "jszip"
 import { UL0Icon } from "@/components/ul0-icon"
 import { Button } from "@/components/ui/button"
 import { PdfSplitterClient } from "@/app/tools/pdf-splitter/pdf-splitter-client"
@@ -153,7 +156,7 @@ export function FilesWorkspace() {
         const buf = await item.file.arrayBuffer()
         const srcPdf = await PDFDocument.load(buf, { ignoreEncryption: true })
         const copiedPages = await mergedPdf.copyPages(srcPdf, srcPdf.getPageIndices())
-        copiedPages.forEach((p) => mergedPdf.addPage(p))
+        copiedPages.forEach((p: any) => mergedPdf.addPage(p))
       }
 
       const mergedBytes = await mergedPdf.save()

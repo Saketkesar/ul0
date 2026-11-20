@@ -110,6 +110,15 @@ export function Header() {
                     </div>
                   </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/share-link-to-pdf" className="flex items-center gap-2.5 py-2 cursor-pointer rounded-lg">
+                    <UL0Icon name="pdf" size={18} />
+                    <div>
+                      <div className="text-xs font-semibold text-foreground">Chat to PDF</div>
+                      <div className="text-[11px] text-muted-foreground">Claude &amp; ChatGPT links</div>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -264,6 +273,13 @@ export function Header() {
                 >
                   <UL0Icon name="domain" size={18} />
                   <span>Custom Domains</span>
+                </Link>
+                <Link
+                  href="/share-link-to-pdf"
+                  className="min-h-[44px] flex items-center gap-2.5 px-3 rounded-lg text-[15px] font-medium hover:bg-muted text-foreground"
+                >
+                  <UL0Icon name="pdf" size={18} />
+                  <span>Chat to PDF</span>
                 </Link>
 
                 <div className="h-px bg-border my-2" />

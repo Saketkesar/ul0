@@ -119,9 +119,10 @@ export function Footer() {
                   href="https://github.com/Saketkesar/ul0"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-foreground transition-colors"
+                  className="hover:text-foreground transition-colors inline-flex items-center gap-1.5"
                 >
-                  GitHub Repository
+                  <UL0Icon name="github" size={14} />
+                  <span>GitHub Repository</span>
                 </a>
               </li>
               <li>
@@ -169,6 +170,21 @@ export function Footer() {
               <li>
                 <Link href="/blog/whatsapp-link-generator-guide" className="hover:text-foreground transition-colors">
                   WhatsApp Link Guide
+                </Link>
+              </li>
+              <li>
+                <Link href="/share-link-to-pdf" className="hover:text-foreground transition-colors">
+                  Chat to PDF
+                </Link>
+              </li>
+              <li>
+                <Link href="/claude-chat-to-pdf" className="hover:text-foreground transition-colors">
+                  Claude to PDF
+                </Link>
+              </li>
+              <li>
+                <Link href="/chatgpt-chat-to-pdf" className="hover:text-foreground transition-colors">
+                  ChatGPT to PDF
                 </Link>
               </li>
               <li>
