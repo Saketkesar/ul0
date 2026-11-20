@@ -45,7 +45,6 @@ async function getBrowser(): Promise<any> {
           "--disable-setuid-sandbox",
           "--disable-dev-shm-usage",
           "--disable-gpu",
-          "--single-process",
           "--disable-blink-features=AutomationControlled",
         ],
         executablePath,
@@ -752,46 +751,57 @@ export async function renderHtmlToPdf(
     const page = await context.newPage()
 
     try {
-      await page.setContent(html, { waitUntil: "domcontentloaded", timeout: 8000 })
+      console.log("[Chat-to-PDF] Starting Playwright PDF generation...")
 
-      const pdfUint8 = await page.pdf({
-        format: "A4",
-        printBackground: true,
-        margin: {
-          top: "20mm",
-          bottom: "20mm",
-          left: "16mm",
-          right: "16mm",
-        },
-        displayHeaderFooter: true,
-        headerTemplate: "<div></div>",
-        footerTemplate: `
-          <div style="font-size: 8.5px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #94a3b8; width: 100%; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; padding-left: 16mm; padding-right: 16mm; -webkit-print-color-adjust: exact;">
-            <div style="display: flex; align-items: center; gap: 4px; color: #1B685C; font-weight: 600;">
-              <svg width="11" height="11" viewBox="0 0 128 128" style="vertical-align: middle;">
-                <rect width="128" height="128" rx="34" fill="#0E2F27"/>
-                <rect x="26" y="50" width="48" height="28" rx="14" fill="#EAFCF7" stroke="#3DDBB8" stroke-width="6"/>
-                <rect x="54" y="50" width="48" height="28" rx="14" fill="#3DDBB8" stroke="#16483C" stroke-width="6"/>
-              </svg>
-              <span>Created by ul0.site</span>
-            </div>
-            <div>
-              Page <span class="pageNumber"></span> of <span class="totalPages"></span>
-            </div>
-          </div>
-        `,
-      })
+      const renderPromise = (async () => {
+        await page.setContent(html, { waitUntil: "domcontentloaded", timeout: 5000 })
 
+        return await page.pdf({
+          format: "A4",
+          printBackground: true,
+          margin: {
+            top: "20mm",
+            bottom: "20mm",
+            left: "16mm",
+            right: "16mm",
+          },
+          displayHeaderFooter: true,
+          headerTemplate: "<div></div>",
+          footerTemplate: `
+            <div style="font-size: 8.5px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #94a3b8; width: 100%; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; padding-left: 16mm; padding-right: 16mm; -webkit-print-color-adjust: exact;">
+              <div style="display: flex; align-items: center; gap: 4px; color: #1B685C; font-weight: 600;">
+                <svg width="11" height="11" viewBox="0 0 128 128" style="vertical-align: middle;">
+                  <rect width="128" height="128" rx="34" fill="#0E2F27"/>
+                  <rect x="26" y="50" width="48" height="28" rx="14" fill="#EAFCF7" stroke="#3DDBB8" stroke-width="6"/>
+                  <rect x="54" y="50" width="48" height="28" rx="14" fill="#3DDBB8" stroke="#16483C" stroke-width="6"/>
+                </svg>
+                <span>Created by ul0.site</span>
+              </div>
+              <div>
+                Page <span class="pageNumber"></span> of <span class="totalPages"></span>
+              </div>
+            </div>
+          `,
+        })
+      })()
+
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("PDF_RENDER_TIMEOUT")), 6000)
+      )
+
+      const pdfUint8 = await Promise.race([renderPromise, timeoutPromise])
+      console.log("[Chat-to-PDF] Playwright PDF successfully generated!")
       return Buffer.from(pdfUint8)
     } finally {
       await context.close()
     }
   } catch (chromiumErr) {
     console.warn(
-      "[Chat-to-PDF] Headless Chromium rendering failed, activating pure Node fallback:",
+      "[Chat-to-PDF] Headless Chromium rendering failed or timed out, activating pure Node fallback:",
       chromiumErr
     )
     if (fallbackData && fallbackData.messages.length > 0) {
+      console.log("[Chat-to-PDF] Generating PDF via pure Node jsPDF fallback...")
       return renderFallbackPdfWithJsPdf(
         fallbackData.messages,
         fallbackData.docType,
