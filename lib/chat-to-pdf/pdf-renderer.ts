@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf"
 import type { ChatMessage, DocType } from "./types.ts"
 import { getPlatformSelectors } from "./extractor.ts"
+import { getUl0LogoBase64 } from "./brand-logo-data.ts"
 
 let sharedBrowser: any = null
 
@@ -661,12 +662,7 @@ export function buildDocumentHtml(
   ${bodyContent}
   <footer class="doc-watermark-footer">
     <div class="brand-mark">
-      <svg width="13" height="13" viewBox="0 0 128 128" style="vertical-align: middle;">
-        <rect width="128" height="128" rx="34" fill="#0E2F27"/>
-        <rect x="26" y="50" width="48" height="28" rx="14" fill="#EAFCF7" stroke="#3DDBB8" stroke-width="6"/>
-        <rect x="54" y="50" width="48" height="28" rx="14" fill="#3DDBB8" stroke="#16483C" stroke-width="6"/>
-      </svg>
-      <span>Created by <strong>ul0.site</strong> • Fast &amp; Private AI to PDF</span>
+      <img src="${getUl0LogoBase64()}" alt="ul0" style="height: 14px; width: auto; object-fit: contain; vertical-align: middle;" />
     </div>
     <span>100% Private Client Export</span>
   </footer>
@@ -971,19 +967,23 @@ export function renderFallbackPdfWithJsPdf(
 
   // 3. Add footer watermark on all pages
   const totalPages = doc.getNumberOfPages()
+  const logoBase64 = getUl0LogoBase64()
+  const logoH = 4.2
+  const logoW = logoH * (800 / 312) // ~10.77mm
+
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i)
     doc.setDrawColor(226, 232, 240)
     doc.line(marginX, pageHeight - 14, marginX + contentWidth, pageHeight - 14)
 
-    doc.setFont("helvetica", "bold")
-    doc.setFontSize(8.5)
-    doc.setTextColor(27, 104, 92)
-    doc.text("Created by ul0.site • Fast & Private AI to PDF", marginX, pageHeight - 9)
+    if (logoBase64) {
+      doc.addImage(logoBase64, "PNG", marginX, pageHeight - 11.5, logoW, logoH, "ul0-logo", "FAST")
+    }
 
     doc.setFont("helvetica", "normal")
+    doc.setFontSize(8.5)
     doc.setTextColor(148, 163, 184)
-    doc.text(`Page ${i} of ${totalPages}`, marginX + contentWidth - 18, pageHeight - 9)
+    doc.text(`Page ${i} of ${totalPages}`, marginX + contentWidth - 18, pageHeight - 8.5)
   }
 
   return Buffer.from(doc.output("arraybuffer"))
@@ -1043,13 +1043,8 @@ export async function renderHtmlToPdf(
           headerTemplate: "<div></div>",
           footerTemplate: `
             <div style="font-size: 8.5px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #94a3b8; width: 100%; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; padding-left: 16mm; padding-right: 16mm; -webkit-print-color-adjust: exact;">
-              <div style="display: flex; align-items: center; gap: 4px; color: #1B685C; font-weight: 600;">
-                <svg width="11" height="11" viewBox="0 0 128 128" style="vertical-align: middle;">
-                  <rect width="128" height="128" rx="34" fill="#0E2F27"/>
-                  <rect x="26" y="50" width="48" height="28" rx="14" fill="#EAFCF7" stroke="#3DDBB8" stroke-width="6"/>
-                  <rect x="54" y="50" width="48" height="28" rx="14" fill="#3DDBB8" stroke="#16483C" stroke-width="6"/>
-                </svg>
-                <span>Created by ul0.site</span>
+              <div style="display: flex; align-items: center;">
+                <img src="${getUl0LogoBase64()}" alt="ul0" style="height: 12px; width: auto; object-fit: contain;" />
               </div>
               <div>
                 Page <span class="pageNumber"></span> of <span class="totalPages"></span>
