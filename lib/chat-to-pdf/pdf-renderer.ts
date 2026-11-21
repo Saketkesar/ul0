@@ -144,6 +144,99 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
     // Extract messages inside page context
     const extracted = await page.evaluate(
       ({ selectors, platform }) => {
+        function domToMarkdown(node: Node): string {
+          if (!node) return ""
+          if (node.nodeType === 3) return node.nodeValue || ""
+          if (node.nodeType !== 1) return ""
+
+          const el = node as HTMLElement
+          const tag = el.tagName.toLowerCase()
+
+          if (tag === "br") return "\n"
+          if (tag === "hr") return "\n\n---\n\n"
+
+          let childText = ""
+          for (const child of Array.from(el.childNodes)) {
+            childText += domToMarkdown(child)
+          }
+
+          if (tag === "h1") return "\n\n# " + childText.trim() + "\n\n"
+          if (tag === "h2") return "\n\n## " + childText.trim() + "\n\n"
+          if (tag === "h3") return "\n\n### " + childText.trim() + "\n\n"
+          if (tag === "h4" || tag === "h5" || tag === "h6") return "\n\n#### " + childText.trim() + "\n\n"
+
+          if (tag === "p") return "\n\n" + childText.trim() + "\n\n"
+          if (tag === "li") return "\n• " + childText.trim()
+          if (tag === "ul" || tag === "ol") return "\n" + childText.trim() + "\n"
+
+          if (tag === "pre" || tag === "code") {
+            if (tag === "pre") return "\n\n```\n" + childText.trim() + "\n```\n\n"
+            return "`" + childText + "`"
+          }
+
+          if (tag === "strong" || tag === "b") {
+            return "**" + childText.trim() + "** "
+          }
+
+          if (tag === "em" || tag === "i") {
+            return "*" + childText.trim() + "*"
+          }
+
+          return childText
+        }
+
+        function extractCleanContent(contentRoot: HTMLElement): { text: string; html: string } {
+          const noscript = contentRoot.querySelector("noscript")
+          let contentDoc: Document
+          if (noscript) {
+            const rawHtml = noscript.innerHTML || noscript.textContent || ""
+            contentDoc = new DOMParser().parseFromString(rawHtml, "text/html")
+          } else {
+            const clone = contentRoot.cloneNode(true) as HTMLElement
+            contentDoc = new DOMParser().parseFromString(clone.innerHTML, "text/html")
+          }
+
+          // Strip non-content and noise elements
+          contentDoc
+            .querySelectorAll(
+              'noscript, script, style, svg, button, [data-testid*="actions"], [data-testid*="copy"], a[href*="report"], .sr-only'
+            )
+            .forEach((n) => n.remove())
+
+          // Remove obfuscated classes and layout styles for clean semantic styling
+          contentDoc.body.querySelectorAll("*").forEach((node) => {
+            node.removeAttribute("class")
+            node.removeAttribute("style")
+            node.removeAttribute("id")
+            node.removeAttribute("data-testid")
+          })
+
+          // Clean semantic HTML
+          const html = (contentDoc.body.innerHTML || "")
+            .replace(/<!--[\s\S]*?-->/g, "")
+            .replace(/<!\[[\s\S]*?\]>/g, "")
+            .replace(/<!->/g, "")
+            .trim()
+
+          // Clean structured Markdown text
+          const text = domToMarkdown(contentDoc.body)
+            .replace(/<!--[\s\S]*?-->/g, "")
+            .replace(/<!\[[\s\S]*?\]>/g, "")
+            .replace(/<!->/g, "")
+            .replace(/<[^>]+>/g, "")
+            .replace(/&amp;/g, "&")
+            .replace(/&lt;/g, "<")
+            .replace(/&gt;/g, ">")
+            .replace(/&quot;/g, '"')
+            .replace(/&#039;/g, "'")
+            .replace(/&apos;/g, "'")
+            .replace(/&nbsp;/g, " ")
+            .replace(/\n{3,}/g, "\n\n")
+            .trim()
+
+          return { text, html }
+        }
+
         const results: { role: "user" | "assistant"; html: string; text: string }[] = []
 
         if (platform === "chatgpt") {
@@ -152,7 +245,7 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
             const roleAttr = el.getAttribute("data-message-role") || el.getAttribute("data-message-author-role")
             const role: "user" | "assistant" = roleAttr === "user" ? "user" : "assistant"
 
-            let contentEl = el
+            let contentEl = el as HTMLElement
             if (role === "assistant") {
               const assistantMd = el.querySelector("[data-assistant-markdown]") || el.querySelector(".markdown")
               if (assistantMd) contentEl = assistantMd as HTMLElement
@@ -161,13 +254,7 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
               if (userBubble) contentEl = userBubble as HTMLElement
             }
 
-            const clone = contentEl.cloneNode(true) as HTMLElement
-            clone.querySelectorAll('button, svg, [data-testid*="actions"]').forEach((n) => n.remove())
-
-            const text = (clone.textContent || "").trim()
-            let html = clone.innerHTML || ""
-            html = html.replace(/<!--[\s\S]*?-->/g, "")
-
+            const { text, html } = extractCleanContent(contentEl)
             if (text.length > 0) {
               results.push({ role, html, text })
             }
@@ -179,16 +266,7 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
             const isUser = el.getAttribute("data-testid") === "user-message"
             const role: "user" | "assistant" = isUser ? "user" : "assistant"
 
-            const clone = el.cloneNode(true) as HTMLElement
-            // Clean up screen-reader labels, action bars, copy buttons, report links
-            clone.querySelectorAll('.sr-only, [data-testid*="actions"], [data-testid*="copy"], button, a[href*="report"]').forEach((node) => {
-              node.remove()
-            })
-
-            const text = (clone.textContent || "").trim()
-            let html = clone.innerHTML || ""
-            html = html.replace(/<!--[\s\S]*?-->/g, "")
-
+            const { text, html } = extractCleanContent(el as HTMLElement)
             if (text.length > 0) {
               results.push({ role, html, text })
             }
@@ -199,11 +277,11 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
         if (results.length === 0) {
           const articles = document.querySelectorAll("article, main, [role='main']")
           articles.forEach((art) => {
-            const text = art.textContent || ""
-            if (text.trim().length > 20) {
+            const { text, html } = extractCleanContent(art as HTMLElement)
+            if (text.length > 20) {
               results.push({
                 role: "assistant",
-                html: art.innerHTML,
+                html,
                 text,
               })
             }
@@ -605,6 +683,25 @@ function escapeHtml(str: string): string {
     .replace(/'/g, "&#039;")
 }
 
+function cleanTextForPdf(raw: string): string {
+  if (!raw) return ""
+  return raw
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<!\[[\s\S]*?\]>/g, "")
+    .replace(/<!->/g, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#039;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .trim()
+}
+
 /**
  * Pure Node / jsPDF fallback renderer that guarantees fast, clean A4 PDF generation
  * with styled typography, monospace code containers, headings, tinted prompt blocks,
@@ -642,12 +739,12 @@ export function renderFallbackPdfWithJsPdf(
   let firstUserPrompt = ""
   for (const m of messages) {
     if (m.role === "user" && m.text?.trim()) {
-      firstUserPrompt = m.text.trim().slice(0, 100)
+      firstUserPrompt = cleanTextForPdf(m.text.trim()).slice(0, 100)
       break
     }
   }
 
-  const docTitle = title || firstUserPrompt || "Conversation Export"
+  const docTitle = cleanTextForPdf(title || firstUserPrompt || "Conversation Export")
   doc.setFont("helvetica", "bold")
   doc.setFontSize(16)
   doc.setTextColor(15, 23, 42) // #0f172a
@@ -680,7 +777,7 @@ export function renderFallbackPdfWithJsPdf(
     const isUser = msg.role === "user"
 
     // In notes mode, skip the user's first question if it's already the topic header
-    if (isNotes && isUser && msg.text.trim().slice(0, 100) === firstUserPrompt) {
+    if (isNotes && isUser && cleanTextForPdf(msg.text.trim()).slice(0, 100) === firstUserPrompt) {
       continue
     }
 
@@ -697,7 +794,8 @@ export function renderFallbackPdfWithJsPdf(
       doc.setFont("helvetica", "normal")
       doc.setFontSize(10)
       doc.setTextColor(15, 23, 42)
-      const userLines = doc.splitTextToSize(msg.text, contentWidth - 6)
+      const userText = cleanTextForPdf(msg.text)
+      const userLines = doc.splitTextToSize(userText, contentWidth - 6)
 
       // Light green tint background
       const boxHeight = userLines.length * 5 + 6
@@ -735,7 +833,10 @@ export function renderFallbackPdfWithJsPdf(
             inCodeBlock = false
             const wrappedCode: string[] = []
             for (const cl of codeLines) {
-              const parts = doc.splitTextToSize(cl || " ", contentWidth - 8)
+              const cleanCode = cl
+                .replace(/<!--[\s\S]*?-->/g, "")
+                .replace(/<[^>]+>/g, "")
+              const parts = doc.splitTextToSize(cleanCode || " ", contentWidth - 8)
               wrappedCode.push(...parts)
             }
             const codeBoxHeight = wrappedCode.length * 4.2 + 6
@@ -762,42 +863,107 @@ export function renderFallbackPdfWithJsPdf(
           continue
         }
 
-        // Headings (#, ##, ###)
-        if (line.startsWith("### ")) {
-          checkPageBreak(10)
-          doc.setFont("helvetica", "bold")
-          doc.setFontSize(11)
-          doc.setTextColor(15, 23, 42)
-          doc.text(line.replace(/^###\s*/, ""), marginX, cursorY)
-          cursorY += 5.5
-          continue
-        }
-        if (line.startsWith("## ") || line.startsWith("# ")) {
-          checkPageBreak(12)
-          doc.setFont("helvetica", "bold")
-          doc.setFontSize(12)
-          doc.setTextColor(15, 23, 42)
-          const hText = line.replace(/^#{1,2}\s*/, "")
-          doc.text(hText, marginX, cursorY)
-          cursorY += 6
+        const trimmed = line.trim()
+        if (!trimmed) {
+          cursorY += 2.5
           continue
         }
 
-        // Standard line / paragraph
-        if (!line.trim()) {
-          cursorY += 2.5
+        // Horizontal divider (--- or ***)
+        if (trimmed === "---" || trimmed === "***") {
+          checkPageBreak(8)
+          doc.setDrawColor(226, 232, 240)
+          doc.line(marginX, cursorY, marginX + contentWidth, cursorY)
+          cursorY += 5
+          continue
+        }
+
+        // Heading 1 (# )
+        if (trimmed.startsWith("# ")) {
+          checkPageBreak(12)
+          doc.setFont("helvetica", "bold")
+          doc.setFontSize(13)
+          doc.setTextColor(15, 23, 42)
+          const hText = cleanTextForPdf(trimmed.replace(/^#\s*/, ""))
+          const wrapped = doc.splitTextToSize(hText, contentWidth)
+          doc.text(wrapped, marginX, cursorY)
+          cursorY += wrapped.length * 5.5 + 3
+          continue
+        }
+
+        // Heading 2 (## )
+        if (trimmed.startsWith("## ")) {
+          checkPageBreak(10)
+          doc.setFont("helvetica", "bold")
+          doc.setFontSize(11.5)
+          doc.setTextColor(30, 41, 59)
+          const hText = cleanTextForPdf(trimmed.replace(/^##\s*/, ""))
+          const wrapped = doc.splitTextToSize(hText, contentWidth)
+          doc.text(wrapped, marginX, cursorY)
+          cursorY += wrapped.length * 5 + 2
+          continue
+        }
+
+        // Heading 3 or 4 (### or ####)
+        if (trimmed.startsWith("### ") || trimmed.startsWith("#### ")) {
+          checkPageBreak(8)
+          doc.setFont("helvetica", "bold")
+          doc.setFontSize(10.5)
+          doc.setTextColor(51, 65, 85)
+          const hText = cleanTextForPdf(trimmed.replace(/^#{3,4}\s*/, ""))
+          const wrapped = doc.splitTextToSize(hText, contentWidth)
+          doc.text(wrapped, marginX, cursorY)
+          cursorY += wrapped.length * 4.8 + 2
+          continue
+        }
+
+        // Bullet list (• or - or *)
+        if (trimmed.startsWith("• ") || trimmed.startsWith("- ") || trimmed.startsWith("* ")) {
+          checkPageBreak(5)
+          doc.setFont("helvetica", "normal")
+          doc.setFontSize(10)
+          doc.setTextColor(51, 65, 85)
+          const itemText = cleanTextForPdf(trimmed.replace(/^[•\-\*]\s*/, ""))
+          const wrapped = doc.splitTextToSize(itemText, contentWidth - 6)
+          doc.text("•", marginX + 1, cursorY)
+          doc.text(wrapped, marginX + 5, cursorY)
+          cursorY += wrapped.length * 4.8 + 1.5
+          continue
+        }
+
+        // Numbered list (1., 2., etc.)
+        const numMatch = trimmed.match(/^(\d+\.)\s+(.*)/)
+        if (numMatch) {
+          checkPageBreak(5)
+          doc.setFont("helvetica", "normal")
+          doc.setFontSize(10)
+          doc.setTextColor(51, 65, 85)
+          const numLabel = numMatch[1]
+          const itemText = cleanTextForPdf(numMatch[2])
+          const wrapped = doc.splitTextToSize(itemText, contentWidth - 8)
+          doc.text(numLabel, marginX + 1, cursorY)
+          doc.text(wrapped, marginX + 7, cursorY)
+          cursorY += wrapped.length * 4.8 + 1.5
+          continue
+        }
+
+        // Standard paragraph
+        const cleanLine = cleanTextForPdf(trimmed)
+        if (!cleanLine) {
+          cursorY += 2
           continue
         }
 
         doc.setFont("helvetica", "normal")
         doc.setFontSize(10)
-        doc.setTextColor(30, 41, 59)
-        const wrapped = doc.splitTextToSize(line, contentWidth)
+        doc.setTextColor(51, 65, 85)
+        const wrapped = doc.splitTextToSize(cleanLine, contentWidth)
         for (const w of wrapped) {
           checkPageBreak(5)
           doc.text(w, marginX, cursorY)
           cursorY += 4.8
         }
+        cursorY += 1
       }
       cursorY += 5
     }
