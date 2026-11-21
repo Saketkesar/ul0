@@ -9,16 +9,16 @@ import { AnimatedIconBackground } from "@/components/animated-icon-background"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "UL0: Shorten Links the Cute, Clean Way",
+  title: "UL0 — Free URL Shortener, Branded Links & Dynamic QR Codes",
   description:
-    "Paste a long URL, get a tiny ul0.site link with vector QR and click stats. 1 custom domain free forever, zero tracking cookies, no account needed.",
+    "Fast, free URL shortener with custom domains, dynamic vector QR codes, and real-time click analytics. Zero tracking cookies. No signup required.",
   alternates: {
     canonical: "https://ul0.site",
   },
   openGraph: {
-    title: "UL0: Shorten Links the Cute, Clean Way",
+    title: "UL0 — Free URL Shortener, Branded Links & Dynamic QR Codes",
     description:
-      "Paste a long URL, get a tiny ul0.site link with vector QR and click stats. 1 custom domain free forever, zero tracking cookies, no account needed.",
+      "Fast, free URL shortener with custom domains, dynamic vector QR codes, and real-time click analytics. Zero tracking cookies. No signup required.",
     url: "https://ul0.site",
     siteName: "UL0",
     type: "website",
@@ -127,13 +127,13 @@ export default function HomePage() {
 
             {/* Main Title: Clean, Large, Tactile */}
             <h1 className="text-4xl sm:text-6xl lg:text-[76px] font-extrabold tracking-tight text-foreground leading-[1.05]">
-              Shorten links the<br />cute, clean way.
+              The fast, private<br />URL shortener.
             </h1>
 
             {/* Subhead */}
             <p className="mx-auto max-w-xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-              Paste a long URL, get a tiny ul0.site link with vector QR and click stats.<br className="hidden sm:inline" />
-              Free forever. No account needed.
+              Create short branded links, dynamic vector QR codes, and track real-time clicks.<br className="hidden sm:inline" />
+              Free forever with custom domain support. No account needed.
             </p>
 
             {/* Link Shortener Form */}
