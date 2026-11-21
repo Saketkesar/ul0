@@ -38,17 +38,21 @@ export async function PATCH(request: NextRequest, { params }: Context) {
 
     if (Array.isArray(body.settlements)) {
       updatedSettlements = body.settlements
-    } else if (typeof body.settlementIndex === "number" && typeof body.paid === "boolean") {
+    } else if (typeof body.settlementIndex === "number") {
       const idx = body.settlementIndex
       if (idx < 0 || idx >= currentSettlements.length) {
         return NextResponse.json({ error: "Invalid settlement index" }, { status: 400 })
       }
       updatedSettlements = currentSettlements.map((s, i) => {
         if (i === idx) {
+          const nextPaid = typeof body.paid === "boolean" ? body.paid : !s.paid
+          const isVerified = typeof body.verified === "boolean" ? body.verified : (nextPaid ? s.verified : false)
           return {
             ...s,
-            paid: body.paid,
-            paid_at: body.paid ? new Date().toISOString() : null,
+            paid: nextPaid,
+            paid_at: nextPaid ? (s.paid_at || new Date().toISOString()) : null,
+            verified: isVerified,
+            verified_at: isVerified ? new Date().toISOString() : null,
           }
         }
         return s

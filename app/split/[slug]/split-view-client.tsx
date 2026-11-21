@@ -1,43 +1,22 @@
 "use client"
 
+import { useState, useRef, useMemo, useCallback, useEffect } from "react"
 import { UL0Icon } from "@/components/ul0-icon"
 import QRCode from "qrcode"
 import html2canvas from "html2canvas"
 import { jsPDF } from "jspdf"
-import {
-  SiPaypal,
-  SiCashapp,
-  SiRevolut,
-  SiWise,
-  SiPaytm,
-  SiGooglepay,
-} from "react-icons/si"
-import { FaMoneyBillTransfer } from "react-icons/fa6"
-import { BsBank2 } from "react-icons/bs"
-
-// Payment methods configuration
-const PAYMENT_METHODS = {
-  upi: { name: "UPI", urlPrefix: "upi://pay?pa=" },
-  paypal: { name: "PayPal", urlPrefix: "https://paypal.me/" },
-  venmo: { name: "Venmo", urlPrefix: "https://venmo.com/" },
-  cashapp: { name: "Cash App", urlPrefix: "https://cash.app/" },
-  pix: { name: "PIX", urlPrefix: "" },
-  wise: { name: "Wise", urlPrefix: "" },
-  revolut: { name: "Revolut", urlPrefix: "https://revolut.me/" },
-  gcash: { name: "GCash", urlPrefix: "" },
-  grabpay: { name: "GrabPay", urlPrefix: "" },
-  paytm: { name: "Paytm", urlPrefix: "" },
-  other: { name: "Other", urlPrefix: "" },
-} as const
-
-type PaymentMethod = keyof typeof PAYMENT_METHODS
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { toast } from "sonner"
+import { SiGooglepay, SiPhonepe, SiPaytm } from "react-icons/si"
 
 interface Member {
   id: string
   name: string
-  paymentMethod?: PaymentMethod
+  paymentMethod?: string
   paymentId?: string
   upiId?: string
+  currency?: string
 }
 
 interface Expense {
@@ -56,6 +35,8 @@ interface Settlement {
   amount: number
   paid?: boolean
   paid_at?: string | null
+  verified?: boolean
+  verified_at?: string | null
 }
 
 interface SplitSession {
@@ -80,31 +61,29 @@ interface SplitViewClientProps {
 export function SplitViewClient({ session: initialSession, slug }: SplitViewClientProps) {
   const [session, setSession] = useState<SplitSession>(initialSession)
   const [settlements, setSettlements] = useState<Settlement[]>(initialSession.settlements || [])
-  const [activeQrIndex, setActiveQrIndex] = useState<number | null>(null)
-  const [qrCodes, setQrCodes] = useState<Record<string, string>>({})
   const [copiedId, setCopiedId] = useState<string | null>(null)
   const [copiedShareLink, setCopiedShareLink] = useState(false)
   const [updatingIdx, setUpdatingIdx] = useState<number | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
 
+  // Bharpai Settle Drawer / Modal state
+  const [activeSettlementIdx, setActiveSettlementIdx] = useState<number | null>(null)
+  const [activeUpiQrData, setActiveUpiQrData] = useState<string | null>(null)
+  const [isGeneratingQr, setIsGeneratingQr] = useState(false)
+
   const contentRef = useRef<HTMLDivElement>(null)
 
-  // Resolve appropriate currency symbol
-  const currencySymbol = useMemo(() => {
-    if (session.currency === "USD") return "$"
-    if (session.currency === "INR") return "₹"
-    if (session.currency === "EUR") return "€"
-    if (session.currency === "GBP") return "£"
-    const hasUpi = session.members.some((m) => m.paymentMethod === "upi" || Boolean(m.upiId))
-    return hasUpi ? "₹" : "$"
-  }, [session])
+  // Find collector (first member or whoever is in settlements[0]?.to)
+  const collector = useMemo(() => {
+    if (settlements.length > 0) {
+      const collectorId = settlements[0].to
+      const found = session.members.find(m => m.id === collectorId)
+      if (found) return found
+    }
+    return session.members[0]
+  }, [session.members, settlements])
 
-  const formatAmount = useCallback(
-    (num: number) => {
-      return `${currencySymbol}${num.toFixed(2)}`
-    },
-    [currencySymbol]
-  )
+  const collectorUpi = collector?.paymentId || collector?.upiId || ""
 
   // Member lookup helpers
   const getMember = useCallback(
@@ -117,49 +96,9 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
     [getMember]
   )
 
-  const getPaymentMethod = (member: Member): PaymentMethod => {
-    if (member.paymentMethod) return member.paymentMethod
-    if (member.upiId) return "upi"
-    return "other"
-  }
-
-  const getPaymentId = (member: Member): string => {
-    return member.paymentId || member.upiId || ""
-  }
-
-  const getInitials = (name: string): string => {
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .slice(0, 2)
-      .join("")
-      .toUpperCase()
-  }
-
-  // Calculate Net Balances per member
-  const memberBalances = useMemo(() => {
-    const balances: Record<string, { totalPaid: number; totalShare: number; net: number }> = {}
-    session.members.forEach((m) => {
-      balances[m.id] = { totalPaid: 0, totalShare: 0, net: 0 }
-    })
-
-    session.expenses.forEach((exp) => {
-      if (balances[exp.paidBy]) {
-        balances[exp.paidBy].totalPaid += exp.amount
-      }
-      exp.splits.forEach((split) => {
-        if (balances[split.memberId]) {
-          balances[split.memberId].totalShare += split.amount
-        }
-      })
-    })
-
-    Object.keys(balances).forEach((id) => {
-      balances[id].net = balances[id].totalPaid - balances[id].totalShare
-    })
-
-    return balances
-  }, [session.members, session.expenses])
+  const formatAmount = useCallback((num: number) => {
+    return `₹${num.toFixed(2)}`
+  }, [])
 
   // Progress metrics
   const totalSettlementAmount = useMemo(
@@ -168,7 +107,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
   )
 
   const settledAmount = useMemo(
-    () => settlements.filter((s) => s.paid).reduce((sum, s) => sum + s.amount, 0),
+    () => settlements.filter((s) => s.paid || s.verified).reduce((sum, s) => sum + s.amount, 0),
     [settlements]
   )
 
@@ -176,26 +115,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
     ? Math.round((settledAmount / totalSettlementAmount) * 100)
     : 100
 
-  const isAllSettled = settlements.length > 0 && settlements.every((s) => s.paid)
-
-  // Countdown timer
-  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0 })
-
-  useEffect(() => {
-    if (!session.expires_at) return
-    const updateCountdown = () => {
-      const now = new Date().getTime()
-      const expiry = new Date(session.expires_at!).getTime()
-      const diff = Math.max(0, expiry - now)
-      setTimeLeft({
-        hours: Math.floor(diff / (1000 * 60 * 60)),
-        minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
-      })
-    }
-    updateCountdown()
-    const timer = setInterval(updateCountdown, 60000)
-    return () => clearInterval(timer)
-  }, [session.expires_at])
+  const isAllSettled = settlements.length > 0 && settlements.every((s) => s.verified || s.paid)
 
   // Sync data from server
   const refreshSession = useCallback(async () => {
@@ -211,27 +131,65 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
           }
         }
       }
-    } catch {} finally {
+    } catch {
+    } finally {
       setIsRefreshing(false)
     }
   }, [slug])
 
-  // Periodic polling for live group sync
+  // Periodic polling for live group sync every 10 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       refreshSession()
-    }, 12000)
+    }, 10000)
     return () => clearInterval(interval)
   }, [refreshSession])
 
-  // Toggle paid status
-  const handleTogglePaid = async (index: number) => {
+  // Generate UPI deep link URI
+  const getUpiUri = useCallback((amount: number, fromName: string) => {
+    if (!collectorUpi) return ""
+    const note = encodeURIComponent(`${session.title} - ${fromName}`)
+    const name = encodeURIComponent(collector?.name || "Collector")
+    return `upi://pay?pa=${collectorUpi}&pn=${name}&am=${amount.toFixed(2)}&tn=${note}&cu=INR`
+  }, [collectorUpi, collector?.name, session.title])
+
+  // Open Settle Drawer for a specific friend
+  const openSettleModal = async (idx: number) => {
+    const settlement = settlements[idx]
+    if (!settlement) return
+
+    setActiveSettlementIdx(idx)
+    setIsGeneratingQr(true)
+
+    const fromMember = getMember(settlement.from)
+    const upiUri = getUpiUri(settlement.amount, fromMember?.name || "Friend")
+
+    try {
+      if (upiUri) {
+        const qr = await QRCode.toDataURL(upiUri, {
+          width: 300,
+          margin: 2,
+          color: { dark: "#000000", light: "#ffffff" }
+        })
+        setActiveUpiQrData(qr)
+      } else {
+        setActiveUpiQrData(null)
+      }
+    } catch {
+      setActiveUpiQrData(null)
+    } finally {
+      setIsGeneratingQr(false)
+    }
+  }
+
+  // Handle "I Have Paid" (Friend action)
+  const handleMarkAsPaid = async (index: number) => {
     const current = settlements[index]
-    const nextPaid = !current.paid
+    const nextPaid = true
 
     // Optimistic update
     const updated = settlements.map((s, i) =>
-      i === index ? { ...s, paid: nextPaid, paid_at: nextPaid ? new Date().toISOString() : null } : s
+      i === index ? { ...s, paid: nextPaid, paid_at: new Date().toISOString() } : s
     )
     setSettlements(updated)
     setUpdatingIdx(index)
@@ -247,97 +205,87 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
       if (data.session?.settlements) {
         setSettlements(data.session.settlements)
       }
+      toast.success("Payment marked! The collector will verify.")
+      setActiveSettlementIdx(null)
     } catch {
       setSettlements(settlements)
+      toast.error("Could not record payment. Please try again.")
     } finally {
       setUpdatingIdx(null)
     }
   }
 
-  // Payment links
-  const getPaymentLink = (member: Member, amount: number): string => {
-    const paymentId = getPaymentId(member)
-    const method = getPaymentMethod(member)
-    const note = encodeURIComponent(`${session.title} - Split`)
+  // Handle "Verify in Bank" (Collector action)
+  const handleVerifyPayment = async (index: number) => {
+    const current = settlements[index]
+    const nextVerified = !current.verified
 
-    switch (method) {
-      case "upi":
-        return `upi://pay?pa=${paymentId}&pn=${encodeURIComponent(member.name)}&am=${amount.toFixed(2)}&tn=${note}`
-      case "paypal":
-        if (paymentId.includes("@")) return ""
-        return `https://paypal.me/${paymentId}/${amount.toFixed(2)}`
-      case "venmo": {
-        const venmoId = paymentId.startsWith("@") ? paymentId.slice(1) : paymentId
-        return `https://venmo.com/${venmoId}?txn=pay&amount=${amount.toFixed(2)}`
-      }
-      case "cashapp": {
-        const cashTag = paymentId.startsWith("$") ? paymentId.slice(1) : paymentId
-        return `https://cash.app/$${cashTag}/${amount.toFixed(2)}`
-      }
-      case "revolut": {
-        const revolutId = paymentId.startsWith("@") ? paymentId.slice(1) : paymentId
-        return `https://revolut.me/${revolutId}`
-      }
-      default:
-        return ""
-    }
-  }
-
-  const toggleQR = async (settlement: Settlement, idx: number) => {
-    if (activeQrIndex === idx) {
-      setActiveQrIndex(null)
-      return
-    }
-
-    const toMember = session.members.find((m) => m.id === settlement.to)
-    if (!toMember) return
-    const paymentMethod = getPaymentMethod(toMember)
-    const paymentId = getPaymentId(toMember)
-
-    if (!qrCodes[idx.toString()]) {
-      if (paymentMethod === "upi" && paymentId) {
-        try {
-          const params = new URLSearchParams({
-            upi: paymentId,
-            name: toMember.name || "",
-            amount: settlement.amount.toFixed(2),
-          })
-          const resp = await fetch(`/api/upi/qr?${params.toString()}`)
-          if (resp.ok) {
-            const blob = await resp.blob()
-            const url = URL.createObjectURL(blob)
-            setQrCodes((prev) => ({ ...prev, [idx.toString()]: url }))
-            setActiveQrIndex(idx)
-            return
+    const updated = settlements.map((s, i) =>
+      i === index
+        ? {
+            ...s,
+            paid: nextVerified ? true : s.paid,
+            verified: nextVerified,
+            verified_at: nextVerified ? new Date().toISOString() : null,
           }
-        } catch {}
-      }
+        : s
+    )
+    setSettlements(updated)
+    setUpdatingIdx(index)
 
-      const paymentLink = getPaymentLink(toMember, settlement.amount)
-      if (paymentLink) {
-        try {
-          const qrDataUrl = await QRCode.toDataURL(paymentLink, { width: 200, margin: 1 })
-          setQrCodes((prev) => ({ ...prev, [idx.toString()]: qrDataUrl }))
-        } catch {}
+    try {
+      const res = await fetch(`/api/split/${slug}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          settlementIndex: index,
+          paid: nextVerified ? true : current.paid,
+          verified: nextVerified,
+        }),
+      })
+      if (!res.ok) throw new Error("Failed to update status")
+      const data = await res.json()
+      if (data.session?.settlements) {
+        setSettlements(data.session.settlements)
       }
+      toast.success(nextVerified ? "Payment confirmed in bank!" : "Payment unverified.")
+    } catch {
+      setSettlements(settlements)
+      toast.error("Failed to verify settlement.")
+    } finally {
+      setUpdatingIdx(null)
     }
-
-    setActiveQrIndex(idx)
   }
 
+  // Copy UPI ID helper
   const copyPaymentId = async (id: string) => {
     await navigator.clipboard.writeText(id)
     setCopiedId(id)
+    toast.success("UPI ID copied!")
     setTimeout(() => setCopiedId(null), 2000)
   }
 
+  // Copy Share Link helper
   const copyShareLink = async () => {
     const url = typeof window !== "undefined" ? window.location.href : `https://ul0.site/split/${slug}`
     await navigator.clipboard.writeText(url)
     setCopiedShareLink(true)
+    toast.success("Split link copied!")
     setTimeout(() => setCopiedShareLink(false), 2000)
   }
 
+  // WhatsApp Nudge for unpaid friend
+  const sendWhatsAppNudge = (settlement: Settlement) => {
+    const fromMember = getMember(settlement.from)
+    const name = fromMember?.name || "Friend"
+    const url = typeof window !== "undefined" ? window.location.href : `https://ul0.site/split/${slug}`
+    const text = encodeURIComponent(
+      `Hey ${name}! Gentle nudge for *${session.title}* (₹${settlement.amount.toFixed(2)}).\n\nTap your name to pay directly via UPI:\n${url}`
+    )
+    window.open(`https://api.whatsapp.com/send?text=${text}`, "_blank")
+  }
+
+  // Download PDF Receipt
   const downloadPDF = async () => {
     if (!contentRef.current) return
     try {
@@ -345,7 +293,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
       const canvas = await (html2canvas as Function)(element, {
         useCORS: true,
         allowTaint: true,
-        backgroundColor: "#ffffff",
+        backgroundColor: "#0a0a0a",
         windowWidth: element.scrollWidth,
         windowHeight: element.scrollHeight,
       })
@@ -367,62 +315,59 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
         heightLeft -= pageHeight
       }
       pdf.save(`${session.title.replace(/\s+/g, "-")}-receipt.pdf`)
+      toast.success("PDF receipt downloaded!")
     } catch {
       window.print()
     }
   }
 
+  const activeSettlement = activeSettlementIdx !== null ? settlements[activeSettlementIdx] : null
+  const activeFromMember = activeSettlement ? getMember(activeSettlement.from) : null
+  const activeUpiUri = activeSettlement && activeFromMember ? getUpiUri(activeSettlement.amount, activeFromMember.name) : ""
+
   return (
-    <div className="min-h-screen bg-background text-foreground antialiased selection:bg-neutral-200 dark:selection:bg-neutral-800">
-      {/* Dub-style Top Navigation Header */}
-      <header className="sticky top-0 z-30 border-b border-border bg-background/80 backdrop-blur-md">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans selection:bg-amber-400 selection:text-neutral-950">
+      {/* Top Header */}
+      <header className="sticky top-0 z-30 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-md">
         <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <a
               href="/split"
-              className="text-sm font-semibold tracking-tight text-foreground hover:opacity-80 transition-opacity"
+              className="text-sm font-bold tracking-tight text-white hover:text-amber-400 transition-colors flex items-center gap-1.5"
             >
-              UL0
+              <UL0Icon name="splitbill" size={18} />
+              <span>UL0 Split</span>
             </a>
-            <span className="text-muted-foreground/40 text-xs">/</span>
-            <span className="text-xs font-mono text-muted-foreground truncate max-w-[140px] sm:max-w-[200px]">
+            <span className="text-neutral-600 text-xs">/</span>
+            <span className="text-xs font-mono text-neutral-400 truncate max-w-[140px] sm:max-w-[200px]">
               {session.title}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
-            {session.expires_at && (
-              <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md border border-border bg-card text-[11px] font-mono text-muted-foreground">
-                <UL0Icon name="clock" className="w-3 h-3 text-muted-foreground" />
-                <span>
-                  {timeLeft.hours}h {timeLeft.minutes}m left
-                </span>
-              </div>
-            )}
-
             <button
               type="button"
               onClick={refreshSession}
               disabled={isRefreshing}
-              className="p-1.5 rounded-md border border-border bg-card text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              title="Refresh"
+              className="p-1.5 rounded-md border border-neutral-800 bg-neutral-900 text-neutral-400 hover:text-white transition-colors cursor-pointer"
+              title="Refresh settlements"
             >
-              <UL0Icon name="refresh" className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+              <UL0Icon name="refresh" size={14} className={isRefreshing ? "animate-spin" : ""} />
             </button>
 
             <button
               type="button"
               onClick={copyShareLink}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-border bg-card hover:bg-muted/50 text-xs font-medium text-foreground transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-xs font-medium text-white transition-colors cursor-pointer"
             >
               {copiedShareLink ? (
                 <>
-                  <UL0Icon name="check" className="w-3.5 h-3.5 text-foreground" />
+                  <UL0Icon name="check" size={14} />
                   <span>Copied</span>
                 </>
               ) : (
                 <>
-                  <UL0Icon name="link" className="w-3.5 h-3.5 text-muted-foreground" />
+                  <UL0Icon name="share" size={14} />
                   <span>Share</span>
                 </>
               )}
@@ -431,308 +376,380 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
         </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-3xl mx-auto px-4 py-8 space-y-6">
+      {/* Main Settle Content */}
+      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8 space-y-6">
         <div ref={contentRef} className="space-y-6">
-          {/* Overview Card */}
-          <div className="rounded-xl border border-border bg-card p-6 space-y-5">
-            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-mono font-medium text-muted-foreground uppercase tracking-wider">
-                    Expense Split
-                  </span>
-                  <span className="text-muted-foreground/40">•</span>
-                  <span className="text-[11px] font-mono text-muted-foreground">
-                    {session.members.length} {session.members.length === 1 ? "member" : "members"}
-                  </span>
-                </div>
-                <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-foreground">
-                  {session.title}
-                </h1>
-                {session.created_at && (
-                  <p className="text-xs text-muted-foreground">
-                    Created on {new Date(session.created_at).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                  </p>
-                )}
+          {/* Authentic Paper Receipt Card */}
+          <div className="rounded-2xl border border-neutral-800 bg-neutral-900/90 p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            {/* Header / Receipt details */}
+            <div className="border-b border-dashed border-neutral-700 pb-5 mb-5 space-y-2">
+              <div className="flex items-center justify-between text-xs text-neutral-400">
+                <span className="font-mono uppercase tracking-wider">UL0 UPI RECEIPT</span>
+                <span className="font-mono">
+                  {session.created_at
+                    ? new Date(session.created_at).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })
+                    : new Date().toLocaleDateString("en-IN")}
+                </span>
               </div>
 
-              <div className="sm:text-right">
-                <span className="text-[11px] font-mono uppercase tracking-wider text-muted-foreground block">
-                  Total Bill
-                </span>
-                <span className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground font-mono">
-                  {formatAmount(session.total_amount)}
-                </span>
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                {session.title}
+              </h1>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+                <div className="text-neutral-300">
+                  Paid by <span className="text-amber-400 font-semibold">{collector?.name || "Collector"}</span>
+                  {collectorUpi && (
+                    <span className="font-mono text-neutral-500 ml-1.5">({collectorUpi})</span>
+                  )}
+                </div>
+                <div className="text-right">
+                  <span className="text-xs text-neutral-400 mr-2">Total:</span>
+                  <span className="text-xl font-bold font-mono text-emerald-400">
+                    {formatAmount(session.total_amount)}
+                  </span>
+                </div>
               </div>
             </div>
 
-            {/* Progress bar */}
-            <div className="pt-4 border-t border-border space-y-2">
+            {/* Live Settlement Progress */}
+            <div className="space-y-2 mb-6">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-muted-foreground font-medium">
+                <span className="text-neutral-400 font-medium">
                   {isAllSettled
-                    ? "All settlements completed"
-                    : `${formatAmount(settledAmount)} of ${formatAmount(totalSettlementAmount)} settled`}
+                    ? "🎉 All friends have settled!"
+                    : `${formatAmount(settledAmount)} of ${formatAmount(totalSettlementAmount)} collected`}
                 </span>
-                <span className="font-mono text-xs font-semibold text-foreground">
+                <span className="font-mono text-xs font-semibold text-amber-400">
                   {progressPercent}%
                 </span>
               </div>
-              <div className="w-full h-1.5 rounded-full bg-muted overflow-hidden">
+              <div className="w-full h-2 rounded-full bg-neutral-950 overflow-hidden border border-neutral-800">
                 <div
-                  className="h-full bg-foreground transition-all duration-300"
+                  className="h-full bg-gradient-to-r from-amber-500 to-emerald-400 transition-all duration-500"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
             </div>
-          </div>
 
-          {/* Settlements Section */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between px-1">
-              <h2 className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground">
-                Settlements ({settlements.length})
-              </h2>
-              <span className="text-xs text-muted-foreground">
-                Mark as paid once transferred
-              </span>
+            {/* Friend Settle Prompt */}
+            <div className="bg-neutral-950/80 border border-neutral-800/80 rounded-xl p-3 mb-5 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2 text-neutral-300">
+                <UL0Icon name="mobile" size={16} />
+                <span><strong className="text-white">Tap your name below</strong> to pay instantly via UPI</span>
+              </div>
+              <span className="text-[11px] text-neutral-500 hidden sm:inline">No app install required</span>
             </div>
 
-            {settlements.length === 0 ? (
-              <div className="rounded-xl border border-border bg-card p-6 text-center text-xs text-muted-foreground">
-                All balances are settled. No transfers required.
-              </div>
-            ) : (
-              <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
-                {settlements.map((settlement, idx) => {
-                  const fromMember = getMember(settlement.from)
-                  const toMember = getMember(settlement.to)
-                  const fromName = fromMember?.name || "Member"
-                  const toName = toMember?.name || "Member"
-                  const isPaid = Boolean(settlement.paid)
-                  const paymentLink = toMember ? getPaymentLink(toMember, settlement.amount) : ""
-                  const paymentId = toMember ? getPaymentId(toMember) : ""
-                  const isQrOpen = activeQrIndex === idx
-
-                  return (
-                    <div
-                      key={idx}
-                      className={`p-4 sm:p-5 transition-colors ${
-                        isPaid ? "bg-muted/20 opacity-75" : "hover:bg-muted/10"
-                      }`}
-                    >
-                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        {/* Member Flow */}
-                        <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-muted border border-border flex items-center justify-center text-xs font-mono font-semibold text-foreground">
-                            {getInitials(fromName)}
-                          </div>
-
-                          <div className="flex items-center gap-2 text-sm">
-                            <span className="font-medium text-foreground">{fromName}</span>
-                            <span className="text-xs text-muted-foreground font-mono">owes</span>
-                            <span className="font-medium text-foreground">{toName}</span>
-                          </div>
-                        </div>
-
-                        {/* Amount & Actions */}
-                        <div className="flex items-center justify-between sm:justify-end gap-3">
-                          <span className="text-sm sm:text-base font-bold font-mono text-foreground">
-                            {formatAmount(settlement.amount)}
-                          </span>
-
-                          <div className="flex items-center gap-1.5">
-                            {!isPaid && paymentLink && (
-                              <a
-                                href={paymentLink}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-md border border-border bg-card hover:bg-muted/50 text-xs font-medium text-foreground transition-colors"
-                              >
-                                <span>Pay</span>
-                                <UL0Icon name="external" className="w-3 h-3 text-muted-foreground" />
-                              </a>
-                            )}
-
-                            {!isPaid && (paymentLink || paymentId) && (
-                              <button
-                                type="button"
-                                onClick={() => toggleQR(settlement, idx)}
-                                className="p-1.5 rounded-md border border-border bg-card hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                                title="Show QR code"
-                              >
-                                <UL0Icon name="qr" className="w-3.5 h-3.5" />
-                              </button>
-                            )}
-
-                            {paymentId && (
-                              <button
-                                type="button"
-                                onClick={() => copyPaymentId(paymentId)}
-                                className="p-1.5 rounded-md border border-border bg-card hover:bg-muted/50 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-                                title={`Copy ${paymentId}`}
-                              >
-                                {copiedId === paymentId ? (
-                                  <UL0Icon name="check" className="w-3.5 h-3.5 text-foreground" />
-                                ) : (
-                                  <UL0Icon name="copy" className="w-3.5 h-3.5" />
-                                )}
-                              </button>
-                            )}
-
-                            {/* Mark as paid toggle button */}
-                            <button
-                              type="button"
-                              disabled={updatingIdx === idx}
-                              onClick={() => handleTogglePaid(idx)}
-                              className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors cursor-pointer ${
-                                isPaid
-                                  ? "border border-border bg-transparent text-muted-foreground hover:text-foreground"
-                                  : "bg-foreground text-background hover:opacity-90"
-                              }`}
-                            >
-                              {updatingIdx === idx ? (
-                                <UL0Icon name="refresh" className="w-3.5 h-3.5 animate-spin" />
-                              ) : isPaid ? (
-                                <span>Settled</span>
-                              ) : (
-                                <span>Mark paid</span>
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* QR Drawer */}
-                      {isQrOpen && qrCodes[idx.toString()] && (
-                        <div className="mt-4 pt-4 border-t border-border flex flex-col items-center justify-center p-4 bg-muted/30 rounded-lg">
-                          <img
-                            src={qrCodes[idx.toString()]}
-                            alt="Payment QR"
-                            className="w-40 h-40 object-contain rounded-md border border-border bg-white p-2"
-                          />
-                          <p className="text-[11px] text-muted-foreground font-mono mt-2 text-center">
-                            Pay {formatAmount(settlement.amount)} to {toName}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-
-          {/* Member Breakdown */}
-          <div className="space-y-3">
-            <h2 className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground px-1">
-              Member Breakdown ({session.members.length})
-            </h2>
-
-            <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
-              {session.members.map((member) => {
-                const bal = memberBalances[member.id] || { totalPaid: 0, totalShare: 0, net: 0 }
-                const isPositive = bal.net > 0.01
-                const isNegative = bal.net < -0.01
+            {/* Interactive Settle Cards (Bharpai Style) */}
+            <div className="space-y-3">
+              {settlements.map((settlement, idx) => {
+                const fromMember = getMember(settlement.from)
+                const fromName = fromMember?.name || "Friend"
+                const isVerified = Boolean(settlement.verified)
+                const isPaid = Boolean(settlement.paid)
 
                 return (
-                  <div key={member.id} className="p-4 flex items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center gap-3">
-                      <div className="w-7 h-7 rounded-full bg-muted border border-border flex items-center justify-center font-mono font-semibold text-foreground text-[11px]">
-                        {getInitials(member.name)}
-                      </div>
-                      <div>
-                        <div className="font-medium text-foreground text-sm">{member.name}</div>
-                        <div className="text-muted-foreground font-mono text-[11px]">
-                          Paid {formatAmount(bal.totalPaid)} · Share {formatAmount(bal.totalShare)}
+                  <div
+                    key={idx}
+                    className={`rounded-xl border transition-all p-4 ${
+                      isVerified
+                        ? "bg-emerald-950/20 border-emerald-900/40 text-neutral-300"
+                        : isPaid
+                        ? "bg-amber-950/20 border-amber-900/40 text-neutral-200"
+                        : "bg-neutral-950/80 border-neutral-800 hover:border-amber-500/50 hover:bg-neutral-950 cursor-pointer text-white"
+                    }`}
+                    onClick={() => {
+                      if (!isVerified) {
+                        openSettleModal(idx)
+                      }
+                    }}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      {/* Friend Info & Status */}
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs ${
+                            isVerified
+                              ? "bg-emerald-500/20 text-emerald-400"
+                              : isPaid
+                              ? "bg-amber-500/20 text-amber-400"
+                              : "bg-neutral-800 text-neutral-300"
+                          }`}
+                        >
+                          {fromName.slice(0, 2).toUpperCase()}
                         </div>
+
+                        <div>
+                          <div className="font-semibold text-sm flex items-center gap-2">
+                            <span>{fromName}</span>
+                            {isVerified ? (
+                              <span className="inline-flex items-center gap-1 text-[11px] font-normal px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                <UL0Icon name="check" size={12} /> Settled
+                              </span>
+                            ) : isPaid ? (
+                              <span className="inline-flex items-center gap-1 text-[11px] font-normal px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                                <UL0Icon name="clock" size={12} /> Paid (Pending check)
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 text-[10px] font-normal px-2 py-0.5 rounded-full bg-neutral-800 text-amber-400 border border-neutral-700">
+                                Tap to Pay
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-neutral-400 font-mono mt-0.5">
+                            Owes {collector?.name || "Collector"}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Amount & Direct Action */}
+                      <div className="flex items-center gap-3">
+                        <span className="font-mono font-bold text-base sm:text-lg text-amber-400">
+                          {formatAmount(settlement.amount)}
+                        </span>
+
+                        {!isVerified && !isPaid && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              openSettleModal(idx)
+                            }}
+                            className="bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors flex items-center gap-1 cursor-pointer"
+                          >
+                            <span>Pay</span>
+                            <UL0Icon name="arrowright" size={12} />
+                          </button>
+                        )}
+
+                        {/* WhatsApp Nudge for unpaid */}
+                        {!isVerified && !isPaid && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              sendWhatsAppNudge(settlement)
+                            }}
+                            className="p-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-[#25D366] transition-colors cursor-pointer"
+                            title={`Remind ${fromName} on WhatsApp`}
+                          >
+                            <UL0Icon name="whatsapp" size={16} />
+                          </button>
+                        )}
                       </div>
                     </div>
 
-                    <div className="text-right font-mono">
-                      {isPositive ? (
-                        <span className="text-foreground font-semibold">
-                          +{formatAmount(bal.net)}
+                    {/* Collector Verification Toggle (Optional row) */}
+                    {(isPaid || isVerified) && (
+                      <div className="mt-3 pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs">
+                        <span className="text-[11px] text-neutral-400">
+                          {isVerified ? "Verified in bank account" : "Friend marked paid. Confirm in bank?"}
                         </span>
-                      ) : isNegative ? (
-                        <span className="text-muted-foreground">
-                          -{formatAmount(Math.abs(bal.net))}
-                        </span>
-                      ) : (
-                        <span className="text-muted-foreground">
-                          Settled
-                        </span>
-                      )}
-                    </div>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleVerifyPayment(idx)
+                          }}
+                          disabled={updatingIdx === idx}
+                          className={`text-xs px-2.5 py-1 rounded transition-colors cursor-pointer flex items-center gap-1 ${
+                            isVerified
+                              ? "bg-neutral-800 hover:bg-neutral-700 text-neutral-400"
+                              : "bg-emerald-600 hover:bg-emerald-500 text-white font-semibold"
+                          }`}
+                        >
+                          <UL0Icon name="check" size={12} />
+                          <span>{isVerified ? "Undo Verified" : "Confirm Received"}</span>
+                        </button>
+                      </div>
+                    )}
                   </div>
                 )
               })}
             </div>
-          </div>
 
-          {/* Itemized Expenses */}
-          <div className="space-y-3">
-            <h2 className="text-xs font-mono font-semibold uppercase tracking-wider text-muted-foreground px-1">
-              Expenses ({session.expenses.length})
-            </h2>
-
-            <div className="rounded-xl border border-border bg-card divide-y divide-border overflow-hidden">
-              {session.expenses.map((exp) => (
-                <div key={exp.id} className="p-4 flex items-center justify-between gap-3 text-xs">
-                  <div>
-                    <div className="font-medium text-foreground text-sm">{exp.title}</div>
-                    <div className="text-muted-foreground text-[11px] mt-0.5">
-                      <span>Paid by {getMemberName(exp.paidBy)}</span>
-                      {exp.date && (
-                        <>
-                          <span> · </span>
-                          <span className="font-mono">
-                            {new Date(exp.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="font-mono font-semibold text-sm text-foreground">
-                    {formatAmount(exp.amount)}
-                  </div>
-                </div>
-              ))}
+            {/* Bottom Receipt Security Guarantee */}
+            <div className="mt-6 pt-4 border-t border-dashed border-neutral-700 text-center">
+              <p className="text-[11px] text-neutral-500 flex items-center justify-center gap-1.5">
+                <UL0Icon name="shield" size={14} />
+                <span>Direct bank-to-bank UPI payment. UL0 never holds or touches any funds.</span>
+              </p>
             </div>
           </div>
+
+          {/* Expenses Breakdown (If any) */}
+          {session.expenses && session.expenses.length > 0 && (
+            <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-5 space-y-3">
+              <h2 className="text-xs font-mono font-semibold uppercase tracking-wider text-neutral-400 flex items-center gap-1.5">
+                <UL0Icon name="billing" size={14} />
+                <span>Expense Breakdown</span>
+              </h2>
+              <div className="divide-y divide-neutral-800/60">
+                {session.expenses.map((exp) => (
+                  <div key={exp.id} className="py-2.5 flex items-center justify-between text-xs">
+                    <div>
+                      <div className="font-medium text-neutral-200">{exp.title}</div>
+                      <div className="text-[11px] text-neutral-500">
+                        Paid by {getMemberName(exp.paidBy)}
+                        {exp.date && ` · ${exp.date}`}
+                      </div>
+                    </div>
+                    <div className="font-mono font-semibold text-neutral-300">
+                      {formatAmount(exp.amount)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Footer Actions */}
-        <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
+        {/* Action Bar */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
           <Button
             type="button"
             variant="outline"
             onClick={downloadPDF}
-            className="w-full sm:w-1/2 h-10 rounded-md text-xs font-medium cursor-pointer"
+            className="w-full sm:w-1/2 border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 text-xs h-10 cursor-pointer flex items-center justify-center gap-1.5"
           >
-            <UL0Icon name="download" className="w-3.5 h-3.5 mr-1.5" />
+            <UL0Icon name="download" size={14} />
             <span>Download PDF Receipt</span>
           </Button>
 
           <Button
-            asChild
-            className="w-full sm:w-1/2 h-10 rounded-md text-xs font-medium bg-foreground text-background hover:opacity-90 cursor-pointer"
+            type="button"
+            onClick={copyShareLink}
+            className="w-full sm:w-1/2 bg-neutral-800 hover:bg-neutral-700 text-white text-xs h-10 cursor-pointer flex items-center justify-center gap-1.5"
           >
-            <a href="/split">
-              <UL0Icon name="plus" className="w-3.5 h-3.5 mr-1.5" />
-              <span>New Split</span>
-            </a>
+            <UL0Icon name="share" size={14} />
+            <span>{copiedShareLink ? "Link Copied!" : "Share Bill with Friends"}</span>
           </Button>
         </div>
 
-        <div className="text-center pt-4 pb-8">
-          <p className="text-xs font-mono text-muted-foreground/60">
-            Calculated with <a href="/" className="hover:text-foreground transition-colors underline underline-offset-4">ul0.site</a>
-          </p>
+        <div className="text-center pt-2">
+          <a
+            href="/split"
+            className="text-xs text-amber-400 hover:text-amber-300 transition-colors inline-flex items-center gap-1"
+          >
+            <UL0Icon name="plus" size={12} />
+            <span>Create another bill split</span>
+          </a>
         </div>
       </main>
+
+      {/* Bharpai Settle Modal / Drawer */}
+      <Dialog
+        open={activeSettlementIdx !== null}
+        onOpenChange={(open) => !open && setActiveSettlementIdx(null)}
+      >
+        <DialogContent className="bg-neutral-900 border-neutral-800 text-neutral-100 max-w-sm sm:max-w-md p-6">
+          <DialogHeader className="text-center pb-2">
+            <DialogTitle className="text-xl font-bold text-white">
+              Pay {collector?.name || "Collector"}
+            </DialogTitle>
+            <DialogDescription className="text-neutral-400 text-xs">
+              {session.title} · Exact Share: <strong className="text-amber-400 font-mono text-sm">{activeSettlement ? formatAmount(activeSettlement.amount) : "₹0"}</strong>
+            </DialogDescription>
+          </DialogHeader>
+
+          {activeSettlement && activeFromMember && (
+            <div className="space-y-4">
+              {/* 1-Click Mobile UPI Button */}
+              {activeUpiUri && (
+                <div className="space-y-1.5">
+                  <a
+                    href={activeUpiUri}
+                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-neutral-950 font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-xl transition-transform active:scale-[0.98]"
+                  >
+                    <UL0Icon name="mobile" size={18} />
+                    <span>Pay {formatAmount(activeSettlement.amount)} with UPI</span>
+                  </a>
+                  <p className="text-[10px] text-neutral-500 text-center">
+                    Opens Google Pay, PhonePe, Paytm, or CRED directly on your phone
+                  </p>
+                </div>
+              )}
+
+              {/* Supported Brand Badges */}
+              <div className="flex items-center justify-center gap-3 py-1 text-neutral-400 text-xs">
+                <span className="flex items-center gap-1 text-[11px]"><SiGooglepay className="w-4 h-4 text-neutral-300" /> GPay</span>
+                <span className="flex items-center gap-1 text-[11px]"><SiPhonepe className="w-3.5 h-3.5 text-neutral-300" /> PhonePe</span>
+                <span className="flex items-center gap-1 text-[11px]"><SiPaytm className="w-4 h-4 text-neutral-300" /> Paytm</span>
+                <span className="text-[11px] font-medium text-neutral-300">CRED</span>
+              </div>
+
+              {/* Scannable Dynamic QR Code for Desktop/Laptop */}
+              <div className="p-3 bg-neutral-950 rounded-xl border border-neutral-800 text-center space-y-2">
+                <div className="text-[11px] text-neutral-400">
+                  Or scan this QR code with any UPI app / phone camera:
+                </div>
+
+                <div className="bg-white p-2.5 rounded-lg inline-block shadow-md">
+                  {isGeneratingQr ? (
+                    <div className="w-48 h-48 flex items-center justify-center">
+                      <UL0Icon name="refresh" size={24} className="animate-spin text-neutral-900" />
+                    </div>
+                  ) : activeUpiQrData ? (
+                    <img
+                      src={activeUpiQrData}
+                      alt="UPI Payment QR Code"
+                      className="w-48 h-48 object-contain rounded"
+                    />
+                  ) : (
+                    <div className="w-48 h-48 flex items-center justify-center text-neutral-800 text-xs">
+                      UPI QR Unavailable
+                    </div>
+                  )}
+                </div>
+
+                {/* Collector UPI Copy */}
+                {collectorUpi && (
+                  <div className="flex items-center justify-center gap-2 pt-1">
+                    <span className="text-xs font-mono text-neutral-400">{collectorUpi}</span>
+                    <button
+                      type="button"
+                      onClick={() => copyPaymentId(collectorUpi)}
+                      className="p-1 rounded hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors cursor-pointer"
+                      title="Copy UPI ID"
+                    >
+                      {copiedId === collectorUpi ? (
+                        <UL0Icon name="check" size={14} />
+                      ) : (
+                        <UL0Icon name="copy" size={14} />
+                      )}
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* "I've Paid" Confirmation Action */}
+              <div className="pt-1">
+                <Button
+                  type="button"
+                  onClick={() => activeSettlementIdx !== null && handleMarkAsPaid(activeSettlementIdx)}
+                  disabled={updatingIdx === activeSettlementIdx}
+                  variant="outline"
+                  className="w-full border-neutral-700 bg-neutral-800/80 hover:bg-neutral-700 text-white font-medium py-3 text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <UL0Icon name="check" size={14} />
+                  <span>I've Completed Payment</span>
+                </Button>
+              </div>
+
+              {/* Reassurance */}
+              <p className="text-[10px] text-neutral-500 text-center flex items-center justify-center gap-1">
+                <UL0Icon name="shield" size={12} />
+                <span>Direct bank-to-bank transfer. No middleman or wallet.</span>
+              </p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

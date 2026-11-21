@@ -328,9 +328,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Calculate expiry (24 hours from now)
+    // Calculate expiry (30 days from now)
     const expiresAt = new Date()
-    expiresAt.setHours(expiresAt.getHours() + 24)
+    expiresAt.setDate(expiresAt.getDate() + 30)
+
+    const currencyCode = typeof body.currency === 'string' ? sanitizeString(body.currency, 10) : 'INR'
+
+    // Attach currency to members for persistent inflation
+    if (sanitizedMembers.length > 0) {
+      (sanitizedMembers[0] as any).currency = currencyCode
+    }
 
     // RACE CONDITION FIX: Attempt insert directly and handle unique constraint
     // violation from Appwrite's unique slug index (atomic operation).
