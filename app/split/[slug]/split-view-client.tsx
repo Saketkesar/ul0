@@ -6,6 +6,7 @@ import QRCode from "qrcode"
 import html2canvas from "html2canvas"
 import { jsPDF } from "jspdf"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { toast } from "sonner"
 import { SiGooglepay, SiPhonepe, SiPaytm } from "react-icons/si"
@@ -33,10 +34,13 @@ interface Settlement {
   from: string
   to: string
   amount: number
+  status: "unpaid" | "claimed" | "partial" | "confirmed"
+  paid_amount?: number
+  claimed_at?: string | null
+  confirmed_at?: string | null
+  utr_last4?: string | null
   paid?: boolean
-  paid_at?: string | null
   verified?: boolean
-  verified_at?: string | null
 }
 
 interface SplitSession {
@@ -48,6 +52,8 @@ interface SplitSession {
   expires_at: string | null
   total_amount: number
   currency?: string
+  pay_by?: string | null
+  locale?: string
   members: Member[]
   expenses: Expense[]
   settlements?: Settlement[]
@@ -61,44 +67,32 @@ interface SplitViewClientProps {
 export function SplitViewClient({ session: initialSession, slug }: SplitViewClientProps) {
   const [session, setSession] = useState<SplitSession>(initialSession)
   const [settlements, setSettlements] = useState<Settlement[]>(initialSession.settlements || [])
-  const [copiedId, setCopiedId] = useState<string | null>(null)
-  const [copiedShareLink, setCopiedShareLink] = useState(false)
-  const [updatingIdx, setUpdatingIdx] = useState<number | null>(null)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [copiedLink, setCopiedLink] = useState(false)
+  const [lang, setLang] = useState<"en" | "hi">((initialSession.locale as any) || "en")
 
-  // Bharpai Settle Drawer / Modal state
-  const [activeSettlementIdx, setActiveSettlementIdx] = useState<number | null>(null)
-  const [activeUpiQrData, setActiveUpiQrData] = useState<string | null>(null)
-  const [isGeneratingQr, setIsGeneratingQr] = useState(false)
+  // PayCard Modal State
+  const [activeIdx, setActiveIdx] = useState<number | null>(null)
+  const [activeQr, setActiveQr] = useState<string | null>(null)
+  const [utrInput, setUtrInput] = useState<string>("")
+  const [isClaiming, setIsClaiming] = useState<boolean>(false)
 
   const contentRef = useRef<HTMLDivElement>(null)
 
-  // Find collector (first member or whoever is in settlements[0]?.to)
+  // Find collector
   const collector = useMemo(() => {
     if (settlements.length > 0) {
-      const collectorId = settlements[0].to
-      const found = session.members.find(m => m.id === collectorId)
+      const colId = settlements[0].to
+      const found = session.members.find((m) => m.id === colId)
       if (found) return found
     }
     return session.members[0]
   }, [session.members, settlements])
 
-  const collectorUpi = collector?.paymentId || collector?.upiId || ""
+  const collectorName = collector?.name || "Organizer"
+  const collectorMaskedUpi = collector?.paymentId || collector?.upiId || ""
 
-  // Member lookup helpers
-  const getMember = useCallback(
-    (id: string): Member | undefined => session.members.find((m) => m.id === id),
-    [session.members]
-  )
-
-  const getMemberName = useCallback(
-    (id: string): string => getMember(id)?.name || "Member",
-    [getMember]
-  )
-
-  const formatAmount = useCallback((num: number) => {
-    return `₹${num.toFixed(2)}`
-  }, [])
+  const formatAmount = useCallback((num: number) => `₹${num.toFixed(2)}`, [])
 
   // Progress metrics
   const totalSettlementAmount = useMemo(
@@ -106,18 +100,31 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
     [settlements]
   )
 
-  const settledAmount = useMemo(
-    () => settlements.filter((s) => s.paid || s.verified).reduce((sum, s) => sum + s.amount, 0),
+  const settledCount = useMemo(
+    () => settlements.filter((s) => s.status === "confirmed" || s.verified).length,
     [settlements]
   )
 
-  const progressPercent = totalSettlementAmount > 0
-    ? Math.round((settledAmount / totalSettlementAmount) * 100)
-    : 100
+  const settledAmount = useMemo(
+    () =>
+      settlements
+        .filter((s) => s.status === "confirmed" || s.verified)
+        .reduce((sum, s) => sum + s.amount, 0),
+    [settlements]
+  )
 
-  const isAllSettled = settlements.length > 0 && settlements.every((s) => s.verified || s.paid)
+  const progressPercent =
+    totalSettlementAmount > 0
+      ? Math.round((settledAmount / totalSettlementAmount) * 100)
+      : 100
 
-  // Sync data from server
+  // Member lookup
+  const getMember = useCallback(
+    (id: string): Member | undefined => session.members.find((m) => m.id === id),
+    [session.members]
+  )
+
+  // Refresh session from server
   const refreshSession = useCallback(async () => {
     try {
       setIsRefreshing(true)
@@ -137,155 +144,83 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
     }
   }, [slug])
 
-  // Periodic polling for live group sync every 10 seconds
+  // Periodic polling every 8 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       refreshSession()
-    }, 10000)
-    return () => clearInterval(interval)
+    }, 8000)
+    return () => clearInterval(timer)
   }, [refreshSession])
 
-  // Generate UPI deep link URI
-  const getUpiUri = useCallback((amount: number, fromName: string) => {
-    if (!collectorUpi) return ""
-    const note = encodeURIComponent(`${session.title} - ${fromName}`)
-    const name = encodeURIComponent(collector?.name || "Collector")
-    return `upi://pay?pa=${collectorUpi}&pn=${name}&am=${amount.toFixed(2)}&tn=${note}&cu=INR`
-  }, [collectorUpi, collector?.name, session.title])
+  // Open PayCard Drawer
+  const openPayCard = async (idx: number) => {
+    const s = settlements[idx]
+    if (!s) return
+    setActiveIdx(idx)
+    setUtrInput("")
 
-  // Open Settle Drawer for a specific friend
-  const openSettleModal = async (idx: number) => {
-    const settlement = settlements[idx]
-    if (!settlement) return
-
-    setActiveSettlementIdx(idx)
-    setIsGeneratingQr(true)
-
-    const fromMember = getMember(settlement.from)
-    const upiUri = getUpiUri(settlement.amount, fromMember?.name || "Friend")
+    const fromMember = getMember(s.from)
+    const note = encodeURIComponent(`${session.title} - ${fromMember?.name || "Friend"}`)
+    const nameEnc = encodeURIComponent(collectorName)
+    const upiUri = `upi://pay?pa=${collectorMaskedUpi}&pn=${nameEnc}&am=${s.amount.toFixed(2)}&tn=${note}&cu=INR`
 
     try {
-      if (upiUri) {
-        const qr = await QRCode.toDataURL(upiUri, {
-          width: 300,
-          margin: 2,
-          color: { dark: "#000000", light: "#ffffff" }
-        })
-        setActiveUpiQrData(qr)
-      } else {
-        setActiveUpiQrData(null)
-      }
-    } catch {
-      setActiveUpiQrData(null)
-    } finally {
-      setIsGeneratingQr(false)
-    }
-  }
-
-  // Handle "I Have Paid" (Friend action)
-  const handleMarkAsPaid = async (index: number) => {
-    const current = settlements[index]
-    const nextPaid = true
-
-    // Optimistic update
-    const updated = settlements.map((s, i) =>
-      i === index ? { ...s, paid: nextPaid, paid_at: new Date().toISOString() } : s
-    )
-    setSettlements(updated)
-    setUpdatingIdx(index)
-
-    try {
-      const res = await fetch(`/api/split/${slug}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ settlementIndex: index, paid: nextPaid }),
+      const qr = await QRCode.toDataURL(upiUri, {
+        width: 280,
+        margin: 2,
+        color: { dark: "#0B1A17", light: "#FFFFFF" },
       })
-      if (!res.ok) throw new Error("Failed to update status")
-      const data = await res.json()
-      if (data.session?.settlements) {
-        setSettlements(data.session.settlements)
-      }
-      toast.success("Payment marked! The collector will verify.")
-      setActiveSettlementIdx(null)
+      setActiveQr(qr)
     } catch {
-      setSettlements(settlements)
-      toast.error("Could not record payment. Please try again.")
-    } finally {
-      setUpdatingIdx(null)
+      setActiveQr(null)
     }
   }
 
-  // Handle "Verify in Bank" (Collector action)
-  const handleVerifyPayment = async (index: number) => {
-    const current = settlements[index]
-    const nextVerified = !current.verified
-
-    const updated = settlements.map((s, i) =>
-      i === index
-        ? {
-            ...s,
-            paid: nextVerified ? true : s.paid,
-            verified: nextVerified,
-            verified_at: nextVerified ? new Date().toISOString() : null,
-          }
-        : s
-    )
-    setSettlements(updated)
-    setUpdatingIdx(index)
+  // Claim settlement ("I've Paid")
+  const handleClaim = async () => {
+    if (activeIdx === null) return
+    setIsClaiming(true)
 
     try {
-      const res = await fetch(`/api/split/${slug}`, {
-        method: "PATCH",
+      const res = await fetch(`/api/split/${slug}/claim`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          settlementIndex: index,
-          paid: nextVerified ? true : current.paid,
-          verified: nextVerified,
+          settlementIndex: activeIdx,
+          utrLast4: utrInput.trim() || undefined,
         }),
       })
-      if (!res.ok) throw new Error("Failed to update status")
+
       const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to record payment claim")
+      }
+
       if (data.session?.settlements) {
         setSettlements(data.session.settlements)
       }
-      toast.success(nextVerified ? "Payment confirmed in bank!" : "Payment unverified.")
-    } catch {
-      setSettlements(settlements)
-      toast.error("Failed to verify settlement.")
+
+      toast.success(
+        lang === "hi"
+          ? "भुगतान दर्ज हो गया! आयोजक सत्यापन करेंगे।"
+          : "Payment claimed! The organizer will confirm in their bank."
+      )
+      setActiveIdx(null)
+    } catch (err: any) {
+      toast.error(err.message || "Failed to record payment.")
     } finally {
-      setUpdatingIdx(null)
+      setIsClaiming(false)
     }
   }
 
-  // Copy UPI ID helper
-  const copyPaymentId = async (id: string) => {
-    await navigator.clipboard.writeText(id)
-    setCopiedId(id)
-    toast.success("UPI ID copied!")
-    setTimeout(() => setCopiedId(null), 2000)
-  }
-
-  // Copy Share Link helper
   const copyShareLink = async () => {
     const url = typeof window !== "undefined" ? window.location.href : `https://ul0.site/split/${slug}`
     await navigator.clipboard.writeText(url)
-    setCopiedShareLink(true)
+    setCopiedLink(true)
     toast.success("Split link copied!")
-    setTimeout(() => setCopiedShareLink(false), 2000)
+    setTimeout(() => setCopiedLink(false), 2000)
   }
 
-  // WhatsApp Nudge for unpaid friend
-  const sendWhatsAppNudge = (settlement: Settlement) => {
-    const fromMember = getMember(settlement.from)
-    const name = fromMember?.name || "Friend"
-    const url = typeof window !== "undefined" ? window.location.href : `https://ul0.site/split/${slug}`
-    const text = encodeURIComponent(
-      `Hey ${name}! Gentle nudge for *${session.title}* (₹${settlement.amount.toFixed(2)}).\n\nTap your name to pay directly via UPI:\n${url}`
-    )
-    window.open(`https://api.whatsapp.com/send?text=${text}`, "_blank")
-  }
-
-  // Download PDF Receipt
   const downloadPDF = async () => {
     if (!contentRef.current) return
     try {
@@ -293,7 +228,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
       const canvas = await (html2canvas as Function)(element, {
         useCORS: true,
         allowTaint: true,
-        backgroundColor: "#0a0a0a",
+        backgroundColor: "#F7FAF8",
         windowWidth: element.scrollWidth,
         windowHeight: element.scrollHeight,
       })
@@ -302,18 +237,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
       const pageHeight = 297
       const imgHeight = (canvas.height * imgWidth) / canvas.width
       const pdf = new jsPDF("p", "mm", "a4")
-      let heightLeft = imgHeight
-      let position = 0
-
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
-      heightLeft -= pageHeight
-
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight
-        pdf.addPage()
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight)
-        heightLeft -= pageHeight
-      }
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight)
       pdf.save(`${session.title.replace(/\s+/g, "-")}-receipt.pdf`)
       toast.success("PDF receipt downloaded!")
     } catch {
@@ -321,71 +245,75 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
     }
   }
 
-  const activeSettlement = activeSettlementIdx !== null ? settlements[activeSettlementIdx] : null
+  const activeSettlement = activeIdx !== null ? settlements[activeIdx] : null
   const activeFromMember = activeSettlement ? getMember(activeSettlement.from) : null
-  const activeUpiUri = activeSettlement && activeFromMember ? getUpiUri(activeSettlement.amount, activeFromMember.name) : ""
+  const activeUpiUri = activeSettlement
+    ? `upi://pay?pa=${collectorMaskedUpi}&pn=${encodeURIComponent(collectorName)}&am=${activeSettlement.amount.toFixed(2)}&tn=${encodeURIComponent(session.title)}&cu=INR`
+    : ""
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans selection:bg-amber-400 selection:text-neutral-950">
-      {/* Top Header */}
-      <header className="sticky top-0 z-30 border-b border-neutral-800 bg-neutral-950/80 backdrop-blur-md">
-        <div className="max-w-3xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+    <div className="min-h-screen bg-[#F7FAF8] text-[#0B1A17] flex flex-col font-sans selection:bg-[#3DDBB8] selection:text-[#04231C]">
+      {/* Quiet Top Bar */}
+      <header className="sticky top-0 z-30 border-b border-[#E4ECE8] bg-white/90 backdrop-blur-md">
+        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
             <a
               href="/split"
-              className="text-sm font-bold tracking-tight text-white hover:text-amber-400 transition-colors flex items-center gap-1.5"
+              className="text-xs font-bold text-[#0B1A17] hover:text-[#0B7A66] transition-colors flex items-center gap-1.5"
             >
-              <UL0Icon name="splitbill" size={18} />
+              <UL0Icon name="splitbill" size={16} />
               <span>UL0 Split</span>
             </a>
-            <span className="text-neutral-600 text-xs">/</span>
-            <span className="text-xs font-mono text-neutral-400 truncate max-w-[140px] sm:max-w-[200px]">
+            <span className="text-[#D5E0DB]">/</span>
+            <span className="text-xs font-medium text-[#5A6B66] truncate max-w-[140px] sm:max-w-[200px]">
               {session.title}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Language toggle */}
+            <button
+              type="button"
+              onClick={() => setLang(lang === "en" ? "hi" : "en")}
+              className="px-2 py-1 rounded-md border border-[#E4ECE8] bg-[#F7FAF8] text-[11px] font-semibold text-[#0B1A17] hover:bg-[#EAF1EE] cursor-pointer"
+            >
+              {lang === "en" ? "हिंदी" : "EN"}
+            </button>
+
+            {/* Refresh */}
             <button
               type="button"
               onClick={refreshSession}
               disabled={isRefreshing}
-              className="p-1.5 rounded-md border border-neutral-800 bg-neutral-900 text-neutral-400 hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 rounded-md border border-[#E4ECE8] bg-white text-[#5A6B66] hover:text-[#0B1A17] cursor-pointer"
               title="Refresh settlements"
             >
               <UL0Icon name="refresh" size={14} className={isRefreshing ? "animate-spin" : ""} />
             </button>
 
+            {/* Share */}
             <button
               type="button"
               onClick={copyShareLink}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-xs font-medium text-white transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-md border border-[#D5E0DB] bg-white hover:bg-[#F7FAF8] text-xs font-semibold text-[#0B1A17] cursor-pointer"
             >
-              {copiedShareLink ? (
-                <>
-                  <UL0Icon name="check" size={14} />
-                  <span>Copied</span>
-                </>
-              ) : (
-                <>
-                  <UL0Icon name="share" size={14} />
-                  <span>Share</span>
-                </>
-              )}
+              <UL0Icon name={copiedLink ? "check" : "share"} size={13} />
+              <span>{copiedLink ? "Copied" : "Share"}</span>
             </button>
           </div>
         </div>
       </header>
 
-      {/* Main Settle Content */}
-      <main className="flex-1 max-w-2xl mx-auto w-full px-4 py-8 space-y-6">
+      {/* Main Settle Paper Receipt */}
+      <main className="flex-1 max-w-xl mx-auto w-full px-4 py-8 space-y-6">
         <div ref={contentRef} className="space-y-6">
-          {/* Authentic Paper Receipt Card */}
-          <div className="rounded-2xl border border-neutral-800 bg-neutral-900/90 p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-            {/* Header / Receipt details */}
-            <div className="border-b border-dashed border-neutral-700 pb-5 mb-5 space-y-2">
-              <div className="flex items-center justify-between text-xs text-neutral-400">
-                <span className="font-mono uppercase tracking-wider">UL0 UPI RECEIPT</span>
-                <span className="font-mono">
+          {/* Paper Receipt Card */}
+          <div className="rounded-2xl border border-[#E4ECE8] bg-white p-6 sm:p-8 shadow-[0_1px_2px_rgba(10,30,26,0.06)] space-y-5">
+            {/* Header info */}
+            <div className="border-b border-dashed border-[#E4ECE8] pb-4 space-y-1.5">
+              <div className="flex items-center justify-between text-[11px] font-mono text-[#5A6B66]">
+                <span>UL0 UPI SETTLEMENT</span>
+                <span>
                   {session.created_at
                     ? new Date(session.created_at).toLocaleDateString("en-IN", {
                         day: "numeric",
@@ -396,355 +324,250 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
                 </span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              <h1 className="text-2xl font-black text-[#0B1A17] tracking-tight">
                 {session.title}
               </h1>
 
               <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
-                <div className="text-neutral-300">
-                  Paid by <span className="text-amber-400 font-semibold">{collector?.name || "Collector"}</span>
-                  {collectorUpi && (
-                    <span className="font-mono text-neutral-500 ml-1.5">({collectorUpi})</span>
-                  )}
+                <div className="text-[#5A6B66]">
+                  {lang === "hi" ? "भुगतान पाने वाले: " : "Pay to "}
+                  <strong className="text-[#0B1A17]">{collectorName}</strong>
                 </div>
-                <div className="text-right">
-                  <span className="text-xs text-neutral-400 mr-2">Total:</span>
-                  <span className="text-xl font-bold font-mono text-emerald-400">
-                    {formatAmount(session.total_amount)}
+
+                <div className="font-mono text-xl font-black text-[#0B7A66]">
+                  {formatAmount(session.total_amount)}
+                </div>
+              </div>
+
+              {/* Pay-by deadline chip if set */}
+              {session.pay_by && (
+                <div className="inline-flex items-center gap-1 text-[11px] font-medium text-[#B57C00] bg-[#F7FAF8] border border-[#E4ECE8] px-2 py-0.5 rounded-md mt-1">
+                  <UL0Icon name="clock" size={12} />
+                  <span>
+                    Pay by {new Date(session.pay_by).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
                   </span>
                 </div>
-              </div>
+              )}
             </div>
 
-            {/* Live Settlement Progress */}
-            <div className="space-y-2 mb-6">
+            {/* Live Progress Bar */}
+            <div className="space-y-1.5">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-neutral-400 font-medium">
-                  {isAllSettled
-                    ? "🎉 All friends have settled!"
-                    : `${formatAmount(settledAmount)} of ${formatAmount(totalSettlementAmount)} collected`}
+                <span className="text-[#5A6B66]">
+                  {settledCount} of {settlements.length} settled ({formatAmount(settledAmount)} of {formatAmount(totalSettlementAmount)})
                 </span>
-                <span className="font-mono text-xs font-semibold text-amber-400">
-                  {progressPercent}%
-                </span>
+                <span className="font-mono font-bold text-[#0B7A66]">{progressPercent}%</span>
               </div>
-              <div className="w-full h-2 rounded-full bg-neutral-950 overflow-hidden border border-neutral-800">
+              <div className="w-full h-2 rounded-full bg-[#EAF1EE] overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-amber-500 to-emerald-400 transition-all duration-500"
+                  className="h-full bg-[#0B7A66] transition-all duration-500 rounded-full"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
             </div>
 
-            {/* Friend Settle Prompt */}
-            <div className="bg-neutral-950/80 border border-neutral-800/80 rounded-xl p-3 mb-5 flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2 text-neutral-300">
-                <UL0Icon name="mobile" size={16} />
-                <span><strong className="text-white">Tap your name below</strong> to pay instantly via UPI</span>
+            {/* Tap your name prompt */}
+            <div className="p-3 rounded-xl bg-[#F7FAF8] border border-[#E4ECE8] flex items-center justify-between text-xs text-[#5A6B66]">
+              <div className="flex items-center gap-1.5 font-medium text-[#0B1A17]">
+                <UL0Icon name="mobile" size={16} className="text-[#0B7A66]" />
+                <span>{lang === "hi" ? "अपना नाम चुनें और UPI से भुगतान करें" : "Tap your name to pay directly via UPI"}</span>
               </div>
-              <span className="text-[11px] text-neutral-500 hidden sm:inline">No app install required</span>
+              <span className="text-[10px] text-[#5A6B66] hidden sm:inline">No app download</span>
             </div>
 
-            {/* Interactive Settle Cards (Bharpai Style) */}
-            <div className="space-y-3">
+            {/* Interactive Friend Rows */}
+            <div className="space-y-2.5">
               {settlements.map((settlement, idx) => {
                 const fromMember = getMember(settlement.from)
                 const fromName = fromMember?.name || "Friend"
-                const isVerified = Boolean(settlement.verified)
-                const isPaid = Boolean(settlement.paid)
+                const isConfirmed = settlement.status === "confirmed" || settlement.verified
+                const isClaimed = settlement.status === "claimed" || settlement.paid
 
                 return (
                   <div
                     key={idx}
-                    className={`rounded-xl border transition-all p-4 ${
-                      isVerified
-                        ? "bg-emerald-950/20 border-emerald-900/40 text-neutral-300"
-                        : isPaid
-                        ? "bg-amber-950/20 border-amber-900/40 text-neutral-200"
-                        : "bg-neutral-950/80 border-neutral-800 hover:border-amber-500/50 hover:bg-neutral-950 cursor-pointer text-white"
+                    onClick={() => !isConfirmed && openPayCard(idx)}
+                    className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                      isConfirmed
+                        ? "bg-[#DDF5EE]/30 border-[#3DDBB8]/40 text-[#5A6B66]"
+                        : isClaimed
+                        ? "bg-[#F7FAF8] border-[#D5E0DB] text-[#0B1A17]"
+                        : "bg-white border-[#E4ECE8] hover:border-[#3DDBB8] text-[#0B1A17] shadow-sm hover:shadow"
                     }`}
-                    onClick={() => {
-                      if (!isVerified) {
-                        openSettleModal(idx)
-                      }
-                    }}
                   >
-                    <div className="flex items-center justify-between gap-3">
-                      {/* Friend Info & Status */}
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs ${
-                            isVerified
-                              ? "bg-emerald-500/20 text-emerald-400"
-                              : isPaid
-                              ? "bg-amber-500/20 text-amber-400"
-                              : "bg-neutral-800 text-neutral-300"
-                          }`}
-                        >
-                          {fromName.slice(0, 2).toUpperCase()}
-                        </div>
-
-                        <div>
-                          <div className="font-semibold text-sm flex items-center gap-2">
-                            <span>{fromName}</span>
-                            {isVerified ? (
-                              <span className="inline-flex items-center gap-1 text-[11px] font-normal px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                <UL0Icon name="check" size={12} /> Settled
-                              </span>
-                            ) : isPaid ? (
-                              <span className="inline-flex items-center gap-1 text-[11px] font-normal px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                                <UL0Icon name="clock" size={12} /> Paid (Pending check)
-                              </span>
-                            ) : (
-                              <span className="inline-flex items-center gap-1 text-[10px] font-normal px-2 py-0.5 rounded-full bg-neutral-800 text-amber-400 border border-neutral-700">
-                                Tap to Pay
-                              </span>
-                            )}
-                          </div>
-                          <div className="text-[11px] text-neutral-400 font-mono mt-0.5">
-                            Owes {collector?.name || "Collector"}
-                          </div>
-                        </div>
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-9 h-9 rounded-full flex items-center justify-center font-bold text-xs ${
+                          isConfirmed
+                            ? "bg-[#DDF5EE] text-[#0B7A66]"
+                            : isClaimed
+                            ? "bg-[#EAF1EE] text-[#5A6B66]"
+                            : "bg-[#EAF1EE] text-[#0B1A17]"
+                        }`}
+                      >
+                        {fromName.slice(0, 2).toUpperCase()}
                       </div>
 
-                      {/* Amount & Direct Action */}
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono font-bold text-base sm:text-lg text-amber-400">
-                          {formatAmount(settlement.amount)}
-                        </span>
-
-                        {!isVerified && !isPaid && (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              openSettleModal(idx)
-                            }}
-                            className="bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors flex items-center gap-1 cursor-pointer"
-                          >
-                            <span>Pay</span>
-                            <UL0Icon name="arrowright" size={12} />
-                          </button>
-                        )}
-
-                        {/* WhatsApp Nudge for unpaid */}
-                        {!isVerified && !isPaid && (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              sendWhatsAppNudge(settlement)
-                            }}
-                            className="p-1.5 rounded-lg bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-[#25D366] transition-colors cursor-pointer"
-                            title={`Remind ${fromName} on WhatsApp`}
-                          >
-                            <UL0Icon name="whatsapp" size={16} />
-                          </button>
-                        )}
+                      <div>
+                        <div className="font-bold text-sm text-[#0B1A17] flex items-center gap-2">
+                          <span>{fromName}</span>
+                          {isConfirmed ? (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#DDF5EE] text-[#0B7A66] font-semibold border border-[#3DDBB8]/40">
+                              Confirmed
+                            </span>
+                          ) : isClaimed ? (
+                            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EAF1EE] text-[#5A6B66] font-medium border border-[#D5E0DB]">
+                              Waiting confirmation
+                            </span>
+                          ) : null}
+                        </div>
+                        <div className="text-[11px] text-[#5A6B66]">
+                          Owes {collectorName}
+                        </div>
                       </div>
                     </div>
 
-                    {/* Collector Verification Toggle (Optional row) */}
-                    {(isPaid || isVerified) && (
-                      <div className="mt-3 pt-3 border-t border-neutral-800/80 flex items-center justify-between text-xs">
-                        <span className="text-[11px] text-neutral-400">
-                          {isVerified ? "Verified in bank account" : "Friend marked paid. Confirm in bank?"}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleVerifyPayment(idx)
-                          }}
-                          disabled={updatingIdx === idx}
-                          className={`text-xs px-2.5 py-1 rounded transition-colors cursor-pointer flex items-center gap-1 ${
-                            isVerified
-                              ? "bg-neutral-800 hover:bg-neutral-700 text-neutral-400"
-                              : "bg-emerald-600 hover:bg-emerald-500 text-white font-semibold"
-                          }`}
-                        >
-                          <UL0Icon name="check" size={12} />
-                          <span>{isVerified ? "Undo Verified" : "Confirm Received"}</span>
-                        </button>
-                      </div>
-                    )}
+                    <div className="flex items-center gap-2.5">
+                      <span className="font-mono font-bold text-base text-[#0B1A17]">
+                        {formatAmount(settlement.amount)}
+                      </span>
+
+                      {!isConfirmed && !isClaimed && (
+                        <div className="w-7 h-7 rounded-full bg-[#3DDBB8] text-[#04231C] flex items-center justify-center">
+                          <UL0Icon name="arrowright" size={13} />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )
               })}
             </div>
 
-            {/* Bottom Receipt Security Guarantee */}
-            <div className="mt-6 pt-4 border-t border-dashed border-neutral-700 text-center">
-              <p className="text-[11px] text-neutral-500 flex items-center justify-center gap-1.5">
-                <UL0Icon name="shield" size={14} />
-                <span>Direct bank-to-bank UPI payment. UL0 never holds or touches any funds.</span>
-              </p>
+            {/* Trust and Safety note */}
+            <div className="pt-3 border-t border-dashed border-[#E4ECE8] text-center text-[11px] text-[#5A6B66] flex items-center justify-center gap-1.5">
+              <UL0Icon name="shield" size={13} className="text-[#0B7A66]" />
+              <span>Direct bank transfer via NPCI UPI. UL0 never holds your money.</span>
             </div>
           </div>
-
-          {/* Expenses Breakdown (If any) */}
-          {session.expenses && session.expenses.length > 0 && (
-            <div className="rounded-xl border border-neutral-800 bg-neutral-900/60 p-5 space-y-3">
-              <h2 className="text-xs font-mono font-semibold uppercase tracking-wider text-neutral-400 flex items-center gap-1.5">
-                <UL0Icon name="billing" size={14} />
-                <span>Expense Breakdown</span>
-              </h2>
-              <div className="divide-y divide-neutral-800/60">
-                {session.expenses.map((exp) => (
-                  <div key={exp.id} className="py-2.5 flex items-center justify-between text-xs">
-                    <div>
-                      <div className="font-medium text-neutral-200">{exp.title}</div>
-                      <div className="text-[11px] text-neutral-500">
-                        Paid by {getMemberName(exp.paidBy)}
-                        {exp.date && ` · ${exp.date}`}
-                      </div>
-                    </div>
-                    <div className="font-mono font-semibold text-neutral-300">
-                      {formatAmount(exp.amount)}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Action Bar */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+        {/* Footer actions */}
+        <div className="flex gap-2.5">
           <Button
             type="button"
             variant="outline"
             onClick={downloadPDF}
-            className="w-full sm:w-1/2 border-neutral-800 bg-neutral-900 hover:bg-neutral-800 text-neutral-300 text-xs h-10 cursor-pointer flex items-center justify-center gap-1.5"
+            className="flex-1 h-11 border-[#D5E0DB] text-xs font-semibold text-[#0B1A17] rounded-xl cursor-pointer"
           >
-            <UL0Icon name="download" size={14} />
-            <span>Download PDF Receipt</span>
+            <UL0Icon name="download" size={14} className="mr-1.5" />
+            <span>Download Receipt</span>
           </Button>
 
           <Button
-            type="button"
-            onClick={copyShareLink}
-            className="w-full sm:w-1/2 bg-neutral-800 hover:bg-neutral-700 text-white text-xs h-10 cursor-pointer flex items-center justify-center gap-1.5"
+            asChild
+            className="flex-1 h-11 bg-[#0B7A66] hover:bg-[#086353] text-white text-xs font-semibold rounded-xl cursor-pointer"
           >
-            <UL0Icon name="share" size={14} />
-            <span>{copiedShareLink ? "Link Copied!" : "Share Bill with Friends"}</span>
+            <a href="/split">
+              <UL0Icon name="plus" size={14} className="mr-1.5" />
+              <span>Split another bill</span>
+            </a>
           </Button>
-        </div>
-
-        <div className="text-center pt-2">
-          <a
-            href="/split"
-            className="text-xs text-amber-400 hover:text-amber-300 transition-colors inline-flex items-center gap-1"
-          >
-            <UL0Icon name="plus" size={12} />
-            <span>Create another bill split</span>
-          </a>
         </div>
       </main>
 
-      {/* Bharpai Settle Modal / Drawer */}
-      <Dialog
-        open={activeSettlementIdx !== null}
-        onOpenChange={(open) => !open && setActiveSettlementIdx(null)}
-      >
-        <DialogContent className="bg-neutral-900 border-neutral-800 text-neutral-100 max-w-sm sm:max-w-md p-6">
+      {/* PayCard Drawer / Modal */}
+      <Dialog open={activeIdx !== null} onOpenChange={(open) => !open && setActiveIdx(null)}>
+        <DialogContent className="bg-white border-[#E4ECE8] text-[#0B1A17] max-w-sm sm:max-w-md p-6 rounded-2xl shadow-xl">
           <DialogHeader className="text-center pb-2">
-            <DialogTitle className="text-xl font-bold text-white">
-              Pay {collector?.name || "Collector"}
+            <DialogTitle className="text-xl font-black text-[#0B1A17]">
+              Pay {collectorName}
             </DialogTitle>
-            <DialogDescription className="text-neutral-400 text-xs">
-              {session.title} · Exact Share: <strong className="text-amber-400 font-mono text-sm">{activeSettlement ? formatAmount(activeSettlement.amount) : "₹0"}</strong>
+            <DialogDescription className="text-xs text-[#5A6B66]">
+              {session.title} · Exact Share:{" "}
+              <strong className="text-[#0B7A66] font-mono text-sm">
+                {activeSettlement ? formatAmount(activeSettlement.amount) : "₹0"}
+              </strong>
             </DialogDescription>
           </DialogHeader>
 
           {activeSettlement && activeFromMember && (
             <div className="space-y-4">
-              {/* 1-Click Mobile UPI Button */}
+              {/* Direct UPI Mobile Button */}
               {activeUpiUri && (
-                <div className="space-y-1.5">
+                <div className="space-y-1">
                   <a
                     href={activeUpiUri}
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-neutral-950 font-bold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-xl transition-transform active:scale-[0.98]"
+                    className="w-full bg-[#3DDBB8] hover:bg-[#34c4a4] text-[#04231C] font-bold h-12 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm transition-transform active:translate-y-[1px]"
                   >
-                    <UL0Icon name="mobile" size={18} />
-                    <span>Pay {formatAmount(activeSettlement.amount)} with UPI</span>
+                    <UL0Icon name="mobile" size={16} />
+                    <span>Pay {formatAmount(activeSettlement.amount)} with Any UPI App</span>
                   </a>
-                  <p className="text-[10px] text-neutral-500 text-center">
+                  <p className="text-[10px] text-[#5A6B66] text-center">
                     Opens Google Pay, PhonePe, Paytm, or CRED directly on your phone
                   </p>
                 </div>
               )}
 
-              {/* Supported Brand Badges */}
-              <div className="flex items-center justify-center gap-3 py-1 text-neutral-400 text-xs">
-                <span className="flex items-center gap-1 text-[11px]"><SiGooglepay className="w-4 h-4 text-neutral-300" /> GPay</span>
-                <span className="flex items-center gap-1 text-[11px]"><SiPhonepe className="w-3.5 h-3.5 text-neutral-300" /> PhonePe</span>
-                <span className="flex items-center gap-1 text-[11px]"><SiPaytm className="w-4 h-4 text-neutral-300" /> Paytm</span>
-                <span className="text-[11px] font-medium text-neutral-300">CRED</span>
+              {/* Supported App Badges */}
+              <div className="flex items-center justify-center gap-4 py-1 text-xs text-[#5A6B66]">
+                <span className="flex items-center gap-1"><SiGooglepay className="w-4 h-4 text-[#0B1A17]" /> GPay</span>
+                <span className="flex items-center gap-1"><SiPhonepe className="w-3.5 h-3.5 text-[#0B1A17]" /> PhonePe</span>
+                <span className="flex items-center gap-1"><SiPaytm className="w-4 h-4 text-[#0B1A17]" /> Paytm</span>
+                <span className="font-semibold text-[#0B1A17]">CRED</span>
               </div>
 
-              {/* Scannable Dynamic QR Code for Desktop/Laptop */}
-              <div className="p-3 bg-neutral-950 rounded-xl border border-neutral-800 text-center space-y-2">
-                <div className="text-[11px] text-neutral-400">
-                  Or scan this QR code with any UPI app / phone camera:
-                </div>
+              {/* Scannable QR Code */}
+              <div className="p-3 bg-[#F7FAF8] rounded-xl border border-[#E4ECE8] text-center space-y-2">
+                <span className="text-[11px] text-[#5A6B66] block">
+                  Or scan with your phone camera or any UPI app:
+                </span>
 
-                <div className="bg-white p-2.5 rounded-lg inline-block shadow-md">
-                  {isGeneratingQr ? (
-                    <div className="w-48 h-48 flex items-center justify-center">
-                      <UL0Icon name="refresh" size={24} className="animate-spin text-neutral-900" />
-                    </div>
-                  ) : activeUpiQrData ? (
-                    <img
-                      src={activeUpiQrData}
-                      alt="UPI Payment QR Code"
-                      className="w-48 h-48 object-contain rounded"
-                    />
+                <div className="bg-white p-2.5 rounded-lg inline-block shadow-sm">
+                  {activeQr ? (
+                    <img src={activeQr} alt="UPI QR" className="w-44 h-44 object-contain rounded" />
                   ) : (
-                    <div className="w-48 h-48 flex items-center justify-center text-neutral-800 text-xs">
-                      UPI QR Unavailable
+                    <div className="w-44 h-44 flex items-center justify-center text-xs text-[#5A6B66]">
+                      Generating QR...
                     </div>
                   )}
                 </div>
 
-                {/* Collector UPI Copy */}
-                {collectorUpi && (
-                  <div className="flex items-center justify-center gap-2 pt-1">
-                    <span className="text-xs font-mono text-neutral-400">{collectorUpi}</span>
-                    <button
-                      type="button"
-                      onClick={() => copyPaymentId(collectorUpi)}
-                      className="p-1 rounded hover:bg-neutral-800 text-neutral-400 hover:text-white transition-colors cursor-pointer"
-                      title="Copy UPI ID"
-                    >
-                      {copiedId === collectorUpi ? (
-                        <UL0Icon name="check" size={14} />
-                      ) : (
-                        <UL0Icon name="copy" size={14} />
-                      )}
-                    </button>
-                  </div>
-                )}
+                {/* Masked UPI and Verification Safety Notice */}
+                <div className="text-center pt-1 space-y-1">
+                  {collectorMaskedUpi && (
+                    <span className="text-xs font-mono font-semibold text-[#0B1A17] block">
+                      UPI: {collectorMaskedUpi}
+                    </span>
+                  )}
+                  <p className="text-[10px] text-[#5A6B66] leading-tight">
+                    Check that the recipient name in your UPI app shows <strong className="text-[#0B1A17]">{collectorName}</strong> before paying.
+                  </p>
+                </div>
               </div>
 
-              {/* "I've Paid" Confirmation Action */}
-              <div className="pt-1">
+              {/* "I've Paid" Claim Button */}
+              <div className="space-y-2 pt-1">
+                <Input
+                  value={utrInput}
+                  onChange={(e) => setUtrInput(e.target.value)}
+                  placeholder="Last 4 digits of UTR / Ref (Optional)"
+                  maxLength={4}
+                  className="h-9 text-xs text-center font-mono bg-[#F7FAF8] border-[#E4ECE8]"
+                />
+
                 <Button
                   type="button"
-                  onClick={() => activeSettlementIdx !== null && handleMarkAsPaid(activeSettlementIdx)}
-                  disabled={updatingIdx === activeSettlementIdx}
-                  variant="outline"
-                  className="w-full border-neutral-700 bg-neutral-800/80 hover:bg-neutral-700 text-white font-medium py-3 text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                  onClick={handleClaim}
+                  disabled={isClaiming}
+                  className="w-full bg-[#0B7A66] hover:bg-[#086353] text-white font-bold h-11 text-xs rounded-xl cursor-pointer"
                 >
-                  <UL0Icon name="check" size={14} />
-                  <span>I've Completed Payment</span>
+                  <UL0Icon name="check" size={14} className="mr-1.5" />
+                  <span>{isClaiming ? "Recording..." : "I've Completed Payment"}</span>
                 </Button>
               </div>
 
-              {/* Reassurance */}
-              <p className="text-[10px] text-neutral-500 text-center flex items-center justify-center gap-1">
-                <UL0Icon name="shield" size={12} />
-                <span>Direct bank-to-bank transfer. No middleman or wallet.</span>
+              <p className="text-[10px] text-[#5A6B66] text-center">
+                Money transfers direct bank-to-bank. UL0 never holds your money.
               </p>
             </div>
           )}

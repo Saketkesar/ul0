@@ -7,6 +7,7 @@ const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/settings(.*)",
   "/api/private(.*)",
+  "/split/groups(.*)",
 ])
 
 // Security headers to add to all responses
