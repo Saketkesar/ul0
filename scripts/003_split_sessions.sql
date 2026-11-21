@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS public.split_sessions (
   members JSONB NOT NULL DEFAULT '[]',
   expenses JSONB NOT NULL DEFAULT '[]',
   settlements JSONB NOT NULL DEFAULT '[]',
-  total_amount NUMERIC DEFAULT 0
+  total_amount NUMERIC DEFAULT 0 
 );
 
 ALTER TABLE public.split_sessions ENABLE ROW LEVEL SECURITY;

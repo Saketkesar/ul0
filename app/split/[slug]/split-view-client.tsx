@@ -54,6 +54,8 @@ interface SplitSession {
   currency?: string
   pay_by?: string | null
   locale?: string
+  banner_url?: string | null
+  icon_url?: string | null
   members: Member[]
   expenses: Expense[]
   settlements?: Settlement[]
@@ -306,6 +308,40 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
 
       {/* Main Settle Paper Receipt */}
       <main className="flex-1 max-w-xl mx-auto w-full px-4 py-8 space-y-6">
+        {session.banner_url && (
+          <div className="relative w-full h-40 sm:h-52 rounded-2xl overflow-hidden border border-[#E4ECE8] shadow-xs">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={session.banner_url}
+              alt={session.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+            <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
+              <div className="flex items-center gap-3">
+                {session.icon_url ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={session.icon_url}
+                    alt=""
+                    className="w-12 h-12 rounded-xl border-2 border-white object-cover shadow-sm bg-white"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-xl border-2 border-white bg-[#0B7A66] text-white flex items-center justify-center font-bold text-lg shadow-sm">
+                    {session.title.slice(0, 2).toUpperCase()}
+                  </div>
+                )}
+                <div>
+                  <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white drop-shadow-sm">
+                    {session.title}
+                  </h2>
+                  <p className="text-[11px] text-white/80 font-medium">Split Bill • Direct UPI</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div ref={contentRef} className="space-y-6">
           {/* Paper Receipt Card */}
           <div className="rounded-2xl border border-[#E4ECE8] bg-white p-6 sm:p-8 shadow-[0_1px_2px_rgba(10,30,26,0.06)] space-y-5">

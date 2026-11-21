@@ -187,15 +187,8 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
         }
 
         function extractCleanContent(contentRoot: HTMLElement): { text: string; html: string } {
-          const noscript = contentRoot.querySelector("noscript")
-          let contentDoc: Document
-          if (noscript) {
-            const rawHtml = noscript.innerHTML || noscript.textContent || ""
-            contentDoc = new DOMParser().parseFromString(rawHtml, "text/html")
-          } else {
-            const clone = contentRoot.cloneNode(true) as HTMLElement
-            contentDoc = new DOMParser().parseFromString(clone.innerHTML, "text/html")
-          }
+          const clone = contentRoot.cloneNode(true) as HTMLElement
+          const contentDoc = new DOMParser().parseFromString(clone.innerHTML, "text/html")
 
           // Strip non-content and noise elements
           contentDoc
@@ -203,6 +196,14 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
               'noscript, script, style, svg, button, [data-testid*="actions"], [data-testid*="copy"], a[href*="report"], .sr-only'
             )
             .forEach((n) => n.remove())
+
+          // Remove all HTML comment nodes
+          const walker = contentDoc.createTreeWalker(contentDoc.body, NodeFilter.SHOW_COMMENT)
+          const commentNodes: Node[] = []
+          while (walker.nextNode()) {
+            commentNodes.push(walker.currentNode)
+          }
+          commentNodes.forEach((c) => c.parentNode?.removeChild(c))
 
           // Remove obfuscated classes and layout styles for clean semantic styling
           contentDoc.body.querySelectorAll("*").forEach((node) => {
@@ -216,14 +217,18 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
           const html = (contentDoc.body.innerHTML || "")
             .replace(/<!--[\s\S]*?-->/g, "")
             .replace(/<!\[[\s\S]*?\]>/g, "")
+            .replace(/-><!->/g, "")
             .replace(/<!->/g, "")
+            .replace(/\[f\d+->/g, "")
             .trim()
 
           // Clean structured Markdown text
           const text = domToMarkdown(contentDoc.body)
             .replace(/<!--[\s\S]*?-->/g, "")
             .replace(/<!\[[\s\S]*?\]>/g, "")
+            .replace(/-><!->/g, "")
             .replace(/<!->/g, "")
+            .replace(/\[f\d+->/g, "")
             .replace(/<[^>]+>/g, "")
             .replace(/&amp;/g, "&")
             .replace(/&lt;/g, "<")
@@ -684,7 +689,9 @@ function cleanTextForPdf(raw: string): string {
   return raw
     .replace(/<!--[\s\S]*?-->/g, "")
     .replace(/<!\[[\s\S]*?\]>/g, "")
+    .replace(/-><!->/g, "")
     .replace(/<!->/g, "")
+    .replace(/\[f\d+->/g, "")
     .replace(/<[^>]+>/g, "")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")

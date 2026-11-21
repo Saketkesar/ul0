@@ -340,6 +340,9 @@ export async function POST(request: NextRequest) {
           currency: currencyCode,
           pay_by: payBy,
           collector_token_hash: collectorTokenHash,
+          banner_url: typeof body.bannerUrl === "string" ? body.bannerUrl : typeof body.banner_url === "string" ? body.banner_url : undefined,
+          icon_url: typeof body.iconUrl === "string" ? body.iconUrl : typeof body.icon_url === "string" ? body.icon_url : undefined,
+          group_id: typeof body.groupId === "string" ? body.groupId : typeof body.group_id === "string" ? body.group_id : undefined,
         })
 
         return NextResponse.json({

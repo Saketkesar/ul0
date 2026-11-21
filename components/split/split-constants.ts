@@ -7,12 +7,12 @@ export interface CategoryPreset {
 }
 
 export const CATEGORY_PRESETS: CategoryPreset[] = [
-  { label: "Dinner", title: "Dinner", icon: "billing" },
-  { label: "Cab", title: "Cab Fare", icon: "bolt" },
-  { label: "Groceries", title: "Groceries", icon: "cart" },
+  { label: "Food", title: "Dinner", icon: "billing" },
   { label: "Trip", title: "Trip", icon: "flag" },
   { label: "Rent", title: "Flat Rent", icon: "home" },
-  { label: "Party", title: "Party", icon: "sparkles" },
+  { label: "Match fee", title: "Match fee", icon: "sparkles" },
+  { label: "Groceries", title: "Groceries", icon: "cart" },
+  { label: "Other", title: "Expense", icon: "splitbill" },
 ]
 
 export const COMMON_UPI_PROVIDERS = [

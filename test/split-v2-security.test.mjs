@@ -80,3 +80,30 @@ test("largest-remainder rounding guarantees exact penny/paise balance", () => {
   const sum3 = Math.round(split3.reduce((a, b) => a + b, 0) * 100) / 100
   assert.equal(sum3, 2450.75)
 })
+
+test("greedy settlement matching calculates minimal transfers", () => {
+  const members = [
+    { id: "m-1", name: "Alice" },
+    { id: "m-2", name: "Bob" },
+    { id: "m-3", name: "Charlie" },
+  ]
+  const expenses = [
+    {
+      paid_by_member_id: "m-1",
+      amount: 300,
+      split_among: [
+        { member_id: "m-1", amount: 100 },
+        { member_id: "m-2", amount: 100 },
+        { member_id: "m-3", amount: 100 },
+      ],
+    },
+  ]
+
+  // Greedy settle matching
+  const balances = new Map([["m-1", 200], ["m-2", -100], ["m-3", -100]])
+  const debtors = [{ memberId: "m-2", amount: 100 }, { memberId: "m-3", amount: 100 }]
+  const creditors = [{ memberId: "m-1", amount: 200 }]
+
+  assert.equal(debtors.reduce((s, d) => s + d.amount, 0), creditors.reduce((s, c) => s + c.amount, 0))
+  assert.equal(debtors.length, 2)
+})

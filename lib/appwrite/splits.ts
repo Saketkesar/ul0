@@ -50,6 +50,8 @@ export interface SplitSessionDoc {
   items_json: string | null
   status: string
   group_id: string | null
+  banner_url?: string | null
+  icon_url?: string | null
 }
 
 export interface SplitSession {
@@ -74,6 +76,8 @@ export interface SplitSession {
   items: unknown[]
   status: string
   group_id: string | null
+  banner_url?: string | null
+  icon_url?: string | null
 }
 
 export interface CreateSplitSessionInput {
@@ -89,9 +93,12 @@ export interface CreateSplitSessionInput {
   locale?: string
   currency?: string
   pay_by?: string | null
-  collector_token_hash?: string
+  collector_token_hash?: string | null
   charges?: Record<string, unknown>
   items?: unknown[]
+  banner_url?: string | null
+  icon_url?: string | null
+  group_id?: string | null
 }
 
 // ---------------------------------------------------------------------------
@@ -163,6 +170,8 @@ function inflate(doc: SplitSessionDoc): SplitSession {
     items: safeJsonParse(doc.items_json, []) as unknown[],
     status: doc.status || "active",
     group_id: doc.group_id || null,
+    banner_url: doc.banner_url || null,
+    icon_url: doc.icon_url || null,
   }
 }
 
@@ -240,12 +249,14 @@ export async function createSplitSession(
       id, slug, title, members_json, expenses_json, settlements_json,
       total_amount, expires_at, created_at,
       owner_user_id, kind, locale, currency, pay_by,
-      collector_token_hash, charges, items, status
+      collector_token_hash, charges, items, status,
+      group_id, banner_url, icon_url
     ) VALUES (
       $1, $2, $3, $4, $5, $6,
       $7, $8, NOW(),
       $9, $10, $11, $12, $13,
-      $14, $15, $16, 'active'
+      $14, $15, $16, 'active',
+      $17, $18, $19
     )
     RETURNING *`,
     [
@@ -265,6 +276,9 @@ export async function createSplitSession(
       input.collector_token_hash || null,
       JSON.stringify(input.charges || {}),
       JSON.stringify(input.items || []),
+      input.group_id || null,
+      input.banner_url || null,
+      input.icon_url || null,
     ]
   )
 
