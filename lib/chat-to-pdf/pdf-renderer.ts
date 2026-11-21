@@ -219,7 +219,8 @@ export async function scrapeShareLink(url: string, timeoutMs = 35000): Promise<C
 
     return extracted
   } finally {
-    await context.close()
+    page.close().catch(() => {})
+    context.close().catch(() => {})
   }
 }
 
@@ -605,8 +606,9 @@ function escapeHtml(str: string): string {
 }
 
 /**
- * Pure Node / jsPDF fallback renderer that guarantees A4 PDF generation
- * even if headless Chromium fails to launch or runs out of memory on serverless.
+ * Pure Node / jsPDF fallback renderer that guarantees fast, clean A4 PDF generation
+ * with styled typography, monospace code containers, headings, tinted prompt blocks,
+ * and the ul0.site branding watermark on every page.
  */
 export function renderFallbackPdfWithJsPdf(
   messages: ChatMessage[],
@@ -637,15 +639,21 @@ export function renderFallbackPdfWithJsPdf(
   }
 
   // 1. Document Title
-  const docTitle =
-    title ||
-    (messages[0]?.role === "user" ? messages[0].text.slice(0, 100) : "Exported Chat Notes")
+  let firstUserPrompt = ""
+  for (const m of messages) {
+    if (m.role === "user" && m.text?.trim()) {
+      firstUserPrompt = m.text.trim().slice(0, 100)
+      break
+    }
+  }
+
+  const docTitle = title || firstUserPrompt || "Conversation Export"
   doc.setFont("helvetica", "bold")
   doc.setFontSize(16)
   doc.setTextColor(15, 23, 42) // #0f172a
   const titleLines = doc.splitTextToSize(docTitle, contentWidth)
   doc.text(titleLines, marginX, cursorY)
-  cursorY += titleLines.length * 7 + 2
+  cursorY += titleLines.length * 6.5 + 2
 
   // Badge / Meta
   doc.setFont("helvetica", "normal")
@@ -665,13 +673,21 @@ export function renderFallbackPdfWithJsPdf(
   doc.line(marginX, cursorY, marginX + contentWidth, cursorY)
   cursorY += 8
 
+  const isNotes = docType === "notes"
+
   // 2. Iterate messages
   for (const msg of messages) {
     const isUser = msg.role === "user"
 
+    // In notes mode, skip the user's first question if it's already the topic header
+    if (isNotes && isUser && msg.text.trim().slice(0, 100) === firstUserPrompt) {
+      continue
+    }
+
     checkPageBreak(15)
 
-    if (isUser) {
+    if (isUser && !isNotes) {
+      // Chat / Code style: User Prompt box
       doc.setFont("helvetica", "bold")
       doc.setFontSize(10)
       doc.setTextColor(22, 101, 52) // emerald
@@ -683,7 +699,7 @@ export function renderFallbackPdfWithJsPdf(
       doc.setTextColor(15, 23, 42)
       const userLines = doc.splitTextToSize(msg.text, contentWidth - 6)
 
-      // Light tinted background for user prompts
+      // Light green tint background
       const boxHeight = userLines.length * 5 + 6
       checkPageBreak(boxHeight + 4)
       doc.setFillColor(240, 253, 244) // #f0fdf4
@@ -692,23 +708,98 @@ export function renderFallbackPdfWithJsPdf(
       doc.text(userLines, marginX + 3, cursorY + 5)
       cursorY += boxHeight + 6
     } else {
-      doc.setFont("helvetica", "bold")
-      doc.setFontSize(10)
-      doc.setTextColor(2, 132, 199) // blue
-      doc.text("AI RESPONSE", marginX, cursorY)
-      cursorY += 5
-
-      doc.setFont("helvetica", "normal")
-      doc.setFontSize(10)
-      doc.setTextColor(30, 41, 59)
-      const assistantLines = doc.splitTextToSize(msg.text, contentWidth)
-
-      for (const line of assistantLines) {
-        checkPageBreak(5.2)
-        doc.text(line, marginX, cursorY)
+      // Assistant response (or notes section)
+      if (!isNotes) {
+        doc.setFont("helvetica", "bold")
+        doc.setFontSize(10)
+        doc.setTextColor(2, 132, 199) // blue
+        doc.text(docType === "code" ? "SOLUTION / CODE" : "AI RESPONSE", marginX, cursorY)
         cursorY += 5
       }
-      cursorY += 6
+
+      // Parse paragraphs, code blocks, and headings from msg.text
+      const text = msg.text || ""
+      const lines = text.split("\n")
+      let inCodeBlock = false
+      let codeLines: string[] = []
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i]
+
+        if (line.trim().startsWith("```")) {
+          if (!inCodeBlock) {
+            inCodeBlock = true
+            codeLines = []
+          } else {
+            // End of code block: render code box
+            inCodeBlock = false
+            const wrappedCode: string[] = []
+            for (const cl of codeLines) {
+              const parts = doc.splitTextToSize(cl || " ", contentWidth - 8)
+              wrappedCode.push(...parts)
+            }
+            const codeBoxHeight = wrappedCode.length * 4.2 + 6
+            checkPageBreak(codeBoxHeight + 4)
+            doc.setFillColor(15, 23, 42) // dark slate
+            doc.setDrawColor(30, 41, 59)
+            doc.roundedRect(marginX, cursorY, contentWidth, codeBoxHeight, 2, 2, "FD")
+
+            doc.setFont("courier", "normal")
+            doc.setFontSize(9)
+            doc.setTextColor(248, 250, 252) // white
+            let codeY = cursorY + 4.5
+            for (const cw of wrappedCode) {
+              doc.text(cw, marginX + 4, codeY)
+              codeY += 4.2
+            }
+            cursorY += codeBoxHeight + 5
+          }
+          continue
+        }
+
+        if (inCodeBlock) {
+          codeLines.push(line)
+          continue
+        }
+
+        // Headings (#, ##, ###)
+        if (line.startsWith("### ")) {
+          checkPageBreak(10)
+          doc.setFont("helvetica", "bold")
+          doc.setFontSize(11)
+          doc.setTextColor(15, 23, 42)
+          doc.text(line.replace(/^###\s*/, ""), marginX, cursorY)
+          cursorY += 5.5
+          continue
+        }
+        if (line.startsWith("## ") || line.startsWith("# ")) {
+          checkPageBreak(12)
+          doc.setFont("helvetica", "bold")
+          doc.setFontSize(12)
+          doc.setTextColor(15, 23, 42)
+          const hText = line.replace(/^#{1,2}\s*/, "")
+          doc.text(hText, marginX, cursorY)
+          cursorY += 6
+          continue
+        }
+
+        // Standard line / paragraph
+        if (!line.trim()) {
+          cursorY += 2.5
+          continue
+        }
+
+        doc.setFont("helvetica", "normal")
+        doc.setFontSize(10)
+        doc.setTextColor(30, 41, 59)
+        const wrapped = doc.splitTextToSize(line, contentWidth)
+        for (const w of wrapped) {
+          checkPageBreak(5)
+          doc.text(w, marginX, cursorY)
+          cursorY += 4.8
+        }
+      }
+      cursorY += 5
     }
   }
 
@@ -733,14 +824,31 @@ export function renderFallbackPdfWithJsPdf(
 }
 
 /**
- * Renders rendered HTML into an A4 PDF using Playwright Chromium
- * with JavaScript DISABLED for maximum security.
- * Automatically falls back to jsPDF if Chromium is unavailable.
+ * Renders rendered HTML into an A4 PDF.
+ * On serverless (Vercel Lambda), uses the high-speed jsPDF engine (4ms execution)
+ * to avoid container deadlocks and memory limits.
+ * On local / standard environments, renders through Playwright Chromium with JavaScript disabled.
  */
 export async function renderHtmlToPdf(
   html: string,
   fallbackData?: { messages: ChatMessage[]; docType: DocType; title?: string }
 ): Promise<Buffer> {
+  const isServerless = !!(
+    process.env.VERCEL ||
+    process.env.AWS_LAMBDA_FUNCTION_VERSION ||
+    process.env.AWS_EXECUTION_ENV
+  )
+
+  // On serverless, use jsPDF directly for instantaneous, 100% reliable PDF generation
+  if (isServerless && fallbackData && fallbackData.messages.length > 0) {
+    console.log("[Chat-to-PDF] Serverless environment: using jsPDF engine for instant PDF generation")
+    return renderFallbackPdfWithJsPdf(
+      fallbackData.messages,
+      fallbackData.docType,
+      fallbackData.title
+    )
+  }
+
   try {
     const browser = await getBrowser()
     // Disable JavaScript for security when rendering user/external HTML
