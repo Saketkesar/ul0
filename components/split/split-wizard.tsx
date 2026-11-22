@@ -1299,7 +1299,7 @@ export function SplitWizard() {
                     </div>
 
                     {/* Friend chips */}
-                    {friends.length > 0 && (
+                    {friends.length > 0 ? (
                       <div className="flex flex-wrap gap-2 pt-1">
                         {friends.map((f) => (
                           <span
@@ -1320,36 +1320,11 @@ export function SplitWizard() {
                           </span>
                         ))}
                       </div>
+                    ) : (
+                      <p className="text-[11px] text-[#5A6B66] py-1">
+                        No friends added yet. Type a name above and tap Add to include friends in this split.
+                      </p>
                     )}
-
-                    {/* Quick Preset Groups */}
-                    <div className="pt-2">
-                      <span className="text-[11px] text-[#5A6B66] block mb-1.5">Quick Add Preset Groups:</span>
-                      <div className="flex flex-wrap gap-1.5">
-                        {[
-                          { label: "Roommates", names: ["Roommate 1", "Roommate 2", "Roommate 3"] },
-                          { label: "Trip Friends", names: ["Friend A", "Friend B", "Friend C"] },
-                          { label: "Chai Gang", names: ["Friend 1", "Friend 2"] },
-                        ].map((grp) => (
-                          <button
-                            key={grp.label}
-                            type="button"
-                            onClick={() => {
-                              const newF: Friend[] = grp.names.map((name, i) => ({
-                                id: `f-${Date.now()}-${i}`,
-                                name,
-                                shares: 1,
-                              }))
-                              setFriends(newF)
-                              toast.success(`Loaded ${grp.label}!`)
-                            }}
-                            className="px-2.5 py-1 rounded-lg border border-dashed border-[#CCD9D4] bg-[#F7FAF8] hover:bg-[#EAF7F3] text-[11px] text-[#0B7A66] font-medium transition-colors cursor-pointer"
-                          >
-                            + {grp.label}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
                   </div>
 
                   <div className="pt-4">
