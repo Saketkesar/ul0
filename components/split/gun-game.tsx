@@ -326,7 +326,7 @@ export function GunGame({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[420px] p-0 border border-[#E4E2DA] rounded-[16px] overflow-hidden shadow-none bg-white">
+      <DialogContent showCloseButton={false} className="max-w-[420px] p-0 border border-[#E4E2DA] rounded-[16px] overflow-hidden shadow-none bg-white">
         {/* =====================================================================
             SCREEN 1: SETUP SCREEN
         ====================================================================== */}
