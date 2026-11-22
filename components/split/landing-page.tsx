@@ -1,405 +1,552 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { UL0Icon } from "@/components/ul0-icon"
-import { SiGooglepay, SiPhonepe, SiPaytm } from "react-icons/si"
+import { useRouter } from "next/navigation"
+import { Check, ArrowRight, Shield, Zap, Users, Receipt, ChevronDown, Plus, Minus } from "lucide-react"
 
 export function SplitLandingPage() {
+  const router = useRouter()
+
+  // Live mini calculator state
+  const [calcTotal, setCalcTotal] = useState<number>(1200)
+  const [calcPeople, setCalcPeople] = useState<number>(3)
+
+  const perPersonAmount = calcPeople > 0 ? Math.round((calcTotal / calcPeople) * 100) / 100 : 0
+
+  const handleStartWithCalc = () => {
+    router.push(`/split/dashboard?amount=${calcTotal}&people=${calcPeople}`)
+  }
+
   return (
-    <div className="space-y-20 py-4 sm:py-8 font-sans">
+    <div className="w-full bg-[#F6F5F1] text-[#111715] font-sans selection:bg-[#0F7B5F]/20 selection:text-[#0F7B5F]">
       {/* =====================================================================
-          HERO SECTION
+          1. NAV (64px, flat, no dropdowns)
       ====================================================================== */}
-      <section className="text-center max-w-4xl mx-auto space-y-6">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EAF7F3] border border-[#CCD9D4] text-[#0B7A66] text-xs font-semibold shadow-2xs">
-          <UL0Icon name="shield" size={14} />
-          <span>Zero app install · Pure bank-to-bank UPI · 100% Free</span>
-        </div>
+      <nav className="h-16 border-b border-[#E4E2DA] bg-[#F6F5F1] sticky top-0 z-40 px-4 sm:px-8">
+        <div className="max-w-[1080px] mx-auto h-full flex items-center justify-between">
+          <Link href="/split" className="flex items-center gap-2 font-bold text-base tracking-tight text-[#111715]">
+            <span className="w-7 h-7 rounded-[8px] bg-[#0F7B5F] text-white flex items-center justify-center font-bold text-xs">
+              U
+            </span>
+            <span>UL0 Split</span>
+          </Link>
 
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-[#0B1A17] leading-[1.1]">
-          Split bills over UPI. <br className="hidden sm:inline" />
-          <span className="text-[#0B7A66]">Friends install nothing.</span>
-        </h1>
+          <div className="hidden md:flex items-center gap-7 text-[14px] font-medium text-[#5F6763]">
+            <a href="#how-it-works" className="hover:text-[#111715] transition-colors">How it works</a>
+            <a href="#what-friends-see" className="hover:text-[#111715] transition-colors">Friend view</a>
+            <a href="#vs-splitwise" className="hover:text-[#111715] transition-colors">vs Splitwise</a>
+            <a href="#faq" className="hover:text-[#111715] transition-colors">FAQ</a>
+          </div>
 
-        <p className="text-[#5A6B66] text-base sm:text-xl max-w-2xl mx-auto leading-relaxed">
-          The person who paid creates the split in seconds. Friends open the link, tap their name, and pay their exact share from GPay, PhonePe, or Paytm. Money transfers directly into your bank account.
-        </p>
-
-        {/* Primary CTAs */}
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Button
-            asChild
-            className="w-full sm:w-auto bg-[#0B1A17] hover:bg-[#1a2e2a] text-white font-extrabold text-base h-14 px-8 rounded-2xl shadow-md transition-transform active:translate-y-[1px] cursor-pointer"
-          >
-            <Link href="/split/dashboard">
-              <span>Create your split</span>
-              <UL0Icon name="arrowright" size={18} className="ml-2" />
+          <div className="flex items-center gap-3">
+            <Link
+              href="/split/dashboard"
+              className="text-[14px] font-medium text-[#5F6763] hover:text-[#111715] transition-colors px-2 py-1"
+            >
+              Log in
             </Link>
-          </Button>
-
-          <Button
-            asChild
-            variant="outline"
-            className="w-full sm:w-auto border-[#CCD9D4] hover:bg-[#F7FAF8] text-[#0B1A17] font-bold text-base h-14 px-7 rounded-2xl cursor-pointer"
-          >
-            <Link href="/hisab">
-              <UL0Icon name="billing" size={18} className="mr-2 text-[#0B7A66]" />
-              <span>Group Hisab (Trips & Flat)</span>
+            <Link
+              href="/split/dashboard"
+              className="h-10 px-4 rounded-[10px] bg-[#111715] hover:bg-[#25302C] text-white text-[14px] font-semibold flex items-center justify-center transition-colors shadow-none"
+            >
+              Open app
             </Link>
-          </Button>
+          </div>
         </div>
+      </nav>
 
-        {/* Supported UPI Apps Badges */}
-        <div className="flex flex-wrap items-center justify-center gap-5 pt-3 text-xs text-[#5A6B66] font-medium">
-          <span className="flex items-center gap-1.5">
-            <SiGooglepay className="w-5 h-5 text-[#0B1A17]" /> Google Pay
-          </span>
-          <span className="flex items-center gap-1.5">
-            <SiPhonepe className="w-4 h-4 text-[#0B1A17]" /> PhonePe
-          </span>
-          <span className="flex items-center gap-1.5">
-            <SiPaytm className="w-5 h-5 text-[#0B1A17]" /> Paytm
-          </span>
-          <span className="font-bold text-[#0B1A17]">CRED · BHIM · Any UPI App</span>
-        </div>
+      <main className="max-w-[1080px] mx-auto px-4 sm:px-8">
+        {/* =====================================================================
+            2. HERO (2 columns: left pitch + right live mini calculator)
+        ====================================================================== */}
+        <section className="py-12 sm:py-20 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          {/* Left Column: Pitch */}
+          <div className="lg:col-span-7 space-y-6">
+            <h1 className="text-[36px] sm:text-[54px] lg:text-[60px] font-bold tracking-[-0.035em] text-[#111715] leading-[1.08]">
+              Split the bill. Friends pay by UPI. No app needed.
+            </h1>
 
-        {/* Hero Animation Container (split-01-bill-to-shares.webp) */}
-        <div className="pt-8">
-          <div className="relative mx-auto max-w-2xl rounded-3xl border border-[#E4ECE8] bg-white p-4 sm:p-6 shadow-[0_4px_24px_rgba(11,26,23,0.06)] overflow-hidden">
-            {/* Visual Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F3] text-xs">
-              <div className="flex items-center gap-2 text-[#0B7A66] font-bold">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#3DDBB8] animate-pulse" />
-                <span>Live Bill Splitting Preview</span>
-              </div>
-              <span className="text-[11px] text-[#5A6B66] font-mono">1 Bill → Exact Shares</span>
+            <p className="text-[17px] sm:text-[19px] text-[#5F6763] leading-relaxed max-w-xl">
+              Create a split in 10 seconds. Friends open the link, tap their name, and pay via any UPI app. Direct bank to bank.
+            </p>
+
+            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+              <Link
+                href="/split/dashboard"
+                className="h-11 px-6 rounded-[10px] bg-[#111715] hover:bg-[#25302C] text-white text-[15px] font-semibold flex items-center justify-center gap-2 transition-colors"
+              >
+                <span>Split a bill — free</span>
+                <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
+              </Link>
+              <a
+                href="#how-it-works"
+                className="h-11 px-5 rounded-[10px] border border-[#E4E2DA] bg-white hover:bg-[#FAF9F5] text-[#111715] text-[15px] font-semibold flex items-center justify-center transition-colors"
+              >
+                See how it works
+              </a>
             </div>
 
-            {/* Transparent Animated WebP */}
-            <div className="py-4 flex items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/split-animations/split-01-bill-to-shares.webp"
-                alt="Bill splits into equal shares that fly to each person and settle over UPI"
-                className="w-full max-w-lg object-contain rounded-2xl"
-              />
+            <div className="pt-3 space-y-2 border-t border-[#E4E2DA]">
+              <p className="text-[13px] text-[#5F6763]">
+                No signup. Money goes bank to bank. UL0 never holds it.
+              </p>
+              <p className="text-[12px] text-[#5F6763]/90">
+                Works with Google Pay, PhonePe, Paytm, CRED, BHIM &amp; any UPI app
+              </p>
+            </div>
+          </div>
+
+          {/* Right Column: Live Mini Calculator */}
+          <div className="lg:col-span-5">
+            <div className="bg-white border border-[#E4E2DA] rounded-[16px] p-6 space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E4E2DA]">
+                <span className="text-[13px] font-semibold text-[#111715] uppercase tracking-wider">
+                  Live Calculator
+                </span>
+                <span className="text-[12px] text-[#0F7B5F] font-semibold bg-[#0F7B5F]/10 px-2.5 py-0.5 rounded-full">
+                  Try it now
+                </span>
+              </div>
+
+              {/* Bill Amount Input */}
+              <div className="space-y-1.5">
+                <label className="text-[13px] font-medium text-[#5F6763]">Total bill amount</label>
+                <div className="flex items-center border border-[#E4E2DA] rounded-[10px] px-3.5 h-11 bg-[#FAF9F5] focus-within:border-[#111715] transition-colors">
+                  <span className="text-base font-bold text-[#111715] mr-1.5">₹</span>
+                  <input
+                    type="number"
+                    min="1"
+                    value={calcTotal || ""}
+                    onChange={(e) => setCalcTotal(Math.max(0, parseFloat(e.target.value) || 0))}
+                    className="w-full bg-transparent text-lg font-bold text-[#111715] outline-none"
+                    placeholder="1200"
+                  />
+                </div>
+              </div>
+
+              {/* People Stepper */}
+              <div className="space-y-1.5">
+                <label className="text-[13px] font-medium text-[#5F6763]">Split among how many?</label>
+                <div className="flex items-center justify-between border border-[#E4E2DA] rounded-[10px] px-3.5 h-11 bg-white">
+                  <span className="text-sm font-semibold text-[#111715]">
+                    {calcPeople} {calcPeople === 1 ? "person" : "people"}
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setCalcPeople(Math.max(2, calcPeople - 1))}
+                      className="w-7 h-7 rounded-[6px] border border-[#E4E2DA] flex items-center justify-center hover:bg-[#FAF9F5] text-[#111715] cursor-pointer"
+                      aria-label="Decrease people"
+                    >
+                      <Minus className="w-3.5 h-3.5" strokeWidth={1.75} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCalcPeople(Math.min(12, calcPeople + 1))}
+                      className="w-7 h-7 rounded-[6px] border border-[#E4E2DA] flex items-center justify-center hover:bg-[#FAF9F5] text-[#111715] cursor-pointer"
+                      aria-label="Increase people"
+                    >
+                      <Plus className="w-3.5 h-3.5" strokeWidth={1.75} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Per-person Live Rows */}
+              <div className="pt-2 space-y-2 border-t border-[#E4E2DA]">
+                <div className="flex items-center justify-between text-[13px]">
+                  <span className="text-[#5F6763]">Each person owes:</span>
+                  <span className="text-lg font-bold text-[#0F7B5F]">
+                    ₹{perPersonAmount.toFixed(2)}
+                  </span>
+                </div>
+
+                <div className="space-y-1.5 pt-1">
+                  {Array.from({ length: Math.min(3, calcPeople) }).map((_, i) => (
+                    <div key={i} className="flex items-center justify-between text-[13px] py-1 px-2.5 rounded-[8px] bg-[#FAF9F5]">
+                      <span className="text-[#111715] font-medium">
+                        {i === 0 ? "You (organizer)" : `Person ${i + 1}`}
+                      </span>
+                      <span className="font-semibold text-[#111715]">
+                        ₹{perPersonAmount.toFixed(2)}
+                      </span>
+                    </div>
+                  ))}
+                  {calcPeople > 3 && (
+                    <p className="text-[11px] text-[#5F6763] text-center pt-0.5">
+                      + {calcPeople - 3} more people
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Under-calculator CTA */}
+              <button
+                type="button"
+                onClick={handleStartWithCalc}
+                className="w-full h-11 rounded-[10px] bg-[#111715] hover:bg-[#25302C] text-white text-[14px] font-semibold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+              >
+                <span>Start with this split</span>
+                <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================================
+            3. HOW IT WORKS (3 cards)
+        ====================================================================== */}
+        <section id="how-it-works" className="py-16 sm:py-20 border-t border-[#E4E2DA] space-y-10">
+          <div className="space-y-2">
+            <span className="text-[13px] font-semibold text-[#0F7B5F] uppercase tracking-wider">
+              Simple 3-step flow
+            </span>
+            <h2 className="text-[28px] sm:text-[36px] font-bold tracking-tight text-[#111715]">
+              How it works
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white border border-[#E4E2DA] rounded-[16px] p-6 space-y-3">
+              <div className="w-8 h-8 rounded-[8px] bg-[#FAF9F5] border border-[#E4E2DA] flex items-center justify-center font-bold text-sm text-[#111715]">
+                1
+              </div>
+              <h3 className="text-[17px] font-bold text-[#111715]">Enter the bill</h3>
+              <p className="text-[14px] text-[#5F6763] leading-relaxed">
+                Add total amount, your UPI ID, and friend names. Choose equal split, custom amounts, or item-wise grocery/receipt mode.
+              </p>
             </div>
 
-            {/* Bottom trust row inside card */}
-            <div className="pt-3 border-t border-[#F1F5F3] grid grid-cols-3 gap-2 text-center text-[11px] text-[#5A6B66]">
-              <div>
-                <strong className="text-[#0B1A17] block">₹0 Fee</strong>
-                <span>100% Free Forever</span>
+            <div className="bg-white border border-[#E4E2DA] rounded-[16px] p-6 space-y-3">
+              <div className="w-8 h-8 rounded-[8px] bg-[#FAF9F5] border border-[#E4E2DA] flex items-center justify-center font-bold text-sm text-[#111715]">
+                2
               </div>
-              <div>
-                <strong className="text-[#0B1A17] block">Zero Custody</strong>
-                <span>Direct Bank Transfer</span>
+              <h3 className="text-[17px] font-bold text-[#111715]">Share one link</h3>
+              <p className="text-[14px] text-[#5F6763] leading-relaxed">
+                Send the settle link via WhatsApp or let friends scan the QR. Friends don&apos;t install an app or register an account.
+              </p>
+            </div>
+
+            <div className="bg-white border border-[#E4E2DA] rounded-[16px] p-6 space-y-3">
+              <div className="w-8 h-8 rounded-[8px] bg-[#FAF9F5] border border-[#E4E2DA] flex items-center justify-center font-bold text-sm text-[#111715]">
+                3
               </div>
-              <div>
-                <strong className="text-[#0B1A17] block">No Signup</strong>
-                <span>Friends Just Pay</span>
+              <h3 className="text-[17px] font-bold text-[#111715]">They pay, you see it</h3>
+              <p className="text-[14px] text-[#5F6763] leading-relaxed">
+                Friends tap their name and pay via GPay, PhonePe, or Paytm. Money transfers directly into your bank. You verify in one tap.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================================
+            4. WHAT YOUR FRIENDS SEE (Phone mockup + 3 ticks)
+        ====================================================================== */}
+        <section id="what-friends-see" className="py-16 sm:py-20 border-t border-[#E4E2DA] grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+          <div className="lg:col-span-6 space-y-6">
+            <span className="text-[13px] font-semibold text-[#0F7B5F] uppercase tracking-wider">
+              Friend Experience
+            </span>
+            <h2 className="text-[28px] sm:text-[38px] font-bold tracking-tight text-[#111715] leading-tight">
+              What your friends see on their phone
+            </h2>
+            <p className="text-[16px] text-[#5F6763] leading-relaxed">
+              No login walls, no app store downloads, and no sign-up forms. Friends tap the link, find their name, and pay in two taps.
+            </p>
+
+            <div className="space-y-4 pt-2">
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 rounded-full bg-[#0F7B5F]/15 text-[#0F7B5F] flex items-center justify-center shrink-0 mt-0.5">
+                  <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
+                </div>
+                <p className="text-[14px] text-[#111715]">
+                  <strong>Zero app download &amp; zero signup:</strong> Friends open the page directly in their browser.
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 rounded-full bg-[#0F7B5F]/15 text-[#0F7B5F] flex items-center justify-center shrink-0 mt-0.5">
+                  <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
+                </div>
+                <p className="text-[14px] text-[#111715]">
+                  <strong>Works with their existing UPI app:</strong> Pre-filled deep links to Google Pay, PhonePe, Paytm, or CRED.
+                </p>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="w-5 h-5 rounded-full bg-[#0F7B5F]/15 text-[#0F7B5F] flex items-center justify-center shrink-0 mt-0.5">
+                  <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
+                </div>
+                <p className="text-[14px] text-[#111715]">
+                  <strong>Exact paise rounding:</strong> Largest-remainder distribution guarantees shares balance down to the exact paise.
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      </section>
 
-      {/* =====================================================================
-          FEATURE SHOWCASE (Animations 2 to 6)
-      ====================================================================== */}
-      <section className="space-y-16 max-w-5xl mx-auto">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-bold text-[#0B7A66] uppercase tracking-wider">
-            Engineered for India & UPI
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-black text-[#0B1A17] tracking-tight">
-            Everything Splitwise charges for — free forever.
+          {/* Clean Flat Phone Mockup */}
+          <div className="lg:col-span-6 flex justify-center">
+            <div className="w-full max-w-[320px] rounded-[28px] border-4 border-[#111715] bg-white p-5 shadow-none space-y-4">
+              {/* Phone Speaker Notch bar */}
+              <div className="w-16 h-1 rounded-full bg-[#E4E2DA] mx-auto mb-2" />
+
+              <div className="space-y-1 text-center pb-2 border-b border-[#E4E2DA]">
+                <span className="text-[11px] font-mono text-[#5F6763] uppercase">UL0 Settle Link</span>
+                <h4 className="text-[17px] font-bold text-[#111715]">Dinner at Olive</h4>
+                <span className="text-[22px] font-bold text-[#0F7B5F] block">₹450.00</span>
+                <span className="text-[12px] text-[#5F6763]">Pay to Organizer (via UPI)</span>
+              </div>
+
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  className="w-full h-11 rounded-[10px] bg-[#0F7B5F] text-white font-semibold text-[14px] flex items-center justify-center gap-1.5 shadow-none"
+                >
+                  <span>Pay ₹450 with UPI</span>
+                  <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
+                </button>
+                <p className="text-[11px] text-[#5F6763] text-center">
+                  Opens Google Pay, PhonePe, or Paytm
+                </p>
+              </div>
+
+              <div className="pt-2 border-t border-[#E4E2DA] space-y-2">
+                <span className="text-[11px] font-semibold text-[#5F6763] block">Bill Breakdown</span>
+                <div className="flex justify-between text-[12px]">
+                  <span className="text-[#111715]">Pizzas &amp; Pasta</span>
+                  <span className="text-[#111715] font-semibold">₹380.00</span>
+                </div>
+                <div className="flex justify-between text-[12px]">
+                  <span className="text-[#5F6763]">GST (5%) &amp; Service</span>
+                  <span className="text-[#111715] font-semibold">₹70.00</span>
+                </div>
+              </div>
+
+              <div className="pt-1 text-center">
+                <span className="text-[10px] text-[#0F7B5F] font-semibold">
+                  ✓ Bank to Bank · UL0 holds ₹0
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================================
+            5. WHY NOT SPLITWISE? (Comparison Table)
+        ====================================================================== */}
+        <section id="vs-splitwise" className="py-16 sm:py-20 border-t border-[#E4E2DA] space-y-8">
+          <div className="space-y-2 text-center max-w-xl mx-auto">
+            <span className="text-[13px] font-semibold text-[#0F7B5F] uppercase tracking-wider">
+              Comparison
+            </span>
+            <h2 className="text-[28px] sm:text-[36px] font-bold tracking-tight text-[#111715]">
+              Why not Splitwise?
+            </h2>
+            <p className="text-[15px] text-[#5F6763]">
+              Splitwise added daily expense caps and a \$39.99/year subscription. UL0 is free and purpose-built for India&apos;s UPI.
+            </p>
+          </div>
+
+          <div className="bg-white border border-[#E4E2DA] rounded-[16px] overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-[14px]">
+                <thead className="bg-[#FAF9F5] border-b border-[#E4E2DA] text-[#111715]">
+                  <tr>
+                    <th className="p-4 font-bold">Feature</th>
+                    <th className="p-4 font-bold text-[#0F7B5F] bg-[#0F7B5F]/5">UL0 Split</th>
+                    <th className="p-4 font-medium text-[#5F6763]">Splitwise</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#E4E2DA] text-[#111715]">
+                  <tr>
+                    <td className="p-4 font-medium">Do friends need an app?</td>
+                    <td className="p-4 font-semibold text-[#0F7B5F] bg-[#0F7B5F]/5">No (open web link)</td>
+                    <td className="p-4 text-[#5F6763]">Yes (must download)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 font-medium">Do friends need an account?</td>
+                    <td className="p-4 font-semibold text-[#0F7B5F] bg-[#0F7B5F]/5">No signup for friends</td>
+                    <td className="p-4 text-[#5F6763]">Yes (mandatory signup)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 font-medium">UPI payment in the flow</td>
+                    <td className="p-4 font-semibold text-[#0F7B5F] bg-[#0F7B5F]/5">Yes (1-tap deep link)</td>
+                    <td className="p-4 text-[#5F6763]">No (external manual step)</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 font-medium">Daily expense cap</td>
+                    <td className="p-4 font-semibold text-[#0F7B5F] bg-[#0F7B5F]/5">Unlimited (free)</td>
+                    <td className="p-4 text-[#5F6763]">Limited on free plan</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 font-medium">Receipt scanning OCR</td>
+                    <td className="p-4 font-semibold text-[#0F7B5F] bg-[#0F7B5F]/5">Free on-device (WASM)</td>
+                    <td className="p-4 text-[#5F6763]">Splitwise Pro required</td>
+                  </tr>
+                  <tr>
+                    <td className="p-4 font-medium">Price</td>
+                    <td className="p-4 font-semibold text-[#0F7B5F] bg-[#0F7B5F]/5">100% Free forever</td>
+                    <td className="p-4 text-[#5F6763]">\$39.99/year for Pro</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================================
+            6. USE CASES (4 small cards)
+        ====================================================================== */}
+        <section className="py-16 sm:py-20 border-t border-[#E4E2DA] space-y-8">
+          <div className="space-y-2">
+            <span className="text-[13px] font-semibold text-[#0F7B5F] uppercase tracking-wider">
+              Everyday Scenarios
+            </span>
+            <h2 className="text-[28px] sm:text-[36px] font-bold tracking-tight text-[#111715]">
+              Built for how you actually split
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-white border border-[#E4E2DA] rounded-[16px] p-5 space-y-2">
+              <h3 className="font-bold text-[16px] text-[#111715]">Dinners &amp; Lunches</h3>
+              <p className="text-[13px] text-[#5F6763] leading-relaxed">
+                One person pays the restaurant bill. Friends tap their share and transfer before leaving the table.
+              </p>
+            </div>
+
+            <div className="bg-white border border-[#E4E2DA] rounded-[16px] p-5 space-y-2">
+              <h3 className="font-bold text-[16px] text-[#111715]">Weekend Trips</h3>
+              <p className="text-[13px] text-[#5F6763] leading-relaxed">
+                Tangled hotel, cab, and food expenses collapsed into the fewest possible UPI payments.
+              </p>
+            </div>
+
+            <div className="bg-white border border-[#E4E2DA] rounded-[16px] p-5 space-y-2">
+              <h3 className="font-bold text-[16px] text-[#111715]">Flatmates &amp; Rent</h3>
+              <p className="text-[13px] text-[#5F6763] leading-relaxed">
+                Running tabs for Wi-Fi, maid, cook, and electricity with monthly settle-up links.
+              </p>
+            </div>
+
+            <div className="bg-white border border-[#E4E2DA] rounded-[16px] p-5 space-y-2">
+              <h3 className="font-bold text-[16px] text-[#111715]">Parties &amp; Turf</h3>
+              <p className="text-[13px] text-[#5F6763] leading-relaxed">
+                Book the cricket turf or buy party supplies. Share a single QR code in the group chat.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* =====================================================================
+            7. FAQ (5 <details> items)
+        ====================================================================== */}
+        <section id="faq" className="py-16 sm:py-20 border-t border-[#E4E2DA] space-y-8">
+          <div className="space-y-2">
+            <span className="text-[13px] font-semibold text-[#0F7B5F] uppercase tracking-wider">
+              Answers
+            </span>
+            <h2 className="text-[28px] sm:text-[36px] font-bold tracking-tight text-[#111715]">
+              Frequently asked questions
+            </h2>
+          </div>
+
+          <div className="space-y-3 max-w-3xl">
+            <details className="group bg-white border border-[#E4E2DA] rounded-[12px] p-4.5 cursor-pointer">
+              <summary className="font-semibold text-[15px] text-[#111715] flex items-center justify-between list-none">
+                <span>Does UL0 hold or touch any money?</span>
+                <ChevronDown className="w-4 h-4 text-[#5F6763] group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-[14px] text-[#5F6763] pt-3 leading-relaxed">
+                Never. UL0 provides direct NPCI UPI deep links and scannable QR codes. Payments transfer directly from your friend&apos;s bank account into yours. We have zero wallet custody and zero access to your bank balance.
+              </p>
+            </details>
+
+            <details className="group bg-white border border-[#E4E2DA] rounded-[12px] p-4.5 cursor-pointer">
+              <summary className="font-semibold text-[15px] text-[#111715] flex items-center justify-between list-none">
+                <span>Do my friends need to install an app or sign up?</span>
+                <ChevronDown className="w-4 h-4 text-[#5F6763] group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-[14px] text-[#5F6763] pt-3 leading-relaxed">
+                No. Friends simply open the shared link in WhatsApp or scan your QR code. They do not need to register, create a password, or download an app.
+              </p>
+            </details>
+
+            <details className="group bg-white border border-[#E4E2DA] rounded-[12px] p-4.5 cursor-pointer">
+              <summary className="font-semibold text-[15px] text-[#111715] flex items-center justify-between list-none">
+                <span>Is UL0 Split really 100% free?</span>
+                <ChevronDown className="w-4 h-4 text-[#5F6763] group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-[14px] text-[#5F6763] pt-3 leading-relaxed">
+                Yes, completely free forever. There are zero transaction charges, zero hidden fees, and no monthly limits on how many bills or friends you can split with.
+              </p>
+            </details>
+
+            <details className="group bg-white border border-[#E4E2DA] rounded-[12px] p-4.5 cursor-pointer">
+              <summary className="font-semibold text-[15px] text-[#111715] flex items-center justify-between list-none">
+                <span>How does itemized receipt splitting calculate GST and service charge?</span>
+                <ChevronDown className="w-4 h-4 text-[#5F6763] group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-[14px] text-[#5F6763] pt-3 leading-relaxed">
+                Taxes (GST) and service charges are allocated proportionally based on each person&apos;s item subtotal using the largest-remainder method. This guarantees that individual shares sum to the exact paise of the restaurant bill.
+              </p>
+            </details>
+
+            <details className="group bg-white border border-[#E4E2DA] rounded-[12px] p-4.5 cursor-pointer">
+              <summary className="font-semibold text-[15px] text-[#111715] flex items-center justify-between list-none">
+                <span>Which UPI apps are supported?</span>
+                <ChevronDown className="w-4 h-4 text-[#5F6763] group-open:rotate-180 transition-transform" />
+              </summary>
+              <p className="text-[14px] text-[#5F6763] pt-3 leading-relaxed">
+                All Indian UPI apps are supported: Google Pay, PhonePe, Paytm, CRED, BHIM, Amazon Pay, and any bank app with UPI functionality.
+              </p>
+            </details>
+          </div>
+        </section>
+
+        {/* =====================================================================
+            8. FINAL CTA
+        ====================================================================== */}
+        <section className="py-16 sm:py-20 border-t border-[#E4E2DA] text-center space-y-5">
+          <h2 className="text-[32px] sm:text-[44px] font-bold tracking-tight text-[#111715]">
+            Stop chasing people for ₹300.
           </h2>
-          <p className="text-sm text-[#5A6B66] max-w-xl mx-auto">
-            No daily expense caps, no forced subscriptions, and zero app install barriers for your friends.
+          <p className="text-[16px] text-[#5F6763] max-w-md mx-auto">
+            Create your split in seconds. Friends pay from a link with the UPI app they already use.
           </p>
-        </div>
-
-        {/* Feature 1: Receipt Scan (split-06-receipt-scan.webp) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-6 sm:p-10 rounded-3xl border border-[#E4ECE8] shadow-xs">
-          <div className="space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center font-bold">
-              <UL0Icon name="upload" size={20} />
-            </div>
-            <h3 className="text-2xl font-extrabold text-[#0B1A17] tracking-tight">
-              Instant on-device receipt scan. Zero photo uploads.
-            </h3>
-            <p className="text-sm text-[#5A6B66] leading-relaxed">
-              Snap or upload a restaurant or grocery bill. Our browser-based WASM OCR engine detects line items, quantities, and prices right inside your phone without uploading your photo to any remote server.
-            </p>
-            <ul className="text-xs text-[#5A6B66] space-y-2">
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Assign items to specific friends with one tap</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Proportional GST & service charge distribution</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Largest-remainder rounding: shares always balance down to the paise</span>
-              </li>
-            </ul>
+          <div className="pt-2">
+            <Link
+              href="/split/dashboard"
+              className="inline-flex items-center gap-2 h-12 px-7 rounded-[10px] bg-[#111715] hover:bg-[#25302C] text-white text-[15px] font-semibold transition-colors"
+            >
+              <span>Split a bill — free</span>
+              <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
+            </Link>
           </div>
-          <div className="flex items-center justify-center bg-[#F7FAF8] p-4 rounded-2xl border border-[#E4ECE8]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/split-animations/split-06-receipt-scan.webp"
-              alt="Receipt scan animation with items assigned and taxes calculated"
-              className="w-full max-w-md object-contain rounded-xl"
-            />
-          </div>
-        </div>
-
-        {/* Feature 2: 1-Tap Pay & Custom QR (split-02-pay-qr.webp) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-6 sm:p-10 rounded-3xl border border-[#E4ECE8] shadow-xs">
-          <div className="order-2 md:order-1 flex items-center justify-center bg-[#F7FAF8] p-4 rounded-2xl border border-[#E4ECE8]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/split-animations/split-02-pay-qr.webp"
-              alt="Friend pays via QR scan and confirmed checkmark"
-              className="w-full max-w-md object-contain rounded-xl"
-            />
-          </div>
-          <div className="order-1 md:order-2 space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center font-bold">
-              <UL0Icon name="qr" size={20} />
-            </div>
-            <h3 className="text-2xl font-extrabold text-[#0B1A17] tracking-tight">
-              Tap to pay. Deep links to GPay, PhonePe, and Paytm.
-            </h3>
-            <p className="text-sm text-[#5A6B66] leading-relaxed">
-              When friends open your settle link, they see their exact share and a 1-tap button that launches their preferred UPI app with amount and recipient prefilled. On laptop or desktop, they scan the scannable UPI QR code.
-            </p>
-            <ul className="text-xs text-[#5A6B66] space-y-2">
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Opens directly inside installed UPI apps without typing numbers</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Masked UPI ID security prevents handle harvesting</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Works on iOS, Android, and Desktop browsers</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Feature 3: Live Status & Verification (split-03-who-paid.webp) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-6 sm:p-10 rounded-3xl border border-[#E4ECE8] shadow-xs">
-          <div className="space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center font-bold">
-              <UL0Icon name="check" size={20} />
-            </div>
-            <h3 className="text-2xl font-extrabold text-[#0B1A17] tracking-tight">
-              Live status: Claimed → Confirmed with zero forgery.
-            </h3>
-            <p className="text-sm text-[#5A6B66] leading-relaxed">
-              Unlike competitor apps where anyone with the link can falsely toggle a bill as paid, UL0 uses a two-step claim flow: friends report &quot;I paid&quot; with optional UTR, and only the organizer with the secret token can confirm receipt.
-            </p>
-            <ul className="text-xs text-[#5A6B66] space-y-2">
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Live progress bar shows ₹ settled vs ₹ pending</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Secret collector token protects against unauthorized status tampering</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Automatic live sync every few seconds</span>
-              </li>
-            </ul>
-          </div>
-          <div className="flex items-center justify-center bg-[#F7FAF8] p-4 rounded-2xl border border-[#E4ECE8]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/split-animations/split-03-who-paid.webp"
-              alt="Live payment status tracking from unpaid to claimed to settled"
-              className="w-full max-w-md object-contain rounded-xl"
-            />
-          </div>
-        </div>
-
-        {/* Feature 4: Group Hisab & Trip Tabs (split-04-group-settle-up.webp) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-6 sm:p-10 rounded-3xl border border-[#E4ECE8] shadow-xs">
-          <div className="order-2 md:order-1 flex items-center justify-center bg-[#F7FAF8] p-4 rounded-2xl border border-[#E4ECE8]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/split-animations/split-04-group-settle-up.webp"
-              alt="Group trip tangled debts collapse into minimal payments"
-              className="w-full max-w-md object-contain rounded-xl"
-            />
-          </div>
-          <div className="order-1 md:order-2 space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center font-bold">
-              <UL0Icon name="billing" size={20} />
-            </div>
-            <h3 className="text-2xl font-extrabold text-[#0B1A17] tracking-tight">
-              Group Hisab for trips &amp; flatmates. Minimal UPI transfers.
-            </h3>
-            <p className="text-sm text-[#5A6B66] leading-relaxed">
-              Going on a vacation or sharing an apartment? Keep a running hisab where everyone can log cabs, groceries, and hotel expenses. Our greedy net-balance settlement algorithm calculates the fewest possible payments needed to settle the entire trip.
-            </p>
-            <ul className="text-xs text-[#5A6B66] space-y-2">
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Collapses 20+ scattered expenses into just 2 or 3 UPI payments</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Custom hero backdrop banner and group icons</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>1-Click CSV export for accountants and trip records</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        {/* Feature 5: WhatsApp Nudges in Hindi & English (split-05-reminders.webp) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-6 sm:p-10 rounded-3xl border border-[#E4ECE8] shadow-xs">
-          <div className="space-y-4">
-            <div className="w-10 h-10 rounded-xl bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center font-bold">
-              <UL0Icon name="whatsapp" size={20} />
-            </div>
-            <h3 className="text-2xl font-extrabold text-[#0B1A17] tracking-tight">
-              Smart reminders on WhatsApp. Polite, firm, or funny.
-            </h3>
-            <p className="text-sm text-[#5A6B66] leading-relaxed">
-              No more awkward payment requests. Pick a tone (Polite, Firm, or Funny) and language (English, Hindi, or Hinglish) and click &quot;Share on WhatsApp&quot; to send a pre-filled message with friend name, amount, and settle link.
-            </p>
-            <ul className="text-xs text-[#5A6B66] space-y-2">
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Pre-filled wa.me links: the app never texts anyone directly without your consent</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Optional pay-by deadlines turn reminders into friendly alerts when overdue</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <span className="text-[#0B7A66] font-bold">✓</span>
-                <span>Culturally tuned Hinglish jokes that keep friendships stress-free</span>
-              </li>
-            </ul>
-          </div>
-          <div className="flex items-center justify-center bg-[#F7FAF8] p-4 rounded-2xl border border-[#E4ECE8]">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/split-animations/split-05-reminders.webp"
-              alt="Polite, firm, and funny reminder messages on WhatsApp"
-              className="w-full max-w-md object-contain rounded-xl"
-            />
-          </div>
-        </div>
-      </section>
+        </section>
+      </main>
 
       {/* =====================================================================
-          COMPETITOR COMPARISON TABLE
+          9. FOOTER (Minimal, 5 links max)
       ====================================================================== */}
-      <section className="max-w-4xl mx-auto space-y-6">
-        <div className="text-center space-y-2">
-          <span className="text-xs font-bold text-[#0B7A66] uppercase tracking-wider">Comparison</span>
-          <h2 className="text-2xl sm:text-3xl font-black text-[#0B1A17]">
-            Why people switch from Splitwise to UL0
-          </h2>
-        </div>
+      <footer className="border-t border-[#E4E2DA] py-8 px-4 sm:px-8 bg-[#F6F5F1]">
+        <div className="max-w-[1080px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px] text-[#5F6763]">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-[#111715]">UL0 Split</span>
+            <span>·</span>
+            <span>Direct bank-to-bank UPI</span>
+          </div>
 
-        <div className="rounded-3xl border border-[#E4ECE8] bg-white overflow-hidden shadow-xs">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs sm:text-sm">
-              <thead className="bg-[#F7FAF8] border-b border-[#E4ECE8] text-[#0B1A17]">
-                <tr>
-                  <th className="p-4 font-bold">Feature</th>
-                  <th className="p-4 font-extrabold text-[#0B7A66] bg-[#EAF7F3]/60">UL0 Split</th>
-                  <th className="p-4 font-semibold text-[#5A6B66]">Splitwise</th>
-                  <th className="p-4 font-semibold text-[#5A6B66]">GPay / PhonePe Groups</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#F1F5F3] text-[#5A6B66]">
-                <tr>
-                  <td className="p-4 font-medium text-[#0B1A17]">Daily Expense Limit</td>
-                  <td className="p-4 font-bold text-[#0B7A66] bg-[#EAF7F3]/20">Unlimited (Free)</td>
-                  <td className="p-4 text-[#D9383A]">Limited to 3 or 4 expenses/day</td>
-                  <td className="p-4 text-[#0B1A17]">Unlimited</td>
-                </tr>
-                <tr>
-                  <td className="p-4 font-medium text-[#0B1A17]">Friends App Install</td>
-                  <td className="p-4 font-bold text-[#0B7A66] bg-[#EAF7F3]/20">None (Browser link)</td>
-                  <td className="p-4 text-[#D9383A]">Must download app</td>
-                  <td className="p-4 text-[#D9383A]">Must use same app</td>
-                </tr>
-                <tr>
-                  <td className="p-4 font-medium text-[#0B1A17]">Direct UPI Deep Link</td>
-                  <td className="p-4 font-bold text-[#0B7A66] bg-[#EAF7F3]/20">Yes (Any UPI app)</td>
-                  <td className="p-4">Manual manual transfer</td>
-                  <td className="p-4">Locked to ecosystem</td>
-                </tr>
-                <tr>
-                  <td className="p-4 font-medium text-[#0B1A17]">Itemized GST &amp; Tax Split</td>
-                  <td className="p-4 font-bold text-[#0B7A66] bg-[#EAF7F3]/20">Proportional (Paise exact)</td>
-                  <td className="p-4 text-[#D9383A]">Requires Pro ($39.99/yr)</td>
-                  <td className="p-4 text-[#D9383A]">Equal only</td>
-                </tr>
-                <tr>
-                  <td className="p-4 font-medium text-[#0B1A17]">On-Device Receipt OCR</td>
-                  <td className="p-4 font-bold text-[#0B7A66] bg-[#EAF7F3]/20">100% Free &amp; Private</td>
-                  <td className="p-4 text-[#D9383A]">Paid Pro feature</td>
-                  <td className="p-4 text-[#D9383A]">Not available</td>
-                </tr>
-              </tbody>
-            </table>
+          <div className="flex flex-wrap items-center gap-6">
+            <Link href="/" className="hover:text-[#111715] transition-colors">Link Shortener</Link>
+            <Link href="/pricing" className="hover:text-[#111715] transition-colors">Pricing</Link>
+            <Link href="/privacy" className="hover:text-[#111715] transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-[#111715] transition-colors">Terms</Link>
+            <Link href="/contact" className="hover:text-[#111715] transition-colors">Contact</Link>
           </div>
         </div>
-      </section>
-
-      {/* =====================================================================
-          BOTTOM CALL TO ACTION BANNER
-      ====================================================================== */}
-      <section className="max-w-4xl mx-auto rounded-3xl bg-gradient-to-br from-[#0B1A17] to-[#0B7A66] text-white p-8 sm:p-14 text-center space-y-6 shadow-xl">
-        <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
-          Ready to split without the awkwardness?
-        </h2>
-        <p className="text-sm sm:text-base text-white/80 max-w-lg mx-auto">
-          Create your first split in under 15 seconds. Share the link on WhatsApp, and watch payments settle directly into your bank.
-        </p>
-
-        <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Button
-            asChild
-            className="w-full sm:w-auto bg-[#3DDBB8] hover:bg-[#34c4a4] text-[#04231C] font-black text-base h-14 px-9 rounded-2xl shadow-lg transition-transform active:translate-y-[1px] cursor-pointer"
-          >
-            <Link href="/split/dashboard">
-              <span>Create your split</span>
-              <UL0Icon name="arrowright" size={18} className="ml-2" />
-            </Link>
-          </Button>
-
-          <Button
-            asChild
-            variant="outline"
-            className="w-full sm:w-auto bg-transparent border-white/30 text-white hover:bg-white/10 font-bold text-base h-14 px-7 rounded-2xl cursor-pointer"
-          >
-            <Link href="/hisab">
-              <span>Group Hisab</span>
-            </Link>
-          </Button>
-        </div>
-      </section>
+      </footer>
     </div>
   )
 }

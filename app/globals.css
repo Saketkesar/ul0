@@ -242,6 +242,18 @@ img {
   animation: input-shake 240ms ease-in-out;
 }
 
+@keyframes panel-shake {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-8px, 4px); }
+  40% { transform: translate(8px, -4px); }
+  60% { transform: translate(-6px, -2px); }
+  80% { transform: translate(6px, 2px); }
+}
+
+.animate-shake {
+  animation: panel-shake 450ms ease-in-out;
+}
+
 @keyframes card-rise {
   0% {
     opacity: 0;

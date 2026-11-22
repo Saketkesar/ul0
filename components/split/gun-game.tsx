@@ -1,11 +1,18 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { UL0Icon } from "@/components/ul0-icon"
+import { X, Play, RotateCcw, ArrowRight } from "lucide-react"
 import { toast } from "sonner"
+
+// Timing constants (ms)
+const SPIN_DURATION_MS = 1900
+const SPIN_TICK_INTERVAL_MS = 110
+const ROTATE_STEP_DURATION_MS = 280
+const BANG_FLASH_DURATION_MS = 500
+const BANG_SHAKE_DURATION_MS = 450
 
 // Web Audio API Sound Generator for Gun Game
 class SoundEffects {
@@ -23,23 +30,22 @@ class SoundEffects {
     }
   }
 
-  // Realistic metallic cylinder spin
-  playCylinderSpin() {
+  // Ticking sound during spin
+  playSpinTick() {
     this.initCtx()
     if (!this.ctx) return
     const now = this.ctx.currentTime
-    for (let i = 0; i < 8; i++) {
-      const osc = this.ctx.createOscillator()
-      const gain = this.ctx.createGain()
-      osc.type = "triangle"
-      osc.frequency.setValueAtTime(800 + i * 50, now + i * 0.04)
-      gain.gain.setValueAtTime(0.08, now + i * 0.04)
-      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.04 + 0.02)
-      osc.connect(gain)
-      gain.connect(this.ctx.destination)
-      osc.start(now + i * 0.04)
-      osc.stop(now + i * 0.04 + 0.02)
-    }
+    const osc = this.ctx.createOscillator()
+    const gain = this.ctx.createGain()
+    osc.type = "triangle"
+    osc.frequency.setValueAtTime(950, now)
+    osc.frequency.exponentialRampToValueAtTime(300, now + 0.02)
+    gain.gain.setValueAtTime(0.08, now)
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02)
+    osc.connect(gain)
+    gain.connect(this.ctx.destination)
+    osc.start(now)
+    osc.stop(now + 0.02)
   }
 
   // Metallic empty chamber *CLICK* sound
@@ -54,7 +60,7 @@ class SoundEffects {
     osc.type = "sine"
     osc.frequency.setValueAtTime(2200, now)
     osc.frequency.exponentialRampToValueAtTime(400, now + 0.03)
-    gain.gain.setValueAtTime(0.3, now)
+    gain.gain.setValueAtTime(0.25, now)
     gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04)
     osc.connect(gain)
     gain.connect(this.ctx.destination)
@@ -67,7 +73,7 @@ class SoundEffects {
     osc2.type = "triangle"
     osc2.frequency.setValueAtTime(950, now)
     osc2.frequency.exponentialRampToValueAtTime(200, now + 0.06)
-    gain2.gain.setValueAtTime(0.2, now)
+    gain2.gain.setValueAtTime(0.18, now)
     gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.06)
     osc2.connect(gain2)
     gain2.connect(this.ctx.destination)
@@ -82,7 +88,7 @@ class SoundEffects {
     const now = this.ctx.currentTime
 
     // White noise explosion burst
-    const bufferSize = this.ctx.sampleRate * 0.5
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.6)
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate)
     const output = buffer.getChannelData(0)
     for (let i = 0; i < bufferSize; i++) {
@@ -95,31 +101,31 @@ class SoundEffects {
     // Low-pass filter for gunshot boom
     const filter = this.ctx.createBiquadFilter()
     filter.type = "lowpass"
-    filter.frequency.setValueAtTime(1000, now)
-    filter.frequency.linearRampToValueAtTime(100, now + 0.4)
+    filter.frequency.setValueAtTime(1200, now)
+    filter.frequency.linearRampToValueAtTime(80, now + 0.5)
 
     const noiseGain = this.ctx.createGain()
     noiseGain.gain.setValueAtTime(1.0, now)
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.5)
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.55)
 
     whiteNoise.connect(filter)
     filter.connect(noiseGain)
     noiseGain.connect(this.ctx.destination)
     whiteNoise.start(now)
-    whiteNoise.stop(now + 0.5)
+    whiteNoise.stop(now + 0.55)
 
     // Deep sub-bass boom
     const subOsc = this.ctx.createOscillator()
     const subGain = this.ctx.createGain()
     subOsc.type = "sine"
     subOsc.frequency.setValueAtTime(160, now)
-    subOsc.frequency.exponentialRampToValueAtTime(30, now + 0.4)
-    subGain.gain.setValueAtTime(0.8, now)
-    subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4)
+    subOsc.frequency.exponentialRampToValueAtTime(30, now + 0.45)
+    subGain.gain.setValueAtTime(0.85, now)
+    subGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45)
     subOsc.connect(subGain)
     subGain.connect(this.ctx.destination)
     subOsc.start(now)
-    subOsc.stop(now + 0.4)
+    subOsc.stop(now + 0.45)
   }
 }
 
@@ -132,45 +138,71 @@ interface GunGameProps {
   onSelectPayer?: (name: string) => void
 }
 
+type GamePhase = "setup" | "spinning" | "playing" | "shot"
+
 export function GunGame({
   open,
   onOpenChange,
   initialMembers = [],
   onSelectPayer,
 }: GunGameProps) {
-  // Setup phase vs Playing phase vs Result phase
-  const [phase, setPhase] = useState<"setup" | "playing" | "shot">("setup")
+  // Phase management
+  const [phase, setPhase] = useState<GamePhase>("setup")
   const [players, setPlayers] = useState<string[]>([])
   const [newPlayerName, setNewPlayerName] = useState<string>("")
 
-  // Game mechanics: 6 chambers, 1 live bullet
+  // Game state
   const [bulletChamber, setBulletChamber] = useState<number>(0)
   const [currentChamber, setCurrentChamber] = useState<number>(0)
   const [currentPlayerIdx, setCurrentPlayerIdx] = useState<number>(0)
   const [isPulling, setIsPulling] = useState<boolean>(false)
-  const [cylinderAngle, setCylinderAngle] = useState<number>(0)
+  const [rotationAngle, setRotationAngle] = useState<number>(0)
   const [shotVictim, setShotVictim] = useState<string | null>(null)
-  const [flashRed, setFlashRed] = useState<boolean>(false)
+
+  // Visual effects
+  const [flashWhite, setFlashWhite] = useState<boolean>(false)
+  const [shakePanel, setShakePanel] = useState<boolean>(false)
+  const [chamberStatus, setChamberStatus] = useState<("unknown" | "safe" | "hit")[]>([
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+    "unknown",
+  ])
+
+  const spinTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Initialize players from props when modal opens
   useEffect(() => {
     if (open) {
-      const filtered = initialMembers.filter((m) => m && m.trim().length > 0)
-      if (filtered.length >= 2) {
-        setPlayers(filtered)
+      const clean = initialMembers
+        .map((m) => m.trim().replace(/\s*\(you\)$/i, ""))
+        .filter((m) => m.length > 0)
+      if (clean.length >= 2 && clean.length <= 6) {
+        setPlayers(clean)
       } else if (players.length === 0) {
         setPlayers([])
       }
       setPhase("setup")
       setShotVictim(null)
+      setChamberStatus(["unknown", "unknown", "unknown", "unknown", "unknown", "unknown"])
+      setRotationAngle(0)
+    }
+    return () => {
+      if (spinTimerRef.current) clearInterval(spinTimerRef.current)
     }
   }, [open, initialMembers])
 
   const handleAddPlayer = () => {
     const trimmed = newPlayerName.trim()
     if (!trimmed) return
+    if (players.length >= 6) {
+      toast.error("Maximum 6 players")
+      return
+    }
     if (players.includes(trimmed)) {
-      toast.error("Player already in the game")
+      toast.error("Player already added")
       return
     }
     setPlayers((prev) => [...prev, trimmed])
@@ -181,87 +213,145 @@ export function GunGame({
     setPlayers((prev) => prev.filter((_, i) => i !== idx))
   }
 
-  // Start the game: load 1 bullet randomly into 6 chambers
-  const handleStartGame = () => {
+  // Spin the cylinder and start game
+  const handleSpinCylinder = () => {
     if (players.length < 2) {
-      toast.error("Add at least 2 players to play the Gun Game")
+      toast.error("Add at least 2 players")
       return
     }
-    // Randomize chamber with live bullet (0 to 5)
+    if (players.length > 6) {
+      toast.error("Maximum 6 players")
+      return
+    }
+
+    // 1 bullet placed in a random chamber 0..5
     const bullet = Math.floor(Math.random() * 6)
     setBulletChamber(bullet)
     setCurrentChamber(0)
     setCurrentPlayerIdx(0)
-    setCylinderAngle(0)
     setShotVictim(null)
-    setPhase("playing")
+    setChamberStatus(["unknown", "unknown", "unknown", "unknown", "unknown", "unknown"])
+    setPhase("spinning")
 
-    // Play spinning sound
-    sounds.playCylinderSpin()
-    toast.success("Gun loaded with 1 bullet & 5 empty shells! Best of luck.")
+    // Full 1800deg spin over 1.9s
+    const totalSpin = 1800 + Math.floor(Math.random() * 6) * 60
+    setRotationAngle((prev) => prev + totalSpin)
+
+    // Ticking audio loop
+    let ticks = 0
+    const maxTicks = Math.floor(SPIN_DURATION_MS / SPIN_TICK_INTERVAL_MS)
+    const tickInterval = setInterval(() => {
+      sounds.playSpinTick()
+      ticks++
+      if (ticks >= maxTicks) {
+        clearInterval(tickInterval)
+      }
+    }, SPIN_TICK_INTERVAL_MS)
+    spinTimerRef.current = tickInterval
+
+    setTimeout(() => {
+      clearInterval(tickInterval)
+      setPhase("playing")
+    }, SPIN_DURATION_MS)
   }
 
-  // Pull the trigger
+  // Pull trigger logic with suspense delays
   const handlePullTrigger = () => {
     if (isPulling || phase !== "playing") return
     setIsPulling(true)
 
-    // Rotate cylinder visually
-    const nextAngle = cylinderAngle + 60
-    setCylinderAngle(nextAngle)
+    const chambersRemaining = 6 - currentChamber
+    // Suspense delay schedule
+    let delay = 300
+    if (chambersRemaining <= 2) {
+      delay = 900
+    } else if (chambersRemaining <= 4) {
+      delay = 550
+    }
 
     const activePlayer = players[currentPlayerIdx]
 
-    // Check if this chamber has the live bullet
-    if (currentChamber === bulletChamber) {
-      // 💥 BANG!
-      sounds.playGunshot()
-      setFlashRed(true)
-      setTimeout(() => setFlashRed(false), 600)
+    setTimeout(() => {
+      if (currentChamber === bulletChamber) {
+        // BANG!
+        sounds.playGunshot()
+        setFlashWhite(true)
+        setShakePanel(true)
+        if (typeof navigator !== "undefined" && navigator.vibrate) {
+          try {
+            navigator.vibrate([80, 40, 200])
+          } catch {}
+        }
 
-      setShotVictim(activePlayer)
-      setPhase("shot")
-      setIsPulling(false)
-      toast.error(`💥 BANG! ${activePlayer} was shot! They pay the entire bill!`)
-    } else {
-      // 😅 CLICK (Empty shell)
-      sounds.playEmptyClick()
+        setChamberStatus((prev) => {
+          const next = [...prev]
+          next[currentChamber] = "hit"
+          return next
+        })
 
-      setTimeout(() => {
-        const nextChamber = currentChamber + 1
-        const nextPlayerIdx = (currentPlayerIdx + 1) % players.length
-        setCurrentChamber(nextChamber)
-        setCurrentPlayerIdx(nextPlayerIdx)
-        setIsPulling(false)
-      }, 500)
-    }
+        setTimeout(() => setFlashWhite(false), BANG_FLASH_DURATION_MS)
+        setTimeout(() => setShakePanel(false), BANG_SHAKE_DURATION_MS)
+
+        setTimeout(() => {
+          setShotVictim(activePlayer)
+          setPhase("shot")
+          setIsPulling(false)
+        }, 900)
+      } else {
+        // SAFE (Empty shell)
+        sounds.playEmptyClick()
+
+        setChamberStatus((prev) => {
+          const next = [...prev]
+          next[currentChamber] = "safe"
+          return next
+        })
+
+        // Wait 700ms, then rotate -60deg over 280ms
+        setTimeout(() => {
+          setRotationAngle((prev) => prev + 60)
+          setTimeout(() => {
+            const nextChamber = currentChamber + 1
+            const nextPlayer = (currentPlayerIdx + 1) % players.length
+            setCurrentChamber(nextChamber)
+            setCurrentPlayerIdx(nextPlayer)
+            setIsPulling(false)
+          }, ROTATE_STEP_DURATION_MS)
+        }, 700)
+      }
+    }, delay)
   }
 
   const activePlayerName = players[currentPlayerIdx] || "Player"
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className={`max-w-md bg-white border border-[#E4ECE8] text-[#0B1A17] p-6 rounded-3xl transition-colors duration-300 ${
-          flashRed ? "bg-[#D9383A]/20" : ""
-        }`}
-      >
-        <DialogHeader className="text-center pb-2">
-          <DialogTitle className="text-xl font-black text-[#0B1A17] flex items-center justify-center gap-2">
-            <span>🎯</span> Russian Roulette: Who Pays?
-          </DialogTitle>
-          <DialogDescription className="text-xs text-[#5A6B66]">
-            6 chambers, 1 live bullet, 5 empty shells. Take turns pulling the trigger!
-          </DialogDescription>
-        </DialogHeader>
-
-        {/* =================================================================
-            PHASE 1: SETUP PLAYERS
-        ================================================================== */}
+      <DialogContent className="max-w-[420px] p-0 border border-[#E4E2DA] rounded-[16px] overflow-hidden shadow-none bg-white">
+        {/* =====================================================================
+            SCREEN 1: SETUP SCREEN
+        ====================================================================== */}
         {phase === "setup" && (
-          <div className="space-y-4 py-2">
+          <div className="p-6 bg-white text-[#111715] space-y-5">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-[20px] font-bold tracking-tight text-[#111715]">
+                  Who pays?
+                </h2>
+                <p className="text-[13px] text-[#5F6763] mt-0.5">
+                  Add 2 to 6 names. One bullet, five empty shells.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => onOpenChange(false)}
+                className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#5F6763] hover:text-[#111715] hover:bg-[#F6F5F1] transition-colors"
+              >
+                <X className="w-4 h-4" strokeWidth={1.75} />
+              </button>
+            </div>
+
+            {/* Name Input */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[#0B1A17]">Add Players</label>
               <div className="flex gap-2">
                 <Input
                   value={newPlayerName}
@@ -272,48 +362,46 @@ export function GunGame({
                       handleAddPlayer()
                     }
                   }}
-                  placeholder="Enter player name (e.g. Alex)"
-                  className="h-10 text-xs rounded-xl"
+                  placeholder="Enter name"
+                  maxLength={20}
+                  className="h-10 text-[14px] rounded-[10px] border-[#E4E2DA] focus-visible:ring-1 focus-visible:ring-[#0F7B5F]"
                   autoFocus
                 />
                 <Button
                   type="button"
                   onClick={handleAddPlayer}
-                  className="h-10 px-4 rounded-xl bg-[#0B1A17] text-white text-xs font-bold cursor-pointer"
+                  disabled={!newPlayerName.trim() || players.length >= 6}
+                  className="h-10 px-4 rounded-[10px] bg-[#111715] hover:bg-[#25302C] text-white text-[13px] font-medium"
                 >
                   Add
                 </Button>
               </div>
+              <div className="flex items-center justify-between text-[11px] text-[#5F6763] px-1">
+                <span>Min 2, max 6 players</span>
+                <span>{players.length}/6 added</span>
+              </div>
             </div>
 
-            {/* Player chips */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-[11px] text-[#5A6B66]">
-                <span>Players in Gun Game:</span>
-                <span>{players.length} players</span>
-              </div>
-
+            {/* Chips */}
+            <div className="min-h-[80px]">
               {players.length === 0 ? (
-                <div className="p-4 rounded-2xl border border-dashed border-[#CCD9D4] bg-[#F7FAF8] text-center text-xs text-[#5A6B66]">
-                  No players added yet. Add at least 2 people to start the game!
+                <div className="p-4 rounded-[10px] border border-dashed border-[#E4E2DA] text-center text-[12px] text-[#5F6763]">
+                  No names added yet. Enter names above to begin.
                 </div>
               ) : (
-                <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1">
+                <div className="flex flex-wrap gap-2">
                   {players.map((p, idx) => (
                     <span
                       key={idx}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E4ECE8] text-xs font-medium text-[#0B1A17] shadow-xs"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[#F6F5F1] border border-[#E4E2DA] text-[13px] font-medium text-[#111715]"
                     >
-                      <span className="w-5 h-5 rounded-full bg-[#0B1A17] text-white font-bold text-[10px] flex items-center justify-center">
-                        {p.slice(0, 1).toUpperCase()}
-                      </span>
                       <span>{p}</span>
                       <button
                         type="button"
                         onClick={() => handleRemovePlayer(idx)}
-                        className="text-[#5A6B66] hover:text-[#D9383A] cursor-pointer ml-1 text-sm font-bold"
+                        className="text-[#5F6763] hover:text-[#D6402B] transition-colors cursor-pointer"
                       >
-                        ×
+                        <X className="w-3.5 h-3.5" strokeWidth={1.75} />
                       </button>
                     </span>
                   ))}
@@ -321,115 +409,204 @@ export function GunGame({
               )}
             </div>
 
+            {/* CTA Button */}
             <Button
               type="button"
-              disabled={players.length < 2}
-              onClick={handleStartGame}
-              className="w-full h-12 rounded-2xl bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-sm font-bold shadow-md cursor-pointer disabled:bg-[#CCD9D4] transition-all"
+              disabled={players.length < 2 || players.length > 6}
+              onClick={handleSpinCylinder}
+              className="w-full h-11 rounded-[10px] bg-[#0F7B5F] hover:bg-[#0c654e] text-white text-[14px] font-semibold transition-colors disabled:opacity-40"
             >
-              Load Cylinder & Spin 🔫
+              Spin the cylinder
             </Button>
           </div>
         )}
 
-        {/* =================================================================
-            PHASE 2: PLAYING THE GAME
-        ================================================================== */}
-        {phase === "playing" && (
+        {/* =====================================================================
+            SCREEN 2 & 3: GAME STAGE (DARK PANEL #121816)
+        ====================================================================== */}
+        {(phase === "spinning" || phase === "playing") && (
           <div
-            onClick={handlePullTrigger}
-            className="py-4 flex flex-col items-center justify-center space-y-5 cursor-pointer select-none"
+            className={`relative p-6 bg-[#121816] text-[#F6F5F1] flex flex-col items-center justify-between min-h-[460px] select-none ${
+              shakePanel ? "animate-shake" : ""
+            }`}
           >
-            {/* Turn Announcement Banner */}
-            <div className="text-center p-3 w-full rounded-2xl bg-[#EAF7F3] border border-[#CCD9D4]">
-              <span className="text-[11px] font-semibold text-[#0B7A66] uppercase tracking-wider block">
-                Chamber {currentChamber + 1} of 6
+            {/* White flash overlay on BANG */}
+            {flashWhite && (
+              <div className="absolute inset-0 bg-white pointer-events-none z-50 transition-opacity duration-500 opacity-95" />
+            )}
+
+            {/* Top Close Button */}
+            <button
+              type="button"
+              onClick={() => onOpenChange(false)}
+              className="absolute top-4 right-4 w-7 h-7 rounded-[6px] flex items-center justify-center text-[#F6F5F1]/60 hover:text-[#F6F5F1] hover:bg-white/10 transition-colors"
+            >
+              <X className="w-4 h-4" strokeWidth={1.75} />
+            </button>
+
+            {/* Top Indicator */}
+            <div className="text-center space-y-1 pt-1">
+              <span className="text-[11px] font-mono uppercase tracking-widest text-[#F6F5F1]/60">
+                CHAMBER {currentChamber + 1} OF 6
               </span>
-              <h3 className="text-2xl font-black text-[#0B1A17] mt-0.5">
-                👉 {activePlayerName}&apos;s Turn!
+              <h3 className="text-[22px] font-bold tracking-tight text-white">
+                {phase === "spinning" ? "Spinning..." : `${activePlayerName}'s turn`}
               </h3>
-              <p className="text-xs text-[#5A6B66] mt-1">
-                Tap anywhere on screen to pull the trigger...
-              </p>
             </div>
 
-            {/* Revolver Cylinder Graphic (6 chambers, rotates smoothly) */}
-            <div className="relative w-44 h-44 flex items-center justify-center">
-              {/* Outer Cylinder ring */}
-              <div
-                className="w-40 h-40 rounded-full border-4 border-[#0B1A17] bg-[#F1F5F3] shadow-xl relative flex items-center justify-center transition-transform duration-300 ease-out"
-                style={{ transform: `rotate(${cylinderAngle}deg)` }}
-              >
-                {/* Center Pin */}
-                <div className="w-10 h-10 rounded-full bg-[#0B1A17] border-2 border-white flex items-center justify-center shadow-md">
-                  <div className="w-3 h-3 rounded-full bg-white" />
-                </div>
+            {/* 6 Progress Dots: grey = safe, red = hit, outline = pending */}
+            <div className="flex items-center gap-2.5 my-2">
+              {chamberStatus.map((st, i) => {
+                let dotClass = "bg-[#25302C] border border-white/20"
+                if (st === "safe") dotClass = "bg-[#5F6763] border border-[#5F6763]"
+                if (st === "hit") dotClass = "bg-[#D6402B] border border-[#D6402B]"
+                if (i === currentChamber && phase === "playing") {
+                  dotClass = "bg-[#0F7B5F] border border-[#0F7B5F] ring-2 ring-[#0F7B5F]/40"
+                }
 
-                {/* 6 Chambers */}
+                return (
+                  <div
+                    key={i}
+                    className={`w-3 h-3 rounded-full transition-all duration-200 ${dotClass}`}
+                  />
+                )
+              })}
+            </div>
+
+            {/* 300x300 SVG Cylinder Disc */}
+            <div className="relative w-[240px] h-[240px] flex items-center justify-center my-2">
+              {/* White Triangle Marker pointing down at 12 o'clock */}
+              <div className="absolute -top-1 z-20 w-0 h-0 border-x-[7px] border-x-transparent border-t-[10px] border-t-white drop-shadow-sm" />
+
+              <svg
+                width="220"
+                height="220"
+                viewBox="0 0 300 300"
+                className="transition-transform"
+                style={{
+                  transform: `rotate(${rotationAngle}deg)`,
+                  transitionDuration:
+                    phase === "spinning"
+                      ? `${SPIN_DURATION_MS}ms`
+                      : `${ROTATE_STEP_DURATION_MS}ms`,
+                  transitionTimingFunction:
+                    phase === "spinning"
+                      ? "cubic-bezier(.12,.7,.1,1)"
+                      : "cubic-bezier(.3,1.4,.5,1)",
+                }}
+              >
+                <defs>
+                  <radialGradient id="cylinderGrad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#4B5853" />
+                    <stop offset="100%" stopColor="#1E2623" />
+                  </radialGradient>
+                  <radialGradient id="chamberHole" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#0B1110" />
+                    <stop offset="100%" stopColor="#18201E" />
+                  </radialGradient>
+                </defs>
+
+                {/* Outer disc */}
+                <circle
+                  cx="150"
+                  cy="150"
+                  r="140"
+                  fill="url(#cylinderGrad)"
+                  stroke="#333F3A"
+                  strokeWidth="4"
+                />
+
+                {/* Inner decorative groove */}
+                <circle
+                  cx="150"
+                  cy="150"
+                  r="120"
+                  fill="none"
+                  stroke="#2E3834"
+                  strokeWidth="2"
+                  strokeDasharray="4 4"
+                />
+
+                {/* Center Hub */}
+                <circle cx="150" cy="150" r="34" fill="#18201E" stroke="#4B5853" strokeWidth="3" />
+                <circle cx="150" cy="150" r="14" fill="#0B1110" stroke="#333F3A" strokeWidth="2" />
+
+                {/* 6 Chambers at r=86 */}
                 {[0, 1, 2, 3, 4, 5].map((i) => {
-                  const angle = (i * 60 * Math.PI) / 180
-                  const radius = 50 // distance from center
-                  const x = radius * Math.cos(angle)
-                  const y = radius * Math.sin(angle)
-                  const isCurrent = i === currentChamber % 6
+                  const angle = (i * 60 - 90) * (Math.PI / 180)
+                  const cx = 150 + 86 * Math.cos(angle)
+                  const cy = 150 + 86 * Math.sin(angle)
+                  const st = chamberStatus[i]
+
+                  let fillHole = "url(#chamberHole)"
+                  let strokeHole = "#4B5853"
+                  if (st === "safe") {
+                    fillHole = "#25302C"
+                    strokeHole = "#5F6763"
+                  } else if (st === "hit") {
+                    fillHole = "#D6402B"
+                    strokeHole = "#D6402B"
+                  }
 
                   return (
-                    <div
-                      key={i}
-                      className={`absolute w-7 h-7 rounded-full border-2 border-[#0B1A17] flex items-center justify-center shadow-inner transition-colors ${
-                        isCurrent ? "bg-[#3DDBB8] font-bold text-[10px]" : "bg-white"
-                      }`}
-                      style={{
-                        transform: `translate(${x}px, ${y}px)`,
-                      }}
-                    >
-                      <div className="w-2.5 h-2.5 rounded-full bg-[#0B1A17]/60" />
-                    </div>
+                    <g key={i}>
+                      <circle
+                        cx={cx}
+                        cy={cy}
+                        r="24"
+                        fill={fillHole}
+                        stroke={strokeHole}
+                        strokeWidth="3"
+                      />
+                      {/* Inner bullet casing dot if unspent */}
+                      {st === "unknown" && (
+                        <circle cx={cx} cy={cy} r="6" fill="#4B5853" opacity="0.6" />
+                      )}
+                    </g>
                   )
                 })}
-              </div>
-
-              {/* Hammer / Barrel Pointer at Top */}
-              <div className="absolute -top-1 w-4 h-6 bg-[#0B1A17] rounded-b-md shadow-sm pointer-events-none" />
+              </svg>
             </div>
 
-            {/* Pull Trigger Button */}
+            {/* Status Line */}
+            <div className="text-[12px] text-[#F6F5F1]/70 text-center pb-2">
+              {phase === "spinning"
+                ? "Shuffling cylinder..."
+                : isPulling
+                ? "Holding breath..."
+                : `Pull the trigger to test chamber ${currentChamber + 1}`}
+            </div>
+
+            {/* ONE Single Pull Trigger Button (No accidental tap anywhere else) */}
             <Button
               type="button"
-              disabled={isPulling}
-              onClick={(e) => {
-                e.stopPropagation()
-                handlePullTrigger()
-              }}
-              className="w-full h-13 rounded-2xl bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-sm font-bold shadow-lg cursor-pointer transition-all"
+              disabled={isPulling || phase === "spinning"}
+              onClick={handlePullTrigger}
+              className="w-full h-12 rounded-[10px] bg-white hover:bg-[#EAE8E1] text-[#111715] text-[14px] font-bold transition-all disabled:opacity-40"
             >
-              {isPulling ? "Spinning & Pulling..." : `Pull Trigger (${activePlayerName}) 💥`}
+              {isPulling ? "Testing..." : `Pull trigger (${activePlayerName})`}
             </Button>
           </div>
         )}
 
-        {/* =================================================================
-            PHASE 3: SHOT / RESULT (WHO PAYS)
-        ================================================================== */}
+        {/* =====================================================================
+            SCREEN 4: RESULT / WHO PAYS
+        ====================================================================== */}
         {phase === "shot" && shotVictim && (
-          <div className="py-6 flex flex-col items-center justify-center space-y-5 text-center animate-in zoom-in-95 duration-200">
-            <div className="w-24 h-24 rounded-full bg-[#D9383A]/10 border-4 border-[#D9383A] text-4xl flex items-center justify-center shadow-lg animate-bounce">
-              💥
-            </div>
-
-            <div className="space-y-1">
-              <span className="text-xs font-bold text-[#D9383A] uppercase tracking-wider">
-                BANG! Chamber {currentChamber + 1} was Loaded!
+          <div className="p-8 bg-[#121816] text-[#F6F5F1] flex flex-col items-center justify-center text-center space-y-6">
+            <div className="space-y-2">
+              <span className="text-[14px] font-mono font-bold tracking-widest text-[#D6402B] uppercase">
+                BANG
               </span>
-              <h2 className="text-3xl font-black text-[#0B1A17]">
-                {shotVictim} Pays! 🎉
+              <h2 className="text-[34px] font-extrabold tracking-tight text-white leading-none">
+                {shotVictim}
               </h2>
-              <p className="text-xs text-[#5A6B66] max-w-xs mx-auto">
-                The cylinder went off on {shotVictim}&apos;s turn. By the law of the Gun Game, they cover the entire bill!
+              <p className="text-[15px] text-[#F6F5F1]/70">
+                pays the bill.
               </p>
             </div>
 
-            <div className="w-full space-y-2 pt-2">
+            <div className="w-full space-y-2.5 pt-4">
               {onSelectPayer && (
                 <Button
                   type="button"
@@ -437,19 +614,20 @@ export function GunGame({
                     onSelectPayer(shotVictim)
                     onOpenChange(false)
                   }}
-                  className="w-full h-11 rounded-xl bg-[#0B7A66] hover:bg-[#086353] text-white text-xs font-bold cursor-pointer"
+                  className="w-full h-11 rounded-[10px] bg-[#0F7B5F] hover:bg-[#0c654e] text-white text-[14px] font-semibold transition-colors flex items-center justify-center gap-2"
                 >
-                  Create Split with {shotVictim} as Payer →
+                  <span>Split the bill</span>
+                  <ArrowRight className="w-4 h-4" strokeWidth={1.75} />
                 </Button>
               )}
 
               <Button
                 type="button"
-                variant="outline"
-                onClick={handleStartGame}
-                className="w-full h-11 rounded-xl border-[#CCD9D4] text-xs font-bold cursor-pointer"
+                onClick={handleSpinCylinder}
+                className="w-full h-11 rounded-[10px] bg-white/10 hover:bg-white/15 text-white text-[13px] font-medium transition-colors flex items-center justify-center gap-2"
               >
-                Play Again 🔄
+                <RotateCcw className="w-3.5 h-3.5" strokeWidth={1.75} />
+                <span>Play again</span>
               </Button>
             </div>
           </div>
