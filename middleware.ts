@@ -32,6 +32,8 @@ const RESERVED_PATH_PREFIXES = [
   "/sign-in",
   "/sign-up",
   "/split",
+  "/khata",
+  "/g",
   "/qr",
   "/utm",
   "/files",
