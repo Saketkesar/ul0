@@ -1,3 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+/* Marquee animation for seamless ticker */
+@keyframes mq {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  animation: mq 32s linear infinite;
+}
+
 /* Marquee animation for trusted directories */
 @keyframes marquee {
   0% {
