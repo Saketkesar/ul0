@@ -46,10 +46,10 @@ export default function GroupsDashboardPage() {
               <span className="text-xs font-bold text-[#0B7A66]">Groups</span>
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-[#0B1A17] tracking-tight">
-              Group Khatas
+              Group Hisab
             </h1>
             <p className="text-xs text-[#5A6B66] mt-0.5">
-              Keep a running tab for your trip, flat roommates, or office team.
+              Keep a running hisab for your trip, flat roommates, or office team.
             </p>
           </div>
 

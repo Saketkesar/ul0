@@ -195,7 +195,7 @@ export function PublicGroupView({ initialData, slug }: PublicGroupViewProps) {
     const encodedUri = encodeURI(csvContent)
     const link = document.createElement("a")
     link.setAttribute("href", encodedUri)
-    link.setAttribute("download", `${group.name.replace(/\s+/g, "-").toLowerCase()}-khata.csv`)
+    link.setAttribute("download", `${group.name.replace(/\s+/g, "-").toLowerCase()}-hisab.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -256,7 +256,7 @@ export function PublicGroupView({ initialData, slug }: PublicGroupViewProps) {
                   <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">
                     {group.name}
                   </h1>
-                  <p className="text-xs text-white/80 font-medium">Group Khata • {members.length} members</p>
+                  <p className="text-xs text-white/80 font-medium">Group Hisab • {members.length} members</p>
                 </div>
               </div>
             </div>
@@ -269,7 +269,7 @@ export function PublicGroupView({ initialData, slug }: PublicGroupViewProps) {
             <div>
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#EAF7F3] text-[#0B7A66]">
-                  <UL0Icon name="splitbill" size={12} /> Group Khata
+                  <UL0Icon name="splitbill" size={12} /> Group Hisab
                 </span>
                 <span className="text-[11px] text-[#5A6B66]">Direct Bank-to-Bank UPI</span>
               </div>

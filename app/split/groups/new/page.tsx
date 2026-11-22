@@ -141,7 +141,7 @@ export default function NewGroupPage() {
             <span className="text-xs font-bold text-[#0B7A66]">New</span>
           </div>
           <h1 className="text-2xl font-black text-[#0B1A17] tracking-tight">
-            Create a Group Khata
+            Create a Group Hisab
           </h1>
           <p className="text-xs text-[#5A6B66] mt-0.5">
             Perfect for flatmates, ongoing trips, or recurring office lunch tabs.
@@ -324,7 +324,7 @@ export default function NewGroupPage() {
             disabled={isSubmitting}
             className="w-full bg-[#3DDBB8] hover:bg-[#34c4a4] text-[#04231C] font-bold text-sm h-12 rounded-[16px] cursor-pointer"
           >
-            {isSubmitting ? "Creating..." : "Create Group Khata"}
+            {isSubmitting ? "Creating..." : "Create Group Hisab"}
           </Button>
         </div>
       </main>

@@ -17,7 +17,8 @@ import {
   ReminderTone,
   ReminderLang,
 } from "./split-constants"
-import { scanReceiptWithTesseract, ParsedReceiptItem } from "@/lib/split/receipt-ocr"
+import { scanReceiptWithTesseract } from "@/lib/split/receipt-ocr"
+import { GunGame } from "./gun-game"
 
 interface Friend {
   id: string
@@ -51,36 +52,31 @@ export function SplitWizard() {
   const baseId = useId()
   const collectorId = `collector-${baseId}`
 
-  // Step state: 0 = Dashboard (Screenshot 1), 1 = "How much?" (Screenshot 2), 2 = "Who's in?", 3 = "Split it" (Screenshot 3), 4 = "Looks right?" (Screenshot 4)
+  // Step state: 0 = Dashboard, 1 = "How much?", 2 = "Who's in?", 3 = "Split it", 4 = "Looks right?"
   const [step, setStep] = useState<number>(0)
 
   // Step 1: Amount & Title & Category
-  const [totalAmountStr, setTotalAmountStr] = useState<string>("500")
-  const [title, setTitle] = useState<string>("Dinner at Truffles")
+  const [totalAmountStr, setTotalAmountStr] = useState<string>("")
+  const [title, setTitle] = useState<string>("")
   const [category, setCategory] = useState<string>("Food")
   const [billType, setBillType] = useState<"full" | "itemized">("full")
 
-  // Collector (You)
-  const [collectorName, setCollectorName] = useState<string>(user?.firstName || "Saket Kesar")
+  // Collector (You) - clean generic default
+  const [collectorName, setCollectorName] = useState<string>("")
   const [collectorUpi, setCollectorUpi] = useState<string>("")
   const [isEditingCollector, setIsEditingCollector] = useState<boolean>(false)
   const [hasSavedCollector, setHasSavedCollector] = useState<boolean>(false)
 
-  // Friends
-  const [friends, setFriends] = useState<Friend[]>([
-    { id: "f-1", name: "Om Bisht Cse", shares: 1, percent: 50 },
-  ])
+  // Friends - initialized empty, no hardcoded personal friends
+  const [friends, setFriends] = useState<Friend[]>([])
   const [friendInput, setFriendInput] = useState<string>("")
   const [includeCollector, setIncludeCollector] = useState<boolean>(true)
 
   // Split mode
   const [splitMode, setSplitMode] = useState<SplitMode>("equal")
 
-  // Itemized bill (e.g. groceries, dining items)
-  const [items, setItems] = useState<ItemEntry[]>([
-    { id: "item-1", name: "Burgers & Fries", price: 350, qty: 1, sharedBy: [collectorId, "f-1"] },
-    { id: "item-2", name: "Beverages", price: 150, qty: 1, sharedBy: [collectorId, "f-1"] },
-  ])
+  // Itemized bill
+  const [items, setItems] = useState<ItemEntry[]>([])
   const [newItemName, setNewItemName] = useState<string>("")
   const [newItemPrice, setNewItemPrice] = useState<string>("")
   const [newItemQty, setNewItemQty] = useState<string>("1")
@@ -108,10 +104,8 @@ export function SplitWizard() {
   // Recent splits on this device
   const [recentSplits, setRecentSplits] = useState<RecentSplit[]>([])
 
-  // Spin the Bottle (Dice Modal)
-  const [showSpinBottle, setShowSpinBottle] = useState<boolean>(false)
-  const [spinning, setSpinning] = useState<boolean>(false)
-  const [spinWinner, setSpinWinner] = useState<string | null>(null)
+  // Gun Game (Russian Roulette Who Pays?)
+  const [showGunGame, setShowGunGame] = useState<boolean>(false)
 
   // QR Scanner Modal
   const [showQrScanner, setShowQrScanner] = useState<boolean>(false)
@@ -138,8 +132,8 @@ export function SplitWizard() {
         setCollectorUpi(savedUpi)
         setHasSavedCollector(true)
       } else {
-        if (user?.fullName) setCollectorName(user.fullName)
-        else if (user?.firstName) setCollectorName(user.firstName)
+        const defaultName = user?.fullName || user?.firstName || "You"
+        setCollectorName(defaultName)
         setIsEditingCollector(true)
       }
 
@@ -168,7 +162,7 @@ export function SplitWizard() {
       setCollectorUpi("")
       setHasSavedCollector(false)
       setIsEditingCollector(true)
-      toast.info("Collector details cleared from this device.")
+      toast.info("Organizer details cleared from this device.")
     } catch {}
   }
 
@@ -263,10 +257,6 @@ export function SplitWizard() {
   }
 
   const handleRemoveFriend = (id: string) => {
-    if (friends.length <= 1) {
-      toast.error("Keep at least one friend to split with")
-      return
-    }
     setFriends((prev) => prev.filter((f) => f.id !== id))
     setItems((prev) =>
       prev.map((it) => ({
@@ -317,7 +307,7 @@ export function SplitWizard() {
         const updated = has ? it.sharedBy.filter((id) => id !== memberId) : [...it.sharedBy, memberId]
         return {
           ...it,
-          sharedBy: updated.length > 0 ? updated : [memberId], // keep at least 1 person
+          sharedBy: updated.length > 0 ? updated : [memberId],
         }
       })
     )
@@ -336,10 +326,10 @@ export function SplitWizard() {
   // All active members list
   const allMembers = useMemo(
     () => [
-      { id: collectorId, name: `${collectorName.trim() || "You"} (you)` },
+      ...(includeCollector ? [{ id: collectorId, name: `${collectorName.trim() || "You"} (you)` }] : []),
       ...friends.map((f) => ({ id: f.id, name: f.name })),
     ],
-    [collectorId, collectorName, friends]
+    [collectorId, collectorName, friends, includeCollector]
   )
 
   // Calculations with Largest-Remainder rounding
@@ -352,7 +342,6 @@ export function SplitWizard() {
       const srvAmt = (itemsSubtotal * (parseFloat(serviceChargePercent) || 0)) / 100
       parsedTotal = itemsSubtotal + taxAmt + srvAmt
 
-      // Item proportional allocation
       const memberSubtotals: Record<string, number> = {}
       allMembers.forEach((m) => {
         memberSubtotals[m.id] = 0
@@ -369,7 +358,7 @@ export function SplitWizard() {
 
       const rawSum = Object.values(memberSubtotals).reduce((a, b) => a + b, 0)
       const memberWeights = allMembers.map((m) =>
-        rawSum > 0 ? (memberSubtotals[m.id] || 0) / rawSum : 1 / allMembers.length
+        rawSum > 0 ? (memberSubtotals[m.id] || 0) / rawSum : 1 / (allMembers.length || 1)
       )
 
       const exactShares = distributeWithLargestRemainder(parsedTotal, memberWeights)
@@ -392,12 +381,9 @@ export function SplitWizard() {
     }
 
     if (splitMode === "equal") {
-      const activeMembers = [
-        ...(includeCollector ? [{ id: collectorId }] : []),
-        ...friends.map((f) => ({ id: f.id })),
-      ]
+      const activeMembers = allMembers
       const count = activeMembers.length
-      if (count === 0) return { calculatedTotal: 0, friendShares: {}, collectorShare: 0 }
+      if (count === 0) return { calculatedTotal: parsedTotal, friendShares: {}, collectorShare: 0 }
 
       const equalAllocations = distributeWithLargestRemainder(
         parsedTotal,
@@ -504,35 +490,10 @@ export function SplitWizard() {
     allMembers,
   ])
 
-  // Spin the Bottle (Random Payer Picker)
-  const handleSpinBottle = () => {
-    if (friends.length === 0) {
-      toast.error("Add at least one friend first")
-      return
-    }
-    setSpinning(true)
-    setSpinWinner(null)
-
-    const candidates = [collectorName || "You", ...friends.map((f) => f.name)]
-    let count = 0
-    const interval = setInterval(() => {
-      const randomIdx = Math.floor(Math.random() * candidates.length)
-      setSpinWinner(candidates[randomIdx])
-      count++
-      if (count > 16) {
-        clearInterval(interval)
-        setSpinning(false)
-        const finalWinner = candidates[Math.floor(Math.random() * candidates.length)]
-        setSpinWinner(finalWinner)
-        toast.success(`🎉 ${finalWinner} pays the bill!`)
-      }
-    }, 100)
-  }
-
   // Create Split Session API Call
   const handleCreateSplit = async () => {
-    const cleanTitle = title.trim() || "Split Bill"
-    const cleanCollectorName = collectorName.trim() || "You"
+    const cleanTitle = title.trim() || `${category} Split`
+    const cleanCollectorName = collectorName.trim() || "Organizer"
     const cleanCollectorUpi = collectorUpi.trim().toLowerCase()
 
     if (!cleanCollectorUpi) {
@@ -552,6 +513,12 @@ export function SplitWizard() {
     if (calculatedTotal <= 0) {
       toast.error("Total amount must be greater than 0")
       setStep(1)
+      return
+    }
+
+    if (friends.length === 0) {
+      toast.error("Please add at least one friend to split with")
+      setStep(2)
       return
     }
 
@@ -688,1081 +655,1212 @@ export function SplitWizard() {
     ? `${typeof window !== "undefined" ? window.location.origin : "https://ul0.site"}/split/${createdSlug}/manage?token=${collectorToken}`
     : ""
 
-  // =========================================================================
-  // SCREEN 1: SPLITS DASHBOARD (Screenshot 1 Matching)
-  // =========================================================================
-  if (step === 0) {
-    const greetingName = user?.firstName || collectorName.split(" ")[0] || "Friend"
+  // Clean greeting
+  const greetingName = user?.firstName || (collectorName && collectorName !== "You" ? collectorName.split(" ")[0] : null)
 
-    return (
-      <div className="relative min-h-[82vh] flex flex-col justify-between max-w-md mx-auto w-full px-4 py-6 font-sans">
-        {/* Top Header */}
-        <div className="flex items-center justify-between pb-6">
-          <div>
-            <span className="text-xs font-semibold text-[#5A6B66] block">Hi {greetingName}</span>
-            <h1 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">Splits</h1>
-          </div>
-          <button
-            onClick={() => setShowQrScanner(true)}
-            className="w-11 h-11 rounded-2xl border border-[#E4ECE8] bg-white flex items-center justify-center text-[#0B1A17] hover:bg-[#F7FAF8] shadow-xs cursor-pointer transition-transform active:scale-95"
-            aria-label="Scan QR Code"
-          >
-            <UL0Icon name="qr" size={20} />
-          </button>
-        </div>
-
-        {/* Content Area */}
-        <div className="flex-1 flex flex-col justify-center items-center py-6">
-          {recentSplits.length === 0 ? (
-            // Empty State (Screenshot 1: chat/receipt bubble icon, "No splits yet")
-            <div className="text-center space-y-4 max-w-xs mx-auto animate-in fade-in zoom-in-95 duration-300">
-              <div className="w-16 h-16 rounded-2xl bg-white border border-[#E4ECE8] text-[#0B1A17] mx-auto flex items-center justify-center shadow-xs">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                  <line x1="8" y1="8" x2="16" y2="8" />
-                  <line x1="8" y1="12" x2="14" y2="12" />
-                </svg>
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-[#0B1A17]">No splits yet</h2>
-                <p className="text-xs text-[#5A6B66] mt-1.5 leading-relaxed">
-                  Create one in under 15 seconds.<br />
-                  Your friends pay from a link, no<br />
-                  app, no signup.
-                </p>
-              </div>
+  return (
+    <div className="w-full font-sans">
+      {/* Desktop Shell (Sidebar + Main Content Grid) */}
+      <div className="flex flex-col md:flex-row gap-8 items-start">
+        {/* =====================================================================
+            DESKTOP SIDEBAR (Visible on md: and above)
+        ====================================================================== */}
+        <aside className="hidden md:flex flex-col w-64 shrink-0 rounded-3xl border border-[#E4ECE8] bg-white p-5 space-y-6 shadow-xs sticky top-20">
+          {/* Brand header */}
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-[#0B7A66]">
+              <UL0Icon name="splitbill" size={22} />
+              <span className="font-extrabold text-base tracking-tight text-[#0B1A17]">
+                UL0 Split & Hisab
+              </span>
             </div>
-          ) : (
-            // Recent Splits List
-            <div className="w-full space-y-3 animate-in fade-in duration-200">
-              <div className="flex items-center justify-between text-xs font-semibold text-[#5A6B66] px-1">
-                <span>Recent Splits</span>
-                <span className="text-[11px] font-normal">{recentSplits.length} splits saved</span>
-              </div>
-              {recentSplits.map((sp) => (
-                <div
-                  key={sp.slug}
-                  onClick={() => router.push(`/split/${sp.slug}`)}
-                  className="p-4 rounded-2xl border border-[#E4ECE8] bg-white hover:border-[#0B7A66]/40 shadow-xs cursor-pointer transition-all flex items-center justify-between"
+            <span className="inline-block text-[10px] font-bold text-[#0B7A66] bg-[#EAF7F3] px-2 py-0.5 rounded-full">
+              Zero Signup · Direct UPI
+            </span>
+          </div>
+
+          {/* Nav Items */}
+          <nav className="space-y-1 text-xs font-semibold">
+            <button
+              onClick={() => setStep(0)}
+              className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all cursor-pointer ${
+                step === 0 ? "bg-[#0B1A17] text-white" : "text-[#5A6B66] hover:bg-[#F7FAF8] hover:text-[#0B1A17]"
+              }`}
+            >
+              <UL0Icon name="splitbill" size={16} />
+              <span>Splits Dashboard</span>
+            </button>
+
+            <button
+              onClick={() => router.push("/split/groups")}
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[#5A6B66] hover:bg-[#F7FAF8] hover:text-[#0B1A17] transition-all cursor-pointer"
+            >
+              <UL0Icon name="billing" size={16} />
+              <span>Group Hisab</span>
+            </button>
+
+            <button
+              onClick={() => {
+                if (recentSplits.length > 0) {
+                  router.push(`/split/${recentSplits[0].slug}`)
+                } else {
+                  toast.info("No past splits in your ledger yet.")
+                }
+              }}
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[#5A6B66] hover:bg-[#F7FAF8] hover:text-[#0B1A17] transition-all cursor-pointer"
+            >
+              <UL0Icon name="docs" size={16} />
+              <span>Ledger</span>
+            </button>
+
+            {/* Gun Game Nav Item */}
+            <button
+              onClick={() => setShowGunGame(true)}
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[#D9383A] bg-[#D9383A]/5 hover:bg-[#D9383A]/10 font-bold transition-all cursor-pointer"
+            >
+              <span className="text-sm">🎯</span>
+              <span>Gun Game (Who Pays?)</span>
+            </button>
+
+            <button
+              onClick={() => setShowQrScanner(true)}
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[#5A6B66] hover:bg-[#F7FAF8] hover:text-[#0B1A17] transition-all cursor-pointer"
+            >
+              <UL0Icon name="qr" size={16} />
+              <span>Collect / QR</span>
+            </button>
+
+            <button
+              onClick={() => setShowSettings(true)}
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-[#5A6B66] hover:bg-[#F7FAF8] hover:text-[#0B1A17] transition-all cursor-pointer"
+            >
+              <UL0Icon name="settings" size={16} />
+              <span>Settings</span>
+            </button>
+          </nav>
+
+          {/* Organizer Card */}
+          <div className="pt-4 border-t border-[#F1F5F3] space-y-2">
+            <span className="text-[10px] font-bold text-[#5A6B66] uppercase tracking-wider block">
+              Organizer Profile
+            </span>
+            <div className="p-3 rounded-2xl bg-[#F7FAF8] border border-[#E4ECE8] space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-xs text-[#0B1A17] truncate max-w-[120px]">
+                  {collectorName || "Organizer"}
+                </span>
+                <button
+                  onClick={() => setShowSettings(true)}
+                  className="text-[10px] text-[#0B7A66] font-bold underline cursor-pointer"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center font-bold text-sm">
-                      <UL0Icon name="splitbill" size={18} />
+                  Edit
+                </button>
+              </div>
+              <span className="text-[11px] font-mono text-[#5A6B66] block truncate">
+                {collectorUpi || "No UPI set"}
+              </span>
+            </div>
+          </div>
+
+          {/* Direct Bank Transfer Notice */}
+          <div className="pt-2 text-[10px] text-[#5A6B66] flex items-center gap-1.5">
+            <UL0Icon name="shield" size={13} className="text-[#0B7A66] shrink-0" />
+            <span>Money transfers direct bank-to-bank. UL0 never holds funds.</span>
+          </div>
+        </aside>
+
+        {/* =====================================================================
+            MAIN CONTENT AREA
+        ====================================================================== */}
+        <main className="flex-1 w-full max-w-3xl">
+          {/* STEP 0: DASHBOARD (Desktop + Mobile) */}
+          {step === 0 && (
+            <div className="space-y-6">
+              {/* Header row */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-semibold text-[#5A6B66] block">
+                    {greetingName ? `Hi ${greetingName}` : "Welcome"}
+                  </span>
+                  <h1 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">
+                    Splits
+                  </h1>
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <Button
+                    onClick={() => setShowGunGame(true)}
+                    variant="outline"
+                    className="border-[#CCD9D4] text-xs h-10 px-3.5 rounded-xl font-bold flex items-center gap-1.5 text-[#0B1A17] cursor-pointer hover:bg-[#F7FAF8]"
+                  >
+                    <span>🎯</span>
+                    <span className="hidden sm:inline">Gun Game</span>
+                  </Button>
+
+                  <Button
+                    onClick={() => setStep(1)}
+                    className="bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-xs h-10 px-4 rounded-xl font-bold flex items-center gap-1.5 cursor-pointer shadow-md"
+                  >
+                    <UL0Icon name="plus" size={14} />
+                    <span>New Split</span>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Main Dashboard Cards */}
+              {recentSplits.length === 0 ? (
+                // Empty state with clean actionable cards
+                <div className="space-y-6">
+                  <div className="p-8 sm:p-12 rounded-3xl border border-[#E4ECE8] bg-white text-center space-y-4 shadow-xs">
+                    <div className="w-16 h-16 rounded-2xl bg-white border border-[#E4ECE8] text-[#0B1A17] mx-auto flex items-center justify-center shadow-xs">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        <line x1="8" y1="8" x2="16" y2="8" />
+                        <line x1="8" y1="12" x2="14" y2="12" />
+                      </svg>
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-[#0B1A17]">{sp.title}</h3>
-                      <p className="text-[11px] text-[#5A6B66]">
-                        {new Date(sp.createdAt).toLocaleDateString("en-IN", {
-                          month: "short",
-                          day: "numeric",
-                        })}
+                      <h2 className="text-xl font-bold text-[#0B1A17]">No splits yet</h2>
+                      <p className="text-xs text-[#5A6B66] mt-1.5 leading-relaxed max-w-sm mx-auto">
+                        Create one in under 15 seconds. Your friends pay from a link directly via UPI — no app, no signup.
+                      </p>
+                    </div>
+
+                    <div className="pt-2">
+                      <Button
+                        onClick={() => setStep(1)}
+                        className="bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-xs h-11 px-6 rounded-xl font-bold shadow-md cursor-pointer"
+                      >
+                        Create your first split
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* 3 Quick Action Cards on Desktop */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div
+                      onClick={() => setStep(1)}
+                      className="p-4 rounded-2xl border border-[#E4ECE8] bg-white hover:border-[#3DDBB8] transition-all cursor-pointer shadow-xs space-y-1.5"
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center font-bold text-xs">
+                        <UL0Icon name="splitbill" size={16} />
+                      </div>
+                      <h3 className="text-xs font-bold text-[#0B1A17]">1-Time UPI Split</h3>
+                      <p className="text-[11px] text-[#5A6B66] leading-relaxed">
+                        Equal, exact, percent, or itemized bill with automatic tax allocation.
+                      </p>
+                    </div>
+
+                    <div
+                      onClick={() => router.push("/split/groups/new")}
+                      className="p-4 rounded-2xl border border-[#E4ECE8] bg-white hover:border-[#3DDBB8] transition-all cursor-pointer shadow-xs space-y-1.5"
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center font-bold text-xs">
+                        <UL0Icon name="billing" size={16} />
+                      </div>
+                      <h3 className="text-xs font-bold text-[#0B1A17]">Group Hisab</h3>
+                      <p className="text-[11px] text-[#5A6B66] leading-relaxed">
+                        Running trip or roommate tab. Add expenses over time and settle up later.
+                      </p>
+                    </div>
+
+                    <div
+                      onClick={() => setShowGunGame(true)}
+                      className="p-4 rounded-2xl border border-[#E4ECE8] bg-white hover:border-[#D9383A] transition-all cursor-pointer shadow-xs space-y-1.5"
+                    >
+                      <div className="w-8 h-8 rounded-xl bg-[#D9383A]/10 text-[#D9383A] flex items-center justify-center font-bold text-sm">
+                        🎯
+                      </div>
+                      <h3 className="text-xs font-bold text-[#0B1A17]">Gun Game (Who Pays?)</h3>
+                      <p className="text-[11px] text-[#5A6B66] leading-relaxed">
+                        Russian roulette with 1 bullet and 5 empty shells. Tap to see who gets shot!
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <span className="text-sm font-bold text-[#0B1A17] block">
-                      ₹{sp.totalAmount.toFixed(2)}
-                    </span>
-                    <span className="text-[10px] text-[#0B7A66] font-semibold">Open Settle →</span>
-                  </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+              ) : (
+                // Recent splits grid
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-xs font-semibold text-[#5A6B66] px-1">
+                    <span>Recent Splits</span>
+                    <span className="text-[11px] font-normal">{recentSplits.length} splits saved</span>
+                  </div>
 
-        {/* Floating Bottom Action Buttons (Screenshot 1: Dice on left, Big Black Circle + on right) */}
-        <div className="flex items-center justify-between pt-6 pb-2">
-          {/* Spin the Bottle (Dice Button) */}
-          <button
-            onClick={() => setShowSpinBottle(true)}
-            className="w-14 h-14 rounded-full border border-[#E4ECE8] bg-white text-[#0B1A17] flex items-center justify-center shadow-md hover:bg-[#F7FAF8] active:scale-95 transition-all cursor-pointer"
-            title="Spin the bottle (who pays?)"
-          >
-            <span className="text-2xl">🎲</span>
-          </button>
-
-          {/* Big Black Circle + Button */}
-          <button
-            onClick={() => setStep(1)}
-            className="w-16 h-16 rounded-full bg-[#0B1A17] text-white flex items-center justify-center shadow-xl hover:bg-[#1a2e2a] hover:scale-105 active:scale-95 transition-all cursor-pointer"
-            title="Create new split"
-          >
-            <UL0Icon name="plus" size={28} />
-          </button>
-        </div>
-
-        {/* Bottom Tab Bar (5 Tabs matching Screenshot 1: Splits, Ledger, Khata, Collect, Settings) */}
-        <div className="pt-4 border-t border-[#E4ECE8] flex items-center justify-around text-[#5A6B66]">
-          <button className="flex flex-col items-center gap-1 text-[#0B1A17] font-semibold text-[10px]">
-            <UL0Icon name="splitbill" size={18} />
-            <span>Splits</span>
-          </button>
-          <button
-            onClick={() => {
-              if (recentSplits.length > 0) {
-                router.push(`/split/${recentSplits[0].slug}`)
-              } else {
-                toast.info("No past splits yet in your ledger.")
-              }
-            }}
-            className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
-          >
-            <UL0Icon name="docs" size={18} />
-            <span>Ledger</span>
-          </button>
-          <button
-            onClick={() => router.push("/split/groups")}
-            className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
-          >
-            <UL0Icon name="billing" size={18} />
-            <span>Khata</span>
-          </button>
-          <button
-            onClick={() => setShowQrScanner(true)}
-            className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
-          >
-            <UL0Icon name="team" size={18} />
-            <span>Collect</span>
-          </button>
-          <button
-            onClick={() => setShowSettings(true)}
-            className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
-          >
-            <UL0Icon name="settings" size={18} />
-            <span>Settings</span>
-          </button>
-        </div>
-
-        {/* Settings Dialog */}
-        <Dialog open={showSettings} onOpenChange={setShowSettings}>
-          <DialogContent className="max-w-sm bg-white border border-[#E4ECE8] text-[#0B1A17] p-6 rounded-3xl">
-            <DialogHeader>
-              <DialogTitle className="text-lg font-bold flex items-center gap-2">
-                <UL0Icon name="settings" size={18} /> Settings
-              </DialogTitle>
-              <DialogDescription className="text-xs text-[#5A6B66]">
-                Your organizer profile is remembered on this device.
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-4 py-2">
-              <div className="space-y-2">
-                <Label className="text-xs font-bold text-[#0B1A17]">Your Name</Label>
-                <Input
-                  value={collectorName}
-                  onChange={(e) => setCollectorName(e.target.value)}
-                  className="h-10 text-xs"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label className="text-xs font-bold text-[#0B1A17]">Default UPI ID (for receiving payments)</Label>
-                <Input
-                  value={collectorUpi}
-                  onChange={(e) => setCollectorUpi(e.target.value)}
-                  placeholder="e.g. yourname@oksbi"
-                  className="h-10 text-xs font-mono"
-                />
-              </div>
-
-              <div className="flex gap-2 pt-2">
-                <Button
-                  onClick={() => {
-                    saveCollectorDetails(collectorName, collectorUpi)
-                    toast.success("Settings saved!")
-                    setShowSettings(false)
-                  }}
-                  className="flex-1 bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-xs h-10 font-bold"
-                >
-                  Save
-                </Button>
-                {hasSavedCollector && (
-                  <Button
-                    variant="outline"
-                    onClick={clearCollectorDetails}
-                    className="text-xs h-10 border-[#E4ECE8] text-[#D9383A] hover:bg-[#FDF2F2]"
-                  >
-                    Forget Me
-                  </Button>
-                )}
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* Spin the Bottle Modal */}
-        <Dialog open={showSpinBottle} onOpenChange={setShowSpinBottle}>
-          <DialogContent className="max-w-sm bg-white border border-[#E4ECE8] text-[#0B1A17] p-6 rounded-3xl">
-            <DialogHeader className="text-center">
-              <DialogTitle className="text-xl font-bold flex items-center justify-center gap-2">
-                <span>🎲</span> Spin the Bottle
-              </DialogTitle>
-              <DialogDescription className="text-xs text-[#5A6B66]">
-                Randomly pick who covers the bill this time!
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="py-6 flex flex-col items-center justify-center space-y-4">
-              <div
-                className={`w-28 h-28 rounded-full border-4 border-[#0B7A66] bg-[#EAF7F3] flex items-center justify-center text-3xl font-extrabold text-[#0B7A66] shadow-inner transition-transform duration-300 ${
-                  spinning ? "animate-spin" : ""
-                }`}
-              >
-                {spinning ? "🎲" : spinWinner ? spinWinner.slice(0, 2).toUpperCase() : "🍾"}
-              </div>
-
-              {spinWinner && !spinning && (
-                <div className="text-center animate-in zoom-in-90 duration-200">
-                  <span className="text-xs font-semibold text-[#5A6B66] block">The Chosen One:</span>
-                  <span className="text-2xl font-black text-[#0B1A17] mt-0.5 block">
-                    {spinWinner}
-                  </span>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {recentSplits.map((sp) => (
+                      <div
+                        key={sp.slug}
+                        onClick={() => router.push(`/split/${sp.slug}`)}
+                        className="p-4 rounded-2xl border border-[#E4ECE8] bg-white hover:border-[#0B7A66]/40 shadow-xs cursor-pointer transition-all flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-xl bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center font-bold text-sm">
+                            <UL0Icon name="splitbill" size={18} />
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-bold text-[#0B1A17]">{sp.title}</h3>
+                            <p className="text-[11px] text-[#5A6B66]">
+                              {new Date(sp.createdAt).toLocaleDateString("en-IN", {
+                                month: "short",
+                                day: "numeric",
+                              })}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <span className="text-sm font-bold text-[#0B1A17] block">
+                            ₹{sp.totalAmount.toFixed(2)}
+                          </span>
+                          <span className="text-[10px] text-[#0B7A66] font-semibold">Open Settle →</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              <Button
-                onClick={handleSpinBottle}
-                disabled={spinning}
-                className="w-full bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-xs h-11 rounded-xl font-bold cursor-pointer"
-              >
-                {spinning ? "Spinning..." : spinWinner ? "Spin Again" : "Spin the Bottle!"}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
-
-        {/* QR Scanner Modal */}
-        <Dialog open={showQrScanner} onOpenChange={setShowQrScanner}>
-          <DialogContent className="max-w-sm bg-white border border-[#E4ECE8] text-[#0B1A17] p-6 rounded-3xl text-center">
-            <DialogHeader>
-              <DialogTitle className="text-lg font-bold">Scan UPI QR or Receipt</DialogTitle>
-              <DialogDescription className="text-xs text-[#5A6B66]">
-                Scan merchant or personal QR codes to auto-populate the split.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="py-8 flex flex-col items-center space-y-3">
-              <div className="w-20 h-20 rounded-2xl bg-[#F7FAF8] border-2 border-dashed border-[#CCD9D4] flex items-center justify-center text-[#5A6B66]">
-                <UL0Icon name="qr" size={32} />
-              </div>
-              <p className="text-xs text-[#5A6B66] max-w-xs">
-                Upload a bill photo or QR code to auto-parse amounts and details.
-              </p>
-              <label className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#0B7A66] text-white text-xs font-bold hover:bg-[#086353]">
-                <UL0Icon name="upload" size={14} /> Upload QR / Bill Photo
-                <input
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => {
-                    const f = e.target.files?.[0]
-                    if (f) {
-                      setShowQrScanner(false)
-                      handleReceiptScan(f)
-                      setStep(1)
+              {/* Mobile-only Bottom Navigation Bar */}
+              <div className="md:hidden pt-8 border-t border-[#E4ECE8] flex items-center justify-around text-[#5A6B66]">
+                <button className="flex flex-col items-center gap-1 text-[#0B1A17] font-semibold text-[10px]">
+                  <UL0Icon name="splitbill" size={18} />
+                  <span>Splits</span>
+                </button>
+                <button
+                  onClick={() => {
+                    if (recentSplits.length > 0) {
+                      router.push(`/split/${recentSplits[0].slug}`)
+                    } else {
+                      toast.info("No past splits yet.")
                     }
                   }}
-                />
-              </label>
+                  className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
+                >
+                  <UL0Icon name="docs" size={18} />
+                  <span>Ledger</span>
+                </button>
+                <button
+                  onClick={() => router.push("/split/groups")}
+                  className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
+                >
+                  <UL0Icon name="billing" size={18} />
+                  <span>Hisab</span>
+                </button>
+                <button
+                  onClick={() => setShowQrScanner(true)}
+                  className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
+                >
+                  <UL0Icon name="team" size={18} />
+                  <span>Collect</span>
+                </button>
+                <button
+                  onClick={() => setShowSettings(true)}
+                  className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
+                >
+                  <UL0Icon name="settings" size={18} />
+                  <span>Settings</span>
+                </button>
+              </div>
             </div>
-          </DialogContent>
-        </Dialog>
-      </div>
-    )
-  }
-
-  // =========================================================================
-  // STEP WIZARD CONTAINER (Screenshots 2, 3, 4)
-  // =========================================================================
-  return (
-    <div className="max-w-md mx-auto w-full px-4 py-6 font-sans">
-      {/* 4-Step Progress Indicator Header */}
-      <div className="space-y-4 mb-6">
-        <div className="flex items-center justify-between">
-          {step > 1 ? (
-            <button
-              onClick={() => setStep(step - 1)}
-              className="w-8 h-8 rounded-full flex items-center justify-center text-[#0B1A17] hover:bg-[#EAF1EE] cursor-pointer"
-              aria-label="Back"
-            >
-              <UL0Icon name="arrowleft" size={18} />
-            </button>
-          ) : (
-            <div className="w-8" />
           )}
 
-          {/* 4 Progress Segment Bars matching Screenshot 2, 3, 4 */}
-          <div className="flex-1 max-w-[200px] flex gap-1.5 px-2">
-            {[1, 2, 3, 4].map((s) => (
-              <div
-                key={s}
-                className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${
-                  s <= step ? "bg-[#0B1A17]" : "bg-[#E4ECE8]"
-                }`}
-              />
-            ))}
-          </div>
-
-          <button
-            onClick={() => setStep(0)}
-            className="w-8 h-8 rounded-full flex items-center justify-center text-[#5A6B66] hover:text-[#0B1A17] hover:bg-[#EAF1EE] cursor-pointer"
-            aria-label="Close"
-          >
-            <UL0Icon name="close" size={16} />
-          </button>
-        </div>
-      </div>
-
-      {/* =====================================================================
-          STEP 1: "How much?" (Screenshot 2 Matching)
-      ====================================================================== */}
-      {step === 1 && (
-        <div className="space-y-6 animate-in fade-in duration-200">
-          <div>
-            <h2 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">How much?</h2>
-          </div>
-
-          {/* Currency dropdown + Big Amount Input */}
-          <div className="pt-2">
-            <div className="flex items-baseline gap-2 border-b-2 border-[#0B1A17] pb-2">
-              <span className="text-3xl font-bold text-[#0B1A17] flex items-center gap-0.5">
-                ₹ <span className="text-base text-[#5A6B66]">▾</span>
-              </span>
-              <input
-                type="number"
-                inputMode="decimal"
-                value={totalAmountStr}
-                onChange={(e) => setTotalAmountStr(e.target.value)}
-                placeholder="0"
-                className="w-full text-5xl font-extrabold text-[#0B1A17] bg-transparent focus:outline-none tracking-tight"
-                autoFocus
-              />
-            </div>
-
-            {/* Quick Amount Pills (Screenshot 2: ₹500, ₹1,000, ₹2,000) */}
-            <div className="flex gap-2.5 mt-4">
-              {[500, 1000, 2000].map((amt) => (
+          {/* WIZARD CONTAINER (Steps 1, 2, 3, 4) */}
+          {step > 0 && (
+            <div className="space-y-6">
+              {/* Progress Indicator Header */}
+              <div className="flex items-center justify-between pb-2 border-b border-[#E4ECE8]">
                 <button
-                  key={amt}
-                  type="button"
-                  onClick={() => setTotalAmountStr(String(amt))}
-                  className={`px-4 py-2 rounded-full border text-xs font-semibold cursor-pointer transition-all ${
-                    parseFloat(totalAmountStr) === amt
-                      ? "border-[#0B1A17] bg-[#0B1A17] text-white"
-                      : "border-[#E4ECE8] bg-white text-[#0B1A17] hover:bg-[#F7FAF8]"
-                  }`}
+                  onClick={() => setStep(step - 1)}
+                  className="flex items-center gap-1 text-xs font-bold text-[#5A6B66] hover:text-[#0B1A17] cursor-pointer"
                 >
-                  ₹{amt.toLocaleString("en-IN")}
+                  <UL0Icon name="arrowleft" size={14} />
+                  <span>{step === 1 ? "Dashboard" : "Back"}</span>
                 </button>
-              ))}
-            </div>
-          </div>
 
-          {/* What's it for? (Screenshot 2) */}
-          <div className="space-y-3 pt-2">
-            <Label className="text-xs font-bold text-[#0B1A17]">What&apos;s it for?</Label>
-            <Input
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Dinner at Truffles"
-              className="h-12 rounded-xl border-[#E4ECE8] text-sm text-[#0B1A17] focus-visible:ring-[#0B1A17]"
-            />
-
-            {/* Category Pills (Screenshot 2: Food, Trip, Rent, Match fee, Other) */}
-            <div className="flex flex-wrap gap-2 pt-1">
-              {CATEGORY_PRESETS.map((cat) => {
-                const isActive = category === cat.label
-                return (
-                  <button
-                    key={cat.label}
-                    type="button"
-                    onClick={() => {
-                      setCategory(cat.label)
-                      if (!title || title === "Dinner at Truffles") {
-                        setTitle(cat.title)
-                      }
-                    }}
-                    className={`px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all ${
-                      isActive
-                        ? "bg-[#0B1A17] text-white shadow-xs"
-                        : "bg-white border border-[#E4ECE8] text-[#0B1A17] hover:bg-[#F7FAF8]"
-                    }`}
-                  >
-                    {cat.label}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-
-          {/* Bill Mode Toggle: Entire Bill vs Item-wise (Groceries / Receipts) */}
-          <div className="pt-2">
-            <div className="p-1 rounded-xl bg-[#EAF1EE] flex text-xs font-semibold">
-              <button
-                type="button"
-                onClick={() => setBillType("full")}
-                className={`flex-1 py-2 rounded-lg transition-all cursor-pointer ${
-                  billType === "full" ? "bg-white text-[#0B1A17] shadow-xs" : "text-[#5A6B66]"
-                }`}
-              >
-                Entire Bill
-              </button>
-              <button
-                type="button"
-                onClick={() => setBillType("itemized")}
-                className={`flex-1 py-2 rounded-lg transition-all cursor-pointer ${
-                  billType === "itemized" ? "bg-white text-[#0B1A17] shadow-xs" : "text-[#5A6B66]"
-                }`}
-              >
-                Item-wise (Groceries / Items)
-              </button>
-            </div>
-
-            {/* Itemized details & On-device OCR Scan */}
-            {billType === "itemized" && (
-              <div className="mt-4 p-4 rounded-2xl border border-[#E4ECE8] bg-white space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#0B1A17]">Itemized Breakdown</span>
-                  <div className="flex items-center gap-2">
-                    {/* On-device OCR Scanner Button */}
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0]
-                        if (f) handleReceiptScan(f)
-                      }}
-                    />
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="outline"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={ocrScanning}
-                      className="h-7 text-[11px] px-2.5 rounded-lg border-[#CCD9D4] text-[#0B7A66] hover:bg-[#EAF7F3] font-semibold cursor-pointer"
-                    >
-                      <UL0Icon name="upload" size={12} className="mr-1" />
-                      {ocrScanning ? `Scanning ${ocrProgress}%` : "Scan Receipt"}
-                    </Button>
-                    <span className="text-[11px] text-[#0B7A66] font-semibold">
-                      Total: ₹{calculatedTotal.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-
-                {ocrScanning && (
-                  <div className="space-y-1.5 p-3 rounded-xl bg-[#EAF7F3] border border-[#CCD9D4]">
-                    <div className="flex justify-between text-[11px] font-bold text-[#0B7A66]">
-                      <span>Scanning receipt on your device...</span>
-                      <span>{ocrProgress}%</span>
-                    </div>
-                    <div className="w-full h-1.5 bg-white rounded-full overflow-hidden">
+                {/* 4 Steps Segment */}
+                <div className="flex items-center gap-2">
+                  {[
+                    { num: 1, label: "Amount" },
+                    { num: 2, label: "Friends" },
+                    { num: 3, label: "Split" },
+                    { num: 4, label: "Review" },
+                  ].map((s) => (
+                    <div key={s.num} className="flex items-center gap-1.5">
                       <div
-                        className="h-full bg-[#0B7A66] transition-all duration-200"
-                        style={{ width: `${ocrProgress}%` }}
-                      />
-                    </div>
-                    <span className="text-[10px] text-[#5A6B66] block">
-                      Runs 100% in your browser. Photo is never uploaded to any server.
-                    </span>
-                  </div>
-                )}
-
-                <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-                  {items.map((it) => (
-                    <div
-                      key={it.id}
-                      className="flex items-center justify-between p-2 rounded-lg bg-[#F7FAF8] text-xs border border-[#E4ECE8]"
-                    >
-                      <div>
-                        <span className="font-semibold text-[#0B1A17] block">{it.name}</span>
-                        <span className="text-[10px] text-[#5A6B66]">
-                          ₹{it.price} {it.qty && it.qty > 1 ? `(Qty: ${it.qty})` : ""} • Shared by {it.sharedBy.length} people
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveItem(it.id)}
-                        className="text-[#D9383A] hover:opacity-80 p-1 cursor-pointer"
+                        className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                          s.num <= step ? "bg-[#0B1A17] text-white" : "bg-[#E4ECE8] text-[#5A6B66]"
+                        }`}
                       >
-                        <UL0Icon name="trash" size={12} />
-                      </button>
+                        {s.num}
+                      </div>
+                      <span className={`text-xs hidden sm:inline ${s.num === step ? "font-bold text-[#0B1A17]" : "text-[#5A6B66]"}`}>
+                        {s.label}
+                      </span>
                     </div>
                   ))}
                 </div>
 
-                {/* Add Item Row */}
-                <div className="flex gap-2 pt-1">
-                  <Input
-                    placeholder="Item name (e.g. Milk, Apples)"
-                    value={newItemName}
-                    onChange={(e) => setNewItemName(e.target.value)}
-                    className="h-9 text-xs"
-                  />
-                  <Input
-                    placeholder="Price (₹)"
-                    type="number"
-                    value={newItemPrice}
-                    onChange={(e) => setNewItemPrice(e.target.value)}
-                    className="h-9 text-xs w-24"
-                  />
-                  <Button
-                    type="button"
-                    onClick={handleAddItem}
-                    className="h-9 bg-[#0B7A66] text-white text-xs px-3 rounded-lg font-bold cursor-pointer"
-                  >
-                    Add
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Primary CTA Button (Screenshot 2: "Who's in?") */}
-          <div className="pt-6">
-            <Button
-              type="button"
-              disabled={parseFloat(totalAmountStr) <= 0}
-              onClick={() => setStep(2)}
-              className="w-full h-13 rounded-2xl bg-[#0B1A17] hover:bg-[#1a2e2a] disabled:bg-[#CCD9D4] text-white text-sm font-bold shadow-md cursor-pointer transition-all"
-            >
-              Who&apos;s in?
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* =====================================================================
-          STEP 2: "Who's in?"
-      ====================================================================== */}
-      {step === 2 && (
-        <div className="space-y-6 animate-in fade-in duration-200">
-          <div>
-            <h2 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">Who&apos;s in?</h2>
-            <p className="text-xs text-[#5A6B66] mt-1">
-              Add your friends. They won&apos;t need to sign up to pay.
-            </p>
-          </div>
-
-          {/* Collector Details Box */}
-          <div className="p-4 rounded-2xl border border-[#CCD9D4] bg-[#EAF7F3]/40 space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#0B7A66]">You (Collector)</span>
-              <button
-                type="button"
-                onClick={() => setIsEditingCollector(!isEditingCollector)}
-                className="text-[11px] font-semibold text-[#0B7A66] underline cursor-pointer"
-              >
-                {isEditingCollector ? "Save" : "Edit UPI"}
-              </button>
-            </div>
-
-            {isEditingCollector ? (
-              <div className="space-y-2 pt-1">
-                <Input
-                  value={collectorName}
-                  onChange={(e) => setCollectorName(e.target.value)}
-                  placeholder="Your Name (e.g. Saket)"
-                  className="h-9 text-xs bg-white"
-                />
-                <Input
-                  value={collectorUpi}
-                  onChange={(e) => setCollectorUpi(e.target.value)}
-                  placeholder="Your UPI ID (e.g. saket@oksbi)"
-                  className="h-9 text-xs font-mono bg-white"
-                />
-              </div>
-            ) : (
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-semibold text-[#0B1A17]">{collectorName}</span>
-                <span className="font-mono text-[#5A6B66]">
-                  {collectorUpi || "No UPI set (tap edit)"}
-                </span>
-              </div>
-            )}
-          </div>
-
-          {/* Friend List & Input */}
-          <div className="space-y-3">
-            <Label className="text-xs font-bold text-[#0B1A17]">Friends</Label>
-            <div className="flex gap-2">
-              <Input
-                value={friendInput}
-                onChange={(e) => setFriendInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault()
-                    handleAddFriends()
-                  }
-                }}
-                placeholder="Friend name (or paste multiple names)"
-                className="h-11 rounded-xl text-xs"
-              />
-              <Button
-                type="button"
-                onClick={handleAddFriends}
-                className="h-11 px-4 rounded-xl bg-[#0B1A17] text-white text-xs font-bold cursor-pointer"
-              >
-                Add
-              </Button>
-            </div>
-
-            {/* Friend Chips */}
-            <div className="flex flex-wrap gap-2 pt-1">
-              {friends.map((f) => (
-                <span
-                  key={f.id}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E4ECE8] text-xs font-medium text-[#0B1A17] shadow-xs"
+                <button
+                  onClick={() => setStep(0)}
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-[#5A6B66] hover:text-[#0B1A17] hover:bg-[#EAF1EE] cursor-pointer"
+                  aria-label="Close"
                 >
-                  <span className="w-5 h-5 rounded-full bg-[#EAF7F3] text-[#0B7A66] font-bold text-[10px] flex items-center justify-center">
-                    {f.name.slice(0, 1).toUpperCase()}
-                  </span>
-                  <span>{f.name}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveFriend(f.id)}
-                    className="text-[#5A6B66] hover:text-[#D9383A] ml-0.5 cursor-pointer"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-            </div>
-
-            {/* Quick Preset Groups */}
-            <div className="pt-2">
-              <span className="text-[11px] text-[#5A6B66] block mb-1.5">Quick Add Preset Groups:</span>
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  { label: "Roommates", names: ["Aman", "Rohan", "Pooja"] },
-                  { label: "Trip Friends", names: ["Rahul", "Om", "Sneha"] },
-                  { label: "Chai Gang", names: ["Vikram", "Neha"] },
-                ].map((grp) => (
-                  <button
-                    key={grp.label}
-                    type="button"
-                    onClick={() => {
-                      const newF: Friend[] = grp.names.map((name, i) => ({
-                        id: `f-${Date.now()}-${i}`,
-                        name,
-                        shares: 1,
-                      }))
-                      setFriends(newF)
-                      toast.success(`Loaded ${grp.label} group!`)
-                    }}
-                    className="px-2.5 py-1 rounded-lg border border-dashed border-[#CCD9D4] bg-[#F7FAF8] hover:bg-[#EAF7F3] text-[11px] text-[#0B7A66] font-medium transition-colors cursor-pointer"
-                  >
-                    + {grp.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Primary CTA */}
-          <div className="pt-6">
-            <Button
-              type="button"
-              disabled={friends.length === 0}
-              onClick={() => setStep(3)}
-              className="w-full h-13 rounded-2xl bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-sm font-bold shadow-md cursor-pointer transition-all"
-            >
-              Split it
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* =====================================================================
-          STEP 3: "Split it" (Screenshot 3 Matching + Itemized Mode)
-      ====================================================================== */}
-      {step === 3 && (
-        <div className="space-y-6 animate-in fade-in duration-200">
-          <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">Split it</h2>
-            <span className="text-xl font-bold font-mono text-[#0B1A17]">
-              ₹{calculatedTotal.toFixed(0)}
-            </span>
-          </div>
-
-          {/* Mode Selector Segmented Pills (Screenshot 3: Equal, Exact, %, Shares) */}
-          <div className="p-1 rounded-2xl bg-[#F1F5F3] flex text-xs font-semibold">
-            {(["equal", "exact", "percent", "shares"] as SplitMode[]).map((mode) => (
-              <button
-                key={mode}
-                type="button"
-                onClick={() => setSplitMode(mode)}
-                className={`flex-1 py-2 rounded-xl capitalize transition-all cursor-pointer ${
-                  splitMode === mode ? "bg-white text-[#0B1A17] shadow-xs font-bold" : "text-[#5A6B66]"
-                }`}
-              >
-                {mode === "percent" ? "%" : mode}
-              </button>
-            ))}
-          </div>
-
-          {/* If Itemized Mode: Show Item Assignment Chips */}
-          {billType === "itemized" && (
-            <div className="space-y-3 p-4 rounded-2xl border border-[#E4ECE8] bg-[#F7FAF8]">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-[#0B1A17]">Assign Items to Friends</span>
-                <span className="text-[11px] text-[#0B7A66] font-semibold">{items.length} items</span>
+                  <UL0Icon name="close" size={16} />
+                </button>
               </div>
 
-              <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
-                {items.map((it) => (
-                  <div key={it.id} className="p-3 rounded-xl bg-white border border-[#E4ECE8] space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-[#0B1A17]">{it.name}</span>
-                      <span className="font-mono font-bold text-[#0B7A66]">₹{it.price}</span>
+              {/* STEP 1: How much? */}
+              {step === 1 && (
+                <div className="space-y-6 animate-in fade-in duration-200">
+                  <div>
+                    <h2 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">How much?</h2>
+                  </div>
+
+                  {/* Currency + Amount Input */}
+                  <div className="pt-2">
+                    <div className="flex items-baseline gap-2 border-b-2 border-[#0B1A17] pb-2">
+                      <span className="text-3xl font-bold text-[#0B1A17] flex items-center gap-0.5">
+                        ₹ <span className="text-base text-[#5A6B66]">▾</span>
+                      </span>
+                      <input
+                        type="number"
+                        inputMode="decimal"
+                        value={totalAmountStr}
+                        onChange={(e) => setTotalAmountStr(e.target.value)}
+                        placeholder="0"
+                        className="w-full text-5xl font-extrabold text-[#0B1A17] bg-transparent focus:outline-none tracking-tight"
+                        autoFocus
+                      />
                     </div>
 
-                    {/* Member selection chips */}
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {allMembers.map((m) => {
-                        const isSelected = it.sharedBy.includes(m.id)
+                    {/* Quick Amount Pills */}
+                    <div className="flex gap-2.5 mt-4">
+                      {[500, 1000, 2000].map((amt) => (
+                        <button
+                          key={amt}
+                          type="button"
+                          onClick={() => setTotalAmountStr(String(amt))}
+                          className={`px-4 py-2 rounded-full border text-xs font-semibold cursor-pointer transition-all ${
+                            parseFloat(totalAmountStr) === amt
+                              ? "border-[#0B1A17] bg-[#0B1A17] text-white"
+                              : "border-[#E4ECE8] bg-white text-[#0B1A17] hover:bg-[#F7FAF8]"
+                          }`}
+                        >
+                          ₹{amt.toLocaleString("en-IN")}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* What's it for? */}
+                  <div className="space-y-3 pt-2">
+                    <Label className="text-xs font-bold text-[#0B1A17]">What&apos;s it for?</Label>
+                    <Input
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="e.g. Dinner, Drinks, Groceries, Movie"
+                      className="h-12 rounded-xl border-[#E4ECE8] text-sm text-[#0B1A17] focus-visible:ring-[#0B1A17]"
+                    />
+
+                    {/* Category Pills */}
+                    <div className="flex flex-wrap gap-2 pt-1">
+                      {CATEGORY_PRESETS.map((cat) => {
+                        const isActive = category === cat.label
                         return (
                           <button
-                            key={m.id}
+                            key={cat.label}
                             type="button"
-                            onClick={() => toggleItemMember(it.id, m.id)}
-                            className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
-                              isSelected
-                                ? "bg-[#0B1A17] text-white"
-                                : "bg-[#F7FAF8] border border-[#E4ECE8] text-[#5A6B66] hover:bg-[#EAF1EE]"
+                            onClick={() => {
+                              setCategory(cat.label)
+                              if (!title) {
+                                setTitle(cat.title)
+                              }
+                            }}
+                            className={`px-4 py-2 rounded-full text-xs font-semibold cursor-pointer transition-all ${
+                              isActive
+                                ? "bg-[#0B1A17] text-white shadow-xs"
+                                : "bg-white border border-[#E4ECE8] text-[#0B1A17] hover:bg-[#F7FAF8]"
                             }`}
                           >
-                            {m.name.split(" ")[0]}
+                            {cat.label}
                           </button>
                         )
                       })}
+                    </div>
+                  </div>
+
+                  {/* Mode Toggle: Entire Bill vs Item-wise */}
+                  <div className="pt-2">
+                    <div className="p-1 rounded-xl bg-[#EAF1EE] flex text-xs font-semibold">
                       <button
                         type="button"
-                        onClick={() => selectAllItemMembers(it.id)}
-                        className="px-2 py-1 text-[10px] text-[#0B7A66] font-semibold underline cursor-pointer"
+                        onClick={() => setBillType("full")}
+                        className={`flex-1 py-2 rounded-lg transition-all cursor-pointer ${
+                          billType === "full" ? "bg-white text-[#0B1A17] shadow-xs" : "text-[#5A6B66]"
+                        }`}
                       >
-                        All
+                        Entire Bill
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setBillType("itemized")}
+                        className={`flex-1 py-2 rounded-lg transition-all cursor-pointer ${
+                          billType === "itemized" ? "bg-white text-[#0B1A17] shadow-xs" : "text-[#5A6B66]"
+                        }`}
+                      >
+                        Item-wise (Groceries / Items)
                       </button>
                     </div>
+
+                    {/* Itemized details & OCR scan */}
+                    {billType === "itemized" && (
+                      <div className="mt-4 p-4 rounded-2xl border border-[#E4ECE8] bg-white space-y-3">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-bold text-[#0B1A17]">Itemized Breakdown</span>
+                          <div className="flex items-center gap-2">
+                            <input
+                              ref={fileInputRef}
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const f = e.target.files?.[0]
+                                if (f) handleReceiptScan(f)
+                              }}
+                            />
+                            <Button
+                              type="button"
+                              size="sm"
+                              variant="outline"
+                              onClick={() => fileInputRef.current?.click()}
+                              disabled={ocrScanning}
+                              className="h-7 text-[11px] px-2.5 rounded-lg border-[#CCD9D4] text-[#0B7A66] hover:bg-[#EAF7F3] font-semibold cursor-pointer"
+                            >
+                              <UL0Icon name="upload" size={12} className="mr-1" />
+                              {ocrScanning ? `Scanning ${ocrProgress}%` : "Scan Receipt (OCR)"}
+                            </Button>
+                            <span className="text-[11px] text-[#0B7A66] font-semibold">
+                              Total: ₹{calculatedTotal.toFixed(2)}
+                            </span>
+                          </div>
+                        </div>
+
+                        {ocrScanning && (
+                          <div className="space-y-1.5 p-3 rounded-xl bg-[#EAF7F3] border border-[#CCD9D4]">
+                            <div className="flex justify-between text-[11px] font-bold text-[#0B7A66]">
+                              <span>Scanning receipt locally on your device...</span>
+                              <span>{ocrProgress}%</span>
+                            </div>
+                            <div className="w-full h-1.5 bg-white rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-[#0B7A66] transition-all duration-200"
+                                style={{ width: `${ocrProgress}%` }}
+                              />
+                            </div>
+                            <span className="text-[10px] text-[#5A6B66] block">
+                              Runs 100% in your browser. Photo is never uploaded to any server.
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                          {items.map((it) => (
+                            <div
+                              key={it.id}
+                              className="flex items-center justify-between p-2 rounded-lg bg-[#F7FAF8] text-xs border border-[#E4ECE8]"
+                            >
+                              <div>
+                                <span className="font-semibold text-[#0B1A17] block">{it.name}</span>
+                                <span className="text-[10px] text-[#5A6B66]">
+                                  ₹{it.price} {it.qty && it.qty > 1 ? `(Qty: ${it.qty})` : ""}
+                                </span>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={() => handleRemoveItem(it.id)}
+                                className="text-[#D9383A] hover:opacity-80 p-1 cursor-pointer"
+                              >
+                                <UL0Icon name="trash" size={12} />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Add Item Row */}
+                        <div className="flex gap-2 pt-1">
+                          <Input
+                            placeholder="Item name (e.g. Milk, Bread)"
+                            value={newItemName}
+                            onChange={(e) => setNewItemName(e.target.value)}
+                            className="h-9 text-xs"
+                          />
+                          <Input
+                            placeholder="Price (₹)"
+                            type="number"
+                            value={newItemPrice}
+                            onChange={(e) => setNewItemPrice(e.target.value)}
+                            className="h-9 text-xs w-24"
+                          />
+                          <Button
+                            type="button"
+                            onClick={handleAddItem}
+                            className="h-9 bg-[#0B7A66] text-white text-xs px-3 rounded-lg font-bold cursor-pointer"
+                          >
+                            Add
+                          </Button>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                ))}
-              </div>
 
-              {/* Tax & Service Allocation Fields */}
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E4ECE8]">
-                <div>
-                  <Label className="text-[10px] text-[#5A6B66]">GST / Tax (%)</Label>
-                  <Input
-                    type="number"
-                    value={taxPercent}
-                    onChange={(e) => setTaxPercent(e.target.value)}
-                    className="h-8 text-xs font-mono"
-                    placeholder="5"
-                  />
-                </div>
-                <div>
-                  <Label className="text-[10px] text-[#5A6B66]">Service Charge (%)</Label>
-                  <Input
-                    type="number"
-                    value={serviceChargePercent}
-                    onChange={(e) => setServiceChargePercent(e.target.value)}
-                    className="h-8 text-xs font-mono"
-                    placeholder="0"
-                  />
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Member Share Cards (Screenshot 3: SK, OB cards with ₹250) */}
-          <div className="space-y-3">
-            {/* Collector Card */}
-            {includeCollector && (
-              <div className="p-4 rounded-2xl border border-[#E4ECE8] bg-white flex items-center justify-between shadow-xs">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#0B1A17] text-white font-bold text-xs flex items-center justify-center">
-                    {collectorName.slice(0, 2).toUpperCase()}
+                  <div className="pt-4">
+                    <Button
+                      type="button"
+                      disabled={parseFloat(totalAmountStr) <= 0 && items.length === 0}
+                      onClick={() => setStep(2)}
+                      className="w-full h-13 rounded-2xl bg-[#0B1A17] hover:bg-[#1a2e2a] disabled:bg-[#CCD9D4] text-white text-sm font-bold shadow-md cursor-pointer transition-all"
+                    >
+                      Who&apos;s in?
+                    </Button>
                   </div>
-                  <div>
-                    <span className="text-sm font-bold text-[#0B1A17] block">
-                      {collectorName} (you)
-                    </span>
-                    <span className="text-[11px] text-[#5A6B66]">Organizer</span>
-                  </div>
-                </div>
-                <span className="text-base font-extrabold font-mono text-[#0B1A17]">
-                  ₹{collectorShare.toFixed(0)}
-                </span>
-              </div>
-            )}
-
-            {/* Friend Cards */}
-            {friends.map((f) => {
-              const shareAmt = friendShares[f.id] || 0
-              const initials = f.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-                .slice(0, 2)
-                .toUpperCase()
-
-              return (
-                <div
-                  key={f.id}
-                  className="p-4 rounded-2xl border border-[#E4ECE8] bg-white flex items-center justify-between shadow-xs"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[#0B1A17] text-white font-bold text-xs flex items-center justify-center">
-                      {initials}
-                    </div>
-                    <div>
-                      <span className="text-sm font-bold text-[#0B1A17] block">{f.name}</span>
-                    </div>
-                  </div>
-
-                  {splitMode === "exact" ? (
-                    <div className="w-24">
-                      <Input
-                        type="number"
-                        value={f.customAmount || ""}
-                        onChange={(e) => {
-                          const val = parseFloat(e.target.value) || 0
-                          setFriends((prev) =>
-                            prev.map((item) => (item.id === f.id ? { ...item, customAmount: val } : item))
-                          )
-                        }}
-                        className="h-9 text-xs text-right font-mono"
-                        placeholder="0"
-                      />
-                    </div>
-                  ) : (
-                    <span className="text-base font-extrabold font-mono text-[#0B1A17]">
-                      ₹{shareAmt.toFixed(0)}
-                    </span>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-
-          {/* Primary CTA (Screenshot 3: "Review") */}
-          <div className="pt-6">
-            <Button
-              type="button"
-              onClick={() => setStep(4)}
-              className="w-full h-13 rounded-2xl bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-sm font-bold shadow-md cursor-pointer transition-all"
-            >
-              Review
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {/* =====================================================================
-          STEP 4: "Looks right?" (Screenshot 4 Matching)
-      ====================================================================== */}
-      {step === 4 && (
-        <div className="space-y-6 animate-in fade-in duration-200">
-          <div>
-            <h2 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">Looks right?</h2>
-          </div>
-
-          {/* Summary Card (Screenshot 4: rounded card, icon + title + ₹500, member rows with initials) */}
-          <div className="rounded-3xl border border-[#E4ECE8] bg-white p-5 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F3]">
-              <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-lg bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center text-xs font-bold">
-                  <UL0Icon name="billing" size={14} />
-                </div>
-                <span className="text-base font-bold text-[#0B1A17]">{title || "Split"}</span>
-              </div>
-              <span className="text-lg font-black font-mono text-[#0B1A17]">
-                ₹{calculatedTotal.toFixed(0)}
-              </span>
-            </div>
-
-            {/* Member Breakdown Rows */}
-            <div className="space-y-3">
-              {includeCollector && (
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-full bg-[#0B1A17] text-white font-bold text-[10px] flex items-center justify-center">
-                      {collectorName.slice(0, 2).toUpperCase()}
-                    </div>
-                    <span className="font-semibold text-[#0B1A17]">{collectorName} (you)</span>
-                  </div>
-                  <span className="font-mono font-bold text-[#0B1A17]">
-                    ₹{collectorShare.toFixed(0)}
-                  </span>
                 </div>
               )}
 
-              {friends.map((f) => {
-                const initials = f.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase()
+              {/* STEP 2: Who's in? */}
+              {step === 2 && (
+                <div className="space-y-6 animate-in fade-in duration-200">
+                  <div>
+                    <h2 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">Who&apos;s in?</h2>
+                    <p className="text-xs text-[#5A6B66] mt-1">
+                      Add friends sharing the bill. They won&apos;t need to sign up to pay.
+                    </p>
+                  </div>
 
-                return (
-                  <div key={f.id} className="flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-[#0B1A17] text-white font-bold text-[10px] flex items-center justify-center">
-                        {initials}
-                      </div>
-                      <span className="font-semibold text-[#0B1A17]">{f.name}</span>
+                  {/* Collector Details Box */}
+                  <div className="p-4 rounded-2xl border border-[#CCD9D4] bg-[#EAF7F3]/40 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[#0B7A66]">You (Collector)</span>
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingCollector(!isEditingCollector)}
+                        className="text-[11px] font-semibold text-[#0B7A66] underline cursor-pointer"
+                      >
+                        {isEditingCollector ? "Save" : "Edit UPI"}
+                      </button>
                     </div>
-                    <span className="font-mono font-bold text-[#0B1A17]">
-                      ₹{(friendShares[f.id] || 0).toFixed(0)}
+
+                    {isEditingCollector ? (
+                      <div className="space-y-2 pt-1">
+                        <Input
+                          value={collectorName}
+                          onChange={(e) => setCollectorName(e.target.value)}
+                          placeholder="Your Name (e.g. Alex)"
+                          className="h-9 text-xs bg-white"
+                        />
+                        <Input
+                          value={collectorUpi}
+                          onChange={(e) => setCollectorUpi(e.target.value)}
+                          placeholder="Your UPI ID (e.g. yourname@oksbi)"
+                          className="h-9 text-xs font-mono bg-white"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="font-semibold text-[#0B1A17]">{collectorName || "You"}</span>
+                        <span className="font-mono text-[#5A6B66]">
+                          {collectorUpi || "No UPI set (tap edit)"}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Friends Input */}
+                  <div className="space-y-3">
+                    <Label className="text-xs font-bold text-[#0B1A17]">Friends</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        value={friendInput}
+                        onChange={(e) => setFriendInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault()
+                            handleAddFriends()
+                          }
+                        }}
+                        placeholder="Friend name (or paste comma-separated names)"
+                        className="h-11 rounded-xl text-xs"
+                      />
+                      <Button
+                        type="button"
+                        onClick={handleAddFriends}
+                        className="h-11 px-4 rounded-xl bg-[#0B1A17] text-white text-xs font-bold cursor-pointer"
+                      >
+                        Add
+                      </Button>
+                    </div>
+
+                    {/* Friend chips */}
+                    {friends.length > 0 && (
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {friends.map((f) => (
+                          <span
+                            key={f.id}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-[#E4ECE8] text-xs font-medium text-[#0B1A17] shadow-xs"
+                          >
+                            <span className="w-5 h-5 rounded-full bg-[#EAF7F3] text-[#0B7A66] font-bold text-[10px] flex items-center justify-center">
+                              {f.name.slice(0, 1).toUpperCase()}
+                            </span>
+                            <span>{f.name}</span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveFriend(f.id)}
+                              className="text-[#5A6B66] hover:text-[#D9383A] ml-0.5 cursor-pointer"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    {/* Quick Preset Groups */}
+                    <div className="pt-2">
+                      <span className="text-[11px] text-[#5A6B66] block mb-1.5">Quick Add Preset Groups:</span>
+                      <div className="flex flex-wrap gap-1.5">
+                        {[
+                          { label: "Roommates", names: ["Roommate 1", "Roommate 2", "Roommate 3"] },
+                          { label: "Trip Friends", names: ["Friend A", "Friend B", "Friend C"] },
+                          { label: "Chai Gang", names: ["Friend 1", "Friend 2"] },
+                        ].map((grp) => (
+                          <button
+                            key={grp.label}
+                            type="button"
+                            onClick={() => {
+                              const newF: Friend[] = grp.names.map((name, i) => ({
+                                id: `f-${Date.now()}-${i}`,
+                                name,
+                                shares: 1,
+                              }))
+                              setFriends(newF)
+                              toast.success(`Loaded ${grp.label}!`)
+                            }}
+                            className="px-2.5 py-1 rounded-lg border border-dashed border-[#CCD9D4] bg-[#F7FAF8] hover:bg-[#EAF7F3] text-[11px] text-[#0B7A66] font-medium transition-colors cursor-pointer"
+                          >
+                            + {grp.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-4">
+                    <Button
+                      type="button"
+                      disabled={friends.length === 0}
+                      onClick={() => setStep(3)}
+                      className="w-full h-13 rounded-2xl bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-sm font-bold shadow-md cursor-pointer transition-all"
+                    >
+                      Split it
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 3: Split it */}
+              {step === 3 && (
+                <div className="space-y-6 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">Split it</h2>
+                    <span className="text-xl font-bold font-mono text-[#0B1A17]">
+                      ₹{calculatedTotal.toFixed(0)}
                     </span>
                   </div>
-                )
-              })}
-            </div>
-          </div>
 
-          {/* Note (optional) - Screenshot 4 */}
-          <div className="space-y-1.5">
-            <Label className="text-xs font-bold text-[#0B1A17]">Note (optional)</Label>
-            <Input
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="Table 12, birthday dinner"
-              className="h-11 rounded-xl text-xs"
-            />
-          </div>
+                  {/* Mode Selector */}
+                  <div className="p-1 rounded-2xl bg-[#F1F5F3] flex text-xs font-semibold">
+                    {(["equal", "exact", "percent", "shares"] as SplitMode[]).map((mode) => (
+                      <button
+                        key={mode}
+                        type="button"
+                        onClick={() => setSplitMode(mode)}
+                        className={`flex-1 py-2 rounded-xl capitalize transition-all cursor-pointer ${
+                          splitMode === mode ? "bg-white text-[#0B1A17] shadow-xs font-bold" : "text-[#5A6B66]"
+                        }`}
+                      >
+                        {mode === "percent" ? "%" : mode}
+                      </button>
+                    ))}
+                  </div>
 
-          {/* Auto-remind if unpaid PRO - Screenshot 4 */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <UL0Icon name="bell" size={14} className="text-[#0B1A17]" />
-              <span className="text-xs font-bold text-[#0B1A17]">Auto-remind if unpaid</span>
-              <span className="px-1.5 py-0.5 rounded-full bg-[#0B1A17] text-[9px] font-extrabold text-white tracking-wider">
-                PRO
-              </span>
+                  {/* Itemized Member Assignment Chips */}
+                  {billType === "itemized" && items.length > 0 && (
+                    <div className="space-y-3 p-4 rounded-2xl border border-[#E4ECE8] bg-[#F7FAF8]">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-[#0B1A17]">Assign Items to Friends</span>
+                        <span className="text-[11px] text-[#0B7A66] font-semibold">{items.length} items</span>
+                      </div>
+
+                      <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                        {items.map((it) => (
+                          <div key={it.id} className="p-3 rounded-xl bg-white border border-[#E4ECE8] space-y-2">
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="font-bold text-[#0B1A17]">{it.name}</span>
+                              <span className="font-mono font-bold text-[#0B7A66]">₹{it.price}</span>
+                            </div>
+
+                            <div className="flex flex-wrap gap-1.5 pt-1">
+                              {allMembers.map((m) => {
+                                const isSelected = it.sharedBy.includes(m.id)
+                                return (
+                                  <button
+                                    key={m.id}
+                                    type="button"
+                                    onClick={() => toggleItemMember(it.id, m.id)}
+                                    className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+                                      isSelected
+                                        ? "bg-[#0B1A17] text-white"
+                                        : "bg-[#F7FAF8] border border-[#E4ECE8] text-[#5A6B66] hover:bg-[#EAF1EE]"
+                                    }`}
+                                  >
+                                    {m.name.split(" ")[0]}
+                                  </button>
+                                )
+                              })}
+                              <button
+                                type="button"
+                                onClick={() => selectAllItemMembers(it.id)}
+                                className="px-2 py-1 text-[10px] text-[#0B7A66] font-semibold underline cursor-pointer"
+                              >
+                                All
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E4ECE8]">
+                        <div>
+                          <Label className="text-[10px] text-[#5A6B66]">GST / Tax (%)</Label>
+                          <Input
+                            type="number"
+                            value={taxPercent}
+                            onChange={(e) => setTaxPercent(e.target.value)}
+                            className="h-8 text-xs font-mono"
+                            placeholder="5"
+                          />
+                        </div>
+                        <div>
+                          <Label className="text-[10px] text-[#5A6B66]">Service Charge (%)</Label>
+                          <Input
+                            type="number"
+                            value={serviceChargePercent}
+                            onChange={(e) => setServiceChargePercent(e.target.value)}
+                            className="h-8 text-xs font-mono"
+                            placeholder="0"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Member Share Cards */}
+                  <div className="space-y-3">
+                    {includeCollector && (
+                      <div className="p-4 rounded-2xl border border-[#E4ECE8] bg-white flex items-center justify-between shadow-xs">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-[#0B1A17] text-white font-bold text-xs flex items-center justify-center">
+                            {(collectorName || "You").slice(0, 2).toUpperCase()}
+                          </div>
+                          <div>
+                            <span className="text-sm font-bold text-[#0B1A17] block">
+                              {collectorName || "You"} (you)
+                            </span>
+                            <span className="text-[11px] text-[#5A6B66]">Organizer</span>
+                          </div>
+                        </div>
+                        <span className="text-base font-extrabold font-mono text-[#0B1A17]">
+                          ₹{collectorShare.toFixed(0)}
+                        </span>
+                      </div>
+                    )}
+
+                    {friends.map((f) => {
+                      const shareAmt = friendShares[f.id] || 0
+                      const initials = f.name
+                        .split(" ")
+                        .map((n) => n[0])
+                        .join("")
+                        .slice(0, 2)
+                        .toUpperCase()
+
+                      return (
+                        <div
+                          key={f.id}
+                          className="p-4 rounded-2xl border border-[#E4ECE8] bg-white flex items-center justify-between shadow-xs"
+                        >
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-[#0B1A17] text-white font-bold text-xs flex items-center justify-center">
+                              {initials}
+                            </div>
+                            <div>
+                              <span className="text-sm font-bold text-[#0B1A17] block">{f.name}</span>
+                            </div>
+                          </div>
+
+                          {splitMode === "exact" ? (
+                            <div className="w-24">
+                              <Input
+                                type="number"
+                                value={f.customAmount || ""}
+                                onChange={(e) => {
+                                  const val = parseFloat(e.target.value) || 0
+                                  setFriends((prev) =>
+                                    prev.map((item) => (item.id === f.id ? { ...item, customAmount: val } : item))
+                                  )
+                                }}
+                                className="h-9 text-xs text-right font-mono"
+                                placeholder="0"
+                              />
+                            </div>
+                          ) : (
+                            <span className="text-base font-extrabold font-mono text-[#0B1A17]">
+                              ₹{shareAmt.toFixed(0)}
+                            </span>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  <div className="pt-4">
+                    <Button
+                      type="button"
+                      onClick={() => setStep(4)}
+                      className="w-full h-13 rounded-2xl bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-sm font-bold shadow-md cursor-pointer transition-all"
+                    >
+                      Review
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* STEP 4: Looks right? */}
+              {step === 4 && (
+                <div className="space-y-6 animate-in fade-in duration-200">
+                  <div>
+                    <h2 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">Looks right?</h2>
+                  </div>
+
+                  {/* Summary Card */}
+                  <div className="rounded-3xl border border-[#E4ECE8] bg-white p-5 shadow-xs space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F3]">
+                      <div className="flex items-center gap-2.5">
+                        <div className="w-7 h-7 rounded-lg bg-[#EAF7F3] text-[#0B7A66] flex items-center justify-center text-xs font-bold">
+                          <UL0Icon name="billing" size={14} />
+                        </div>
+                        <span className="text-base font-bold text-[#0B1A17]">{title || `${category} Split`}</span>
+                      </div>
+                      <span className="text-lg font-black font-mono text-[#0B1A17]">
+                        ₹{calculatedTotal.toFixed(0)}
+                      </span>
+                    </div>
+
+                    <div className="space-y-3">
+                      {includeCollector && (
+                        <div className="flex items-center justify-between text-xs">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-7 h-7 rounded-full bg-[#0B1A17] text-white font-bold text-[10px] flex items-center justify-center">
+                              {(collectorName || "You").slice(0, 2).toUpperCase()}
+                            </div>
+                            <span className="font-semibold text-[#0B1A17]">{collectorName || "You"} (you)</span>
+                          </div>
+                          <span className="font-mono font-bold text-[#0B1A17]">
+                            ₹{collectorShare.toFixed(0)}
+                          </span>
+                        </div>
+                      )}
+
+                      {friends.map((f) => {
+                        const initials = f.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")
+                          .slice(0, 2)
+                          .toUpperCase()
+
+                        return (
+                          <div key={f.id} className="flex items-center justify-between text-xs">
+                            <div className="flex items-center gap-2.5">
+                              <div className="w-7 h-7 rounded-full bg-[#0B1A17] text-white font-bold text-[10px] flex items-center justify-center">
+                                {initials}
+                              </div>
+                              <span className="font-semibold text-[#0B1A17]">{f.name}</span>
+                            </div>
+                            <span className="font-mono font-bold text-[#0B1A17]">
+                              ₹{(friendShares[f.id] || 0).toFixed(0)}
+                            </span>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Note */}
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-bold text-[#0B1A17]">Note (optional)</Label>
+                    <Input
+                      value={note}
+                      onChange={(e) => setNote(e.target.value)}
+                      placeholder="e.g. Table 12, Friday night dinner"
+                      className="h-11 rounded-xl text-xs"
+                    />
+                  </div>
+
+                  {/* Auto-remind if unpaid PRO */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <UL0Icon name="bell" size={14} className="text-[#0B1A17]" />
+                      <span className="text-xs font-bold text-[#0B1A17]">Auto-remind if unpaid</span>
+                      <span className="px-1.5 py-0.5 rounded-full bg-[#0B1A17] text-[9px] font-extrabold text-white tracking-wider">
+                        PRO
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { label: "After 2 days", days: 2 },
+                        { label: "After 3 days", days: 3 },
+                        { label: "After 7 days", days: 7 },
+                      ].map((opt) => (
+                        <button
+                          key={opt.days}
+                          type="button"
+                          onClick={() => setAutoRemindDays(autoRemindDays === opt.days ? null : opt.days)}
+                          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all ${
+                            autoRemindDays === opt.days
+                              ? "bg-[#0B1A17] text-white"
+                              : "bg-white border border-[#E4ECE8] text-[#0B1A17] hover:bg-[#F7FAF8]"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-[#5A6B66] leading-relaxed">
+                      You get a nudge with the message ready, the app never texts your friends itself.
+                    </p>
+                  </div>
+
+                  {/* Pay-by date PRO */}
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <UL0Icon name="clock" size={14} className="text-[#0B1A17]" />
+                      <span className="text-xs font-bold text-[#0B1A17]">Pay-by date</span>
+                      <span className="px-1.5 py-0.5 rounded-full bg-[#0B1A17] text-[9px] font-extrabold text-white tracking-wider">
+                        PRO
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {[
+                        { label: "In 3 days", val: "3days" },
+                        { label: "This Sunday", val: "sunday" },
+                        { label: "In a week", val: "week" },
+                        { label: "End of month", val: "month" },
+                      ].map((opt) => (
+                        <button
+                          key={opt.val}
+                          type="button"
+                          onClick={() => setPayByOption(payByOption === opt.val ? null : opt.val)}
+                          className={`px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all ${
+                            payByOption === opt.val
+                              ? "bg-[#0B1A17] text-white"
+                              : "bg-white border border-[#E4ECE8] text-[#0B1A17] hover:bg-[#F7FAF8]"
+                          }`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-[#5A6B66] leading-relaxed">
+                      Friends see the date on their settle page, and nudges say when it is late.
+                    </p>
+                  </div>
+
+                  {/* Save as template PRO */}
+                  <div className="pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsSavedTemplate(!isSavedTemplate)
+                        toast.success("Saved as template for future splits!")
+                      }}
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#E4ECE8] bg-white text-xs font-semibold text-[#0B1A17] hover:bg-[#F7FAF8] cursor-pointer"
+                    >
+                      <UL0Icon name={isSavedTemplate ? "check" : "bookmark"} size={14} />
+                      <span>Save as template</span>
+                      <span className="px-1.5 py-0.5 rounded-full bg-[#0B1A17] text-[9px] font-extrabold text-white tracking-wider">
+                        PRO
+                      </span>
+                    </button>
+                  </div>
+
+                  {/* Backdrop Banner Image Upload */}
+                  <div className="p-3.5 rounded-2xl border border-[#E4ECE8] bg-[#F7FAF8] space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-[#0B1A17]">Backdrop Banner Image</span>
+                      <span className="text-[10px] text-[#5A6B66]">Free image upload</span>
+                    </div>
+                    <label className="flex items-center justify-center gap-2 p-3 rounded-xl border border-dashed border-[#CCD9D4] bg-white hover:bg-[#EAF7F3]/40 cursor-pointer text-xs font-medium text-[#0B1A17] transition-colors">
+                      <UL0Icon name="upload" size={14} />
+                      <span>
+                        {isUploadingBanner ? "Uploading image..." : bannerUrl ? "Change Banner" : "Upload Hero Banner Backdrop"}
+                      </span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const f = e.target.files?.[0]
+                          if (f) handleBannerUpload(f)
+                        }}
+                      />
+                    </label>
+                    {bannerUrl && (
+                      <p className="text-[11px] text-[#0B7A66] font-semibold">
+                        ✓ Banner attached! Will be shown as hero backdrop on settle page.
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="pt-4">
+                    <Button
+                      type="button"
+                      disabled={isSubmitting}
+                      onClick={handleCreateSplit}
+                      className="w-full h-13 rounded-2xl bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-sm font-bold shadow-md cursor-pointer transition-all"
+                    >
+                      {isSubmitting ? "Creating split..." : "Create split"}
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="flex flex-wrap gap-2">
-              {[
-                { label: "After 2 days", days: 2 },
-                { label: "After 3 days", days: 3 },
-                { label: "After 7 days", days: 7 },
-              ].map((opt) => (
-                <button
-                  key={opt.days}
-                  type="button"
-                  onClick={() => setAutoRemindDays(autoRemindDays === opt.days ? null : opt.days)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all ${
-                    autoRemindDays === opt.days
-                      ? "bg-[#0B1A17] text-white"
-                      : "bg-white border border-[#E4ECE8] text-[#0B1A17] hover:bg-[#F7FAF8]"
-                  }`}
+          )}
+        </main>
+      </div>
+
+      {/* =====================================================================
+          GUN GAME MODAL (Russian Roulette: 6 chambers, 1 bullet, 5 empty)
+      ====================================================================== */}
+      <GunGame
+        open={showGunGame}
+        onOpenChange={setShowGunGame}
+        initialMembers={[
+          ...(collectorName ? [collectorName] : []),
+          ...friends.map((f) => f.name),
+        ]}
+        onSelectPayer={(payerName) => {
+          setCollectorName(payerName)
+          setStep(1)
+          toast.success(`Set ${payerName} as the organizer/payer!`)
+        }}
+      />
+
+      {/* =====================================================================
+          SETTINGS DIALOG
+      ====================================================================== */}
+      <Dialog open={showSettings} onOpenChange={setShowSettings}>
+        <DialogContent className="max-w-sm bg-white border border-[#E4ECE8] text-[#0B1A17] p-6 rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold flex items-center gap-2">
+              <UL0Icon name="settings" size={18} /> Settings
+            </DialogTitle>
+            <DialogDescription className="text-xs text-[#5A6B66]">
+              Your organizer profile is remembered on this device.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label className="text-xs font-bold text-[#0B1A17]">Your Name</Label>
+              <Input
+                value={collectorName}
+                onChange={(e) => setCollectorName(e.target.value)}
+                placeholder="Your Name (e.g. Alex)"
+                className="h-10 text-xs"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-xs font-bold text-[#0B1A17]">Default UPI ID (for receiving payments)</Label>
+              <Input
+                value={collectorUpi}
+                onChange={(e) => setCollectorUpi(e.target.value)}
+                placeholder="e.g. yourname@oksbi"
+                className="h-10 text-xs font-mono"
+              />
+            </div>
+
+            <div className="flex gap-2 pt-2">
+              <Button
+                onClick={() => {
+                  saveCollectorDetails(collectorName, collectorUpi)
+                  toast.success("Settings saved!")
+                  setShowSettings(false)
+                }}
+                className="flex-1 bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-xs h-10 font-bold cursor-pointer"
+              >
+                Save
+              </Button>
+              {hasSavedCollector && (
+                <Button
+                  variant="outline"
+                  onClick={clearCollectorDetails}
+                  className="text-xs h-10 border-[#E4ECE8] text-[#D9383A] hover:bg-[#FDF2F2] cursor-pointer"
                 >
-                  {opt.label}
-                </button>
-              ))}
+                  Forget Me
+                </Button>
+              )}
             </div>
-            <p className="text-[11px] text-[#5A6B66] leading-relaxed">
-              You get a nudge with the message ready, the app never texts your friends itself.
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* =====================================================================
+          QR SCANNER DIALOG
+      ====================================================================== */}
+      <Dialog open={showQrScanner} onOpenChange={setShowQrScanner}>
+        <DialogContent className="max-w-sm bg-white border border-[#E4ECE8] text-[#0B1A17] p-6 rounded-3xl text-center">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-bold">Scan UPI QR or Receipt</DialogTitle>
+            <DialogDescription className="text-xs text-[#5A6B66]">
+              Scan merchant or personal QR codes or bills to auto-populate the split.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-8 flex flex-col items-center space-y-3">
+            <div className="w-20 h-20 rounded-2xl bg-[#F7FAF8] border-2 border-dashed border-[#CCD9D4] flex items-center justify-center text-[#5A6B66]">
+              <UL0Icon name="qr" size={32} />
+            </div>
+            <p className="text-xs text-[#5A6B66] max-w-xs">
+              Upload a bill photo or QR code to auto-parse amounts and details.
             </p>
-          </div>
-
-          {/* Pay-by date PRO - Screenshot 4 */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <UL0Icon name="clock" size={14} className="text-[#0B1A17]" />
-              <span className="text-xs font-bold text-[#0B1A17]">Pay-by date</span>
-              <span className="px-1.5 py-0.5 rounded-full bg-[#0B1A17] text-[9px] font-extrabold text-white tracking-wider">
-                PRO
-              </span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {[
-                { label: "In 3 days", val: "3days" },
-                { label: "This Sunday", val: "sunday" },
-                { label: "In a week", val: "week" },
-                { label: "End of month", val: "month" },
-              ].map((opt) => (
-                <button
-                  key={opt.val}
-                  type="button"
-                  onClick={() => setPayByOption(payByOption === opt.val ? null : opt.val)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold cursor-pointer transition-all ${
-                    payByOption === opt.val
-                      ? "bg-[#0B1A17] text-white"
-                      : "bg-white border border-[#E4ECE8] text-[#0B1A17] hover:bg-[#F7FAF8]"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-            <p className="text-[11px] text-[#5A6B66] leading-relaxed">
-              Friends see the date on their settle page, and nudges say when it is late.
-            </p>
-          </div>
-
-          {/* Save as template PRO - Screenshot 4 */}
-          <div className="pt-1">
-            <button
-              type="button"
-              onClick={() => {
-                setIsSavedTemplate(!isSavedTemplate)
-                toast.success("Saved as template for future splits!")
-              }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#E4ECE8] bg-white text-xs font-semibold text-[#0B1A17] hover:bg-[#F7FAF8] cursor-pointer"
-            >
-              <UL0Icon name={isSavedTemplate ? "check" : "bookmark"} size={14} />
-              <span>Save as template</span>
-              <span className="px-1.5 py-0.5 rounded-full bg-[#0B1A17] text-[9px] font-extrabold text-white tracking-wider">
-                PRO
-              </span>
-            </button>
-          </div>
-
-          {/* Backdrop Banner Image Upload (Free Image Host API) */}
-          <div className="p-3.5 rounded-2xl border border-[#E4ECE8] bg-[#F7FAF8] space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#0B1A17]">Backdrop Banner Image</span>
-              <span className="text-[10px] text-[#5A6B66]">Free image upload</span>
-            </div>
-            <label className="flex items-center justify-center gap-2 p-3 rounded-xl border border-dashed border-[#CCD9D4] bg-white hover:bg-[#EAF7F3]/40 cursor-pointer text-xs font-medium text-[#0B1A17] transition-colors">
-              <UL0Icon name="upload" size={14} />
-              <span>
-                {isUploadingBanner ? "Uploading image..." : bannerUrl ? "Change Banner" : "Upload Hero Banner Backdrop"}
-              </span>
+            <label className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#0B7A66] text-white text-xs font-bold hover:bg-[#086353]">
+              <UL0Icon name="upload" size={14} /> Upload QR / Bill Photo
               <input
                 type="file"
                 accept="image/*"
                 className="hidden"
                 onChange={(e) => {
                   const f = e.target.files?.[0]
-                  if (f) handleBannerUpload(f)
+                  if (f) {
+                    setShowQrScanner(false)
+                    handleReceiptScan(f)
+                    setStep(1)
+                  }
                 }}
               />
             </label>
-            {bannerUrl && (
-              <p className="text-[11px] text-[#0B7A66] font-semibold">
-                ✓ Banner attached! Will be shown as hero backdrop on settle page.
-              </p>
-            )}
           </div>
-
-          {/* Primary CTA (Screenshot 4: "Create split") */}
-          <div className="pt-6">
-            <Button
-              type="button"
-              disabled={isSubmitting}
-              onClick={handleCreateSplit}
-              className="w-full h-13 rounded-2xl bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-sm font-bold shadow-md cursor-pointer transition-all"
-            >
-              {isSubmitting ? "Creating split..." : "Create split"}
-            </Button>
-          </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
 
       {/* =====================================================================
           SUCCESS SHARE SHEET DIALOG
@@ -1817,9 +1915,9 @@ export function SplitWizard() {
                 buildReminderMessage({
                   friendName: "Friend",
                   amount: calculatedTotal,
-                  title: title || "our bill",
-                  url: settleUrl,
-                  payBy: payByOption,
+                  title: title || `${category} bill`,
+                  settleUrl: settleUrl,
+                  payByDate: payByOption,
                   tone: reminderTone,
                   lang: reminderLang,
                 })

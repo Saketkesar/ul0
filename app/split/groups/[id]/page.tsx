@@ -232,7 +232,7 @@ export default function GroupDetailPage() {
     const encodedUri = encodeURI(csvContent)
     const link = document.createElement("a")
     link.setAttribute("href", encodedUri)
-    link.setAttribute("download", `${group?.name?.replace(/\s+/g, "-")?.toLowerCase() || "group"}-khata.csv`)
+    link.setAttribute("download", `${group?.name?.replace(/\s+/g, "-")?.toLowerCase() || "group"}-hisab.csv`)
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
@@ -293,7 +293,7 @@ export default function GroupDetailPage() {
                       <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white drop-shadow-sm">
                         {group.name}
                       </h2>
-                      <p className="text-xs text-white/80 font-medium">Group Khata • {members.length} members</p>
+                      <p className="text-xs text-white/80 font-medium">Group Hisab • {members.length} members</p>
                     </div>
                   </div>
                 </div>

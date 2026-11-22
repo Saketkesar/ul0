@@ -13,7 +13,7 @@ export default function SplitPage() {
     <div className="min-h-screen bg-[#F7FAF8] text-[#0B1A17] flex flex-col font-sans selection:bg-[#3DDBB8] selection:text-[#04231C]">
       <Header />
 
-      <main className="flex-1 max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-6 sm:py-10">
         {!isLoaded ? (
           // Loading skeleton
           <div className="max-w-xl mx-auto space-y-4 animate-pulse">

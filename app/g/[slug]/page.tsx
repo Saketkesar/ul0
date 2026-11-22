@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Group Khata & Settle Up — UL0",
+  title: "Group Hisab & Settle Up — UL0",
   robots: {
     index: false,
     follow: false,
