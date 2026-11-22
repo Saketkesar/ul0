@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useId, useMemo } from "react"
+import { useState, useEffect, useId, useMemo, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useUser } from "@clerk/nextjs"
 import QRCode from "qrcode"
@@ -12,12 +12,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { UL0Icon } from "@/components/ul0-icon"
 import {
   CATEGORY_PRESETS,
-  EXPIRY_OPTIONS,
   distributeWithLargestRemainder,
   buildReminderMessage,
   ReminderTone,
   ReminderLang,
 } from "./split-constants"
+import { scanReceiptWithTesseract, ParsedReceiptItem } from "@/lib/split/receipt-ocr"
 
 interface Friend {
   id: string
@@ -61,7 +61,7 @@ export function SplitWizard() {
   const [billType, setBillType] = useState<"full" | "itemized">("full")
 
   // Collector (You)
-  const [collectorName, setCollectorName] = useState<string>(user?.firstName || "Saket")
+  const [collectorName, setCollectorName] = useState<string>(user?.firstName || "Saket Kesar")
   const [collectorUpi, setCollectorUpi] = useState<string>("")
   const [isEditingCollector, setIsEditingCollector] = useState<boolean>(false)
   const [hasSavedCollector, setHasSavedCollector] = useState<boolean>(false)
@@ -87,6 +87,11 @@ export function SplitWizard() {
   const [taxPercent, setTaxPercent] = useState<string>("5")
   const [serviceChargePercent, setServiceChargePercent] = useState<string>("0")
 
+  // OCR Receipt scanner state
+  const [ocrScanning, setOcrScanning] = useState<boolean>(false)
+  const [ocrProgress, setOcrProgress] = useState<number>(0)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   // Step 4 Options (Looks right?)
   const [note, setNote] = useState<string>("")
   const [autoRemindDays, setAutoRemindDays] = useState<number | null>(null)
@@ -111,13 +116,15 @@ export function SplitWizard() {
   // QR Scanner Modal
   const [showQrScanner, setShowQrScanner] = useState<boolean>(false)
 
+  // Settings Modal
+  const [showSettings, setShowSettings] = useState<boolean>(false)
+
   // Submitting & Share Dialog
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [createdSlug, setCreatedSlug] = useState<string | null>(null)
   const [collectorToken, setCollectorToken] = useState<string | null>(null)
   const [qrCodeData, setQrCodeData] = useState<string | null>(null)
   const [copiedLink, setCopiedLink] = useState<boolean>(false)
-  const [copiedManageLink, setCopiedManageLink] = useState<boolean>(false)
   const [reminderTone, setReminderTone] = useState<ReminderTone>("polite")
   const [reminderLang, setReminderLang] = useState<ReminderLang>("en")
 
@@ -131,7 +138,8 @@ export function SplitWizard() {
         setCollectorUpi(savedUpi)
         setHasSavedCollector(true)
       } else {
-        if (user?.firstName) setCollectorName(user.firstName)
+        if (user?.fullName) setCollectorName(user.fullName)
+        else if (user?.firstName) setCollectorName(user.firstName)
         setIsEditingCollector(true)
       }
 
@@ -149,6 +157,18 @@ export function SplitWizard() {
       localStorage.setItem("ul0_split_collector_upi", upi.trim().toLowerCase())
       setHasSavedCollector(true)
       setIsEditingCollector(false)
+    } catch {}
+  }
+
+  // Clear collector profile from localStorage
+  const clearCollectorDetails = () => {
+    try {
+      localStorage.removeItem("ul0_split_collector_name")
+      localStorage.removeItem("ul0_split_collector_upi")
+      setCollectorUpi("")
+      setHasSavedCollector(false)
+      setIsEditingCollector(true)
+      toast.info("Collector details cleared from this device.")
     } catch {}
   }
 
@@ -176,6 +196,48 @@ export function SplitWizard() {
       toast.error(err.message || "Failed to upload image")
     } finally {
       setIsUploadingBanner(false)
+    }
+  }
+
+  // Handle Receipt Scan with on-device OCR
+  const handleReceiptScan = async (file: File) => {
+    if (!file) return
+    setOcrScanning(true)
+    setOcrProgress(0)
+
+    try {
+      const result = await scanReceiptWithTesseract(file, (p) => setOcrProgress(p))
+      if (result.items.length > 0) {
+        const allMemberIds = [
+          ...(includeCollector ? [collectorId] : []),
+          ...friends.map((f) => f.id),
+        ]
+        const newItems: ItemEntry[] = result.items.map((it) => ({
+          id: it.id,
+          name: it.name,
+          price: it.price,
+          qty: it.qty,
+          sharedBy: allMemberIds,
+        }))
+        setItems(newItems)
+        setBillType("itemized")
+        if (result.detectedTax) {
+          const subtotal = newItems.reduce((s, it) => s + it.price, 0)
+          if (subtotal > 0) {
+            setTaxPercent(((result.detectedTax / subtotal) * 100).toFixed(1))
+          }
+        }
+        if (result.detectedTotal) {
+          setTotalAmountStr(String(Math.round(result.detectedTotal)))
+        }
+        toast.success(`Scanned ${result.items.length} items from receipt!`)
+      } else {
+        toast.info("Couldn't detect items automatically. You can add them manually below.")
+      }
+    } catch {
+      toast.error("Receipt scanning failed. Please add items manually.")
+    } finally {
+      setOcrScanning(false)
     }
   }
 
@@ -252,11 +314,22 @@ export function SplitWizard() {
       prev.map((it) => {
         if (it.id !== itemId) return it
         const has = it.sharedBy.includes(memberId)
+        const updated = has ? it.sharedBy.filter((id) => id !== memberId) : [...it.sharedBy, memberId]
         return {
           ...it,
-          sharedBy: has ? it.sharedBy.filter((id) => id !== memberId) : [...it.sharedBy, memberId],
+          sharedBy: updated.length > 0 ? updated : [memberId], // keep at least 1 person
         }
       })
+    )
+  }
+
+  const selectAllItemMembers = (itemId: string) => {
+    const allMemberIds = [
+      ...(includeCollector ? [collectorId] : []),
+      ...friends.map((f) => f.id),
+    ]
+    setItems((prev) =>
+      prev.map((it) => (it.id === itemId ? { ...it, sharedBy: allMemberIds } : it))
     )
   }
 
@@ -616,13 +689,13 @@ export function SplitWizard() {
     : ""
 
   // =========================================================================
-  // SCREEN 1: SPLITS DASHBOARD (Empty state or recent splits)
+  // SCREEN 1: SPLITS DASHBOARD (Screenshot 1 Matching)
   // =========================================================================
   if (step === 0) {
-    const greetingName = user?.firstName || collectorName || "Friend"
+    const greetingName = user?.firstName || collectorName.split(" ")[0] || "Friend"
 
     return (
-      <div className="relative min-h-[80vh] flex flex-col justify-between max-w-md mx-auto w-full px-4 py-6 font-sans">
+      <div className="relative min-h-[82vh] flex flex-col justify-between max-w-md mx-auto w-full px-4 py-6 font-sans">
         {/* Top Header */}
         <div className="flex items-center justify-between pb-6">
           <div>
@@ -639,17 +712,23 @@ export function SplitWizard() {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 flex flex-col justify-center items-center py-10">
+        <div className="flex-1 flex flex-col justify-center items-center py-6">
           {recentSplits.length === 0 ? (
-            // Empty State (Screenshot 1)
+            // Empty State (Screenshot 1: chat/receipt bubble icon, "No splits yet")
             <div className="text-center space-y-4 max-w-xs mx-auto animate-in fade-in zoom-in-95 duration-300">
-              <div className="w-16 h-16 rounded-2xl bg-[#EAF7F3] border border-[#CCD9D4] text-[#0B7A66] mx-auto flex items-center justify-center">
-                <UL0Icon name="splitbill" size={28} />
+              <div className="w-16 h-16 rounded-2xl bg-white border border-[#E4ECE8] text-[#0B1A17] mx-auto flex items-center justify-center shadow-xs">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  <line x1="8" y1="8" x2="16" y2="8" />
+                  <line x1="8" y1="12" x2="14" y2="12" />
+                </svg>
               </div>
               <div>
                 <h2 className="text-xl font-bold text-[#0B1A17]">No splits yet</h2>
                 <p className="text-xs text-[#5A6B66] mt-1.5 leading-relaxed">
-                  Create one in under 15 seconds. Your friends pay from a link, no app, no signup.
+                  Create one in under 15 seconds.<br />
+                  Your friends pay from a link, no<br />
+                  app, no signup.
                 </p>
               </div>
             </div>
@@ -692,7 +771,7 @@ export function SplitWizard() {
           )}
         </div>
 
-        {/* Floating Bottom Action Buttons (Screenshot 1) */}
+        {/* Floating Bottom Action Buttons (Screenshot 1: Dice on left, Big Black Circle + on right) */}
         <div className="flex items-center justify-between pt-6 pb-2">
           {/* Spin the Bottle (Dice Button) */}
           <button
@@ -713,11 +792,24 @@ export function SplitWizard() {
           </button>
         </div>
 
-        {/* Bottom Tab Bar */}
+        {/* Bottom Tab Bar (5 Tabs matching Screenshot 1: Splits, Ledger, Khata, Collect, Settings) */}
         <div className="pt-4 border-t border-[#E4ECE8] flex items-center justify-around text-[#5A6B66]">
           <button className="flex flex-col items-center gap-1 text-[#0B1A17] font-semibold text-[10px]">
             <UL0Icon name="splitbill" size={18} />
             <span>Splits</span>
+          </button>
+          <button
+            onClick={() => {
+              if (recentSplits.length > 0) {
+                router.push(`/split/${recentSplits[0].slug}`)
+              } else {
+                toast.info("No past splits yet in your ledger.")
+              }
+            }}
+            className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
+          >
+            <UL0Icon name="docs" size={18} />
+            <span>Ledger</span>
           </button>
           <button
             onClick={() => router.push("/split/groups")}
@@ -730,10 +822,74 @@ export function SplitWizard() {
             onClick={() => setShowQrScanner(true)}
             className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
           >
-            <UL0Icon name="qr" size={18} />
+            <UL0Icon name="team" size={18} />
             <span>Collect</span>
           </button>
+          <button
+            onClick={() => setShowSettings(true)}
+            className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[10px] transition-colors"
+          >
+            <UL0Icon name="settings" size={18} />
+            <span>Settings</span>
+          </button>
         </div>
+
+        {/* Settings Dialog */}
+        <Dialog open={showSettings} onOpenChange={setShowSettings}>
+          <DialogContent className="max-w-sm bg-white border border-[#E4ECE8] text-[#0B1A17] p-6 rounded-3xl">
+            <DialogHeader>
+              <DialogTitle className="text-lg font-bold flex items-center gap-2">
+                <UL0Icon name="settings" size={18} /> Settings
+              </DialogTitle>
+              <DialogDescription className="text-xs text-[#5A6B66]">
+                Your organizer profile is remembered on this device.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4 py-2">
+              <div className="space-y-2">
+                <Label className="text-xs font-bold text-[#0B1A17]">Your Name</Label>
+                <Input
+                  value={collectorName}
+                  onChange={(e) => setCollectorName(e.target.value)}
+                  className="h-10 text-xs"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs font-bold text-[#0B1A17]">Default UPI ID (for receiving payments)</Label>
+                <Input
+                  value={collectorUpi}
+                  onChange={(e) => setCollectorUpi(e.target.value)}
+                  placeholder="e.g. yourname@oksbi"
+                  className="h-10 text-xs font-mono"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <Button
+                  onClick={() => {
+                    saveCollectorDetails(collectorName, collectorUpi)
+                    toast.success("Settings saved!")
+                    setShowSettings(false)
+                  }}
+                  className="flex-1 bg-[#0B1A17] hover:bg-[#1a2e2a] text-white text-xs h-10 font-bold"
+                >
+                  Save
+                </Button>
+                {hasSavedCollector && (
+                  <Button
+                    variant="outline"
+                    onClick={clearCollectorDetails}
+                    className="text-xs h-10 border-[#E4ECE8] text-[#D9383A] hover:bg-[#FDF2F2]"
+                  >
+                    Forget Me
+                  </Button>
+                )}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* Spin the Bottle Modal */}
         <Dialog open={showSpinBottle} onOpenChange={setShowSpinBottle}>
@@ -790,18 +946,21 @@ export function SplitWizard() {
                 <UL0Icon name="qr" size={32} />
               </div>
               <p className="text-xs text-[#5A6B66] max-w-xs">
-                Camera access available on mobile browsers. You can also pick an image from your photos.
+                Upload a bill photo or QR code to auto-parse amounts and details.
               </p>
               <label className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#0B7A66] text-white text-xs font-bold hover:bg-[#086353]">
-                <UL0Icon name="upload" size={14} /> Upload QR Image
+                <UL0Icon name="upload" size={14} /> Upload QR / Bill Photo
                 <input
                   type="file"
                   accept="image/*"
                   className="hidden"
-                  onChange={() => {
-                    toast.info("QR image uploaded. Ready to split!")
-                    setShowQrScanner(false)
-                    setStep(1)
+                  onChange={(e) => {
+                    const f = e.target.files?.[0]
+                    if (f) {
+                      setShowQrScanner(false)
+                      handleReceiptScan(f)
+                      setStep(1)
+                    }
                   }}
                 />
               </label>
@@ -826,13 +985,13 @@ export function SplitWizard() {
               className="w-8 h-8 rounded-full flex items-center justify-center text-[#0B1A17] hover:bg-[#EAF1EE] cursor-pointer"
               aria-label="Back"
             >
-              <UL0Icon name="chevron-left" size={18} />
+              <UL0Icon name="arrowleft" size={18} />
             </button>
           ) : (
             <div className="w-8" />
           )}
 
-          {/* 4 Progress Segment Bars */}
+          {/* 4 Progress Segment Bars matching Screenshot 2, 3, 4 */}
           <div className="flex-1 max-w-[200px] flex gap-1.5 px-2">
             {[1, 2, 3, 4].map((s) => (
               <div
@@ -849,13 +1008,13 @@ export function SplitWizard() {
             className="w-8 h-8 rounded-full flex items-center justify-center text-[#5A6B66] hover:text-[#0B1A17] hover:bg-[#EAF1EE] cursor-pointer"
             aria-label="Close"
           >
-            <UL0Icon name="cross" size={16} />
+            <UL0Icon name="close" size={16} />
           </button>
         </div>
       </div>
 
       {/* =====================================================================
-          STEP 1: "How much?" (Screenshot 2)
+          STEP 1: "How much?" (Screenshot 2 Matching)
       ====================================================================== */}
       {step === 1 && (
         <div className="space-y-6 animate-in fade-in duration-200">
@@ -863,10 +1022,12 @@ export function SplitWizard() {
             <h2 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">How much?</h2>
           </div>
 
-          {/* Currency dropdown + Big Amount */}
+          {/* Currency dropdown + Big Amount Input */}
           <div className="pt-2">
             <div className="flex items-baseline gap-2 border-b-2 border-[#0B1A17] pb-2">
-              <span className="text-3xl font-bold text-[#0B1A17]">₹</span>
+              <span className="text-3xl font-bold text-[#0B1A17] flex items-center gap-0.5">
+                ₹ <span className="text-base text-[#5A6B66]">▾</span>
+              </span>
               <input
                 type="number"
                 inputMode="decimal"
@@ -878,7 +1039,7 @@ export function SplitWizard() {
               />
             </div>
 
-            {/* Quick Amount Pills */}
+            {/* Quick Amount Pills (Screenshot 2: ₹500, ₹1,000, ₹2,000) */}
             <div className="flex gap-2.5 mt-4">
               {[500, 1000, 2000].map((amt) => (
                 <button
@@ -897,7 +1058,7 @@ export function SplitWizard() {
             </div>
           </div>
 
-          {/* What's it for? */}
+          {/* What's it for? (Screenshot 2) */}
           <div className="space-y-3 pt-2">
             <Label className="text-xs font-bold text-[#0B1A17]">What&apos;s it for?</Label>
             <Input
@@ -907,7 +1068,7 @@ export function SplitWizard() {
               className="h-12 rounded-xl border-[#E4ECE8] text-sm text-[#0B1A17] focus-visible:ring-[#0B1A17]"
             />
 
-            {/* Category Pills (Screenshot 2) */}
+            {/* Category Pills (Screenshot 2: Food, Trip, Rent, Match fee, Other) */}
             <div className="flex flex-wrap gap-2 pt-1">
               {CATEGORY_PRESETS.map((cat) => {
                 const isActive = category === cat.label
@@ -934,13 +1095,13 @@ export function SplitWizard() {
             </div>
           </div>
 
-          {/* Bill Mode Toggle: Full vs Itemized (Groceries / Receipts) */}
+          {/* Bill Mode Toggle: Entire Bill vs Item-wise (Groceries / Receipts) */}
           <div className="pt-2">
             <div className="p-1 rounded-xl bg-[#EAF1EE] flex text-xs font-semibold">
               <button
                 type="button"
                 onClick={() => setBillType("full")}
-                className={`flex-1 py-2 rounded-lg transition-all ${
+                className={`flex-1 py-2 rounded-lg transition-all cursor-pointer ${
                   billType === "full" ? "bg-white text-[#0B1A17] shadow-xs" : "text-[#5A6B66]"
                 }`}
               >
@@ -949,7 +1110,7 @@ export function SplitWizard() {
               <button
                 type="button"
                 onClick={() => setBillType("itemized")}
-                className={`flex-1 py-2 rounded-lg transition-all ${
+                className={`flex-1 py-2 rounded-lg transition-all cursor-pointer ${
                   billType === "itemized" ? "bg-white text-[#0B1A17] shadow-xs" : "text-[#5A6B66]"
                 }`}
               >
@@ -957,15 +1118,57 @@ export function SplitWizard() {
               </button>
             </div>
 
-            {/* Itemized details if selected */}
+            {/* Itemized details & On-device OCR Scan */}
             {billType === "itemized" && (
               <div className="mt-4 p-4 rounded-2xl border border-[#E4ECE8] bg-white space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-[#0B1A17]">Itemized Breakdown</span>
-                  <span className="text-[11px] text-[#0B7A66] font-semibold">
-                    Total: ₹{calculatedTotal.toFixed(2)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {/* On-device OCR Scanner Button */}
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0]
+                        if (f) handleReceiptScan(f)
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={ocrScanning}
+                      className="h-7 text-[11px] px-2.5 rounded-lg border-[#CCD9D4] text-[#0B7A66] hover:bg-[#EAF7F3] font-semibold cursor-pointer"
+                    >
+                      <UL0Icon name="upload" size={12} className="mr-1" />
+                      {ocrScanning ? `Scanning ${ocrProgress}%` : "Scan Receipt"}
+                    </Button>
+                    <span className="text-[11px] text-[#0B7A66] font-semibold">
+                      Total: ₹{calculatedTotal.toFixed(2)}
+                    </span>
+                  </div>
                 </div>
+
+                {ocrScanning && (
+                  <div className="space-y-1.5 p-3 rounded-xl bg-[#EAF7F3] border border-[#CCD9D4]">
+                    <div className="flex justify-between text-[11px] font-bold text-[#0B7A66]">
+                      <span>Scanning receipt on your device...</span>
+                      <span>{ocrProgress}%</span>
+                    </div>
+                    <div className="w-full h-1.5 bg-white rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-[#0B7A66] transition-all duration-200"
+                        style={{ width: `${ocrProgress}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-[#5A6B66] block">
+                      Runs 100% in your browser. Photo is never uploaded to any server.
+                    </span>
+                  </div>
+                )}
 
                 <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                   {items.map((it) => (
@@ -976,13 +1179,13 @@ export function SplitWizard() {
                       <div>
                         <span className="font-semibold text-[#0B1A17] block">{it.name}</span>
                         <span className="text-[10px] text-[#5A6B66]">
-                          ₹{it.price} • Shared by {it.sharedBy.length} people
+                          ₹{it.price} {it.qty && it.qty > 1 ? `(Qty: ${it.qty})` : ""} • Shared by {it.sharedBy.length} people
                         </span>
                       </div>
                       <button
                         type="button"
                         onClick={() => handleRemoveItem(it.id)}
-                        className="text-[#D9383A] hover:opacity-80 p-1"
+                        className="text-[#D9383A] hover:opacity-80 p-1 cursor-pointer"
                       >
                         <UL0Icon name="trash" size={12} />
                       </button>
@@ -993,7 +1196,7 @@ export function SplitWizard() {
                 {/* Add Item Row */}
                 <div className="flex gap-2 pt-1">
                   <Input
-                    placeholder="Item name (e.g. Milk, Bread)"
+                    placeholder="Item name (e.g. Milk, Apples)"
                     value={newItemName}
                     onChange={(e) => setNewItemName(e.target.value)}
                     className="h-9 text-xs"
@@ -1008,7 +1211,7 @@ export function SplitWizard() {
                   <Button
                     type="button"
                     onClick={handleAddItem}
-                    className="h-9 bg-[#0B7A66] text-white text-xs px-3 rounded-lg font-bold"
+                    className="h-9 bg-[#0B7A66] text-white text-xs px-3 rounded-lg font-bold cursor-pointer"
                   >
                     Add
                   </Button>
@@ -1017,7 +1220,7 @@ export function SplitWizard() {
             )}
           </div>
 
-          {/* Primary CTA Button (Screenshot 2) */}
+          {/* Primary CTA Button (Screenshot 2: "Who's in?") */}
           <div className="pt-6">
             <Button
               type="button"
@@ -1100,7 +1303,7 @@ export function SplitWizard() {
               <Button
                 type="button"
                 onClick={handleAddFriends}
-                className="h-11 px-4 rounded-xl bg-[#0B1A17] text-white text-xs font-bold"
+                className="h-11 px-4 rounded-xl bg-[#0B1A17] text-white text-xs font-bold cursor-pointer"
               >
                 Add
               </Button>
@@ -1149,7 +1352,7 @@ export function SplitWizard() {
                       setFriends(newF)
                       toast.success(`Loaded ${grp.label} group!`)
                     }}
-                    className="px-2.5 py-1 rounded-lg border border-dashed border-[#CCD9D4] bg-[#F7FAF8] hover:bg-[#EAF7F3] text-[11px] text-[#0B7A66] font-medium transition-colors"
+                    className="px-2.5 py-1 rounded-lg border border-dashed border-[#CCD9D4] bg-[#F7FAF8] hover:bg-[#EAF7F3] text-[11px] text-[#0B7A66] font-medium transition-colors cursor-pointer"
                   >
                     + {grp.label}
                   </button>
@@ -1173,7 +1376,7 @@ export function SplitWizard() {
       )}
 
       {/* =====================================================================
-          STEP 3: "Split it" (Screenshot 3)
+          STEP 3: "Split it" (Screenshot 3 Matching + Itemized Mode)
       ====================================================================== */}
       {step === 3 && (
         <div className="space-y-6 animate-in fade-in duration-200">
@@ -1184,14 +1387,14 @@ export function SplitWizard() {
             </span>
           </div>
 
-          {/* Mode Selector Segmented Pills (Screenshot 3) */}
+          {/* Mode Selector Segmented Pills (Screenshot 3: Equal, Exact, %, Shares) */}
           <div className="p-1 rounded-2xl bg-[#F1F5F3] flex text-xs font-semibold">
             {(["equal", "exact", "percent", "shares"] as SplitMode[]).map((mode) => (
               <button
                 key={mode}
                 type="button"
                 onClick={() => setSplitMode(mode)}
-                className={`flex-1 py-2 rounded-xl capitalize transition-all ${
+                className={`flex-1 py-2 rounded-xl capitalize transition-all cursor-pointer ${
                   splitMode === mode ? "bg-white text-[#0B1A17] shadow-xs font-bold" : "text-[#5A6B66]"
                 }`}
               >
@@ -1200,7 +1403,80 @@ export function SplitWizard() {
             ))}
           </div>
 
-          {/* Member Share Cards (Screenshot 3) */}
+          {/* If Itemized Mode: Show Item Assignment Chips */}
+          {billType === "itemized" && (
+            <div className="space-y-3 p-4 rounded-2xl border border-[#E4ECE8] bg-[#F7FAF8]">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#0B1A17]">Assign Items to Friends</span>
+                <span className="text-[11px] text-[#0B7A66] font-semibold">{items.length} items</span>
+              </div>
+
+              <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                {items.map((it) => (
+                  <div key={it.id} className="p-3 rounded-xl bg-white border border-[#E4ECE8] space-y-2">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[#0B1A17]">{it.name}</span>
+                      <span className="font-mono font-bold text-[#0B7A66]">₹{it.price}</span>
+                    </div>
+
+                    {/* Member selection chips */}
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {allMembers.map((m) => {
+                        const isSelected = it.sharedBy.includes(m.id)
+                        return (
+                          <button
+                            key={m.id}
+                            type="button"
+                            onClick={() => toggleItemMember(it.id, m.id)}
+                            className={`px-2.5 py-1 rounded-full text-[11px] font-semibold transition-all cursor-pointer ${
+                              isSelected
+                                ? "bg-[#0B1A17] text-white"
+                                : "bg-[#F7FAF8] border border-[#E4ECE8] text-[#5A6B66] hover:bg-[#EAF1EE]"
+                            }`}
+                          >
+                            {m.name.split(" ")[0]}
+                          </button>
+                        )
+                      })}
+                      <button
+                        type="button"
+                        onClick={() => selectAllItemMembers(it.id)}
+                        className="px-2 py-1 text-[10px] text-[#0B7A66] font-semibold underline cursor-pointer"
+                      >
+                        All
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Tax & Service Allocation Fields */}
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E4ECE8]">
+                <div>
+                  <Label className="text-[10px] text-[#5A6B66]">GST / Tax (%)</Label>
+                  <Input
+                    type="number"
+                    value={taxPercent}
+                    onChange={(e) => setTaxPercent(e.target.value)}
+                    className="h-8 text-xs font-mono"
+                    placeholder="5"
+                  />
+                </div>
+                <div>
+                  <Label className="text-[10px] text-[#5A6B66]">Service Charge (%)</Label>
+                  <Input
+                    type="number"
+                    value={serviceChargePercent}
+                    onChange={(e) => setServiceChargePercent(e.target.value)}
+                    className="h-8 text-xs font-mono"
+                    placeholder="0"
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Member Share Cards (Screenshot 3: SK, OB cards with ₹250) */}
           <div className="space-y-3">
             {/* Collector Card */}
             {includeCollector && (
@@ -1271,7 +1547,7 @@ export function SplitWizard() {
             })}
           </div>
 
-          {/* Primary CTA */}
+          {/* Primary CTA (Screenshot 3: "Review") */}
           <div className="pt-6">
             <Button
               type="button"
@@ -1285,7 +1561,7 @@ export function SplitWizard() {
       )}
 
       {/* =====================================================================
-          STEP 4: "Looks right?" (Screenshot 4)
+          STEP 4: "Looks right?" (Screenshot 4 Matching)
       ====================================================================== */}
       {step === 4 && (
         <div className="space-y-6 animate-in fade-in duration-200">
@@ -1293,7 +1569,7 @@ export function SplitWizard() {
             <h2 className="text-3xl font-extrabold text-[#0B1A17] tracking-tight">Looks right?</h2>
           </div>
 
-          {/* Summary Card (Screenshot 4) */}
+          {/* Summary Card (Screenshot 4: rounded card, icon + title + ₹500, member rows with initials) */}
           <div className="rounded-3xl border border-[#E4ECE8] bg-white p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-[#F1F5F3]">
               <div className="flex items-center gap-2.5">
@@ -1348,7 +1624,7 @@ export function SplitWizard() {
             </div>
           </div>
 
-          {/* Note (optional) */}
+          {/* Note (optional) - Screenshot 4 */}
           <div className="space-y-1.5">
             <Label className="text-xs font-bold text-[#0B1A17]">Note (optional)</Label>
             <Input
@@ -1359,11 +1635,14 @@ export function SplitWizard() {
             />
           </div>
 
-          {/* Auto-remind if unpaid (Screenshot 4) */}
+          {/* Auto-remind if unpaid PRO - Screenshot 4 */}
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <UL0Icon name="bell" size={14} className="text-[#0B1A17]" />
               <span className="text-xs font-bold text-[#0B1A17]">Auto-remind if unpaid</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-[#0B1A17] text-[9px] font-extrabold text-white tracking-wider">
+                PRO
+              </span>
             </div>
             <div className="flex flex-wrap gap-2">
               {[
@@ -1390,11 +1669,14 @@ export function SplitWizard() {
             </p>
           </div>
 
-          {/* Pay-by date (Screenshot 4) */}
+          {/* Pay-by date PRO - Screenshot 4 */}
           <div className="space-y-2">
             <div className="flex items-center gap-2">
               <UL0Icon name="clock" size={14} className="text-[#0B1A17]" />
               <span className="text-xs font-bold text-[#0B1A17]">Pay-by date</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-[#0B1A17] text-[9px] font-extrabold text-white tracking-wider">
+                PRO
+              </span>
             </div>
             <div className="flex flex-wrap gap-2">
               {[
@@ -1422,7 +1704,7 @@ export function SplitWizard() {
             </p>
           </div>
 
-          {/* Save as template */}
+          {/* Save as template PRO - Screenshot 4 */}
           <div className="pt-1">
             <button
               type="button"
@@ -1434,10 +1716,13 @@ export function SplitWizard() {
             >
               <UL0Icon name={isSavedTemplate ? "check" : "bookmark"} size={14} />
               <span>Save as template</span>
+              <span className="px-1.5 py-0.5 rounded-full bg-[#0B1A17] text-[9px] font-extrabold text-white tracking-wider">
+                PRO
+              </span>
             </button>
           </div>
 
-          {/* Backdrop Banner Image Upload (Free Image Host) */}
+          {/* Backdrop Banner Image Upload (Free Image Host API) */}
           <div className="p-3.5 rounded-2xl border border-[#E4ECE8] bg-[#F7FAF8] space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-[#0B1A17]">Backdrop Banner Image</span>
@@ -1465,7 +1750,7 @@ export function SplitWizard() {
             )}
           </div>
 
-          {/* Primary CTA (Screenshot 4) */}
+          {/* Primary CTA (Screenshot 4: "Create split") */}
           <div className="pt-6">
             <Button
               type="button"
@@ -1509,7 +1794,7 @@ export function SplitWizard() {
                   toast.success("Link copied!")
                   setTimeout(() => setCopiedLink(false), 2000)
                 }}
-                className="text-xs h-8 px-3 rounded-lg border-[#CCD9D4] font-semibold"
+                className="text-xs h-8 px-3 rounded-lg border-[#CCD9D4] font-semibold cursor-pointer"
               >
                 {copiedLink ? "Copied!" : "Copy"}
               </Button>
@@ -1541,7 +1826,7 @@ export function SplitWizard() {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold transition-colors"
+              className="w-full flex items-center justify-center gap-2 h-11 rounded-xl bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold transition-colors cursor-pointer"
             >
               Share on WhatsApp
             </a>
@@ -1551,13 +1836,13 @@ export function SplitWizard() {
               <Button
                 variant="outline"
                 onClick={() => router.push(`/split/${createdSlug}`)}
-                className="h-10 text-xs rounded-xl border-[#CCD9D4] font-bold"
+                className="h-10 text-xs rounded-xl border-[#CCD9D4] font-bold cursor-pointer"
               >
                 Open Settle Page
               </Button>
               <Button
                 onClick={() => router.push(manageUrl)}
-                className="h-10 text-xs rounded-xl bg-[#0B1A17] text-white font-bold"
+                className="h-10 text-xs rounded-xl bg-[#0B1A17] text-white font-bold cursor-pointer"
               >
                 Manage Split
               </Button>
