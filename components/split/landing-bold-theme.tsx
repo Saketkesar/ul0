@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useMemo } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { ArrowRight, ChevronDown, Check, Shield, Users, Receipt, Zap } from "lucide-react"
+import { ChevronDown, ArrowRight } from "lucide-react"
 
 const NAMES = ["You", "Rahul", "Priya", "Aman", "Neha", "Kabir", "Isha", "Dev"]
 const TICKER_ITEMS = [
@@ -31,7 +31,6 @@ export function LandingBoldTheme() {
   const [cylBullet, setCylBullet] = useState<number>(3)
   const [cylHit, setCylHit] = useState<string | null>(null)
 
-  const loopTimerRef = useRef<NodeJS.Timeout | null>(null)
   const stepTimeoutsRef = useRef<NodeJS.Timeout[]>([])
 
   // Calculate per person shares with largest-remainder exact paise balance
@@ -52,7 +51,6 @@ export function LandingBoldTheme() {
 
   // Play tearing receipt animation sequence
   const playSequence = () => {
-    // Clear any pending timeouts
     stepTimeoutsRef.current.forEach(clearTimeout)
     stepTimeoutsRef.current = []
 
@@ -74,7 +72,6 @@ export function LandingBoldTheme() {
 
       // Step 2: Stamp PAID on each person one by one
       stripsData.forEach((_, idx) => {
-        // Friends first, collector last
         const delay = 700 + (idx === 0 ? stripsData.length * 500 : idx * 500)
         const tStamp = setTimeout(() => {
           setPaidIndices((prev) => [...new Set([...prev, idx])])
@@ -111,7 +108,7 @@ export function LandingBoldTheme() {
         setCylRotation((r) => r - 60)
 
         if (next === cylBullet) {
-          const victims = ["Aman", "Rahul", "Priya", "Neha"]
+          const victims = ["Priya", "Rahul", "Aman", "Neha"]
           const luckyVictim = victims[Math.floor(Math.random() * victims.length)]
           setCylHit(luckyVictim)
           setTimeout(() => {
@@ -126,32 +123,10 @@ export function LandingBoldTheme() {
     return () => clearInterval(interval)
   }, [cylBullet])
 
-  // Scroll reveal observer
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("opacity-100", "translate-y-0")
-            entry.target.classList.remove("opacity-0", "translate-y-7")
-          }
-        })
-      },
-      { threshold: 0.12 }
-    )
-
-    const elements = document.querySelectorAll(".reveal-item")
-    elements.forEach((el) => observer.observe(el))
-
-    return () => observer.disconnect()
-  }, [])
-
   const formattedTotal = "₹" + Math.round(amount || 0).toLocaleString("en-IN")
 
   return (
-    <div
-      className="relative min-h-screen bg-white text-[#0B1A17] font-['Space_Grotesk',system-ui,sans-serif] selection:bg-[#3DDBB8] selection:text-[#0B1A17] overflow-x-hidden"
-    >
+    <div className="relative min-h-screen bg-white text-[#0B1A17] font-['Space_Grotesk',system-ui,sans-serif] selection:bg-[#3DDBB8] selection:text-[#0B1A17] overflow-x-hidden">
       {/* Film-grain texture overlay */}
       <div
         className="fixed inset-0 pointer-events-none z-50 opacity-[0.045] mix-blend-multiply"
@@ -312,7 +287,7 @@ export function LandingBoldTheme() {
               </a>
             </div>
 
-            <div className="font-mono text-[12px] text-[#5E726C] mt-6 tracking-[0.02em] uppercase">
+            <div className="font-['JetBrains_Mono',ui-monospace,monospace] text-[12px] text-[#5E726C] mt-6 tracking-[0.02em] uppercase">
               NO SIGNUP · NO APP · MONEY GOES BANK → BANK
             </div>
           </div>
@@ -320,7 +295,7 @@ export function LandingBoldTheme() {
           {/* Right Column: Physical Tearing Receipt Hero */}
           <div className="flex flex-col items-center gap-4 relative z-10 pt-4 lg:pt-0">
             <div
-              className={`w-[320px] text-[#0B1A17] font-mono transition-transform duration-500 ${
+              className={`w-[320px] text-[#0B1A17] font-['JetBrains_Mono',ui-monospace,monospace] transition-transform duration-500 ${
                 isTorn ? "rotate-[1deg]" : "rotate-[3deg]"
               }`}
               style={{
@@ -341,7 +316,7 @@ export function LandingBoldTheme() {
                 <small className="block text-[10px] tracking-[0.14em] text-[#6A6D62] font-semibold">
                   UL0 SPLIT · TOIT, INDIRANAGAR
                 </small>
-                <div className="text-[38px] font-bold tracking-[-0.04em] my-1 font-sans text-[#0B1A17]">
+                <div className="text-[38px] font-bold tracking-[-0.04em] my-1 font-['Space_Grotesk',system-ui,sans-serif] text-[#0B1A17]">
                   {formattedTotal}
                 </div>
                 <div
@@ -387,13 +362,13 @@ export function LandingBoldTheme() {
                       }}
                     >
                       <span className="text-[13px] text-[#0B1A17]">{strip.name}</span>
-                      <b className="font-sans text-[17px] font-bold text-[#0B1A17]">
+                      <b className="font-['Space_Grotesk',system-ui,sans-serif] text-[17px] font-bold text-[#0B1A17]">
                         ₹{strip.amount.toLocaleString("en-IN")}
                       </b>
 
                       {/* Slamming PAID Stamp */}
                       <span
-                        className={`absolute right-20 top-1/2 -translate-y-1/2 font-sans font-bold text-[12px] tracking-[0.1em] bg-[#1B685C] text-white px-2 py-0.5 rounded-[4px] pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.3,1.6,0.5,1)] ${
+                        className={`absolute right-20 top-1/2 -translate-y-1/2 font-['Space_Grotesk',system-ui,sans-serif] font-bold text-[12px] tracking-[0.1em] bg-[#1B685C] text-white px-2 py-0.5 rounded-[4px] pointer-events-none transition-all duration-300 ease-[cubic-bezier(0.3,1.6,0.5,1)] ${
                           isPaid
                             ? "opacity-100 scale-100 -rotate-8"
                             : "opacity-0 scale-[2.4] -rotate-12"
@@ -408,14 +383,14 @@ export function LandingBoldTheme() {
             </div>
 
             {/* Interactive Controls (Amount, Stepper, Tear it) */}
-            <div className="flex items-center gap-2.5 bg-[#F4FAF8] border border-[#D3E2DD] rounded-[99px] py-1.5 pl-4 pr-1.5 font-mono text-[13px] text-[#5E726C] shadow-sm">
+            <div className="flex items-center gap-2.5 bg-[#F4FAF8] border border-[#D3E2DD] rounded-[99px] py-1.5 pl-4 pr-1.5 font-['JetBrains_Mono',ui-monospace,monospace] text-[13px] text-[#5E726C] shadow-sm">
               <span className="font-bold text-[#0B1A17]">₹</span>
               <input
                 type="number"
                 inputMode="numeric"
                 value={amount}
                 onChange={(e) => setAmount(Math.max(0, parseInt(e.target.value) || 0))}
-                className="w-20 bg-transparent border-0 outline-none text-[#0B1A17] font-bold text-[16px] font-mono"
+                className="w-20 bg-transparent border-0 outline-none text-[#0B1A17] font-bold text-[16px] font-['JetBrains_Mono',ui-monospace,monospace]"
                 aria-label="Bill Total"
               />
               <button
@@ -440,7 +415,7 @@ export function LandingBoldTheme() {
               <button
                 type="button"
                 onClick={playSequence}
-                className="h-9 px-4 rounded-[99px] bg-[#1B685C] hover:bg-[#155349] text-white font-bold text-[13px] font-sans cursor-pointer transition-transform hover:scale-105"
+                className="h-9 px-4 rounded-[99px] bg-[#1B685C] hover:bg-[#155349] text-white font-bold text-[13px] font-['Space_Grotesk',system-ui,sans-serif] cursor-pointer transition-transform hover:scale-105"
               >
                 Tear it
               </button>
@@ -453,7 +428,7 @@ export function LandingBoldTheme() {
           3. PINE TICKER BAND (Rotated -1.6deg, Infinite Marquee)
       ====================================================================== */}
       <div className="bg-[#1B685C] text-white py-4 overflow-hidden -rotate-[1.6deg] my-10 select-none shadow-md">
-        <div className="flex gap-11 w-max animate-ticker hover:[animation-play-state:paused] font-mono font-bold text-[20px] uppercase tracking-[-0.01em] whitespace-nowrap">
+        <div className="flex gap-11 w-max animate-ticker hover:[animation-play-state:paused] font-['JetBrains_Mono',ui-monospace,monospace] font-bold text-[20px] uppercase tracking-[-0.01em] whitespace-nowrap">
           {[...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS].map((item, idx) => (
             <span key={idx} className="flex items-center gap-11">
               <span>{item}</span>
@@ -468,18 +443,18 @@ export function LandingBoldTheme() {
       ====================================================================== */}
       <section id="how" className="py-24 max-w-[1200px] mx-auto px-6">
         <div className="space-y-4">
-          <span className="font-mono font-bold text-[12px] tracking-[0.16em] text-[#1B685C] uppercase block reveal-item opacity-0 translate-y-7 transition-all duration-700">
+          <span className="font-['JetBrains_Mono',ui-monospace,monospace] font-bold text-[12px] tracking-[0.16em] text-[#1B685C] uppercase block">
             / the group chat problem
           </span>
-          <h2 className="text-[clamp(36px,5.8vw,78px)] leading-[0.95] tracking-[-0.045em] font-bold text-[#0B1A17] max-w-[13em] reveal-item opacity-0 translate-y-7 transition-all duration-700">
+          <h2 className="text-[clamp(36px,5.8vw,78px)] leading-[0.95] tracking-[-0.045em] font-bold text-[#0B1A17] max-w-[13em]">
             Chasing friends for ₹600 is a full-time job.
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-14 items-stretch">
           {/* Chaos: Messy WhatsApp-style Chat */}
-          <div className="rounded-[28px] p-8 bg-[#F4FAF8] border border-[#D3E2DD] relative min-h-[380px] overflow-hidden reveal-item opacity-0 translate-y-7 transition-all duration-700">
-            <span className="absolute top-5 right-6 font-mono font-bold text-[11px] tracking-[0.12em] text-[#5E726C]">
+          <div className="rounded-[28px] p-8 bg-[#F4FAF8] border border-[#D3E2DD] relative min-h-[380px] overflow-hidden">
+            <span className="absolute top-5 right-6 font-['JetBrains_Mono',ui-monospace,monospace] font-bold text-[11px] tracking-[0.12em] text-[#5E726C]">
               BEFORE
             </span>
 
@@ -513,8 +488,8 @@ export function LandingBoldTheme() {
           </div>
 
           {/* Clean: One Link. Everyone Pays. */}
-          <div className="rounded-[28px] p-8 bg-[#1B685C] text-white relative min-h-[380px] overflow-hidden reveal-item opacity-0 translate-y-7 transition-all duration-700">
-            <span className="absolute top-5 right-6 font-mono font-bold text-[11px] tracking-[0.12em] text-[#3DDBB8]">
+          <div className="rounded-[28px] p-8 bg-[#1B685C] text-white relative min-h-[380px] overflow-hidden">
+            <span className="absolute top-5 right-6 font-['JetBrains_Mono',ui-monospace,monospace] font-bold text-[11px] tracking-[0.12em] text-[#3DDBB8]">
               AFTER
             </span>
 
@@ -523,7 +498,7 @@ export function LandingBoldTheme() {
                 One link. Everyone pays.
               </h3>
 
-              <div className="inline-block font-mono font-bold text-[16px] bg-[#0B1A17] text-[#3DDBB8] px-4 py-2.5 rounded-[12px]">
+              <div className="inline-block font-['JetBrains_Mono',ui-monospace,monospace] font-bold text-[16px] bg-[#0B1A17] text-[#3DDBB8] px-4 py-2.5 rounded-[12px]">
                 ul0.site/s/toit-4x9
               </div>
 
@@ -538,7 +513,7 @@ export function LandingBoldTheme() {
                     className="flex items-center justify-between py-3 border-t border-white/20 text-[18px] font-medium"
                   >
                     <span>{p.name}</span>
-                    <span className="font-mono font-bold text-[12px] text-[#0B1A17] bg-[#3DDBB8] px-3 py-1 rounded-[99px] tracking-[0.06em]">
+                    <span className="font-['JetBrains_Mono',ui-monospace,monospace] font-bold text-[12px] text-[#0B1A17] bg-[#3DDBB8] px-3 py-1 rounded-[99px] tracking-[0.06em]">
                       PAID ₹{p.amt}
                     </span>
                   </div>
@@ -554,18 +529,18 @@ export function LandingBoldTheme() {
       ====================================================================== */}
       <section id="features" className="py-20 max-w-[1200px] mx-auto px-6">
         <div className="space-y-4">
-          <span className="font-mono font-bold text-[12px] tracking-[0.16em] text-[#1B685C] uppercase block reveal-item opacity-0 translate-y-7 transition-all duration-700">
+          <span className="font-['JetBrains_Mono',ui-monospace,monospace] font-bold text-[12px] tracking-[0.16em] text-[#1B685C] uppercase block">
             / what you get
           </span>
-          <h2 className="text-[clamp(36px,5.8vw,78px)] leading-[0.95] tracking-[-0.045em] font-bold text-[#0B1A17] reveal-item opacity-0 translate-y-7 transition-all duration-700">
+          <h2 className="text-[clamp(36px,5.8vw,78px)] leading-[0.95] tracking-[-0.045em] font-bold text-[#0B1A17]">
             Built for India&apos;s group chats.
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-14">
           {/* Bento Card 1: 0 Apps (Span 7) */}
-          <div className="md:col-span-7 rounded-[28px] p-8 bg-[#F4FAF8] border border-[#D3E2DD] hover:border-[#1B685C] transition-all reveal-item opacity-0 translate-y-7 duration-700">
-            <div className="text-[clamp(72px,10vw,130px)] font-bold tracking-[-0.07em] leading-[0.8] text-[#1B685C] mb-4 font-sans">
+          <div className="md:col-span-7 rounded-[28px] p-8 bg-[#F4FAF8] border border-[#D3E2DD] hover:border-[#1B685C] transition-all">
+            <div className="text-[clamp(72px,10vw,130px)] font-bold tracking-[-0.07em] leading-[0.8] text-[#1B685C] mb-4 font-['Space_Grotesk',system-ui,sans-serif]">
               0
             </div>
             <h3 className="text-[26px] font-bold tracking-[-0.035em] text-[#0B1A17] leading-tight mb-2">
@@ -577,7 +552,7 @@ export function LandingBoldTheme() {
           </div>
 
           {/* Bento Card 2: Split any way (Span 5) */}
-          <div className="md:col-span-5 rounded-[28px] p-8 bg-[#F4FAF8] border border-[#D3E2DD] hover:border-[#1B685C] transition-all reveal-item opacity-0 translate-y-7 duration-700">
+          <div className="md:col-span-5 rounded-[28px] p-8 bg-[#F4FAF8] border border-[#D3E2DD] hover:border-[#1B685C] transition-all">
             <h3 className="text-[26px] font-bold tracking-[-0.035em] text-[#0B1A17] leading-tight mb-2">
               Split any way
             </h3>
@@ -598,7 +573,7 @@ export function LandingBoldTheme() {
           </div>
 
           {/* Bento Card 3: Live tracker (Span 5) */}
-          <div className="md:col-span-5 rounded-[28px] p-8 bg-[#F4FAF8] border border-[#D3E2DD] hover:border-[#1B685C] transition-all reveal-item opacity-0 translate-y-7 duration-700">
+          <div className="md:col-span-5 rounded-[28px] p-8 bg-[#F4FAF8] border border-[#D3E2DD] hover:border-[#1B685C] transition-all">
             <h3 className="text-[26px] font-bold tracking-[-0.035em] text-[#0B1A17] leading-tight mb-2">
               Live tracker
             </h3>
@@ -609,7 +584,7 @@ export function LandingBoldTheme() {
             <div className="h-3 bg-[#DDF5EE] rounded-[9px] my-5 overflow-hidden">
               <div className="h-full bg-[#1B685C] rounded-[9px] animate-[pulse_2.5s_ease-in-out_infinite] w-[75%]" />
             </div>
-            <div className="flex gap-2 flex-wrap font-mono text-[12px] font-medium">
+            <div className="flex gap-2 flex-wrap font-['JetBrains_Mono',ui-monospace,monospace] text-[12px] font-medium">
               <span className="px-3 py-1.5 rounded-[99px] bg-[rgba(27,104,92,0.14)] text-[#1B685C]">
                 Rahul ✓
               </span>
@@ -626,7 +601,7 @@ export function LandingBoldTheme() {
           </div>
 
           {/* Bento Card 4: Gun Game Cylinder (Span 7, Pine Emerald Background) */}
-          <div className="md:col-span-7 rounded-[28px] p-8 bg-[#1B685C] text-white border border-[#1B685C] hover:border-[#3DDBB8] transition-all reveal-item opacity-0 translate-y-7 duration-700">
+          <div className="md:col-span-7 rounded-[28px] p-8 bg-[#1B685C] text-white border border-[#1B685C] hover:border-[#3DDBB8] transition-all">
             <div className="flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between">
               <div>
                 <h3 className="text-[26px] font-bold tracking-[-0.035em] leading-tight mb-2">
@@ -689,7 +664,7 @@ export function LandingBoldTheme() {
         {/* Real Experience WebP Animation Highlights Row */}
         <div className="mt-14 pt-10 border-t border-[#D3E2DD]">
           <div className="text-center max-w-xl mx-auto space-y-2 mb-8">
-            <span className="font-mono font-bold text-[11px] tracking-[0.14em] text-[#1B685C] uppercase">
+            <span className="font-['JetBrains_Mono',ui-monospace,monospace] font-bold text-[11px] tracking-[0.14em] text-[#1B685C] uppercase">
               / seamless flow
             </span>
             <h3 className="text-[28px] font-bold tracking-tight text-[#0B1A17]">
@@ -704,7 +679,6 @@ export function LandingBoldTheme() {
                 src="/split-animations/split-01-bill-to-shares.webp"
                 alt="Bill to shares animation"
                 className="w-full h-44 object-contain mx-auto"
-                loading="lazy"
               />
               <h4 className="font-bold text-[15px] text-[#0B1A17]">1. Bill to exact shares</h4>
               <p className="text-[13px] text-[#5E726C]">
@@ -718,7 +692,6 @@ export function LandingBoldTheme() {
                 src="/split-animations/split-02-pay-qr.webp"
                 alt="Pay via UPI deep link animation"
                 className="w-full h-44 object-contain mx-auto"
-                loading="lazy"
               />
               <h4 className="font-bold text-[15px] text-[#0B1A17]">2. Direct 1-tap UPI</h4>
               <p className="text-[13px] text-[#5E726C]">
@@ -732,7 +705,6 @@ export function LandingBoldTheme() {
                 src="/split-animations/split-06-receipt-scan.webp"
                 alt="Receipt scan animation"
                 className="w-full h-44 object-contain mx-auto"
-                loading="lazy"
               />
               <h4 className="font-bold text-[15px] text-[#0B1A17]">3. Local OCR scan</h4>
               <p className="text-[13px] text-[#5E726C]">
@@ -748,7 +720,7 @@ export function LandingBoldTheme() {
       ====================================================================== */}
       <section id="faq" className="py-20 max-w-[900px] mx-auto px-6 border-t border-[#D3E2DD]">
         <div className="space-y-3 mb-10">
-          <span className="font-mono font-bold text-[12px] tracking-[0.16em] text-[#1B685C] uppercase block">
+          <span className="font-['JetBrains_Mono',ui-monospace,monospace] font-bold text-[12px] tracking-[0.16em] text-[#1B685C] uppercase block">
             / questions & answers
           </span>
           <h2 className="text-[32px] sm:text-[44px] font-bold tracking-tight text-[#0B1A17]">
@@ -842,7 +814,7 @@ export function LandingBoldTheme() {
           <span>Split a bill, free →</span>
         </Link>
 
-        <div className="font-mono text-[12px] text-[#5E726C] mt-5 uppercase tracking-[0.02em]">
+        <div className="font-['JetBrains_Mono',ui-monospace,monospace] text-[12px] text-[#5E726C] mt-5 uppercase tracking-[0.02em]">
           UL0 NEVER HOLDS YOUR MONEY
         </div>
       </div>
@@ -850,7 +822,7 @@ export function LandingBoldTheme() {
       {/* =====================================================================
           8. 5-LINK MINIMAL FOOTER
       ====================================================================== */}
-      <footer className="border-t border-[#D3E2DD] py-8 px-6 bg-white font-mono text-[13px] text-[#5E726C]">
+      <footer className="border-t border-[#D3E2DD] py-8 px-6 bg-white font-['JetBrains_Mono',ui-monospace,monospace] text-[13px] text-[#5E726C]">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <span>© 2026 UL0</span>
           <div className="flex flex-wrap items-center gap-6">
