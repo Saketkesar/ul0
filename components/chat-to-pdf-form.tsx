@@ -24,6 +24,7 @@ export function ChatToPdfForm({
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [resultDocType, setResultDocType] = useState<"notes" | "code" | "chat" | null>(null)
   const [showAdModal, setShowAdModal] = useState(false)
+  const [isPdfReady, setIsPdfReady] = useState(false)
   const pendingBlobRef = useRef<{ url: string; filename: string; docType: "notes" | "code" | "chat" } | null>(null)
 
   const finishDownload = () => {
@@ -69,6 +70,7 @@ export function ChatToPdfForm({
     }
 
     setStatus("converting")
+    setIsPdfReady(false)
     setShowAdModal(true)
 
     try {
@@ -104,6 +106,7 @@ export function ChatToPdfForm({
         res.headers.get("Content-Disposition")?.match(/filename="?([^"]+)"?/)?.[1] ||
         `chat-${docTypeHeader}.pdf`
       pendingBlobRef.current = { url: downloadUrl, filename, docType: docTypeHeader }
+      setIsPdfReady(true)
     } catch (err: any) {
       setShowAdModal(false)
       setStatus("error")
@@ -259,7 +262,9 @@ export function ChatToPdfForm({
       <GenerationAdModal
         isOpen={showAdModal}
         title="Generating formatted PDF document..."
-        durationSec={3.2}
+        minDurationSec={5}
+        isReady={isPdfReady}
+        buttonText="Download PDF →"
         onComplete={finishDownload}
         onClose={finishDownload}
       />

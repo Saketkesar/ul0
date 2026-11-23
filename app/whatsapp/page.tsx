@@ -635,7 +635,8 @@ export default function WhatsAppLinkGeneratorPage() {
       <GenerationAdModal
         isOpen={showAdModal}
         title={adTitle}
-        durationSec={3}
+        minDurationSec={5}
+        buttonText="Open WhatsApp Link →"
         onComplete={() => {
           if (pendingActionRef.current) {
             pendingActionRef.current()

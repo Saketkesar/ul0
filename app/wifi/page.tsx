@@ -387,7 +387,8 @@ export default function WifiQRGeneratorPage() {
       <GenerationAdModal
         isOpen={showAdModal}
         title="Generating WiFi QR Code..."
-        durationSec={3}
+        minDurationSec={5}
+        buttonText="Download WiFi QR →"
         onComplete={() => {
           if (pendingQrUrl) setQrDataUrl(pendingQrUrl)
         }}

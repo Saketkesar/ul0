@@ -26,6 +26,7 @@ export function UrlExpanderClient() {
   const [result, setResult] = useState<ExpanderResult | null>(null)
   const [pendingResult, setPendingResult] = useState<ExpanderResult | null>(null)
   const [showAdModal, setShowAdModal] = useState(false)
+  const [isReady, setIsReady] = useState(false)
   const [copied, setCopied] = useState(false)
 
   const handleExpand = async (e: React.FormEvent) => {
@@ -35,6 +36,8 @@ export function UrlExpanderClient() {
     setLoading(true)
     setError(null)
     setResult(null)
+    setIsReady(false)
+    setShowAdModal(true)
 
     try {
       const res = await fetch("/api/tools/url-expander", {
@@ -49,8 +52,9 @@ export function UrlExpanderClient() {
       }
 
       setPendingResult(data)
-      setShowAdModal(true)
+      setIsReady(true)
     } catch (err: any) {
+      setShowAdModal(false)
       setError(err.message || "An unexpected error occurred.")
     } finally {
       setLoading(false)
@@ -235,7 +239,9 @@ export function UrlExpanderClient() {
       <GenerationAdModal
         isOpen={showAdModal}
         title="Expanding obfuscated URL..."
-        durationSec={3.2}
+        minDurationSec={5}
+        isReady={isReady}
+        buttonText="View Expanded URL →"
         onClose={() => {
           if (pendingResult) setResult(pendingResult)
           setShowAdModal(false)

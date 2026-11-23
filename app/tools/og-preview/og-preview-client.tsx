@@ -36,6 +36,7 @@ export function OgPreviewClient() {
   const [data, setData] = useState<OgData | null>(null)
   const [pendingData, setPendingData] = useState<OgData | null>(null)
   const [showAdModal, setShowAdModal] = useState(false)
+  const [isReady, setIsReady] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>("twitter")
 
   const handleInspect = async (e: React.FormEvent) => {
@@ -45,6 +46,8 @@ export function OgPreviewClient() {
     setLoading(true)
     setError(null)
     setData(null)
+    setIsReady(false)
+    setShowAdModal(true)
 
     try {
       const res = await fetch("/api/tools/og-preview", {
@@ -59,8 +62,9 @@ export function OgPreviewClient() {
       }
 
       setPendingData(json)
-      setShowAdModal(true)
+      setIsReady(true)
     } catch (err: any) {
+      setShowAdModal(false)
       setError(err.message || "An unexpected error occurred.")
     } finally {
       setLoading(false)
@@ -357,7 +361,9 @@ export function OgPreviewClient() {
       <GenerationAdModal
         isOpen={showAdModal}
         title="Extracting OpenGraph Cards..."
-        durationSec={3.2}
+        minDurationSec={5}
+        isReady={isReady}
+        buttonText="View Preview Cards →"
         onClose={() => {
           if (pendingData) setData(pendingData)
           setShowAdModal(false)

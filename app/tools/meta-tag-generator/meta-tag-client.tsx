@@ -267,7 +267,8 @@ export function MetaTagClient() {
       <GenerationAdModal
         isOpen={showAdModal}
         title="Generating Production Meta Tags..."
-        durationSec={3.2}
+        minDurationSec={5}
+        buttonText="View Generated Meta Tags →"
         onClose={handleModalComplete}
         onComplete={handleModalComplete}
       />

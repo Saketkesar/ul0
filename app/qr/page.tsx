@@ -361,7 +361,8 @@ export default function QrPage() {
       <GenerationAdModal
         isOpen={showAdModal}
         title="Rendering High-Resolution Vector QR Assets..."
-        durationSec={3.2}
+        minDurationSec={5}
+        buttonText="Download QR Code →"
         onClose={handleModalComplete}
         onComplete={handleModalComplete}
       />

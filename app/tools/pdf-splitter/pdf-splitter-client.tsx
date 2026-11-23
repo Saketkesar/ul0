@@ -732,7 +732,8 @@ export function PdfSplitterClient() {
       <GenerationAdModal
         isOpen={showAdModal}
         title="Extracting and Processing PDF Pages..."
-        durationSec={3.2}
+        minDurationSec={5}
+        buttonText="Download Package →"
         onClose={() => {
           if (pendingAction) {
             pendingAction()

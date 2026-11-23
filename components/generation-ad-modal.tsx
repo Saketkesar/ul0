@@ -1,14 +1,17 @@
 "use client"
 
 import React, { useState, useEffect, useRef } from "react"
-import { Check, Loader2, Sparkles, X } from "lucide-react"
+import { ArrowRight, Check, X } from "lucide-react"
 
 interface GenerationAdModalProps {
   isOpen: boolean
   onClose?: () => void
   onComplete?: () => void
   title?: string
-  durationSec?: number // Default 3.2s (within 2-4s range)
+  minDurationSec?: number // Default 5.0s (user requirement: at least 5s wait)
+  durationSec?: number // Deprecated alias
+  isReady?: boolean // Whether the real backend operation has completed (defaults to true)
+  buttonText?: string // Clear CTA label
 }
 
 const AD_DOMAIN = "https://bauval.org/22"
@@ -108,40 +111,61 @@ export function GenerationAdModal({
   onClose,
   onComplete,
   title = "Generating output...",
-  durationSec = 3.2,
+  minDurationSec = 5.0,
+  durationSec,
+  isReady = true,
+  buttonText = "Continue to Result →",
 }: GenerationAdModalProps) {
   const [progress, setProgress] = useState<number>(0)
   const [isDone, setIsDone] = useState<boolean>(false)
+  const [remainingSec, setRemainingSec] = useState<number>(5)
   const startTimeRef = useRef<number | null>(null)
   const reqIdRef = useRef<number | null>(null)
+  const isReadyRef = useRef<boolean>(isReady)
+
+  useEffect(() => {
+    isReadyRef.current = isReady
+  }, [isReady])
+
+  // At least 5 seconds minimum wait guarantee
+  const effectiveMinMs = Math.max(5000, (minDurationSec ?? durationSec ?? 5.0) * 1000)
 
   useEffect(() => {
     if (!isOpen) {
       setProgress(0)
       setIsDone(false)
+      setRemainingSec(Math.ceil(effectiveMinMs / 1000))
       startTimeRef.current = null
       if (reqIdRef.current) cancelAnimationFrame(reqIdRef.current)
       return
     }
 
     startTimeRef.current = performance.now()
-    const totalMs = durationSec * 1000
 
     const update = (now: number) => {
       if (!startTimeRef.current) return
       const elapsed = now - startTimeRef.current
-      const pct = Math.min(100, Math.round((elapsed / totalMs) * 100))
-      setProgress(pct)
+      const left = Math.max(0, Math.ceil((effectiveMinMs - elapsed) / 1000))
+      setRemainingSec(left)
 
-      if (pct < 100) {
+      const timeFraction = Math.min(1.0, elapsed / effectiveMinMs)
+
+      if (!isReadyRef.current) {
+        // Real operation still processing: cap progress at 92% smoothly
+        const capped = Math.min(92, Math.round(timeFraction * 92))
+        setProgress(capped)
         reqIdRef.current = requestAnimationFrame(update)
       } else {
-        setIsDone(true)
-        if (onComplete) {
-          // Slight 300ms pause so user sees 100% complete
-          setTimeout(() => {
-            onComplete()
-          }, 350)
+        // Real operation is ready!
+        if (elapsed < effectiveMinMs) {
+          // Still need to meet minimum 5s sponsor view time
+          const currentPct = Math.min(99, Math.round(timeFraction * 100))
+          setProgress(currentPct)
+          reqIdRef.current = requestAnimationFrame(update)
+        } else {
+          // Both 5s minimum elapsed AND real task is ready!
+          setProgress(100)
+          setIsDone(true)
         }
       }
     }
@@ -151,9 +175,41 @@ export function GenerationAdModal({
     return () => {
       if (reqIdRef.current) cancelAnimationFrame(reqIdRef.current)
     }
-  }, [isOpen, durationSec, onComplete])
+  }, [isOpen, effectiveMinMs])
+
+  // Keyboard shortcut: Press Enter to trigger action when ready
+  useEffect(() => {
+    if (!isOpen || !isDone) return
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault()
+        handleAction()
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [isOpen, isDone])
+
+  const handleAction = () => {
+    if (onComplete) onComplete()
+    if (onClose) onClose()
+  }
 
   if (!isOpen) return null
+
+  // Dynamic engineering stage description
+  let stageDescription = "Initializing pipeline..."
+  if (isDone) {
+    stageDescription = "Processing complete · Ready"
+  } else if (!isReady) {
+    if (progress < 40) stageDescription = "Extracting source data..."
+    else if (progress < 70) stageDescription = "Compiling document structure..."
+    else stageDescription = "Awaiting server render..."
+  } else {
+    if (progress < 40) stageDescription = "Parsing data structure..."
+    else if (progress < 75) stageDescription = "Generating high-res assets..."
+    else stageDescription = "Finalizing output package..."
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-md animate-in fade-in duration-200">
@@ -162,7 +218,7 @@ export function GenerationAdModal({
         {/* Top Header / Close bar */}
         <div className="w-full flex items-center justify-between pb-3 mb-3 border-b border-[#E4E2DA]">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#1B685C] animate-pulse" />
+            <span className={`w-2.5 h-2.5 rounded-full ${isDone ? "bg-[#1B685C]" : "bg-[#1B685C] animate-pulse"}`} />
             <span className="text-[13px] sm:text-[14px] font-bold text-[#0B1A17] tracking-tight">
               {title}
             </span>
@@ -170,7 +226,7 @@ export function GenerationAdModal({
 
           {isDone ? (
             <button
-              onClick={onClose}
+              onClick={handleAction}
               className="w-8 h-8 rounded-full bg-[#F4FAF8] hover:bg-[#EAF7F3] border border-[#D3E2DD] text-[#0B1A17] flex items-center justify-center transition-colors cursor-pointer"
               aria-label="Close"
             >
@@ -270,48 +326,56 @@ export function GenerationAdModal({
           </div>
 
           {/* ===================================================================
-              PROGRESS BAR UNDER THE GRAPHIC (2-4s view guarantee)
+              TECHNICAL PROGRESS BAR (5s min guarantee + real wait)
           ==================================================================== */}
-          <div className="w-full max-w-[620px] space-y-2.5 px-4 pt-6 text-center">
-            <div className="flex items-center justify-between text-xs font-mono text-[#0B1A17]">
-              <span className="flex items-center gap-1.5 font-bold">
-                {isDone ? (
-                  <>
-                    <Check className="w-4 h-4 text-[#1B685C]" strokeWidth={2.5} />
-                    <span className="text-[#1B685C]">Generation complete!</span>
-                  </>
-                ) : (
-                  <>
-                    <Loader2 className="w-3.5 h-3.5 text-[#1B685C] animate-spin" />
-                    <span>Rendering assets...</span>
-                  </>
-                )}
+          <div className="w-full max-w-[620px] pt-5 pb-2 px-4 space-y-3">
+            {/* Stage info & counter */}
+            <div className="flex items-center justify-between text-xs font-mono">
+              <div className="flex items-center gap-2">
+                <span className={`w-2 h-2 rounded-full ${isDone ? "bg-[#1B685C]" : "bg-[#1B685C] animate-pulse"}`} />
+                <span className="font-bold text-[#0B1A17] tracking-tight">{stageDescription}</span>
+              </div>
+              <span className="font-bold font-mono text-xs px-2.5 py-0.5 rounded-md bg-[#F4FAF8] border border-[#D3E2DD] text-[#1B685C]">
+                {isDone ? "100%" : `${progress}%`}
               </span>
-              <span className="font-bold text-[#1B685C]">{progress}%</span>
             </div>
 
-            {/* Progress track */}
-            <div className="w-full h-3 rounded-full bg-[#EAF2EE] overflow-hidden p-0.5 border border-[#D3E2DD]">
+            {/* Precision Progress Bar - Solid Pine Emerald */}
+            <div className="w-full h-2 rounded-full bg-[#EAF2EE] overflow-hidden border border-[#D3E2DD]">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[#1B685C] via-[#3DDBB8] to-[#87D474] transition-all duration-100 ease-out"
+                className="h-full rounded-full bg-[#1B685C] transition-all duration-150 ease-out"
                 style={{ width: `${progress}%` }}
               />
             </div>
 
-            <p className="text-[11px] text-[#5E726C] pt-0.5">
-              Free tools powered by non-intrusive sponsor ads. Thank you for supporting UL0!
-            </p>
+            {/* Status footer line */}
+            <div className="flex items-center justify-between text-[11px] font-mono text-[#5E726C]">
+              <span>UL0 Engine · In-memory processing</span>
+              <span>
+                {isDone ? (
+                  <span className="text-[#1B685C] font-bold">Ready</span>
+                ) : !isReady && progress >= 90 ? (
+                  <span className="text-[#1B685C] font-semibold animate-pulse">Rendering output...</span>
+                ) : remainingSec > 0 ? (
+                  <span>~{remainingSec}s wait</span>
+                ) : (
+                  <span>Completing...</span>
+                )}
+              </span>
+            </div>
 
-            {/* Action Button once ready */}
+            {/* The Action Button - Clean, Tactile, No Sparkles, No AI clichés */}
             {isDone && (
-              <div className="pt-2 flex justify-center animate-in zoom-in-95 duration-200">
+              <div className="pt-3 flex flex-col items-center gap-1.5 animate-in fade-in zoom-in-95 duration-200">
                 <button
-                  onClick={onClose}
-                  className="px-8 py-3 rounded-full bg-[#1B685C] hover:bg-[#145248] text-white font-bold text-sm flex items-center gap-2 shadow-lg transition-transform hover:scale-105 active:scale-95 cursor-pointer"
+                  type="button"
+                  onClick={handleAction}
+                  className="inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-[#1B685C] hover:bg-[#145248] text-white font-bold text-sm tracking-tight transition-all active:scale-[0.98] cursor-pointer shadow-md hover:shadow-lg"
                 >
-                  <span>View Generated Result</span>
-                  <Sparkles className="w-4 h-4 text-[#3DDBB8]" />
+                  <span>{buttonText}</span>
+                  <ArrowRight className="w-4 h-4 text-[#3DDBB8]" strokeWidth={2.5} />
                 </button>
+                <span className="text-[11px] font-mono text-[#5E726C]">Press Enter ↵ to continue</span>
               </div>
             )}
           </div>

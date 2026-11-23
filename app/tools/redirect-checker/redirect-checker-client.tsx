@@ -32,6 +32,7 @@ export function RedirectCheckerClient() {
   const [result, setResult] = useState<ResultData | null>(null)
   const [pendingResult, setPendingResult] = useState<ResultData | null>(null)
   const [showAdModal, setShowAdModal] = useState(false)
+  const [isReady, setIsReady] = useState(false)
   const [copied, setCopied] = useState(false)
 
   const handleTrace = async (e: React.FormEvent) => {
@@ -41,6 +42,8 @@ export function RedirectCheckerClient() {
     setLoading(true)
     setError(null)
     setResult(null)
+    setIsReady(false)
+    setShowAdModal(true)
 
     try {
       const res = await fetch("/api/tools/redirect-checker", {
@@ -55,8 +58,9 @@ export function RedirectCheckerClient() {
       }
 
       setPendingResult(data)
-      setShowAdModal(true)
+      setIsReady(true)
     } catch (err: any) {
+      setShowAdModal(false)
       setError(err.message || "An unexpected error occurred.")
     } finally {
       setLoading(false)
@@ -217,7 +221,9 @@ export function RedirectCheckerClient() {
       <GenerationAdModal
         isOpen={showAdModal}
         title="Tracing HTTP Redirect Chain..."
-        durationSec={3.2}
+        minDurationSec={5}
+        isReady={isReady}
+        buttonText="View Redirect Chain →"
         onClose={() => {
           if (pendingResult) setResult(pendingResult)
           setShowAdModal(false)
