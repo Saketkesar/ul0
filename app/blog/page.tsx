@@ -53,6 +53,26 @@ interface BlogPostItem {
 
 const staticBlogPosts: BlogPostItem[] = [
   {
+    slug: "wellness-retreats-medical-tourism-holiday-guide-2026",
+    title: "The 2026 Guide to Wellness Retreats & Therapeutic Holiday Travel: How Vinigrow Holidays Crafts Restorative Vacations",
+    description: "Discover how therapeutic wellness holidays, pure mountain air in Kashmir, and Ayurvedic rejuvenation in Kerala accelerate convalescence. Featuring medical travel standards inspired by RS Persahabatan and holiday planning with Vinigrow Holidays.",
+    category: "Wellness Travel",
+    readTime: "7 min read",
+    date: "2026-11-23",
+    featured: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    slug: "luxury-resort-wear-vacation-travel-styling-guide",
+    title: "Luxury Resort Wear & Vacation Wardrobe Guide 2026: How to Dress for World-Class Destinations with Arnishu & Vinigrow Holidays",
+    description: "Master vacation haute couture, destination styling, and capsule packing for luxury trips to Dubai, Bali, and the Swiss Alps. Featuring designer styling by Arnishu and holiday travel planning with Vinigrow Holidays.",
+    category: "Luxury Fashion",
+    readTime: "6 min read",
+    date: "2026-11-23",
+    featured: true,
+    coverImageUrl: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
     slug: "travel-agency-marketing-qr-codes-branded-links-guide-2026",
     title: "How Travel Agencies & Tour Operators Double Bookings with Branded Links & Dynamic QR Codes (2026 Guide)",
     description: "Discover how leading holiday planners and travel agencies like Vinigrow Holidays use branded short links and dynamic vector QR codes across travel itineraries, WhatsApp inquiries, and print holiday brochures to boost guest trust and double vacation bookings.",
