@@ -672,13 +672,14 @@ export function LandingBoldTheme() {
             </h3>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="rounded-[20px] p-5 bg-[#F4FAF8] border border-[#D3E2DD] text-center space-y-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/split-animations/split-01-bill-to-shares.webp"
                 alt="Bill to shares animation"
                 className="w-full h-44 object-contain mx-auto"
+                loading="lazy"
               />
               <h4 className="font-bold text-[15px] text-[#0B1A17]">1. Bill to exact shares</h4>
               <p className="text-[13px] text-[#5E726C]">
@@ -692,6 +693,7 @@ export function LandingBoldTheme() {
                 src="/split-animations/split-02-pay-qr.webp"
                 alt="Pay via UPI deep link animation"
                 className="w-full h-44 object-contain mx-auto"
+                loading="lazy"
               />
               <h4 className="font-bold text-[15px] text-[#0B1A17]">2. Direct 1-tap UPI</h4>
               <p className="text-[13px] text-[#5E726C]">
@@ -702,11 +704,54 @@ export function LandingBoldTheme() {
             <div className="rounded-[20px] p-5 bg-[#F4FAF8] border border-[#D3E2DD] text-center space-y-3">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
+                src="/split-animations/split-03-who-paid.webp"
+                alt="Live payment tracker animation"
+                className="w-full h-44 object-contain mx-auto"
+                loading="lazy"
+              />
+              <h4 className="font-bold text-[15px] text-[#0B1A17]">3. Live payment status</h4>
+              <p className="text-[13px] text-[#5E726C]">
+                Watch shares update in real-time from Unpaid to Claimed to Settled.
+              </p>
+            </div>
+
+            <div className="rounded-[20px] p-5 bg-[#F4FAF8] border border-[#D3E2DD] text-center space-y-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/split-animations/split-04-group-settle-up.webp"
+                alt="Group settle debt simplification animation"
+                className="w-full h-44 object-contain mx-auto"
+                loading="lazy"
+              />
+              <h4 className="font-bold text-[15px] text-[#0B1A17]">4. Group debt simplification</h4>
+              <p className="text-[13px] text-[#5E726C]">
+                Multi-day trip debts collapse entangled balances into 2 minimal transfers.
+              </p>
+            </div>
+
+            <div className="rounded-[20px] p-5 bg-[#F4FAF8] border border-[#D3E2DD] text-center space-y-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/split-animations/split-05-reminders.webp"
+                alt="WhatsApp reminders animation"
+                className="w-full h-44 object-contain mx-auto"
+                loading="lazy"
+              />
+              <h4 className="font-bold text-[15px] text-[#0B1A17]">5. WhatsApp nudges</h4>
+              <p className="text-[13px] text-[#5E726C]">
+                Polite, firm, and desi-style reminder messages ready to copy or send.
+              </p>
+            </div>
+
+            <div className="rounded-[20px] p-5 bg-[#F4FAF8] border border-[#D3E2DD] text-center space-y-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src="/split-animations/split-06-receipt-scan.webp"
                 alt="Receipt scan animation"
                 className="w-full h-44 object-contain mx-auto"
+                loading="lazy"
               />
-              <h4 className="font-bold text-[15px] text-[#0B1A17]">3. Local OCR scan</h4>
+              <h4 className="font-bold text-[15px] text-[#0B1A17]">6. On-device receipt scan</h4>
               <p className="text-[13px] text-[#5E726C]">
                 Scan restaurant or grocery bills locally on your device with zero upload.
               </p>

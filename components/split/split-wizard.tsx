@@ -853,8 +853,8 @@ function SplitWizardContent() {
 
             {/* STEP 0: DASHBOARD */}
             {step === 0 && (
-              <div className="space-y-6">
-                {/* Header Row: Clean H1 "Splits" */}
+              <div className="space-y-6 pb-24 md:pb-0">
+                {/* Header Row: Clean H1 "Splits" + QR Scanner & New Split Actions */}
                 <div className="flex items-center justify-between">
                   <div>
                     <h1 className="text-[28px] sm:text-[32px] font-bold text-[#111715] tracking-tight">
@@ -863,6 +863,15 @@ function SplitWizardContent() {
                   </div>
 
                   <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowQrScanner(true)}
+                      className="w-10 h-10 rounded-[10px] border border-[#E4E2DA] bg-white flex items-center justify-center text-[#111715] hover:bg-[#F6F5F1] transition-colors cursor-pointer"
+                      title="Scan UPI QR Code"
+                      aria-label="Scan UPI QR Code"
+                    >
+                      <QrCode className="w-5 h-5 text-[#5F6763]" strokeWidth={1.75} />
+                    </button>
                     <Button
                       onClick={() => setStep(1)}
                       className="bg-[#111715] hover:bg-[#25302C] text-white text-[13px] h-10 px-4 rounded-[10px] font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
@@ -937,8 +946,31 @@ function SplitWizardContent() {
                   </div>
                 )}
 
-                {/* Mobile Bottom Navigation Bar */}
-                <div className="md:hidden pt-8 border-t border-[#E4E2DA] flex items-center justify-around text-[#5F6763]">
+                {/* Mobile Floating Action Buttons: Gun Game & Quick New Split */}
+                <div className="md:hidden">
+                  <button
+                    type="button"
+                    onClick={() => setShowGunGame(true)}
+                    className="fixed bottom-20 left-6 z-20 w-13 h-13 rounded-full bg-white border border-[#E4E2DA] shadow-lg flex items-center justify-center text-2xl hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+                    title="Who pays? (Gun game)"
+                    aria-label="Gun game minigame"
+                  >
+                    🎲
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setStep(1)}
+                    className="fixed bottom-20 right-6 z-20 w-14 h-14 rounded-full bg-[#111715] text-white shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+                    title="New split"
+                    aria-label="Create new split"
+                  >
+                    <Plus className="w-6 h-6" strokeWidth={2.5} />
+                  </button>
+                </div>
+
+                {/* Mobile Fixed Bottom Navigation Bar */}
+                <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-[#E4E2DA] py-2 flex items-center justify-around text-[#5F6763]">
                   <button
                     onClick={() => setStep(0)}
                     className="flex flex-col items-center gap-1 text-[#111715] font-semibold text-[11px]"
