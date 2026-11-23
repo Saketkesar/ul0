@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { UL0Icon } from "@/components/ul0-icon"
+import { GenerationAdModal } from "@/components/generation-ad-modal"
 
 interface ExpanderResult {
   success: boolean
@@ -23,6 +24,8 @@ export function UrlExpanderClient() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<ExpanderResult | null>(null)
+  const [pendingResult, setPendingResult] = useState<ExpanderResult | null>(null)
+  const [showAdModal, setShowAdModal] = useState(false)
   const [copied, setCopied] = useState(false)
 
   const handleExpand = async (e: React.FormEvent) => {
@@ -45,7 +48,8 @@ export function UrlExpanderClient() {
         throw new Error(data.error || "Failed to expand URL.")
       }
 
-      setResult(data)
+      setPendingResult(data)
+      setShowAdModal(true)
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.")
     } finally {
@@ -226,6 +230,21 @@ export function UrlExpanderClient() {
           </div>
         </div>
       )}
+
+      {/* Generation Ad Popup with Progress Bar */}
+      <GenerationAdModal
+        isOpen={showAdModal}
+        title="Expanding obfuscated URL..."
+        durationSec={3.2}
+        onClose={() => {
+          if (pendingResult) setResult(pendingResult)
+          setShowAdModal(false)
+        }}
+        onComplete={() => {
+          if (pendingResult) setResult(pendingResult)
+          setShowAdModal(false)
+        }}
+      />
     </div>
   )
 }

@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { UL0Icon } from "@/components/ul0-icon"
 import { Button } from "@/components/ui/button"
+import { GenerationAdModal } from "@/components/generation-ad-modal"
 
 interface Hop {
   hop: number
@@ -29,6 +30,8 @@ export function RedirectCheckerClient() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<ResultData | null>(null)
+  const [pendingResult, setPendingResult] = useState<ResultData | null>(null)
+  const [showAdModal, setShowAdModal] = useState(false)
   const [copied, setCopied] = useState(false)
 
   const handleTrace = async (e: React.FormEvent) => {
@@ -51,7 +54,8 @@ export function RedirectCheckerClient() {
         throw new Error(data.error || "Failed to trace redirects.")
       }
 
-      setResult(data)
+      setPendingResult(data)
+      setShowAdModal(true)
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.")
     } finally {
@@ -208,6 +212,21 @@ export function RedirectCheckerClient() {
           </div>
         </div>
       )}
+
+      {/* Generation Ad Popup with Progress Bar */}
+      <GenerationAdModal
+        isOpen={showAdModal}
+        title="Tracing HTTP Redirect Chain..."
+        durationSec={3.2}
+        onClose={() => {
+          if (pendingResult) setResult(pendingResult)
+          setShowAdModal(false)
+        }}
+        onComplete={() => {
+          if (pendingResult) setResult(pendingResult)
+          setShowAdModal(false)
+        }}
+      />
     </div>
   )
 }

@@ -8,6 +8,7 @@ import { UL0Icon } from "@/components/ul0-icon"
 import QRCode from "qrcode"
 import { toast } from "sonner"
 import { getShortUrl } from "@/lib/utils/link-url"
+import { GenerationAdModal } from "@/components/generation-ad-modal"
 
 // Popular country dialing codes
 const COUNTRY_CODES = [
@@ -70,6 +71,9 @@ export default function WhatsAppLinkGeneratorPage() {
   const [shortUrl, setShortUrl] = useState<string | null>(null)
   const [shortening, setShortening] = useState(false)
   const [shortenError, setShortenError] = useState<string | null>(null)
+  const [showAdModal, setShowAdModal] = useState(false)
+  const [adTitle, setAdTitle] = useState("Generating trackable short link...")
+  const pendingActionRef = useRef<(() => void) | null>(null)
 
   // QR state
   const [qrColor, setQrColor] = useState<"whatsapp" | "teal" | "dark">("whatsapp")
@@ -172,10 +176,14 @@ export default function WhatsAppLinkGeneratorPage() {
       }
 
       const canonicalShort = getShortUrl("ul0.site", data.slug)
-      setShortUrl(canonicalShort)
-      toast.success("Trackable WhatsApp Short Link Created!", {
-        description: canonicalShort,
-      })
+      pendingActionRef.current = () => {
+        setShortUrl(canonicalShort)
+        toast.success("Trackable WhatsApp Short Link Created!", {
+          description: canonicalShort,
+        })
+      }
+      setAdTitle("Creating trackable short link...")
+      setShowAdModal(true)
     } catch {
       setShortenError("Network error. Please try again.")
       toast.error("Network error while creating short link.")
@@ -188,11 +196,16 @@ export default function WhatsAppLinkGeneratorPage() {
   const handleDownloadQr = () => {
     if (!canvasRef.current) return
     const canvas = canvasRef.current
-    const link = document.createElement("a")
-    link.download = `whatsapp-qr-${countryCode}${cleanPhone || "link"}.png`
-    link.href = canvas.toDataURL("image/png")
-    link.click()
-    toast.success("QR Code downloaded as PNG!")
+    const dataUrl = canvas.toDataURL("image/png")
+    pendingActionRef.current = () => {
+      const link = document.createElement("a")
+      link.download = `whatsapp-qr-${countryCode}${cleanPhone || "link"}.png`
+      link.href = dataUrl
+      link.click()
+      toast.success("QR Code downloaded as PNG!")
+    }
+    setAdTitle("Preparing high-res vector QR code...")
+    setShowAdModal(true)
   }
 
   return (
@@ -618,6 +631,25 @@ export default function WhatsAppLinkGeneratorPage() {
       </main>
 
       <Footer />
+
+      <GenerationAdModal
+        isOpen={showAdModal}
+        title={adTitle}
+        durationSec={3}
+        onComplete={() => {
+          if (pendingActionRef.current) {
+            pendingActionRef.current()
+            pendingActionRef.current = null
+          }
+        }}
+        onClose={() => {
+          if (pendingActionRef.current) {
+            pendingActionRef.current()
+            pendingActionRef.current = null
+          }
+          setShowAdModal(false)
+        }}
+      />
     </div>
   )
 }

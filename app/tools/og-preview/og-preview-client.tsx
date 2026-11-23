@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { UL0Icon } from "@/components/ul0-icon"
+import { GenerationAdModal } from "@/components/generation-ad-modal"
 
 interface OgData {
   success: boolean
@@ -33,6 +34,8 @@ export function OgPreviewClient() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<OgData | null>(null)
+  const [pendingData, setPendingData] = useState<OgData | null>(null)
+  const [showAdModal, setShowAdModal] = useState(false)
   const [activeTab, setActiveTab] = useState<TabType>("twitter")
 
   const handleInspect = async (e: React.FormEvent) => {
@@ -55,7 +58,8 @@ export function OgPreviewClient() {
         throw new Error(json.error || "Failed to inspect OpenGraph tags.")
       }
 
-      setData(json)
+      setPendingData(json)
+      setShowAdModal(true)
     } catch (err: any) {
       setError(err.message || "An unexpected error occurred.")
     } finally {
@@ -348,6 +352,21 @@ export function OgPreviewClient() {
           </div>
         </div>
       )}
+
+      {/* Generation Ad Popup with Progress Bar */}
+      <GenerationAdModal
+        isOpen={showAdModal}
+        title="Extracting OpenGraph Cards..."
+        durationSec={3.2}
+        onClose={() => {
+          if (pendingData) setData(pendingData)
+          setShowAdModal(false)
+        }}
+        onComplete={() => {
+          if (pendingData) setData(pendingData)
+          setShowAdModal(false)
+        }}
+      />
     </div>
   )
 }

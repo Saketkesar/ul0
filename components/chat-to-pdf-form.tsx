@@ -1,7 +1,8 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { UL0Icon } from "@/components/ul0-icon"
+import { GenerationAdModal } from "@/components/generation-ad-modal"
 
 interface ChatToPdfFormProps {
   initialPlaceholder?: string
@@ -22,6 +23,25 @@ export function ChatToPdfForm({
   const [status, setStatus] = useState<"idle" | "converting" | "done" | "error">("idle")
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [resultDocType, setResultDocType] = useState<"notes" | "code" | "chat" | null>(null)
+  const [showAdModal, setShowAdModal] = useState(false)
+  const pendingBlobRef = useRef<{ url: string; filename: string; docType: "notes" | "code" | "chat" } | null>(null)
+
+  const finishDownload = () => {
+    if (pendingBlobRef.current) {
+      const { url: dlUrl, filename, docType } = pendingBlobRef.current
+      setResultDocType(docType)
+      const a = document.createElement("a")
+      a.href = dlUrl
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(dlUrl)
+      pendingBlobRef.current = null
+      setStatus("done")
+    }
+    setShowAdModal(false)
+  }
 
   const placeholder =
     initialPlaceholder ||
@@ -49,6 +69,7 @@ export function ChatToPdfForm({
     }
 
     setStatus("converting")
+    setShowAdModal(true)
 
     try {
       const payload = showFallback && hasText ? { text: fallbackText.trim() } : { url: url.trim() }
@@ -75,25 +96,16 @@ export function ChatToPdfForm({
 
       // Read DocType header
       const docTypeHeader = (res.headers.get("X-Doc-Type") as "notes" | "code" | "chat") || "chat"
-      setResultDocType(docTypeHeader)
 
-      // Download PDF
+      // Store PDF for download
       const blob = await res.blob()
       const downloadUrl = URL.createObjectURL(blob)
-      const a = document.createElement("a")
-      a.href = downloadUrl
-
       const filename =
         res.headers.get("Content-Disposition")?.match(/filename="?([^"]+)"?/)?.[1] ||
         `chat-${docTypeHeader}.pdf`
-      a.download = filename
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(downloadUrl)
-
-      setStatus("done")
+      pendingBlobRef.current = { url: downloadUrl, filename, docType: docTypeHeader }
     } catch (err: any) {
+      setShowAdModal(false)
       setStatus("error")
       setErrorMessage(
         err.message ||
@@ -243,6 +255,14 @@ export function ChatToPdfForm({
           <span>We don&apos;t store your chats. Processed in-memory and immediately discarded.</span>
         </div>
       </div>
+
+      <GenerationAdModal
+        isOpen={showAdModal}
+        title="Generating formatted PDF document..."
+        durationSec={3.2}
+        onComplete={finishDownload}
+        onClose={finishDownload}
+      />
     </div>
   )
 }

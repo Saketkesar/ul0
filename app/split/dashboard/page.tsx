@@ -9,49 +9,59 @@ export const metadata = {
 
 export default function SplitDashboardPage() {
   return (
-    <div className="min-h-screen bg-[#F6F5F1] text-[#111715] flex flex-col font-sans selection:bg-[#0F7B5F]/20 selection:text-[#0F7B5F]">
-      {/* 64px Flat Nav */}
-      <nav className="h-16 border-b border-[#E4E2DA] bg-[#F6F5F1] sticky top-0 z-40 px-4 sm:px-8">
+    <div className="min-h-screen bg-white text-[#0B1A17] flex flex-col font-['Space_Grotesk',sans-serif] selection:bg-[#3DDBB8] selection:text-[#0B1A17]">
+      {/* 64px Flat Bold Nav matching Landing Page */}
+      <nav className="h-16 border-b border-[#D3E2DD] bg-white sticky top-0 z-40 px-4 sm:px-8">
         <div className="max-w-[1080px] mx-auto h-full flex items-center justify-between">
-          <Link href="/split" className="flex items-center gap-2 font-bold text-base tracking-tight text-[#111715]">
-            <span className="w-7 h-7 rounded-[8px] bg-[#0F7B5F] text-white flex items-center justify-center font-bold text-xs">
-              U
+          <Link
+            href="/split"
+            className="flex items-center gap-1.5 font-['Space_Grotesk',sans-serif] font-bold text-[18px] tracking-tight text-[#0B1A17]"
+          >
+            <span className="w-2.5 h-2.5 rounded-full bg-[#1B685C]" />
+            <span>
+              UL0<span className="text-[#1B685C]">.split</span>
             </span>
-            <span>UL0 Split</span>
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link
               href="/split"
-              className="text-[13px] font-medium text-[#5F6763] hover:text-[#111715] transition-colors flex items-center gap-1.5"
+              className="text-[13px] font-medium text-[#5E726C] hover:text-[#0B1A17] transition-colors flex items-center gap-1.5"
             >
-              <ArrowLeft className="w-3.5 h-3.5" strokeWidth={1.75} />
-              <span className="hidden sm:inline">About UL0 Split</span>
-              <span className="sm:hidden">Home</span>
+              <ArrowLeft className="w-3.5 h-3.5" strokeWidth={2} />
+              <span className="hidden sm:inline">How it works</span>
+              <span className="sm:hidden">Landing</span>
+            </Link>
+
+            <Link
+              href="/split"
+              className="hidden sm:inline-flex px-3.5 py-1.5 rounded-full border border-[#D3E2DD] text-[12px] font-bold text-[#1B685C] hover:bg-[#F4FAF8] transition-colors"
+            >
+              Tear a receipt →
             </Link>
           </div>
         </div>
       </nav>
 
-      <main className="flex-1 w-full">
+      <main className="flex-1 w-full bg-white">
         <SplitWizard />
       </main>
 
-      {/* 5-Link Minimal Footer */}
-      <footer className="border-t border-[#E4E2DA] py-8 px-4 sm:px-8 bg-[#F6F5F1]">
-        <div className="max-w-[1080px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px] text-[#5F6763]">
+      {/* 5-Link Minimal Footer matching Bold Theme */}
+      <footer className="border-t border-[#D3E2DD] py-8 px-4 sm:px-8 bg-white">
+        <div className="max-w-[1080px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px] text-[#5E726C]">
           <div className="flex items-center gap-2">
-            <span className="font-semibold text-[#111715]">UL0 Split</span>
+            <span className="font-bold text-[#0B1A17]">UL0.split</span>
             <span>·</span>
-            <span>Direct bank-to-bank UPI</span>
+            <span className="font-['JetBrains_Mono',monospace] text-[12px]">Direct bank-to-bank UPI</span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-6">
-            <Link href="/" className="hover:text-[#111715] transition-colors">Link Shortener</Link>
-            <Link href="/pricing" className="hover:text-[#111715] transition-colors">Pricing</Link>
-            <Link href="/privacy" className="hover:text-[#111715] transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-[#111715] transition-colors">Terms</Link>
-            <Link href="/contact" className="hover:text-[#111715] transition-colors">Contact</Link>
+          <div className="flex flex-wrap items-center gap-6 text-[13px] font-medium">
+            <Link href="/" className="hover:text-[#0B1A17] transition-colors">Link Shortener</Link>
+            <Link href="/pricing" className="hover:text-[#0B1A17] transition-colors">Pricing</Link>
+            <Link href="/privacy" className="hover:text-[#0B1A17] transition-colors">Privacy</Link>
+            <Link href="/terms" className="hover:text-[#0B1A17] transition-colors">Terms</Link>
+            <Link href="/contact" className="hover:text-[#0B1A17] transition-colors">Contact</Link>
           </div>
         </div>
       </footer>

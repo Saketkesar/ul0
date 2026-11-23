@@ -11,7 +11,7 @@ export interface AdBannerProps {
   scripts?: any
 }
 
-const AD_DOMAIN = "https://unsettledradiator.com"
+const AD_DOMAIN = "https://bauval.org/22"
 
 const AD_CONFIGS = {
   large: { key: "ea31a2b23b71044ce04e59b9147c7ffc", width: 728, height: 90 },
@@ -59,8 +59,8 @@ export function AdBanner({ slot = 1, type = "large", scriptKey, width, height, s
 
     el.innerHTML = ""
 
-    // Create a friendly same-origin iframe to isolate window.atOptions
-    // and prevent race conditions between multiple concurrent ad slots.
+    // Create a sandboxed iframe to isolate window.atOptions
+    // and prevent ads from escaping or hijacking top-navigation.
     const iframe = document.createElement("iframe")
     iframe.id = `adsterra-frame-${slot}-${finalKey}`
     iframe.width = `${baseW}`
@@ -70,6 +70,7 @@ export function AdBanner({ slot = 1, type = "large", scriptKey, width, height, s
     iframe.style.border = "none"
     iframe.style.overflow = "hidden"
     iframe.scrolling = "no"
+    iframe.setAttribute("sandbox", "allow-scripts allow-same-origin allow-popups allow-forms")
     el.appendChild(iframe)
 
     try {
@@ -96,7 +97,7 @@ export function AdBanner({ slot = 1, type = "large", scriptKey, width, height, s
                   'params': {}
                 };
               </script>
-              <script type="text/javascript" src="${customScript?.src || `${AD_DOMAIN}/${finalKey}/invoke.js`}"></script>
+              <script type="text/javascript" src="${customScript?.src || `${AD_DOMAIN}/${finalKey}`}"></script>
             </body>
           </html>
         `)

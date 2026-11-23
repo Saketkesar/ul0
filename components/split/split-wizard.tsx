@@ -695,25 +695,25 @@ function SplitWizardContent() {
     : ""
 
   return (
-    <div className="w-full bg-[#F6F5F1] text-[#111715] font-sans selection:bg-[#0F7B5F]/20 selection:text-[#0F7B5F]">
+    <div className="w-full bg-white text-[#0B1A17] font-['Space_Grotesk',sans-serif] selection:bg-[#3DDBB8] selection:text-[#0B1A17]">
       <div className="max-w-[1080px] mx-auto px-4 sm:px-6 py-6 sm:py-10">
         {/* Desktop Shell (Sidebar + Main Content Grid) */}
         <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* =====================================================================
-              DESKTOP SIDEBAR (240px Flat Rail)
+              DESKTOP SIDEBAR (240px Flat Rail - Bold Theme)
           ====================================================================== */}
-          <aside className="hidden md:flex flex-col w-[240px] shrink-0 rounded-[16px] border border-[#E4E2DA] bg-white p-4.5 space-y-6 sticky top-20">
+          <aside className="hidden md:flex flex-col w-[240px] shrink-0 rounded-[20px] border border-[#D3E2DD] bg-[#F4FAF8] p-4.5 space-y-6 sticky top-20">
             {/* Brand header */}
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-[6px] bg-[#0F7B5F] text-white flex items-center justify-center font-bold text-xs">
+                <span className="w-6 h-6 rounded-full bg-[#1B685C] text-white flex items-center justify-center font-bold text-xs">
                   U
                 </span>
-                <span className="font-bold text-[15px] tracking-tight text-[#111715]">
-                  UL0 Split & Hisab
+                <span className="font-bold text-[15px] tracking-tight text-[#0B1A17]">
+                  UL0<span className="text-[#1B685C]">.split</span> &amp; Hisab
                 </span>
               </div>
-              <span className="inline-block text-[11px] font-medium text-[#5F6763] pl-8">
+              <span className="inline-block text-[11px] font-mono text-[#5E726C] pl-8">
                 Direct UPI · Zero signup
               </span>
             </div>
@@ -722,21 +722,21 @@ function SplitWizardContent() {
             <nav className="space-y-1 text-[13px] font-medium">
               <button
                 onClick={() => setStep(0)}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-[8px] transition-colors cursor-pointer text-left ${
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-full transition-colors cursor-pointer text-left ${
                   step === 0
-                    ? "bg-[#EAE8E1] text-[#111715] font-semibold"
-                    : "text-[#5F6763] hover:bg-[#F6F5F1] hover:text-[#111715]"
+                    ? "bg-[#DDF5EE] text-[#0B1A17] font-bold"
+                    : "text-[#5E726C] hover:bg-[#EBF7F3] hover:text-[#0B1A17]"
                 }`}
               >
-                <Receipt className="w-4 h-4" strokeWidth={1.75} />
+                <Receipt className="w-4 h-4 text-[#1B685C]" strokeWidth={2} />
                 <span>Splits Dashboard</span>
               </button>
 
               <button
                 onClick={() => router.push("/split/groups")}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[8px] text-[#5F6763] hover:bg-[#F6F5F1] hover:text-[#111715] transition-colors cursor-pointer text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-full text-[#5E726C] hover:bg-[#EBF7F3] hover:text-[#0B1A17] transition-colors cursor-pointer text-left"
               >
-                <Users className="w-4 h-4" strokeWidth={1.75} />
+                <Users className="w-4 h-4 text-[#1B685C]" strokeWidth={2} />
                 <span>Group Hisab</span>
               </button>
 
@@ -748,66 +748,66 @@ function SplitWizardContent() {
                     toast.info("No past splits in your ledger yet.")
                   }
                 }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[8px] text-[#5F6763] hover:bg-[#F6F5F1] hover:text-[#111715] transition-colors cursor-pointer text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-full text-[#5E726C] hover:bg-[#EBF7F3] hover:text-[#0B1A17] transition-colors cursor-pointer text-left"
               >
-                <Clock className="w-4 h-4" strokeWidth={1.75} />
+                <Clock className="w-4 h-4 text-[#1B685C]" strokeWidth={2} />
                 <span>Ledger</span>
               </button>
 
               <button
                 onClick={() => setShowQrScanner(true)}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[8px] text-[#5F6763] hover:bg-[#F6F5F1] hover:text-[#111715] transition-colors cursor-pointer text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-full text-[#5E726C] hover:bg-[#EBF7F3] hover:text-[#0B1A17] transition-colors cursor-pointer text-left"
               >
-                <QrCode className="w-4 h-4" strokeWidth={1.75} />
+                <QrCode className="w-4 h-4 text-[#1B685C]" strokeWidth={2} />
                 <span>Collect / QR</span>
               </button>
 
               <button
                 onClick={() => setShowSettings(true)}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-[8px] text-[#5F6763] hover:bg-[#F6F5F1] hover:text-[#111715] transition-colors cursor-pointer text-left"
+                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-full text-[#5E726C] hover:bg-[#EBF7F3] hover:text-[#0B1A17] transition-colors cursor-pointer text-left"
               >
-                <Settings className="w-4 h-4" strokeWidth={1.75} />
+                <Settings className="w-4 h-4 text-[#1B685C]" strokeWidth={2} />
                 <span>Settings</span>
               </button>
             </nav>
 
-            {/* Secondary Action: Gun Game (clean secondary link, not red block) */}
-            <div className="pt-2 border-t border-[#E4E2DA]">
+            {/* Secondary Action: Gun Game (clean secondary link) */}
+            <div className="pt-2 border-t border-[#D3E2DD]">
               <button
                 onClick={() => setShowGunGame(true)}
-                className="w-full flex items-center justify-between px-3 py-2 rounded-[8px] text-[12px] font-medium text-[#5F6763] hover:text-[#111715] hover:bg-[#F6F5F1] transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between px-3 py-2 rounded-full text-[12px] font-bold text-[#1B685C] hover:bg-[#DDF5EE] transition-colors cursor-pointer"
               >
-                <span>Who pays? (random pick)</span>
-                <span className="text-[11px] font-mono text-[#0F7B5F]">Roll →</span>
+                <span>Who pays? (minigame)</span>
+                <span className="text-[11px] font-mono text-[#1B685C]">Roll →</span>
               </button>
             </div>
 
             {/* Organizer Card */}
-            <div className="pt-2 border-t border-[#E4E2DA] space-y-2">
-              <span className="text-[11px] font-medium text-[#5F6763] uppercase tracking-wider block">
+            <div className="pt-2 border-t border-[#D3E2DD] space-y-2">
+              <span className="text-[11px] font-mono font-bold text-[#5E726C] uppercase tracking-wider block">
                 Your UPI details
               </span>
-              <div className="p-3 rounded-[10px] bg-[#F6F5F1] border border-[#E4E2DA] space-y-1">
+              <div className="p-3 rounded-[12px] bg-white border border-[#D3E2DD] space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-[13px] text-[#111715] truncate max-w-[120px]">
+                  <span className="font-bold text-[13px] text-[#0B1A17] truncate max-w-[120px]">
                     {collectorName || "Organizer"}
                   </span>
                   <button
                     onClick={() => setShowSettings(true)}
-                    className="text-[11px] text-[#0F7B5F] font-medium underline cursor-pointer"
+                    className="text-[11px] text-[#1B685C] font-bold underline cursor-pointer"
                   >
                     Edit
                   </button>
                 </div>
-                <span className="text-[12px] font-mono text-[#5F6763] block truncate">
+                <span className="text-[12px] font-mono text-[#5E726C] block truncate">
                   {collectorUpi || "No UPI set"}
                 </span>
               </div>
             </div>
 
             {/* Direct Bank Transfer Notice */}
-            <div className="pt-1 text-[11px] text-[#5F6763] flex items-center gap-1.5 leading-tight">
-              <Shield className="w-3.5 h-3.5 text-[#0F7B5F] shrink-0" strokeWidth={1.75} />
+            <div className="pt-1 text-[11px] text-[#5E726C] flex items-center gap-1.5 leading-tight">
+              <Shield className="w-3.5 h-3.5 text-[#1B685C] shrink-0" strokeWidth={2} />
               <span>Direct bank-to-bank UPI. UL0 never holds funds.</span>
             </div>
           </aside>
@@ -818,12 +818,12 @@ function SplitWizardContent() {
           <main className="flex-1 w-full max-w-2xl">
             {/* Top Prompt: Missing UPI ID */}
             {!collectorUpi && step === 0 && (
-              <div className="mb-6 p-4 rounded-[12px] border border-[#E4E2DA] bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="mb-6 p-4 rounded-[16px] border border-[#D3E2DD] bg-[#F4FAF8] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="space-y-0.5">
-                  <span className="font-semibold text-[14px] text-[#111715] block">
+                  <span className="font-bold text-[14px] text-[#0B1A17] block">
                     Add your UPI ID to receive money
                   </span>
-                  <span className="text-[12px] text-[#5F6763] block">
+                  <span className="text-[12px] text-[#5E726C] block">
                     Friends will pay directly into your bank via UPI deep links.
                   </span>
                 </div>
@@ -832,7 +832,7 @@ function SplitWizardContent() {
                     placeholder="e.g. name@oksbi"
                     value={inlineUpiInput}
                     onChange={(e) => setInlineUpiInput(e.target.value)}
-                    className="h-9 w-44 text-[13px] font-mono rounded-[8px] border-[#E4E2DA]"
+                    className="h-9 w-44 text-[13px] font-mono rounded-[8px] border-[#D3E2DD] bg-white"
                   />
                   <Button
                     onClick={() => {
@@ -843,7 +843,7 @@ function SplitWizardContent() {
                       saveCollectorDetails(collectorName || "Organizer", inlineUpiInput)
                       toast.success("UPI ID saved!")
                     }}
-                    className="h-9 px-3.5 rounded-[8px] bg-[#111715] hover:bg-[#25302C] text-white text-[12px] font-medium"
+                    className="h-9 px-4 rounded-full bg-[#1B685C] hover:bg-[#145248] text-white text-[12px] font-bold shadow-xs cursor-pointer"
                   >
                     Save
                   </Button>
@@ -857,26 +857,29 @@ function SplitWizardContent() {
                 {/* Header Row: Clean H1 "Splits" + QR Scanner & New Split Actions */}
                 <div className="flex items-center justify-between">
                   <div>
-                    <h1 className="text-[28px] sm:text-[32px] font-bold text-[#111715] tracking-tight">
+                    <span className="font-['JetBrains_Mono',monospace] font-bold text-[11px] tracking-[0.14em] text-[#1B685C] uppercase block mb-1">
+                      / your active splits
+                    </span>
+                    <h1 className="text-[28px] sm:text-[34px] font-bold text-[#0B1A17] tracking-tight">
                       Splits
                     </h1>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2.5">
                     <button
                       type="button"
                       onClick={() => setShowQrScanner(true)}
-                      className="w-10 h-10 rounded-[10px] border border-[#E4E2DA] bg-white flex items-center justify-center text-[#111715] hover:bg-[#F6F5F1] transition-colors cursor-pointer"
+                      className="w-10 h-10 rounded-full border border-[#D3E2DD] bg-[#F4FAF8] flex items-center justify-center text-[#0B1A17] hover:bg-[#DDF5EE] transition-colors cursor-pointer"
                       title="Scan UPI QR Code"
                       aria-label="Scan UPI QR Code"
                     >
-                      <QrCode className="w-5 h-5 text-[#5F6763]" strokeWidth={1.75} />
+                      <QrCode className="w-5 h-5 text-[#1B685C]" strokeWidth={2} />
                     </button>
                     <Button
                       onClick={() => setStep(1)}
-                      className="bg-[#111715] hover:bg-[#25302C] text-white text-[13px] h-10 px-4 rounded-[10px] font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+                      className="bg-[#1B685C] hover:bg-[#145248] text-white text-[13px] h-10 px-5 rounded-full font-bold flex items-center gap-1.5 cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-sm"
                     >
-                      <Plus className="w-4 h-4" strokeWidth={1.75} />
+                      <Plus className="w-4 h-4" strokeWidth={2.5} />
                       <span>New split</span>
                     </Button>
                   </div>
@@ -885,13 +888,13 @@ function SplitWizardContent() {
                 {/* Dashboard View */}
                 {recentSplits.length === 0 ? (
                   // Compact empty state
-                  <div className="p-8 sm:p-12 rounded-[16px] border border-[#E4E2DA] bg-white text-center space-y-4">
-                    <div className="w-12 h-12 rounded-[12px] bg-[#F6F5F1] text-[#111715] mx-auto flex items-center justify-center">
-                      <Receipt className="w-6 h-6 text-[#5F6763]" strokeWidth={1.75} />
+                  <div className="p-8 sm:p-12 rounded-[24px] border border-[#D3E2DD] bg-[#F4FAF8] text-center space-y-4 shadow-sm">
+                    <div className="w-14 h-14 rounded-[16px] bg-[#DDF5EE] text-[#1B685C] mx-auto flex items-center justify-center shadow-xs">
+                      <Receipt className="w-7 h-7 text-[#1B685C]" strokeWidth={2} />
                     </div>
                     <div className="space-y-1">
-                      <h2 className="text-[17px] font-semibold text-[#111715]">No splits yet</h2>
-                      <p className="text-[13px] text-[#5F6763] max-w-sm mx-auto leading-relaxed">
+                      <h2 className="text-[19px] font-bold text-[#0B1A17]">No splits yet</h2>
+                      <p className="text-[13px] text-[#5E726C] max-w-sm mx-auto leading-relaxed">
                         Create one in under 15 seconds. Friends pay from a link — no app, no signup.
                       </p>
                     </div>
@@ -899,34 +902,34 @@ function SplitWizardContent() {
                     <div className="pt-2">
                       <Button
                         onClick={() => setStep(1)}
-                        className="bg-[#0F7B5F] hover:bg-[#0c654e] text-white text-[13px] h-10 px-6 rounded-[10px] font-semibold cursor-pointer transition-colors"
+                        className="bg-[#1B685C] hover:bg-[#145248] text-white text-[13px] h-11 px-7 rounded-full font-bold cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-md"
                       >
-                        Create your first split
+                        Create your first split →
                       </Button>
                     </div>
                   </div>
                 ) : (
                   // Recent splits list
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between text-[13px] font-medium text-[#5F6763] px-1">
-                      <span>Recent Splits</span>
+                    <div className="flex items-center justify-between text-[13px] font-mono text-[#5E726C] px-1">
+                      <span className="font-bold uppercase tracking-wider text-[11px] text-[#1B685C]">Recent Splits</span>
                       <span className="text-[12px]">{recentSplits.length} saved</span>
                     </div>
 
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       {recentSplits.map((sp) => (
                         <div
                           key={sp.slug}
                           onClick={() => router.push(`/split/${sp.slug}`)}
-                          className="p-4 rounded-[12px] border border-[#E4E2DA] bg-white hover:border-[#0F7B5F]/40 cursor-pointer transition-colors flex items-center justify-between"
+                          className="p-4 rounded-[16px] border border-[#D3E2DD] bg-[#F4FAF8] hover:border-[#1B685C] hover:bg-[#EBF7F3] cursor-pointer transition-all flex items-center justify-between shadow-xs"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-[8px] bg-[#F6F5F1] text-[#0F7B5F] flex items-center justify-center font-bold text-xs">
-                              <Receipt className="w-4 h-4" strokeWidth={1.75} />
+                            <div className="w-10 h-10 rounded-[10px] bg-[#DDF5EE] text-[#1B685C] flex items-center justify-center font-bold text-xs">
+                              <Receipt className="w-5 h-5 text-[#1B685C]" strokeWidth={2} />
                             </div>
                             <div>
-                              <h3 className="text-[14px] font-semibold text-[#111715]">{sp.title}</h3>
-                              <p className="text-[12px] text-[#5F6763]">
+                              <h3 className="text-[14px] font-bold text-[#0B1A17]">{sp.title}</h3>
+                              <p className="text-[12px] font-mono text-[#5E726C]">
                                 {new Date(sp.createdAt).toLocaleDateString("en-IN", {
                                   month: "short",
                                   day: "numeric",
@@ -935,10 +938,10 @@ function SplitWizardContent() {
                             </div>
                           </div>
                           <div className="text-right flex items-center gap-3">
-                            <span className="text-[15px] font-bold text-[#111715]">
+                            <span className="text-[16px] font-bold font-mono text-[#0B1A17]">
                               ₹{sp.totalAmount.toFixed(0)}
                             </span>
-                            <ChevronRight className="w-4 h-4 text-[#5F6763]" strokeWidth={1.75} />
+                            <ChevronRight className="w-4 h-4 text-[#1B685C]" strokeWidth={2} />
                           </div>
                         </div>
                       ))}
@@ -951,7 +954,7 @@ function SplitWizardContent() {
                   <button
                     type="button"
                     onClick={() => setShowGunGame(true)}
-                    className="fixed bottom-20 left-6 z-20 w-13 h-13 rounded-full bg-white border border-[#E4E2DA] shadow-lg flex items-center justify-center text-2xl hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+                    className="fixed bottom-20 left-6 z-20 w-13 h-13 rounded-full bg-white border-2 border-[#1B685C] shadow-xl flex items-center justify-center text-2xl hover:scale-105 active:scale-95 transition-transform cursor-pointer"
                     title="Who pays? (Gun game)"
                     aria-label="Gun game minigame"
                   >
@@ -961,7 +964,7 @@ function SplitWizardContent() {
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="fixed bottom-20 right-6 z-20 w-14 h-14 rounded-full bg-[#111715] text-white shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+                    className="fixed bottom-20 right-6 z-20 w-14 h-14 rounded-full bg-[#1B685C] text-white shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-transform cursor-pointer"
                     title="New split"
                     aria-label="Create new split"
                   >
@@ -970,12 +973,12 @@ function SplitWizardContent() {
                 </div>
 
                 {/* Mobile Fixed Bottom Navigation Bar */}
-                <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-[#E4E2DA] py-2 flex items-center justify-around text-[#5F6763]">
+                <div className="md:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 backdrop-blur-md border-t border-[#D3E2DD] py-2 flex items-center justify-around text-[#5E726C]">
                   <button
                     onClick={() => setStep(0)}
-                    className="flex flex-col items-center gap-1 text-[#111715] font-semibold text-[11px]"
+                    className="flex flex-col items-center gap-1 text-[#1B685C] font-bold text-[11px]"
                   >
-                    <Receipt className="w-5 h-5" strokeWidth={1.75} />
+                    <Receipt className="w-5 h-5 text-[#1B685C]" strokeWidth={2} />
                     <span>Splits</span>
                   </button>
                   <button
@@ -986,30 +989,30 @@ function SplitWizardContent() {
                         toast.info("No past splits yet.")
                       }
                     }}
-                    className="flex flex-col items-center gap-1 hover:text-[#111715] text-[11px] transition-colors"
+                    className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[11px] transition-colors"
                   >
-                    <Clock className="w-5 h-5" strokeWidth={1.75} />
+                    <Clock className="w-5 h-5" strokeWidth={2} />
                     <span>Ledger</span>
                   </button>
                   <button
                     onClick={() => router.push("/split/groups")}
-                    className="flex flex-col items-center gap-1 hover:text-[#111715] text-[11px] transition-colors"
+                    className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[11px] transition-colors"
                   >
-                    <Users className="w-5 h-5" strokeWidth={1.75} />
+                    <Users className="w-5 h-5" strokeWidth={2} />
                     <span>Hisab</span>
                   </button>
                   <button
                     onClick={() => setShowQrScanner(true)}
-                    className="flex flex-col items-center gap-1 hover:text-[#111715] text-[11px] transition-colors"
+                    className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[11px] transition-colors"
                   >
-                    <QrCode className="w-5 h-5" strokeWidth={1.75} />
+                    <QrCode className="w-5 h-5" strokeWidth={2} />
                     <span>Collect</span>
                   </button>
                   <button
                     onClick={() => setShowSettings(true)}
-                    className="flex flex-col items-center gap-1 hover:text-[#111715] text-[11px] transition-colors"
+                    className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[11px] transition-colors"
                   >
-                    <Settings className="w-5 h-5" strokeWidth={1.75} />
+                    <Settings className="w-5 h-5" strokeWidth={2} />
                     <span>Settings</span>
                   </button>
                 </div>
@@ -1020,12 +1023,12 @@ function SplitWizardContent() {
             {step > 0 && (
               <div className="space-y-6">
                 {/* Progress Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-[#E4E2DA]">
+                <div className="flex items-center justify-between pb-3 border-b border-[#D3E2DD]">
                   <button
                     onClick={() => setStep(step - 1)}
-                    className="flex items-center gap-1.5 text-[13px] font-medium text-[#5F6763] hover:text-[#111715] cursor-pointer"
+                    className="flex items-center gap-1.5 text-[13px] font-bold text-[#5E726C] hover:text-[#0B1A17] cursor-pointer"
                   >
-                    <ArrowLeft className="w-4 h-4" strokeWidth={1.75} />
+                    <ArrowLeft className="w-4 h-4" strokeWidth={2} />
                     <span>{step === 1 ? "Dashboard" : "Back"}</span>
                   </button>
 
@@ -1039,15 +1042,15 @@ function SplitWizardContent() {
                     ].map((s) => (
                       <div key={s.num} className="flex items-center gap-1.5">
                         <div
-                          className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold ${
-                            s.num <= step ? "bg-[#111715] text-white" : "bg-[#E4E2DA] text-[#5F6763]"
+                          className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold font-['JetBrains_Mono'] ${
+                            s.num <= step ? "bg-[#1B685C] text-white" : "bg-[#D3E2DD] text-[#5E726C]"
                           }`}
                         >
                           {s.num}
                         </div>
                         <span
                           className={`text-[12px] hidden sm:inline ${
-                            s.num === step ? "font-bold text-[#111715]" : "text-[#5F6763]"
+                            s.num === step ? "font-bold text-[#0B1A17]" : "text-[#5E726C]"
                           }`}
                         >
                           {s.label}
@@ -1058,10 +1061,10 @@ function SplitWizardContent() {
 
                   <button
                     onClick={() => setStep(0)}
-                    className="w-7 h-7 rounded-[6px] flex items-center justify-center text-[#5F6763] hover:text-[#111715] hover:bg-[#EAE8E1] cursor-pointer"
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-[#5E726C] hover:text-[#0B1A17] hover:bg-[#DDF5EE] cursor-pointer"
                     aria-label="Close"
                   >
-                    <X className="w-4 h-4" strokeWidth={1.75} />
+                    <X className="w-4 h-4" strokeWidth={2} />
                   </button>
                 </div>
 
@@ -1069,20 +1072,23 @@ function SplitWizardContent() {
                 {step === 1 && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-[26px] font-bold text-[#111715] tracking-tight">How much?</h2>
+                      <span className="font-['JetBrains_Mono',monospace] font-bold text-[11px] tracking-[0.14em] text-[#1B685C] uppercase block mb-1">
+                        / step 01
+                      </span>
+                      <h2 className="text-[28px] sm:text-[32px] font-bold text-[#0B1A17] tracking-tight">How much?</h2>
                     </div>
 
                     {/* Currency + Amount Input */}
                     <div className="pt-2">
-                      <div className="flex items-baseline gap-2 border-b-2 border-[#111715] pb-2">
-                        <span className="text-3xl font-bold text-[#111715]">₹</span>
+                      <div className="flex items-baseline gap-2 border-b-2 border-[#1B685C] pb-2">
+                        <span className="text-3xl font-bold font-mono text-[#1B685C]">₹</span>
                         <input
                           type="number"
                           inputMode="decimal"
                           value={totalAmountStr}
                           onChange={(e) => setTotalAmountStr(e.target.value)}
                           placeholder="0"
-                          className="w-full text-4xl sm:text-5xl font-bold text-[#111715] bg-transparent focus:outline-none tracking-tight"
+                          className="w-full text-4xl sm:text-5xl font-bold font-mono text-[#0B1A17] bg-transparent focus:outline-none tracking-tight"
                           autoFocus
                         />
                       </div>
@@ -1094,10 +1100,10 @@ function SplitWizardContent() {
                             key={amt}
                             type="button"
                             onClick={() => setTotalAmountStr(String(amt))}
-                            className={`px-3.5 py-1.5 rounded-[8px] border text-[13px] font-medium cursor-pointer transition-colors ${
+                            className={`px-4 py-1.5 rounded-full border text-[13px] font-mono font-medium cursor-pointer transition-colors ${
                               parseFloat(totalAmountStr) === amt
-                                ? "border-[#111715] bg-[#111715] text-white"
-                                : "border-[#E4E2DA] bg-white text-[#111715] hover:bg-[#F6F5F1]"
+                                ? "border-[#1B685C] bg-[#1B685C] text-white font-bold"
+                                : "border-[#D3E2DD] bg-[#F4FAF8] text-[#0B1A17] hover:bg-[#DDF5EE]"
                             }`}
                           >
                             ₹{amt.toLocaleString("en-IN")}
@@ -1108,12 +1114,12 @@ function SplitWizardContent() {
 
                     {/* What's it for? */}
                     <div className="space-y-2 pt-2">
-                      <Label className="text-[13px] font-semibold text-[#111715]">What is it for?</Label>
+                      <Label className="text-[13px] font-bold text-[#0B1A17]">What is it for?</Label>
                       <Input
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
                         placeholder="e.g. Dinner, Groceries, Movie, Trip"
-                        className="h-11 rounded-[10px] border-[#E4E2DA] text-[14px] text-[#111715] focus-visible:ring-[#0F7B5F]"
+                        className="h-11 rounded-[12px] border-[#D3E2DD] bg-white text-[14px] text-[#0B1A17] focus-visible:ring-[#1B685C]"
                       />
 
                       {/* Category Pills */}
@@ -1130,10 +1136,10 @@ function SplitWizardContent() {
                                   setTitle(cat.title)
                                 }
                               }}
-                              className={`px-3 py-1.5 rounded-[8px] text-[12px] font-medium cursor-pointer transition-colors ${
+                              className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium cursor-pointer transition-colors ${
                                 isActive
-                                  ? "bg-[#111715] text-white"
-                                  : "bg-white border border-[#E4E2DA] text-[#5F6763] hover:text-[#111715] hover:bg-[#F6F5F1]"
+                                  ? "bg-[#1B685C] text-white font-bold border border-[#1B685C]"
+                                  : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17] hover:bg-[#DDF5EE]"
                               }`}
                             >
                               {cat.label}
@@ -1145,12 +1151,12 @@ function SplitWizardContent() {
 
                     {/* Mode Toggle: Entire Bill vs Item-wise */}
                     <div className="pt-2">
-                      <div className="p-1 rounded-[10px] bg-[#EAE8E1] flex text-[13px] font-medium">
+                      <div className="p-1 rounded-full bg-[#DDF5EE] border border-[#D3E2DD] flex text-[13px] font-medium">
                         <button
                           type="button"
                           onClick={() => setBillType("full")}
-                          className={`flex-1 py-1.5 rounded-[8px] transition-colors cursor-pointer ${
-                            billType === "full" ? "bg-white text-[#111715] font-semibold" : "text-[#5F6763]"
+                          className={`flex-1 py-2 rounded-full transition-all cursor-pointer ${
+                            billType === "full" ? "bg-[#1B685C] text-white font-bold shadow-xs" : "text-[#5E726C]"
                           }`}
                         >
                           Entire Bill
@@ -1158,8 +1164,8 @@ function SplitWizardContent() {
                         <button
                           type="button"
                           onClick={() => setBillType("itemized")}
-                          className={`flex-1 py-1.5 rounded-[8px] transition-colors cursor-pointer ${
-                            billType === "itemized" ? "bg-white text-[#111715] font-semibold" : "text-[#5F6763]"
+                          className={`flex-1 py-2 rounded-full transition-all cursor-pointer ${
+                            billType === "itemized" ? "bg-[#1B685C] text-white font-bold shadow-xs" : "text-[#5E726C]"
                           }`}
                         >
                           Item-wise (Groceries / Items)
@@ -1168,9 +1174,9 @@ function SplitWizardContent() {
 
                       {/* Itemized details & OCR scan */}
                       {billType === "itemized" && (
-                        <div className="mt-4 p-4 rounded-[12px] border border-[#E4E2DA] bg-white space-y-3">
+                        <div className="mt-4 p-5 rounded-[20px] border border-[#D3E2DD] bg-[#F4FAF8] space-y-3 shadow-xs">
                           <div className="flex items-center justify-between">
-                            <span className="text-[13px] font-semibold text-[#111715]">Item Breakdown</span>
+                            <span className="text-[13px] font-bold text-[#0B1A17]">Item Breakdown</span>
                             <div className="flex items-center gap-2">
                               <input
                                 ref={fileInputRef}
@@ -1188,30 +1194,30 @@ function SplitWizardContent() {
                                 variant="outline"
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={ocrScanning}
-                                className="h-8 text-[12px] px-2.5 rounded-[8px] border-[#E4E2DA] text-[#0F7B5F] hover:bg-[#F6F5F1] font-medium cursor-pointer"
+                                className="h-8 text-[12px] px-3 rounded-full border-[#D3E2DD] bg-white text-[#1B685C] hover:bg-[#DDF5EE] font-bold cursor-pointer"
                               >
-                                <Upload className="w-3.5 h-3.5 mr-1" strokeWidth={1.75} />
+                                <Upload className="w-3.5 h-3.5 mr-1" strokeWidth={2} />
                                 {ocrScanning ? `Scanning ${ocrProgress}%` : "Scan receipt"}
                               </Button>
-                              <span className="text-[12px] text-[#0F7B5F] font-semibold">
+                              <span className="text-[12px] font-mono text-[#1B685C] font-bold">
                                 Total: ₹{calculatedTotal.toFixed(0)}
                               </span>
                             </div>
                           </div>
 
                           {ocrScanning && (
-                            <div className="space-y-1.5 p-3 rounded-[8px] bg-[#F6F5F1] border border-[#E4E2DA]">
-                              <div className="flex justify-between text-[11px] font-bold text-[#0F7B5F]">
+                            <div className="space-y-1.5 p-3 rounded-[12px] bg-white border border-[#D3E2DD]">
+                              <div className="flex justify-between text-[11px] font-bold font-mono text-[#1B685C]">
                                 <span>Scanning receipt locally on device...</span>
                                 <span>{ocrProgress}%</span>
                               </div>
-                              <div className="w-full h-1.5 bg-white rounded-full overflow-hidden">
+                              <div className="w-full h-1.5 bg-[#DDF5EE] rounded-full overflow-hidden">
                                 <div
-                                  className="h-full bg-[#0F7B5F] transition-all duration-200"
+                                  className="h-full bg-[#1B685C] transition-all duration-200"
                                   style={{ width: `${ocrProgress}%` }}
                                 />
                               </div>
-                              <span className="text-[11px] text-[#5F6763] block">
+                              <span className="text-[11px] text-[#5E726C] block">
                                 100% on-device OCR. No receipt photos are uploaded.
                               </span>
                             </div>
@@ -1221,20 +1227,20 @@ function SplitWizardContent() {
                             {items.map((it) => (
                               <div
                                 key={it.id}
-                                className="flex items-center justify-between p-2.5 rounded-[8px] bg-[#F6F5F1] text-[13px] border border-[#E4E2DA]"
+                                className="flex items-center justify-between p-2.5 rounded-[12px] bg-white text-[13px] border border-[#D3E2DD]"
                               >
                                 <div>
-                                  <span className="font-medium text-[#111715] block">{it.name}</span>
-                                  <span className="text-[11px] text-[#5F6763]">
+                                  <span className="font-bold text-[#0B1A17] block">{it.name}</span>
+                                  <span className="text-[11px] font-mono text-[#5E726C]">
                                     ₹{it.price} {it.qty && it.qty > 1 ? `(Qty: ${it.qty})` : ""}
                                   </span>
                                 </div>
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveItem(it.id)}
-                                  className="text-[#5F6763] hover:text-[#D6402B] p-1 cursor-pointer"
+                                  className="text-[#5E726C] hover:text-[#D6402B] p-1 cursor-pointer"
                                 >
-                                  <Trash2 className="w-3.5 h-3.5" strokeWidth={1.75} />
+                                  <Trash2 className="w-3.5 h-3.5" strokeWidth={2} />
                                 </button>
                               </div>
                             ))}
@@ -1246,19 +1252,19 @@ function SplitWizardContent() {
                               placeholder="Item name (e.g. Milk, Pizza)"
                               value={newItemName}
                               onChange={(e) => setNewItemName(e.target.value)}
-                              className="h-9 text-[13px] rounded-[8px] border-[#E4E2DA]"
+                              className="h-9 text-[13px] rounded-[10px] border-[#D3E2DD] bg-white"
                             />
                             <Input
                               placeholder="Price (₹)"
                               type="number"
                               value={newItemPrice}
                               onChange={(e) => setNewItemPrice(e.target.value)}
-                              className="h-9 text-[13px] w-24 rounded-[8px] border-[#E4E2DA]"
+                              className="h-9 text-[13px] w-24 font-mono rounded-[10px] border-[#D3E2DD] bg-white"
                             />
                             <Button
                               type="button"
                               onClick={handleAddItem}
-                              className="h-9 bg-[#111715] hover:bg-[#25302C] text-white text-[12px] px-3.5 rounded-[8px] font-medium cursor-pointer"
+                              className="h-9 bg-[#1B685C] hover:bg-[#145248] text-white text-[12px] px-4 rounded-full font-bold cursor-pointer"
                             >
                               Add
                             </Button>
@@ -1272,9 +1278,9 @@ function SplitWizardContent() {
                         type="button"
                         disabled={parseFloat(totalAmountStr) <= 0 && items.length === 0}
                         onClick={() => setStep(2)}
-                        className="w-full h-11 rounded-[10px] bg-[#111715] hover:bg-[#25302C] disabled:opacity-40 text-white text-[14px] font-semibold cursor-pointer transition-colors"
+                        className="w-full h-12 rounded-full bg-[#1B685C] hover:bg-[#145248] disabled:opacity-40 text-white text-[15px] font-bold cursor-pointer transition-transform hover:scale-[1.01] active:scale-[0.99] shadow-md"
                       >
-                        Who&apos;s in?
+                        Who&apos;s in? →
                       </Button>
                     </div>
                   </div>
@@ -1284,20 +1290,23 @@ function SplitWizardContent() {
                 {step === 2 && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-[26px] font-bold text-[#111715] tracking-tight">Who&apos;s in?</h2>
-                      <p className="text-[13px] text-[#5F6763] mt-0.5">
+                      <span className="font-['JetBrains_Mono',monospace] font-bold text-[11px] tracking-[0.14em] text-[#1B685C] uppercase block mb-1">
+                        / step 02
+                      </span>
+                      <h2 className="text-[28px] sm:text-[32px] font-bold text-[#0B1A17] tracking-tight">Who&apos;s in?</h2>
+                      <p className="text-[13px] text-[#5E726C] mt-0.5">
                         Add friends sharing this bill. They won&apos;t need an app or account to pay.
                       </p>
                     </div>
 
                     {/* Organizer / Collector Card */}
-                    <div className="p-4 rounded-[12px] border border-[#E4E2DA] bg-white space-y-2">
+                    <div className="p-4 rounded-[16px] border border-[#D3E2DD] bg-[#F4FAF8] space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[13px] font-semibold text-[#111715]">Organizer (You)</span>
+                        <span className="text-[13px] font-bold text-[#0B1A17]">Organizer (You)</span>
                         <button
                           type="button"
                           onClick={() => setIsEditingCollector(!isEditingCollector)}
-                          className="text-[12px] font-medium text-[#0F7B5F] underline cursor-pointer"
+                          className="text-[12px] font-bold text-[#1B685C] underline cursor-pointer"
                         >
                           {isEditingCollector ? "Done" : "Edit details"}
                         </button>
@@ -1309,19 +1318,19 @@ function SplitWizardContent() {
                             value={collectorName}
                             onChange={(e) => setCollectorName(e.target.value)}
                             placeholder="Your Name"
-                            className="h-9 text-[13px] rounded-[8px] border-[#E4E2DA]"
+                            className="h-9 text-[13px] rounded-[10px] border-[#D3E2DD] bg-white text-[#0B1A17]"
                           />
                           <Input
                             value={collectorUpi}
                             onChange={(e) => setCollectorUpi(e.target.value)}
                             placeholder="Your UPI ID (e.g. name@oksbi)"
-                            className="h-9 text-[13px] font-mono rounded-[8px] border-[#E4E2DA]"
+                            className="h-9 text-[13px] font-mono rounded-[10px] border-[#D3E2DD] bg-white text-[#0B1A17]"
                           />
                         </div>
                       ) : (
                         <div className="flex items-center justify-between text-[13px]">
-                          <span className="font-medium text-[#111715]">{collectorName || "You"} (you)</span>
-                          <span className="font-mono text-[#5F6763]">
+                          <span className="font-bold text-[#0B1A17]">{collectorName || "You"} (you)</span>
+                          <span className="font-mono text-[#5E726C]">
                             {collectorUpi || "No UPI set"}
                           </span>
                         </div>
@@ -1330,7 +1339,7 @@ function SplitWizardContent() {
 
                     {/* Friends Input */}
                     <div className="space-y-2.5">
-                      <Label className="text-[13px] font-semibold text-[#111715]">Add friends</Label>
+                      <Label className="text-[13px] font-bold text-[#0B1A17]">Add friends</Label>
                       <div className="flex gap-2">
                         <Input
                           value={friendInput}
@@ -1342,39 +1351,39 @@ function SplitWizardContent() {
                             }
                           }}
                           placeholder="Type a name or paste comma-separated names"
-                          className="h-10 text-[13px] rounded-[10px] border-[#E4E2DA]"
+                          className="h-10 text-[13px] rounded-[12px] border-[#D3E2DD] bg-white text-[#0B1A17]"
                         />
                         <Button
                           type="button"
                           onClick={handleAddFriends}
-                          className="h-10 px-4 rounded-[10px] bg-[#111715] hover:bg-[#25302C] text-white text-[13px] font-medium cursor-pointer"
+                          className="h-10 px-5 rounded-full bg-[#1B685C] hover:bg-[#145248] text-white text-[13px] font-bold cursor-pointer"
                         >
                           Add
                         </Button>
                       </div>
 
                       {/* Friend chips */}
-                      <div className="min-h-[60px] pt-1">
+                      <div className="min-h-[50px] pt-1">
                         {friends.length > 0 ? (
                           <div className="flex flex-wrap gap-2">
                             {friends.map((f) => (
                               <span
                                 key={f.id}
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-white border border-[#E4E2DA] text-[13px] font-medium text-[#111715]"
+                                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#DDF5EE] border border-[#D3E2DD] text-[13px] font-medium text-[#0B1A17]"
                               >
                                 <span>{f.name}</span>
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveFriend(f.id)}
-                                  className="text-[#5F6763] hover:text-[#D6402B] cursor-pointer ml-0.5"
+                                  className="text-[#5E726C] hover:text-[#D6402B] cursor-pointer ml-0.5"
                                 >
-                                  <X className="w-3.5 h-3.5" strokeWidth={1.75} />
+                                  <X className="w-3.5 h-3.5" strokeWidth={2} />
                                 </button>
                               </span>
                             ))}
                           </div>
                         ) : (
-                          <p className="text-[12px] text-[#5F6763] py-2">
+                          <p className="text-[12px] text-[#5E726C] py-2">
                             No friends added yet. Type a name above and tap Add.
                           </p>
                         )}
@@ -1386,9 +1395,9 @@ function SplitWizardContent() {
                         type="button"
                         disabled={friends.length === 0}
                         onClick={() => setStep(3)}
-                        className="w-full h-11 rounded-[10px] bg-[#111715] hover:bg-[#25302C] disabled:opacity-40 text-white text-[14px] font-semibold cursor-pointer transition-colors"
+                        className="w-full h-12 rounded-full bg-[#1B685C] hover:bg-[#145248] disabled:opacity-40 text-white text-[15px] font-bold cursor-pointer transition-transform hover:scale-[1.01] active:scale-[0.99] shadow-md"
                       >
-                        Next: Split it
+                        Next: Split it →
                       </Button>
                     </div>
                   </div>
@@ -1397,22 +1406,27 @@ function SplitWizardContent() {
                 {/* STEP 3: Split it */}
                 {step === 3 && (
                   <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-[26px] font-bold text-[#111715] tracking-tight">Split it</h2>
-                      <span className="text-[18px] font-bold font-mono text-[#111715]">
-                        ₹{calculatedTotal.toFixed(0)}
+                    <div>
+                      <span className="font-['JetBrains_Mono',monospace] font-bold text-[11px] tracking-[0.14em] text-[#1B685C] uppercase block mb-1">
+                        / step 03
                       </span>
+                      <div className="flex items-center justify-between">
+                        <h2 className="text-[28px] sm:text-[32px] font-bold text-[#0B1A17] tracking-tight">Split it</h2>
+                        <span className="text-[20px] font-bold font-mono text-[#1B685C]">
+                          ₹{calculatedTotal.toFixed(0)}
+                        </span>
+                      </div>
                     </div>
 
                     {/* Mode Selector */}
-                    <div className="p-1 rounded-[10px] bg-[#EAE8E1] flex text-[13px] font-medium">
+                    <div className="p-1 rounded-full bg-[#DDF5EE] border border-[#D3E2DD] flex text-[13px] font-medium">
                       {(["equal", "exact", "percent", "shares"] as SplitMode[]).map((mode) => (
                         <button
                           key={mode}
                           type="button"
                           onClick={() => setSplitMode(mode)}
-                          className={`flex-1 py-1.5 rounded-[8px] capitalize transition-colors cursor-pointer ${
-                            splitMode === mode ? "bg-white text-[#111715] font-semibold" : "text-[#5F6763]"
+                          className={`flex-1 py-1.5 rounded-full capitalize transition-all cursor-pointer ${
+                            splitMode === mode ? "bg-[#1B685C] text-white font-bold shadow-xs" : "text-[#5E726C]"
                           }`}
                         >
                           {mode === "percent" ? "%" : mode}
@@ -1422,18 +1436,18 @@ function SplitWizardContent() {
 
                     {/* Itemized Member Assignment Chips */}
                     {billType === "itemized" && items.length > 0 && (
-                      <div className="space-y-3 p-4 rounded-[12px] border border-[#E4E2DA] bg-white">
+                      <div className="space-y-3 p-5 rounded-[20px] border border-[#D3E2DD] bg-[#F4FAF8]">
                         <div className="flex items-center justify-between">
-                          <span className="text-[13px] font-semibold text-[#111715]">Assign Items</span>
-                          <span className="text-[12px] text-[#0F7B5F] font-medium">{items.length} items</span>
+                          <span className="text-[13px] font-bold text-[#0B1A17]">Assign Items</span>
+                          <span className="text-[12px] font-mono text-[#1B685C] font-bold">{items.length} items</span>
                         </div>
 
                         <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
                           {items.map((it) => (
-                            <div key={it.id} className="p-3 rounded-[8px] bg-[#F6F5F1] border border-[#E4E2DA] space-y-2">
+                            <div key={it.id} className="p-3.5 rounded-[12px] bg-white border border-[#D3E2DD] space-y-2 shadow-xs">
                               <div className="flex items-center justify-between text-[13px]">
-                                <span className="font-semibold text-[#111715]">{it.name}</span>
-                                <span className="font-mono font-bold text-[#0F7B5F]">₹{it.price}</span>
+                                <span className="font-bold text-[#0B1A17]">{it.name}</span>
+                                <span className="font-mono font-bold text-[#1B685C]">₹{it.price}</span>
                               </div>
 
                               <div className="flex flex-wrap gap-1.5 pt-1">
@@ -1444,10 +1458,10 @@ function SplitWizardContent() {
                                       key={m.id}
                                       type="button"
                                       onClick={() => toggleItemMember(it.id, m.id)}
-                                      className={`px-2.5 py-1 rounded-[6px] text-[11px] font-medium transition-colors cursor-pointer ${
+                                      className={`px-3 py-1 rounded-full text-[11px] font-medium transition-colors cursor-pointer ${
                                         isSelected
-                                          ? "bg-[#111715] text-white"
-                                          : "bg-white border border-[#E4E2DA] text-[#5F6763] hover:text-[#111715]"
+                                          ? "bg-[#1B685C] text-white font-bold"
+                                          : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17]"
                                       }`}
                                     >
                                       {m.name.split(" ")[0]}
@@ -1457,7 +1471,7 @@ function SplitWizardContent() {
                                 <button
                                   type="button"
                                   onClick={() => selectAllItemMembers(it.id)}
-                                  className="px-2 py-1 text-[11px] text-[#0F7B5F] font-medium underline cursor-pointer"
+                                  className="px-2.5 py-1 text-[11px] text-[#1B685C] font-bold underline cursor-pointer"
                                 >
                                   All
                                 </button>
@@ -1466,24 +1480,24 @@ function SplitWizardContent() {
                           ))}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E4E2DA]">
+                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-[#D3E2DD]">
                           <div>
-                            <Label className="text-[11px] text-[#5F6763]">GST / Tax (%)</Label>
+                            <Label className="text-[11px] font-mono text-[#5E726C]">GST / Tax (%)</Label>
                             <Input
                               type="number"
                               value={taxPercent}
                               onChange={(e) => setTaxPercent(e.target.value)}
-                              className="h-8 text-[12px] font-mono rounded-[6px] border-[#E4E2DA]"
+                              className="h-8 text-[12px] font-mono rounded-[8px] border-[#D3E2DD] bg-white"
                               placeholder="5"
                             />
                           </div>
                           <div>
-                            <Label className="text-[11px] text-[#5F6763]">Service Charge (%)</Label>
+                            <Label className="text-[11px] font-mono text-[#5E726C]">Service Charge (%)</Label>
                             <Input
                               type="number"
                               value={serviceChargePercent}
                               onChange={(e) => setServiceChargePercent(e.target.value)}
-                              className="h-8 text-[12px] font-mono rounded-[6px] border-[#E4E2DA]"
+                              className="h-8 text-[12px] font-mono rounded-[8px] border-[#D3E2DD] bg-white"
                               placeholder="0"
                             />
                           </div>
@@ -1492,21 +1506,21 @@ function SplitWizardContent() {
                     )}
 
                     {/* Member Share Cards */}
-                    <div className="space-y-2">
+                    <div className="space-y-2.5">
                       {includeCollector && (
-                        <div className="p-3.5 rounded-[12px] border border-[#E4E2DA] bg-white flex items-center justify-between">
+                        <div className="p-4 rounded-[16px] border border-[#D3E2DD] bg-[#F4FAF8] flex items-center justify-between shadow-xs">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-[8px] bg-[#F6F5F1] text-[#111715] font-bold text-xs flex items-center justify-center">
+                            <div className="w-9 h-9 rounded-full bg-[#DDF5EE] text-[#1B685C] font-bold text-xs flex items-center justify-center">
                               {(collectorName || "You").slice(0, 2).toUpperCase()}
                             </div>
                             <div>
-                              <span className="text-[14px] font-semibold text-[#111715] block">
+                              <span className="text-[14px] font-bold text-[#0B1A17] block">
                                 {collectorName || "You"} (you)
                               </span>
-                              <span className="text-[11px] text-[#5F6763]">Organizer</span>
+                              <span className="text-[11px] font-mono text-[#5E726C]">Organizer</span>
                             </div>
                           </div>
-                          <span className="text-[15px] font-bold font-mono text-[#111715]">
+                          <span className="text-[16px] font-bold font-mono text-[#1B685C]">
                             ₹{collectorShare.toFixed(0)}
                           </span>
                         </div>
@@ -1524,14 +1538,14 @@ function SplitWizardContent() {
                         return (
                           <div
                             key={f.id}
-                            className="p-3.5 rounded-[12px] border border-[#E4E2DA] bg-white flex items-center justify-between"
+                            className="p-4 rounded-[16px] border border-[#D3E2DD] bg-[#F4FAF8] flex items-center justify-between shadow-xs"
                           >
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-[8px] bg-[#F6F5F1] text-[#111715] font-bold text-xs flex items-center justify-center">
+                              <div className="w-9 h-9 rounded-full bg-[#DDF5EE] text-[#1B685C] font-bold text-xs flex items-center justify-center">
                                 {initials}
                               </div>
                               <div>
-                                <span className="text-[14px] font-semibold text-[#111715] block">{f.name}</span>
+                                <span className="text-[14px] font-bold text-[#0B1A17] block">{f.name}</span>
                               </div>
                             </div>
 
@@ -1546,12 +1560,12 @@ function SplitWizardContent() {
                                       prev.map((item) => (item.id === f.id ? { ...item, customAmount: val } : item))
                                     )
                                   }}
-                                  className="h-8 text-[12px] text-right font-mono rounded-[6px] border-[#E4E2DA]"
+                                  className="h-8 text-[12px] text-right font-mono rounded-[8px] border-[#D3E2DD] bg-white"
                                   placeholder="0"
                                 />
                               </div>
                             ) : (
-                              <span className="text-[15px] font-bold font-mono text-[#111715]">
+                              <span className="text-[16px] font-bold font-mono text-[#0B1A17]">
                                 ₹{shareAmt.toFixed(0)}
                               </span>
                             )}
@@ -1564,9 +1578,9 @@ function SplitWizardContent() {
                       <Button
                         type="button"
                         onClick={() => setStep(4)}
-                        className="w-full h-11 rounded-[10px] bg-[#111715] hover:bg-[#25302C] text-white text-[14px] font-semibold cursor-pointer transition-colors"
+                        className="w-full h-12 rounded-full bg-[#1B685C] hover:bg-[#145248] text-white text-[15px] font-bold cursor-pointer transition-transform hover:scale-[1.01] active:scale-[0.99] shadow-md"
                       >
-                        Review
+                        Review Split →
                       </Button>
                     </div>
                   </div>
@@ -1576,16 +1590,19 @@ function SplitWizardContent() {
                 {step === 4 && (
                   <div className="space-y-6">
                     <div>
-                      <h2 className="text-[26px] font-bold text-[#111715] tracking-tight">Looks right?</h2>
+                      <span className="font-['JetBrains_Mono',monospace] font-bold text-[11px] tracking-[0.14em] text-[#1B685C] uppercase block mb-1">
+                        / step 04
+                      </span>
+                      <h2 className="text-[28px] sm:text-[32px] font-bold text-[#0B1A17] tracking-tight">Looks right?</h2>
                     </div>
 
-                    {/* Summary Card */}
-                    <div className="rounded-[16px] border border-[#E4E2DA] bg-white p-5 space-y-4">
-                      <div className="flex items-center justify-between pb-3 border-b border-[#E4E2DA]">
-                        <span className="text-[15px] font-bold text-[#111715]">
+                    {/* Summary Card - Styled like a sleek receipt */}
+                    <div className="rounded-[20px] border border-[#D3E2DD] bg-[#F4FAF8] p-6 space-y-4 shadow-sm">
+                      <div className="flex items-center justify-between pb-3 border-b border-[#D3E2DD]">
+                        <span className="text-[16px] font-bold text-[#0B1A17]">
                           {title || `${category} Split`}
                         </span>
-                        <span className="text-[18px] font-bold font-mono text-[#111715]">
+                        <span className="text-[20px] font-bold font-mono text-[#1B685C]">
                           ₹{calculatedTotal.toFixed(0)}
                         </span>
                       </div>
@@ -1593,8 +1610,8 @@ function SplitWizardContent() {
                       <div className="space-y-2.5">
                         {includeCollector && (
                           <div className="flex items-center justify-between text-[13px]">
-                            <span className="font-medium text-[#111715]">{collectorName || "You"} (you)</span>
-                            <span className="font-mono font-bold text-[#111715]">
+                            <span className="font-medium text-[#0B1A17]">{collectorName || "You"} (you)</span>
+                            <span className="font-mono font-bold text-[#0B1A17]">
                               ₹{collectorShare.toFixed(0)}
                             </span>
                           </div>
@@ -1602,8 +1619,8 @@ function SplitWizardContent() {
 
                         {friends.map((f) => (
                           <div key={f.id} className="flex items-center justify-between text-[13px]">
-                            <span className="font-medium text-[#111715]">{f.name}</span>
-                            <span className="font-mono font-bold text-[#111715]">
+                            <span className="font-medium text-[#0B1A17]">{f.name}</span>
+                            <span className="font-mono font-bold text-[#0B1A17]">
                               ₹{(friendShares[f.id] || 0).toFixed(0)}
                             </span>
                           </div>
@@ -1613,21 +1630,21 @@ function SplitWizardContent() {
 
                     {/* Note */}
                     <div className="space-y-1.5">
-                      <Label className="text-[13px] font-semibold text-[#111715]">Note (optional)</Label>
+                      <Label className="text-[13px] font-bold text-[#0B1A17]">Note (optional)</Label>
                       <Input
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
                         placeholder="e.g. Note for the group"
-                        className="h-10 text-[13px] rounded-[10px] border-[#E4E2DA]"
+                        className="h-10 text-[13px] rounded-[12px] border-[#D3E2DD] bg-white text-[#0B1A17]"
                       />
                     </div>
 
                     {/* Auto-remind if unpaid PRO */}
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Bell className="w-3.5 h-3.5 text-[#111715]" strokeWidth={1.75} />
-                        <span className="text-[13px] font-semibold text-[#111715]">Auto-remind if unpaid</span>
-                        <span className="px-1.5 py-0.2 rounded-[4px] bg-[#111715] text-[9px] font-bold text-white tracking-wider">
+                        <Bell className="w-3.5 h-3.5 text-[#1B685C]" strokeWidth={2} />
+                        <span className="text-[13px] font-bold text-[#0B1A17]">Auto-remind if unpaid</span>
+                        <span className="px-2 py-0.5 rounded-full bg-[#1B685C] font-mono text-[9px] font-bold text-[#3DDBB8] tracking-wider">
                           PRO
                         </span>
                       </div>
@@ -1641,17 +1658,17 @@ function SplitWizardContent() {
                             key={opt.days}
                             type="button"
                             onClick={() => setAutoRemindDays(autoRemindDays === opt.days ? null : opt.days)}
-                            className={`px-3 py-1.5 rounded-[8px] text-[12px] font-medium cursor-pointer transition-colors ${
+                            className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium cursor-pointer transition-colors ${
                               autoRemindDays === opt.days
-                                ? "bg-[#111715] text-white"
-                                : "bg-white border border-[#E4E2DA] text-[#5F6763] hover:text-[#111715]"
+                                ? "bg-[#1B685C] text-white font-bold border border-[#1B685C]"
+                                : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17]"
                             }`}
                           >
                             {opt.label}
                           </button>
                         ))}
                       </div>
-                      <p className="text-[11px] text-[#5F6763]">
+                      <p className="text-[11px] text-[#5E726C]">
                         Pre-fills reminder message for you to send. UL0 never messages your friends directly.
                       </p>
                     </div>
@@ -1659,8 +1676,8 @@ function SplitWizardContent() {
                     {/* Expiry selection */}
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <Clock className="w-3.5 h-3.5 text-[#111715]" strokeWidth={1.75} />
-                        <span className="text-[13px] font-semibold text-[#111715]">Link Expiry</span>
+                        <Clock className="w-3.5 h-3.5 text-[#1B685C]" strokeWidth={2} />
+                        <span className="text-[13px] font-bold text-[#0B1A17]">Link Expiry</span>
                       </div>
                       <div className="flex gap-2">
                         {[
@@ -1672,10 +1689,10 @@ function SplitWizardContent() {
                             key={opt.days}
                             type="button"
                             onClick={() => setExpiryDays(opt.days)}
-                            className={`px-3 py-1.5 rounded-[8px] text-[12px] font-medium cursor-pointer transition-colors ${
+                            className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium cursor-pointer transition-colors ${
                               expiryDays === opt.days
-                                ? "bg-[#111715] text-white"
-                                : "bg-white border border-[#E4E2DA] text-[#5F6763] hover:text-[#111715]"
+                                ? "bg-[#1B685C] text-white font-bold border border-[#1B685C]"
+                                : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17]"
                             }`}
                           >
                             {opt.label}
@@ -1685,13 +1702,13 @@ function SplitWizardContent() {
                     </div>
 
                     {/* Backdrop Banner Image Upload */}
-                    <div className="p-3.5 rounded-[12px] border border-[#E4E2DA] bg-white space-y-2">
+                    <div className="p-4 rounded-[16px] border border-[#D3E2DD] bg-[#F4FAF8] space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-[13px] font-semibold text-[#111715]">Cover Image (optional)</span>
-                        <span className="text-[11px] text-[#5F6763]">Free upload</span>
+                        <span className="text-[13px] font-bold text-[#0B1A17]">Cover Image (optional)</span>
+                        <span className="text-[11px] font-mono text-[#1B685C] font-bold">Free upload</span>
                       </div>
-                      <label className="flex items-center justify-center gap-2 p-2.5 rounded-[8px] border border-dashed border-[#E4E2DA] bg-[#F6F5F1] hover:bg-[#EAE8E1] cursor-pointer text-[12px] font-medium text-[#111715] transition-colors">
-                        <Upload className="w-3.5 h-3.5" strokeWidth={1.75} />
+                      <label className="flex items-center justify-center gap-2 p-3 rounded-[12px] border border-dashed border-[#D3E2DD] bg-white hover:bg-[#DDF5EE] cursor-pointer text-[12px] font-bold text-[#0B1A17] transition-colors">
+                        <Upload className="w-3.5 h-3.5 text-[#1B685C]" strokeWidth={2} />
                         <span>
                           {isUploadingBanner ? "Uploading image..." : bannerUrl ? "Change Image" : "Upload cover backdrop"}
                         </span>
@@ -1706,7 +1723,7 @@ function SplitWizardContent() {
                         />
                       </label>
                       {bannerUrl && (
-                        <p className="text-[11px] text-[#0F7B5F] font-medium">
+                        <p className="text-[11px] text-[#1B685C] font-bold">
                           ✓ Cover attached and will show at the top of the settle page.
                         </p>
                       )}
@@ -1717,9 +1734,9 @@ function SplitWizardContent() {
                         type="button"
                         disabled={isSubmitting}
                         onClick={handleCreateSplit}
-                        className="w-full h-11 rounded-[10px] bg-[#0F7B5F] hover:bg-[#0c654e] text-white text-[14px] font-semibold cursor-pointer transition-colors"
+                        className="w-full h-13 rounded-full bg-[#1B685C] hover:bg-[#145248] text-white text-[16px] font-bold cursor-pointer transition-transform hover:scale-[1.01] active:scale-[0.99] shadow-lg"
                       >
-                        {isSubmitting ? "Creating split..." : "Create split & get link"}
+                        {isSubmitting ? "Generating split link..." : "Create split link →"}
                       </Button>
                     </div>
                   </div>
@@ -1751,35 +1768,35 @@ function SplitWizardContent() {
           SETTINGS DIALOG
       ====================================================================== */}
       <Dialog open={showSettings} onOpenChange={setShowSettings}>
-        <DialogContent className="max-w-sm bg-white border border-[#E4E2DA] text-[#111715] p-6 rounded-[16px]">
+        <DialogContent className="max-w-sm bg-white border border-[#D3E2DD] text-[#0B1A17] p-6 rounded-[24px] shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-[17px] font-bold flex items-center gap-2">
-              <Settings className="w-4 h-4 text-[#5F6763]" strokeWidth={1.75} />
+            <DialogTitle className="text-[18px] font-bold flex items-center gap-2">
+              <Settings className="w-4 h-4 text-[#1B685C]" strokeWidth={2} />
               <span>Organizer settings</span>
             </DialogTitle>
-            <DialogDescription className="text-[12px] text-[#5F6763]">
+            <DialogDescription className="text-[12px] text-[#5E726C]">
               Your name and UPI ID are stored locally on this device.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-2">
             <div className="space-y-1.5">
-              <Label className="text-[12px] font-semibold text-[#111715]">Your Name</Label>
+              <Label className="text-[12px] font-bold text-[#0B1A17]">Your Name</Label>
               <Input
                 value={collectorName}
                 onChange={(e) => setCollectorName(e.target.value)}
                 placeholder="Your Name"
-                className="h-9 text-[13px] rounded-[8px] border-[#E4E2DA]"
+                className="h-10 text-[13px] rounded-[10px] border-[#D3E2DD] bg-[#F4FAF8]"
               />
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-[12px] font-semibold text-[#111715]">Default UPI ID</Label>
+              <Label className="text-[12px] font-bold text-[#0B1A17]">Default UPI ID</Label>
               <Input
                 value={collectorUpi}
                 onChange={(e) => setCollectorUpi(e.target.value)}
                 placeholder="e.g. yourname@oksbi"
-                className="h-9 text-[13px] font-mono rounded-[8px] border-[#E4E2DA]"
+                className="h-10 text-[13px] font-mono rounded-[10px] border-[#D3E2DD] bg-[#F4FAF8]"
               />
             </div>
 
@@ -1790,15 +1807,15 @@ function SplitWizardContent() {
                   toast.success("Settings saved!")
                   setShowSettings(false)
                 }}
-                className="flex-1 bg-[#111715] hover:bg-[#25302C] text-white text-[13px] h-9 rounded-[8px] font-medium cursor-pointer"
+                className="flex-1 bg-[#1B685C] hover:bg-[#145248] text-white text-[13px] h-10 rounded-full font-bold cursor-pointer shadow-xs"
               >
-                Save
+                Save Details
               </Button>
               {hasSavedCollector && (
                 <Button
                   variant="outline"
                   onClick={clearCollectorDetails}
-                  className="text-[12px] h-9 px-3 rounded-[8px] border-[#E4E2DA] text-[#D6402B] hover:bg-[#F6F5F1] cursor-pointer"
+                  className="text-[12px] h-10 px-4 rounded-full border-[#D3E2DD] text-[#D6402B] hover:bg-red-50 cursor-pointer"
                 >
                   Forget Me
                 </Button>
@@ -1812,22 +1829,22 @@ function SplitWizardContent() {
           QR SCANNER DIALOG
       ====================================================================== */}
       <Dialog open={showQrScanner} onOpenChange={setShowQrScanner}>
-        <DialogContent className="max-w-sm bg-white border border-[#E4E2DA] text-[#111715] p-6 rounded-[16px] text-center">
+        <DialogContent className="max-w-sm bg-white border border-[#D3E2DD] text-[#0B1A17] p-6 rounded-[24px] text-center shadow-2xl">
           <DialogHeader>
-            <DialogTitle className="text-[17px] font-bold">Scan receipt or QR</DialogTitle>
-            <DialogDescription className="text-[12px] text-[#5F6763]">
+            <DialogTitle className="text-[18px] font-bold">Scan receipt or QR</DialogTitle>
+            <DialogDescription className="text-[12px] text-[#5E726C]">
               Upload a bill photo or QR code to auto-parse amounts.
             </DialogDescription>
           </DialogHeader>
           <div className="py-6 flex flex-col items-center space-y-3">
-            <div className="w-16 h-16 rounded-[12px] bg-[#F6F5F1] border border-dashed border-[#E4E2DA] flex items-center justify-center text-[#5F6763]">
-              <QrCode className="w-8 h-8" strokeWidth={1.75} />
+            <div className="w-16 h-16 rounded-[16px] bg-[#DDF5EE] text-[#1B685C] flex items-center justify-center">
+              <QrCode className="w-8 h-8 text-[#1B685C]" strokeWidth={2} />
             </div>
-            <p className="text-[12px] text-[#5F6763] max-w-xs">
-              Runs 100% locally in your browser.
+            <p className="text-[12px] text-[#5E726C] max-w-xs">
+              Runs 100% locally on your device with on-device OCR.
             </p>
-            <label className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-[8px] bg-[#0F7B5F] text-white text-[13px] font-medium hover:bg-[#0c654e]">
-              <Upload className="w-3.5 h-3.5" strokeWidth={1.75} />
+            <label className="cursor-pointer inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#1B685C] text-white text-[13px] font-bold hover:bg-[#145248] shadow-md transition-transform hover:scale-105 active:scale-95">
+              <Upload className="w-4 h-4" strokeWidth={2} />
               <span>Upload Bill Photo</span>
               <input
                 type="file"
@@ -1851,33 +1868,32 @@ function SplitWizardContent() {
           SUCCESS SHARE SHEET DIALOG
       ====================================================================== */}
       <Dialog open={!!createdSlug} onOpenChange={(open) => !open && setCreatedSlug(null)}>
-        <DialogContent className="max-w-md bg-white border border-[#E4E2DA] text-[#111715] p-6 rounded-[16px]">
+        <DialogContent className="max-w-md bg-white border border-[#D3E2DD] text-[#0B1A17] p-6 rounded-[24px] shadow-2xl">
           <DialogHeader className="text-center">
-            <div className="w-10 h-10 rounded-[8px] bg-[#0F7B5F]/10 text-[#0F7B5F] mx-auto flex items-center justify-center mb-1">
-              <Check className="w-5 h-5" strokeWidth={2} />
+            <div className="w-12 h-12 rounded-[16px] bg-[#DDF5EE] text-[#1B685C] mx-auto flex items-center justify-center mb-1">
+              <Check className="w-6 h-6 text-[#1B685C]" strokeWidth={2.5} />
             </div>
-            <DialogTitle className="text-[18px] font-bold">Split link ready</DialogTitle>
-            <DialogDescription className="text-[12px] text-[#5F6763]">
+            <DialogTitle className="text-[20px] font-bold">Split link ready</DialogTitle>
+            <DialogDescription className="text-[12px] text-[#5E726C]">
               Share this link. Friends tap their name and pay via GPay, PhonePe, or Paytm.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 pt-2">
             {/* Settle Link Copy */}
-            <div className="p-3 bg-[#F6F5F1] rounded-[8px] border border-[#E4E2DA] flex items-center justify-between">
-              <span className="text-[12px] font-mono truncate text-[#111715] max-w-[240px]">
+            <div className="p-3 bg-[#F4FAF8] rounded-full border border-[#D3E2DD] flex items-center justify-between pl-4">
+              <span className="text-[12px] font-mono truncate text-[#0B1A17] max-w-[240px]">
                 {settleUrl}
               </span>
               <Button
                 size="sm"
-                variant="outline"
                 onClick={() => {
                   navigator.clipboard.writeText(settleUrl)
                   setCopiedLink(true)
                   toast.success("Link copied!")
                   setTimeout(() => setCopiedLink(false), 2000)
                 }}
-                className="text-[12px] h-7 px-2.5 rounded-[6px] border-[#E4E2DA] font-medium cursor-pointer"
+                className="text-[12px] h-8 px-4 rounded-full bg-[#1B685C] hover:bg-[#145248] text-white font-bold cursor-pointer"
               >
                 {copiedLink ? "Copied" : "Copy"}
               </Button>
@@ -1887,8 +1903,8 @@ function SplitWizardContent() {
             {qrCodeData && (
               <div className="flex flex-col items-center py-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={qrCodeData} alt="Split QR" className="w-36 h-36 rounded-[8px] border border-[#E4E2DA]" />
-                <span className="text-[11px] text-[#5F6763] mt-1.5">
+                <img src={qrCodeData} alt="Split QR" className="w-40 h-40 rounded-[12px] border border-[#D3E2DD] p-2 bg-white" />
+                <span className="text-[11px] font-mono text-[#5E726C] mt-2">
                   Scan to settle right now
                 </span>
               </div>
@@ -1909,24 +1925,24 @@ function SplitWizardContent() {
               )}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 h-10 rounded-[8px] bg-[#25D366] hover:bg-[#20ba59] text-white text-[13px] font-medium transition-colors cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 h-11 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white text-[13px] font-bold transition-transform hover:scale-[1.01] active:scale-[0.99] shadow-sm cursor-pointer"
             >
-              <Share2 className="w-4 h-4" strokeWidth={1.75} />
+              <Share2 className="w-4 h-4" strokeWidth={2} />
               <span>Share on WhatsApp</span>
             </a>
 
             {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-2 pt-1">
+            <div className="grid grid-cols-2 gap-2.5 pt-1">
               <Button
                 variant="outline"
                 onClick={() => router.push(`/split/${createdSlug}`)}
-                className="h-9 text-[12px] rounded-[8px] border-[#E4E2DA] font-medium cursor-pointer"
+                className="h-10 text-[13px] rounded-full border-[#D3E2DD] font-bold text-[#0B1A17] hover:bg-[#F4FAF8] cursor-pointer"
               >
                 Open Settle Page
               </Button>
               <Button
                 onClick={() => router.push(manageUrl)}
-                className="h-9 text-[12px] rounded-[8px] bg-[#111715] hover:bg-[#25302C] text-white font-medium cursor-pointer"
+                className="h-10 text-[13px] rounded-full bg-[#0B1A17] hover:bg-[#1A2E2A] text-white font-bold cursor-pointer"
               >
                 Manage Split
               </Button>

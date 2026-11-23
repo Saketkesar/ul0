@@ -5,6 +5,7 @@ import { PDFDocument } from "pdf-lib"
 import JSZip from "jszip"
 import { Button } from "@/components/ui/button"
 import { UL0Icon } from "@/components/ul0-icon"
+import { GenerationAdModal } from "@/components/generation-ad-modal"
 
 interface PageItem {
   pageNumber: number // 1-indexed
@@ -27,6 +28,8 @@ export function PdfSplitterClient() {
   const [isMergingSelected, setIsMergingSelected] = useState<boolean>(false)
   const [batchPrefix, setBatchPrefix] = useState<string>("")
   const [showBatchModal, setShowBatchModal] = useState<boolean>(false)
+  const [showAdModal, setShowAdModal] = useState<boolean>(false)
+  const [pendingAction, setPendingAction] = useState<(() => Promise<void>) | null>(null)
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const pdfJsLoadedRef = useRef<boolean>(false)
@@ -234,13 +237,10 @@ export function PdfSplitterClient() {
     }
   }
 
-  // Download selected pages as a single merged PDF
-  const mergeSelectedPages = async () => {
+  // Execute merged PDF creation
+  const executeMergeSelected = async () => {
     const selected = pages.filter((p) => p.selected)
-    if (selected.length === 0) {
-      alert("Please select at least 1 page to merge.")
-      return
-    }
+    if (selected.length === 0) return
 
     try {
       setIsMergingSelected(true)
@@ -258,7 +258,6 @@ export function PdfSplitterClient() {
       const blob = new Blob([pdfBytes as any], { type: "application/pdf" })
 
       const baseName = file?.name.replace(/\.pdf$/i, "") || "document"
-      const pageListStr = selected.map((p) => p.pageNumber).join("-")
       const finalName = `${baseName}_selected_pages_${selected.length}.pdf`
 
       triggerDownload(blob, finalName)
@@ -270,13 +269,21 @@ export function PdfSplitterClient() {
     }
   }
 
-  // Download selected pages (or all pages) as a ZIP file containing individual PDFs
-  const downloadAsZip = async (onlySelected: boolean) => {
-    const targetPages = onlySelected ? pages.filter((p) => p.selected) : pages
-    if (targetPages.length === 0) {
-      alert("No pages selected for download.")
+  // Trigger modal before merging
+  const mergeSelectedPages = () => {
+    const selected = pages.filter((p) => p.selected)
+    if (selected.length === 0) {
+      alert("Please select at least 1 page to merge.")
       return
     }
+    setPendingAction(() => executeMergeSelected)
+    setShowAdModal(true)
+  }
+
+  // Execute ZIP creation
+  const executeDownloadAsZip = async (onlySelected: boolean) => {
+    const targetPages = onlySelected ? pages.filter((p) => p.selected) : pages
+    if (targetPages.length === 0) return
 
     try {
       setIsProcessingZip(true)
@@ -313,6 +320,17 @@ export function PdfSplitterClient() {
     } finally {
       setIsProcessingZip(false)
     }
+  }
+
+  // Trigger modal before ZIP download
+  const downloadAsZip = (onlySelected: boolean) => {
+    const targetPages = onlySelected ? pages.filter((p) => p.selected) : pages
+    if (targetPages.length === 0) {
+      alert("No pages selected for download.")
+      return
+    }
+    setPendingAction(() => () => executeDownloadAsZip(onlySelected))
+    setShowAdModal(true)
   }
 
   const selectedCount = pages.filter((p) => p.selected).length
@@ -709,6 +727,27 @@ export function PdfSplitterClient() {
           )}
         </div>
       )}
+
+      {/* Generation Ad Popup with Progress Bar */}
+      <GenerationAdModal
+        isOpen={showAdModal}
+        title="Extracting and Processing PDF Pages..."
+        durationSec={3.2}
+        onClose={() => {
+          if (pendingAction) {
+            pendingAction()
+            setPendingAction(null)
+          }
+          setShowAdModal(false)
+        }}
+        onComplete={() => {
+          if (pendingAction) {
+            pendingAction()
+            setPendingAction(null)
+          }
+          setShowAdModal(false)
+        }}
+      />
     </div>
   )
 }

@@ -10,6 +10,7 @@ import { CopyField } from "@/components/copy-field"
 import { UL0Icon } from "@/components/ul0-icon"
 import QRCode from "qrcode"
 import { toast } from "sonner"
+import { GenerationAdModal } from "@/components/generation-ad-modal"
 
 export default function QrPage() {
   const [content, setContent] = useState("https://ul0.site")
@@ -22,6 +23,8 @@ export default function QrPage() {
   const [isCreatingTrackable, setIsCreatingTrackable] = useState(false)
   const [qrPngUrl, setQrPngUrl] = useState<string>("")
   const [qrSvgString, setQrSvgString] = useState<string>("")
+  const [showAdModal, setShowAdModal] = useState<boolean>(false)
+  const [pendingDownloadType, setPendingDownloadType] = useState<"png" | "svg" | null>(null)
 
   // Calculate approximate contrast ratio
   const calculateLuminance = (hex: string) => {
@@ -92,15 +95,42 @@ export default function QrPage() {
     }
   }
 
-  const downloadSvg = () => {
+  const executeDownloadPng = () => {
+    if (!qrPngUrl) return
+    const a = document.createElement("a")
+    a.href = qrPngUrl
+    a.download = `ul0-qr.png`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+  }
+
+  const executeDownloadSvg = () => {
     if (!qrSvgString) return
     const blob = new Blob([qrSvgString], { type: "image/svg+xml" })
     const url = URL.createObjectURL(blob)
     const a = document.createElement("a")
     a.href = url
     a.download = `ul0-qr.svg`
+    document.body.appendChild(a)
     a.click()
+    document.body.removeChild(a)
     URL.revokeObjectURL(url)
+  }
+
+  const triggerDownloadWithAd = (type: "png" | "svg") => {
+    setPendingDownloadType(type)
+    setShowAdModal(true)
+  }
+
+  const handleModalComplete = () => {
+    if (pendingDownloadType === "png") {
+      executeDownloadPng()
+    } else if (pendingDownloadType === "svg") {
+      executeDownloadSvg()
+    }
+    setPendingDownloadType(null)
+    setShowAdModal(false)
   }
 
   return (
@@ -270,23 +300,22 @@ export default function QrPage() {
               <div className="space-y-2">
                 <div className="grid grid-cols-2 gap-2">
                   <Button
-                    asChild
+                    type="button"
                     size="sm"
-                    className="w-full text-xs font-semibold gap-1.5 rounded-full bg-primary text-primary-foreground hover:opacity-90 shadow-2xs"
+                    onClick={() => triggerDownloadWithAd("png")}
+                    className="w-full text-xs font-semibold gap-1.5 rounded-full bg-primary text-primary-foreground hover:opacity-90 shadow-2xs cursor-pointer"
                     disabled={!qrPngUrl}
                   >
-                    <a href={qrPngUrl} download="ul0-qr.png">
-                      <UL0Icon name="download" size={14} />
-                      <span>Download PNG</span>
-                    </a>
+                    <UL0Icon name="download" size={14} />
+                    <span>Download PNG</span>
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={downloadSvg}
+                    onClick={() => triggerDownloadWithAd("svg")}
                     disabled={!qrSvgString}
-                    className="w-full text-xs font-semibold gap-1.5 rounded-full border-border bg-card hover:bg-surface-2 shadow-2xs"
+                    className="w-full text-xs font-semibold gap-1.5 rounded-full border-border bg-card hover:bg-surface-2 shadow-2xs cursor-pointer"
                   >
                     <UL0Icon name="download" size={14} />
                     <span>Download SVG</span>
@@ -327,6 +356,15 @@ export default function QrPage() {
       </main>
 
       <Footer />
+
+      {/* Generation Ad Popup with Progress Bar */}
+      <GenerationAdModal
+        isOpen={showAdModal}
+        title="Rendering High-Resolution Vector QR Assets..."
+        durationSec={3.2}
+        onClose={handleModalComplete}
+        onComplete={handleModalComplete}
+      />
     </div>
   )
 }

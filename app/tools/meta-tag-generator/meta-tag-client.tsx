@@ -3,6 +3,7 @@
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { UL0Icon } from "@/components/ul0-icon"
+import { GenerationAdModal } from "@/components/generation-ad-modal"
 
 export function MetaTagClient() {
   const [title, setTitle] = useState("UL0 — Fast, Secure Link Management & Analytics")
@@ -15,6 +16,7 @@ export function MetaTagClient() {
   const [twitterHandle, setTwitterHandle] = useState("@ul0site")
   const [robots, setRobots] = useState("index, follow")
   const [copied, setCopied] = useState(false)
+  const [showAdModal, setShowAdModal] = useState(false)
   const [previewTab, setPreviewTab] = useState<"google" | "social">("google")
 
   const generatedHtml = `<!-- Primary Meta Tags -->
@@ -41,8 +43,13 @@ export function MetaTagClient() {
 <meta property="twitter:site" content="${twitterHandle}">`
 
   const handleCopy = () => {
+    setShowAdModal(true)
+  }
+
+  const handleModalComplete = () => {
     navigator.clipboard.writeText(generatedHtml)
     setCopied(true)
+    setShowAdModal(false)
     setTimeout(() => setCopied(false), 2000)
   }
 
@@ -255,6 +262,15 @@ export function MetaTagClient() {
           </pre>
         </div>
       </div>
+
+      {/* Generation Ad Popup with Progress Bar */}
+      <GenerationAdModal
+        isOpen={showAdModal}
+        title="Generating Production Meta Tags..."
+        durationSec={3.2}
+        onClose={handleModalComplete}
+        onComplete={handleModalComplete}
+      />
     </div>
   )
 }

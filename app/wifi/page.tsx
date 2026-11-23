@@ -11,12 +11,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { UL0Icon } from "@/components/ul0-icon"
 import QRCode from "qrcode"
 import Link from "next/link"
+import { GenerationAdModal } from "@/components/generation-ad-modal"
 
 export default function WifiQRGeneratorPage() {
   const [qrDataUrl, setQrDataUrl] = useState<string>("")
   const [copied, setCopied] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const [showAdModal, setShowAdModal] = useState(false)
+  const [pendingQrUrl, setPendingQrUrl] = useState<string>("")
 
   // Form states
   const [ssid, setSsid] = useState("")
@@ -41,11 +44,13 @@ export default function WifiQRGeneratorPage() {
         },
         errorCorrectionLevel: "M",
       })
-      setQrDataUrl(url)
+      setPendingQrUrl(url)
+      setShowAdModal(true)
     } catch (err) {
       console.error("Error generating QR code:", err)
+    } finally {
+      setGenerating(false)
     }
-    setGenerating(false)
   }
 
   const downloadQR = () => {
@@ -378,6 +383,19 @@ export default function WifiQRGeneratorPage() {
       </main>
 
       <Footer />
+
+      <GenerationAdModal
+        isOpen={showAdModal}
+        title="Generating WiFi QR Code..."
+        durationSec={3}
+        onComplete={() => {
+          if (pendingQrUrl) setQrDataUrl(pendingQrUrl)
+        }}
+        onClose={() => {
+          if (pendingQrUrl) setQrDataUrl(pendingQrUrl)
+          setShowAdModal(false)
+        }}
+      />
     </div>
   )
 }

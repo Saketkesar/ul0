@@ -14,7 +14,7 @@ export function ClientAdsBlock(props: { nativeScripts: any[] }) {
       <div className="mb-4 flex justify-center">
         <AdBanner slot={1} scripts={[{
           iframe: true,
-          src: 'https://unsettledradiator.com/ea31a2b23b71044ce04e59b9147c7ffc/invoke.js',
+          src: 'https://bauval.org/22/ea31a2b23b71044ce04e59b9147c7ffc',
           width: 728,
           height: 90
         }]} />
@@ -24,7 +24,7 @@ export function ClientAdsBlock(props: { nativeScripts: any[] }) {
         <div className="max-w-[468px]">
           <AdBanner slot={2} scripts={[{
             iframe: true,
-            src: 'https://unsettledradiator.com/1ef074fb53b9c298ba4b329b92f27240/invoke.js',
+            src: 'https://bauval.org/22/1ef074fb53b9c298ba4b329b92f27240',
             width: 468,
             height: 60
           }]} />
