@@ -1,6 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { createGroup, getUserGroups } from "@/lib/groups"
+import { logEventToSheet } from "@/lib/split/sheet-logger"
 
 const MAX_ACTIVE_GROUPS_PER_USER = 10
 
@@ -55,6 +56,18 @@ export async function POST(request: NextRequest) {
       iconUrl: typeof iconUrl === "string" ? iconUrl : undefined,
       bannerUrl: typeof bannerUrl === "string" ? bannerUrl : undefined,
     })
+
+    const groupId = (group as any)?.$id || (group as any)?.id || ""
+    logEventToSheet({
+      event_type: "group_created",
+      split_slug: groupId,
+      title: name.trim(),
+      organizer_name: typeof ownerName === "string" ? ownerName.trim() : "You",
+      organizer_upi: typeof ownerUpi === "string" ? ownerUpi.trim() : "",
+      status: "Active Group",
+      notes: `Group created with ${memberNames.length} members`,
+      split_url: `https://ul0.site/split/groups/${groupId}`,
+    }).catch((e) => console.warn("Group create sheet log error:", e))
 
     return NextResponse.json({ success: true, group })
   } catch (err: any) {

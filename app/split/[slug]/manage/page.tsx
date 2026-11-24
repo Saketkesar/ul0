@@ -296,10 +296,10 @@ export default function SplitManagePage() {
           <div className="flex items-center gap-2">
             <a
               href="/split"
-              className="text-xs font-bold text-[#0B1A17] hover:text-[#0B7A66] transition-colors flex items-center gap-1.5"
+              className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
             >
-              <UL0Icon name="splitbill" size={16} />
-              <span>UL0 Split</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/ul0split-logo-dark.png" alt="UL0 Split" className="h-6 w-auto object-contain" />
             </a>
             <span className="text-[#D5E0DB]">/</span>
             <span className="text-xs font-medium text-[#5A6B66]">Manage</span>
@@ -714,6 +714,25 @@ export default function SplitManagePage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Footer by ul0.site */}
+      <footer className="border-t border-[#E4ECE8] py-6 px-4 bg-white mt-12 text-xs text-[#5A6B66]">
+        <div className="max-w-3xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-[#0B1A17]">UL0.split</span>
+            <span>·</span>
+            <span className="flex items-center gap-1.5 text-[#0B1A17] font-bold">
+              by
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/ul0.png" alt="ul0.site" className="h-4 w-auto object-contain inline-block" />
+              <span>ul0.site</span>
+            </span>
+          </div>
+          <div className="text-[11px] font-mono">
+            Direct bank-to-bank UPI · Zero fees
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

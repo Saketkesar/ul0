@@ -208,11 +208,10 @@ export function LandingBoldTheme() {
         <nav className="h-[72px] flex items-center justify-between">
           <Link
             href="/split"
-            className="font-bold text-[22px] tracking-[-0.04em] text-[#0B1A17] flex items-center"
+            className="flex items-center"
           >
-            <span>UL0</span>
-            <span className="text-[#1B685C]">.</span>
-            <span>split</span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/ul0split-logo-dark.png" alt="UL0 Split" className="h-8 w-auto object-contain" />
           </Link>
 
           <div className="flex items-center gap-7 text-[14px] text-[#5E726C]">
@@ -869,7 +868,16 @@ export function LandingBoldTheme() {
       ====================================================================== */}
       <footer className="border-t border-[#D3E2DD] py-8 px-6 bg-white font-['JetBrains_Mono',ui-monospace,monospace] text-[13px] text-[#5E726C]">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <span>© 2026 UL0</span>
+          <div className="flex items-center gap-2">
+            <span>© 2026 UL0.split</span>
+            <span>·</span>
+            <span className="flex items-center gap-1.5 text-[#0B1A17] font-bold">
+              by
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/ul0.png" alt="ul0.site" className="h-5 w-auto object-contain inline-block" />
+              <span>ul0.site</span>
+            </span>
+          </div>
           <div className="flex flex-wrap items-center gap-6">
             <Link href="/" className="hover:text-[#0B1A17] transition-colors">
               Link shortener

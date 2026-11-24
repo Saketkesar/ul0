@@ -1,0 +1,7 @@
+Timestamp (IST),Event Type,Split Slug,Split Title,Total Amount (₹),Organizer Name,Organizer UPI,Organizer Email,Member / Payer,Member Share (₹),Member Contact,Status,Notes / Reference,Split URL
+2026-11-24 14:30:00,split_created,toit-dinner-88,Toit Bangalore Dinner,4280,Saket,saket@upi,saket@ul0.site,Dev Saini,713,@devsaini,Active,Created with 6 people,https://ul0.site/split/toit-dinner-88
+2026-11-24 14:32:15,payment_claimed,toit-dinner-88,Toit Bangalore Dinner,4280,Saket,saket@upi,saket@ul0.site,Dev Saini,713,@devsaini,Claimed,Paid via PhonePe (UTR 4819),https://ul0.site/split/toit-dinner-88
+2026-11-24 14:33:40,payment_confirmed,toit-dinner-88,Toit Bangalore Dinner,4280,Saket,saket@upi,saket@ul0.site,Dev Saini,713,@devsaini,Confirmed,Organizer confirmed payment landed in bank,https://ul0.site/split/toit-dinner-88
+2026-11-24 14:34:00,payment_disputed,toit-dinner-88,Toit Bangalore Dinner,4280,Saket,saket@upi,saket@ul0.site,Priya Sharma,713,priya@example.com,Disputed,Organizer reported money not received in bank,https://ul0.site/split/toit-dinner-88
+2026-11-24 14:35:10,reminder_sent,toit-dinner-88,Toit Bangalore Dinner,4280,Saket,saket@upi,saket@ul0.site,Priya Sharma,713,priya@example.com,Reminded,Dispatched 24-hr reminder via Telegram & Email,https://ul0.site/split/toit-dinner-88
+2026-11-24 14:40:00,split_settled,toit-dinner-88,Toit Bangalore Dinner,4280,Saket,saket@upi,saket@ul0.site,All Members,4280,-,Settled,All 6 members settled 100%,https://ul0.site/split/toit-dinner-88

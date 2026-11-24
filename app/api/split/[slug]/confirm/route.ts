@@ -6,12 +6,13 @@ import {
   verifyCollectorToken,
   toPublicSession,
 } from "@/lib/appwrite/splits"
+import { logEventToSheet } from "@/lib/split/sheet-logger"
 
 interface Context {
   params: Promise<{ slug: string }>
 }
 
-async function checkIsOwner(request: NextRequest, session: any): Promise<boolean> {
+async function checkIsOwner(request: NextRequest, session: any, bodyToken?: string): Promise<boolean> {
   try {
     const { userId } = await auth()
     if (userId && session.owner_user_id && userId === session.owner_user_id) {
@@ -20,8 +21,11 @@ async function checkIsOwner(request: NextRequest, session: any): Promise<boolean
   } catch {}
 
   const tokenHeader = request.headers.get("x-collector-token")
-  if (tokenHeader && session.collector_token_hash) {
-    if (verifyCollectorToken(tokenHeader, session.collector_token_hash)) {
+  const tokenQuery = request.nextUrl.searchParams.get("token")
+  const candidateToken = tokenHeader || bodyToken || tokenQuery
+
+  if (candidateToken && session.collector_token_hash) {
+    if (verifyCollectorToken(candidateToken, session.collector_token_hash)) {
       return true
     }
   }
@@ -44,16 +48,16 @@ export async function POST(request: NextRequest, { params }: Context) {
       return NextResponse.json({ error: "Split session not found" }, { status: 404 })
     }
 
-    const isOwner = await checkIsOwner(request, session)
+    const body = await request.json().catch(() => ({}))
+    const { settlementIndex, confirmed, token: bodyToken, reason, notes } = body
+
+    const isOwner = await checkIsOwner(request, session, bodyToken)
     if (!isOwner) {
       return NextResponse.json(
         { error: "Unauthorized. Only the bill creator can confirm payments." },
         { status: 403 }
       )
     }
-
-    const body = await request.json().catch(() => ({}))
-    const { settlementIndex, confirmed } = body
 
     if (typeof settlementIndex !== "number" || settlementIndex < 0 || !Number.isInteger(settlementIndex)) {
       return NextResponse.json({ error: "Invalid settlement index" }, { status: 400 })
@@ -67,8 +71,29 @@ export async function POST(request: NextRequest, { params }: Context) {
       return NextResponse.json({ error: "Settlement could not be updated" }, { status: 400 })
     }
 
+    // Identify member details for logging
+    const targetSettlement = updatedSession.settlements?.[settlementIndex]
+    const memberName = targetSettlement?.from || "Member"
+    const memberAmount = targetSettlement?.amount || 0
+    const organizerName = targetSettlement?.to || "Organizer"
+
+    // Real-time logging to Google Sheets
+    logEventToSheet({
+      event_type: isConfirmed ? "payment_confirmed" : "payment_disputed",
+      split_slug: sanitizedSlug,
+      title: session.title,
+      total_amount: session.total_amount,
+      organizer_name: organizerName,
+      member_name: memberName,
+      member_share: memberAmount,
+      status: isConfirmed ? "Confirmed" : "Disputed / Unpaid",
+      notes: notes || reason || (isConfirmed ? "Confirmed by organizer via email/app" : "Disputed - money not received in bank"),
+      split_url: `https://ul0.site/split/${sanitizedSlug}`,
+    }).catch((e) => console.warn("Confirm route sheet logging failed:", e))
+
     return NextResponse.json({
       success: true,
+      confirmed: isConfirmed,
       session: toPublicSession(updatedSession),
     })
   } catch (err: any) {

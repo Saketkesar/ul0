@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="only light"><meta name="supported-color-schemes" content="light">
+<title>Psst… {{amount}} still pending for {{split_name}} 👀</title><style>:root{color-scheme:only light;}
+@media (max-width:620px){
+ .wrap{width:100% !important;}
+ .px{padding-left:20px !important;padding-right:20px !important;}
+ .stat{display:block !important;width:100% !important;padding:0 0 10px 0 !important;}
+ h1{font-size:25px !important;line-height:31px !important;}
+}
+</style></head>
+<body style="margin:0;padding:0;background:#FFFFFF;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">Tiny nudge — it takes about 10 seconds.&#8203;&zwnj;&nbsp;&#8203;&zwnj;&nbsp;&#8203;&zwnj;&nbsp;</div>
+<table role="presentation" class="bg" width="100%" cellpadding="0" cellspacing="0" style="background:#FFFFFF;"><tr><td align="center" style="padding:28px 12px 40px;">
+<table role="presentation" class="wrap" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;">
+ <tr><td style="padding:4px 8px 18px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+  <td width="44"><img src="https://ul0.site/email/assets/logo-icon.png" width="36" height="36" alt="" style="display:block;border-radius:50%;"></td>
+  <td style="font-size:21px;font-weight:800;letter-spacing:-0.03em;color:#1F2523;">ul0<span style="color:#2F6159;">.split</span></td>
+  <td align="right" style="font-size:12px;color:#7A8480;font-weight:500;">split bills, no drama ✦</td></tr></table></td></tr>
+ <tr><td class="card" style="background:#ffffff;border:1px solid #E8E5DE;border-radius:22px;overflow:hidden;">
+  <img src="https://ul0.site/email/assets/hero-nudge.png" width="598" alt="" style="display:block;width:100%;height:auto;border-radius:21px 21px 0 0;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td class="px" style="padding:6px 36px 36px;"><div style="font-size:13px;color:#7A8480;font-weight:500;margin-top:26px;">hey {{friend_name}} ✦</div><h1 style="margin:22px 0 10px;font-size:29px;line-height:36px;font-weight:800;letter-spacing:-0.025em;color:#1F2523;">Tiny nudge 🫣</h1><p style="margin:0px 0 14px;font-size:15.5px;line-height:24px;color:#454E4A;">No pressure — just a soft little reminder that your share of <b>{{split_name}}</b> is still open. Pay in a tap and it's off your mind.</p><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;background:#EAF4F0;border:1px solid #D3E7DF;border-radius:18px;"><tr><td align="center" style="padding:22px 16px;"><div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#5C6B65;font-weight:600;">Still pending</div><div style="font-size:42px;line-height:48px;font-weight:800;letter-spacing:-0.03em;color:#2F6159;margin-top:6px;">{{amount}}</div><div style="font-size:13px;color:#5C6B65;margin-top:6px;">owed to {{creator_name}}</div></td></tr></table><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 6px;"><tr><td width="42%" style="padding:9px 0;border-bottom:1px solid #F0EEE8;font-size:13px;color:#7A8480;vertical-align:middle;"><span style="font-size:14px;">🧾</span>&nbsp; Split</td><td style="padding:9px 0;border-bottom:1px solid #F0EEE8;font-size:15px;color:#1F2523;font-weight:500;vertical-align:middle;">{{split_name}}</td></tr><tr><td width="42%" style="padding:9px 0;border-bottom:1px solid #F0EEE8;font-size:13px;color:#7A8480;vertical-align:middle;"><span style="font-size:14px;">🙌</span>&nbsp; Owed to</td><td style="padding:9px 0;border-bottom:1px solid #F0EEE8;font-size:15px;color:#1F2523;font-weight:500;vertical-align:middle;">{{creator_name}}</td></tr><tr><td width="42%" style="padding:9px 0;border-bottom:1px solid #F0EEE8;font-size:13px;color:#7A8480;vertical-align:middle;"><span style="font-size:14px;">⏳</span>&nbsp; Pending for</td><td style="padding:9px 0;border-bottom:1px solid #F0EEE8;font-size:15px;color:#1F2523;font-weight:500;vertical-align:middle;"><span style="display:inline-block;padding:2px 9px;border-radius:6px;background:#FADDE8;color:#8A2F52;font-size:13px;font-weight:500;line-height:20px;">{{days_pending}} days</span></td></tr></table><div style="margin:26px 0 6px;"><a href="{{pay_url}}" style="display:inline-block;padding:14px 28px;border-radius:999px;background:#1F2523;color:#ffffff;font-weight:600;font-size:15.5px;text-decoration:none;">Pay now →</a>&nbsp;&nbsp;<a href="{{paid_url}}" style="display:inline-block;padding:12px 22px;border-radius:999px;border:1.5px solid #D9D5CB;color:#1F2523;font-weight:600;font-size:14.5px;text-decoration:none;">I already paid</a></div></td></tr></table>
+ </td></tr>
+ <tr><td align="center" style="padding:22px 20px 0;font-size:12.5px;line-height:19px;color:#7A8480;">
+  Sent on behalf of {{creator_name}} via ul0.split.<br>Made with 🫶 by <a href="https://ul0.site" style="color:#2F6159;font-weight:600;text-decoration:none;">UL0</a> &middot; ul0.split &amp; Hisab<br>
+  <a href="{{unsubscribe_url}}" style="color:#7A8480;text-decoration:underline;">Unsubscribe</a> &nbsp;·&nbsp; <a href="https://ul0.site" style="color:#7A8480;text-decoration:underline;">ul0.site</a>
+ </td></tr>
+</table></td></tr></table></body></html>

@@ -4,6 +4,11 @@ export const metadata: Metadata = {
   title: "Split Bills Over UPI — Free, No App",
   description:
     "Split group bills instantly. Friends pay via Google Pay, PhonePe, or Paytm from a link. No app install, no signup for friends. Free forever.",
+  icons: {
+    icon: "/ul0split-logo-dark.png",
+    shortcut: "/ul0split-logo-dark.png",
+    apple: "/ul0split-logo-dark.png",
+  },
   keywords: [
     "split bills upi",
     "splitwise alternative free",

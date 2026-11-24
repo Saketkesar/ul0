@@ -810,14 +810,10 @@ function SplitWizardContent() {
             {/* Brand header */}
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-[#1B685C] text-white flex items-center justify-center font-bold text-xs">
-                  U
-                </span>
-                <span className="font-bold text-[15px] tracking-tight text-[#0B1A17]">
-                  UL0<span className="text-[#1B685C]">.split</span> &amp; Hisab
-                </span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/ul0split-logo-dark.png" alt="UL0 Split" className="h-7 w-auto object-contain" />
               </div>
-              <span className="inline-block text-[11px] font-mono text-[#5E726C] pl-8">
+              <span className="inline-block text-[11px] font-mono text-[#5E726C] pl-1">
                 Direct UPI · Zero signup
               </span>
             </div>

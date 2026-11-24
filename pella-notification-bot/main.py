@@ -25,6 +25,9 @@ SMTP_HOST = os.getenv("SMTP_HOST", "smtp.gmail.com").strip()
 SMTP_PORT = int(os.getenv("SMTP_PORT", "587").strip())
 PORT = int(os.getenv("PORT", "8080").strip())
 
+# Google Sheet Webhook for real-time admin sync
+GOOGLE_SHEET_WEBHOOK_URL = os.getenv("GOOGLE_SHEET_WEBHOOK_URL", "").strip()
+
 # Shared API Key for authenticating Next.js webhook calls
 BOT_API_KEY = os.getenv("BOT_API_KEY", "ul0_pella_live_sec_key_2026").strip()
 
@@ -33,8 +36,28 @@ print("  UL0 Notification Bot starting on Pella.app...")
 print(f"  Port: {PORT}")
 print(f"  Telegram Token configured: {'YES' if TELEGRAM_BOT_TOKEN else 'NO (Set TELEGRAM_BOT_TOKEN)'}")
 print(f"  Sender Email configured: {'YES' if SENDER_EMAIL else 'NO (Set SENDER_EMAIL & SENDER_PASSWORD)'}")
+print(f"  Google Sheet Webhook: {'YES' if GOOGLE_SHEET_WEBHOOK_URL else 'NO (Set GOOGLE_SHEET_WEBHOOK_URL)'}")
 print(f"  API Key: {BOT_API_KEY[:6]}...{BOT_API_KEY[-4:] if len(BOT_API_KEY) > 10 else ''}")
 print("=" * 60)
+
+def log_to_google_sheet(event_data: dict) -> dict:
+    """Forward split and notification events to Google Sheet Webhook"""
+    if not GOOGLE_SHEET_WEBHOOK_URL:
+        return {"success": False, "error": "GOOGLE_SHEET_WEBHOOK_URL not configured"}
+    
+    try:
+        data = json.dumps(event_data).encode("utf-8")
+        req = urllib.request.Request(
+            GOOGLE_SHEET_WEBHOOK_URL,
+            data=data,
+            headers={"Content-Type": "text/plain;charset=utf-8"}
+        )
+        with urllib.request.urlopen(req, timeout=8) as resp:
+            content = resp.read().decode("utf-8")
+            return {"success": True, "response": content}
+    except Exception as e:
+        print(f"Google Sheet logging warning: {e}")
+        return {"success": False, "error": str(e)}
 
 def send_telegram_message(target_chat_id: str, message: str) -> dict:
     if not TELEGRAM_BOT_TOKEN:
@@ -207,7 +230,28 @@ class NotificationHandler(BaseHTTPRequestHandler):
             if to_email:
                 results["email"] = send_email_message(to_email, f"Reminder: ₹{amount} for {split_title}", html_email, tg_text)
 
+            # Automatically log reminder event to Google Sheet
+            sheet_res = log_to_google_sheet({
+                "event_type": "reminder_sent",
+                "title": split_title,
+                "total_amount": amount,
+                "organizer_name": collector_name,
+                "member_name": member_name,
+                "member_share": amount,
+                "member_contact": telegram_target or to_email or "",
+                "status": "Reminded",
+                "notes": f"Reminder sent via Pella Bot ({'Telegram' if telegram_target else ''}{', ' if telegram_target and to_email else ''}{'Email' if to_email else ''})",
+                "split_url": settle_url
+            })
+            results["sheet_logged"] = sheet_res.get("success", False)
+
             self._send_json(200, {"success": True, "details": results})
+            return
+
+        # 4. Direct Google Sheet Event Logger endpoint
+        if path == "/log/sheet":
+            res = log_to_google_sheet(body)
+            self._send_json(200 if res.get("success") else 500, res)
             return
 
         self._send_json(404, {"error": "Endpoint not found"})

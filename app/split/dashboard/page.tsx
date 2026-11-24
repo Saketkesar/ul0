@@ -15,12 +15,10 @@ export default function SplitDashboardPage() {
         <div className="max-w-[1080px] mx-auto h-full flex items-center justify-between">
           <Link
             href="/split"
-            className="flex items-center gap-1.5 font-['Space_Grotesk',sans-serif] font-bold text-[18px] tracking-tight text-[#0B1A17]"
+            className="flex items-center"
           >
-            <span className="w-2.5 h-2.5 rounded-full bg-[#1B685C]" />
-            <span>
-              UL0<span className="text-[#1B685C]">.split</span>
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/ul0split-logo-dark.png" alt="UL0 Split" className="h-8 w-auto object-contain" />
           </Link>
 
           <div className="flex items-center gap-4">
@@ -52,6 +50,13 @@ export default function SplitDashboardPage() {
         <div className="max-w-[1080px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-[13px] text-[#5E726C]">
           <div className="flex items-center gap-2">
             <span className="font-bold text-[#0B1A17]">UL0.split</span>
+            <span>·</span>
+            <span className="flex items-center gap-1.5 text-[#0B1A17] font-bold">
+              by
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/ul0.png" alt="ul0.site" className="h-5 w-auto object-contain inline-block" />
+              <span>ul0.site</span>
+            </span>
             <span>·</span>
             <span className="font-['JetBrains_Mono',monospace] text-[12px]">Direct bank-to-bank UPI</span>
           </div>
