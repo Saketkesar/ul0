@@ -16,18 +16,18 @@ test("renderEmail generates valid HTML for all 7 templates", () => {
 
   for (const t of templates) {
     const { html, subject } = renderEmail(t, {
-      friend_name: "Dev Saini",
-      name: "Dev Saini",
+      friend_name: "Alex",
+      name: "Alex",
       amount: "₹600",
       share_amount: "₹600",
-      split_name: "Toit Dinner",
+      split_name: "Dinner Bill",
       total: "₹2,400",
       people_count: 4,
       paid_count: 2,
       paid_percent: 50,
-      confirm_url: "https://ul0.site/split/toit/confirm-payment",
-      not_received_url: "https://ul0.site/split/toit/not-received",
-      split_url: "https://ul0.site/split/toit",
+      confirm_url: "https://ul0.site/split/test-bill/confirm-payment",
+      not_received_url: "https://ul0.site/split/test-bill/not-received",
+      split_url: "https://ul0.site/split/test-bill",
     })
 
     assert.ok(html.length > 500, `Template ${t} should produce substantial HTML`)

@@ -14,12 +14,14 @@ export interface SheetLogEvent {
     | "onboarding_completed"
     | "group_created"
     | "group_settled"
+    | "unsubscribed"
   split_slug?: string
   title?: string
   total_amount?: number
   organizer_name?: string
   organizer_upi?: string
   organizer_email?: string
+  organizer_telegram?: string
   member_name?: string
   member_share?: number
   member_contact?: string

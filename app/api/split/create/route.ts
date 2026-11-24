@@ -173,21 +173,24 @@ export async function POST(request: NextRequest) {
     const clientIP = getClientIP(request)
     const fingerprint = getRequestFingerprint(request)
 
-    const suspiciousCheck = isSuspiciousRequest(request)
-    const rateLimitConfig = suspiciousCheck.suspicious ? STRICT_RATE_LIMIT_CONFIG : RATE_LIMIT_CONFIG
+    // Authenticated users get high allowance (120/min) so organizers can split without being blocked
+    const rateLimitConfig = userId
+      ? { windowMs: 60000, maxRequests: 120 }
+      : RATE_LIMIT_CONFIG
 
     // Rate limit by authenticated user ID (or IP:fingerprint fallback)
     const rateLimitKey = userId ? `split:create:user:${userId}` : `split:create:${clientIP}:${fingerprint}`
     const rateLimitResult = await checkRateLimit(rateLimitKey, rateLimitConfig)
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
-        { error: "Too many requests. Please wait before creating another split." },
+        { error: "Too many requests. Please wait a moment before creating another split." },
         { status: 429, headers: { "Retry-After": rateLimitResult.resetIn.toString() } }
       )
     }
 
+    const dailyConfig = userId ? { windowMs: 86400000, maxRequests: 500 } : DAILY_RATE_LIMIT_CONFIG
     const dailyKey = userId ? `split:create:daily:user:${userId}` : `split:create:daily:${clientIP}`
-    const dailyRateLimitResult = await checkRateLimit(dailyKey, DAILY_RATE_LIMIT_CONFIG)
+    const dailyRateLimitResult = await checkRateLimit(dailyKey, dailyConfig)
     if (!dailyRateLimitResult.allowed) {
       return NextResponse.json(
         { error: "Daily limit reached. Try again tomorrow." },

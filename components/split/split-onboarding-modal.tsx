@@ -81,9 +81,14 @@ export function SplitOnboardingModal({ isOpen, onClose, onSave }: SplitOnboardin
         if (parsed.upiId) setUpiId(parsed.upiId)
         if (parsed.defaultGst !== undefined) setDefaultGst(String(parsed.defaultGst))
         if (parsed.telegram) setTelegram(parsed.telegram)
+      } else {
+        const savedName = localStorage.getItem("ul0_split_collector_name")
+        const savedUpi = localStorage.getItem("ul0_split_collector_upi")
+        if (savedName) setName(savedName)
+        if (savedUpi) setUpiId(savedUpi)
       }
     } catch {}
-  }, [user])
+  }, [user, isOpen])
 
   if (!isOpen) return null
 
@@ -118,6 +123,10 @@ export function SplitOnboardingModal({ isOpen, onClose, onSave }: SplitOnboardin
     try {
       // Save locally
       localStorage.setItem("ul0_split_onboarding_v1", JSON.stringify(profile))
+      localStorage.setItem("ul0_split_collector_name", profile.name)
+      localStorage.setItem("ul0_split_collector_upi", profile.upiId)
+      if (profile.telegram) localStorage.setItem("ul0_split_collector_telegram", profile.telegram)
+      if (profile.email) localStorage.setItem("ul0_split_collector_email", profile.email)
 
       // Trigger welcome / confirmation email in background
       fetch("/api/notify/onboarding", {

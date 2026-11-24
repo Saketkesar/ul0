@@ -188,6 +188,24 @@ export function renderSplitActionPage(
       })();
     </script>
     `
+  } else if (pageType === "unsubscribe") {
+    actionScript = `
+    <script>
+      (function() {
+        const btn = document.querySelector('button[data-to="done"]');
+        if (btn) {
+          btn.addEventListener('click', function() {
+            const picked = document.getElementById('picked') ? document.getElementById('picked').textContent : 'All emails';
+            fetch('/api/split/unsubscribe', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: '${email}', mode: picked })
+            }).catch(function(e) { console.error('Unsubscribe error:', e); });
+          });
+        }
+      })();
+    </script>
+    `
   }
 
   if (actionScript) {

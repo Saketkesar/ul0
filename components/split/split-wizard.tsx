@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useId, useMemo, useRef, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
 import { useUser, useClerk } from "@clerk/nextjs"
 import QRCode from "qrcode"
 import { toast } from "sonner"
@@ -85,13 +86,26 @@ function SplitWizardContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { openSignIn } = useClerk()
-  const { isSignedIn, user } = useUser()
+  const { isSignedIn, user, isLoaded } = useUser()
   const baseId = useId()
   const collectorId = `collector-${baseId}`
 
   // Onboarding & Cover Modal state
   const [showOnboarding, setShowOnboarding] = useState<boolean>(false)
   const [showCoverModal, setShowCoverModal] = useState<boolean>(false)
+
+  // Trigger onboarding upfront as soon as signed-in user enters dashboard
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      try {
+        const onboarded = localStorage.getItem("ul0_split_onboarding_v1")
+        const savedUpi = localStorage.getItem("ul0_split_collector_upi")
+        if (!onboarded || !savedUpi) {
+          setShowOnboarding(true)
+        }
+      } catch {}
+    }
+  }, [isLoaded, isSignedIn])
 
   // Step state: 0 = Dashboard, 1 = "How much?", 2 = "Who's in?", 3 = "Split it", 4 = "Looks right?"
   const [step, setStep] = useState<number>(0)
@@ -798,6 +812,40 @@ function SplitWizardContent() {
     ? `${typeof window !== "undefined" ? window.location.origin : "https://ul0.site"}/split/${createdSlug}/manage?token=${collectorToken}`
     : ""
 
+  if (isLoaded && !isSignedIn) {
+    return (
+      <div className="max-w-[500px] mx-auto px-4 py-16 text-center">
+        <div className="p-8 sm:p-10 rounded-[28px] border border-[#D3E2DD] bg-[#F4FAF8] shadow-sm">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white border border-[#D3E2DD] flex items-center justify-center shadow-xs">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/ul0split-logo-dark.png" alt="UL0 Split" className="h-10 w-auto object-contain" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0B1A17] mb-3">
+            Sign in to use UL0.split
+          </h2>
+          <p className="text-[14px] text-[#5E726C] leading-relaxed mb-8 max-w-sm mx-auto">
+            You must be logged in to create bill splits, track who paid in real-time, and receive direct bank-to-bank UPI transfers.
+          </p>
+          <Button
+            type="button"
+            onClick={() => openSignIn()}
+            className="w-full h-12 rounded-full bg-[#1B685C] hover:bg-[#155248] text-white font-bold text-[15px] shadow-sm transition-transform active:scale-[0.98] cursor-pointer"
+          >
+            Sign in / Sign up to Continue →
+          </Button>
+          <div className="mt-6">
+            <Link
+              href="/split"
+              className="text-[13px] font-medium text-[#5E726C] hover:text-[#0B1A17] transition-colors"
+            >
+              ← Back to landing page
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="w-full bg-white text-[#0B1A17] font-['Space_Grotesk',sans-serif] selection:bg-[#3DDBB8] selection:text-[#0B1A17]">
       <div className="max-w-[1080px] mx-auto px-4 sm:px-6 py-6 sm:py-10">
@@ -863,7 +911,7 @@ function SplitWizardContent() {
               </button>
 
               <button
-                onClick={() => setShowSettings(true)}
+                onClick={() => setShowOnboarding(true)}
                 className="w-full flex items-center gap-2.5 px-3 py-2 rounded-full text-[#5E726C] hover:bg-[#EBF7F3] hover:text-[#0B1A17] transition-colors cursor-pointer text-left"
               >
                 <Settings className="w-4 h-4 text-[#1B685C]" strokeWidth={2} />
@@ -893,7 +941,7 @@ function SplitWizardContent() {
                     {collectorName || "Organizer"}
                   </span>
                   <button
-                    onClick={() => setShowSettings(true)}
+                    onClick={() => setShowOnboarding(true)}
                     className="text-[11px] text-[#1B685C] font-bold underline cursor-pointer"
                   >
                     Edit
@@ -1133,7 +1181,7 @@ function SplitWizardContent() {
                     <span>Collect</span>
                   </button>
                   <button
-                    onClick={() => setShowSettings(true)}
+                    onClick={() => setShowOnboarding(true)}
                     className="flex flex-col items-center gap-1 hover:text-[#0B1A17] text-[11px] transition-colors"
                   >
                     <Settings className="w-5 h-5" strokeWidth={2} />
@@ -2174,6 +2222,9 @@ function SplitWizardContent() {
           setCollectorName(profile.name)
           setCollectorUpi(profile.upiId)
           setHasSavedCollector(true)
+          setIsEditingCollector(false)
+          localStorage.setItem("ul0_split_collector_name", profile.name)
+          localStorage.setItem("ul0_split_collector_upi", profile.upiId)
           if (step === 0) setStep(1)
         }}
       />

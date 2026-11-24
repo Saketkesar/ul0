@@ -138,9 +138,13 @@ function doPost(e) {
       statusCell.setBackground("#FEE2E2"); // Light red
       statusCell.setFontColor("#991B1B");
       statusCell.setFontWeight("bold");
-    } else if (st.indexOf("claimed") !== -1) {
+    } else if (st.indexOf("claimed") !== -1 || st === "paid") {
       statusCell.setBackground("#FEF3C7"); // Yellow
       statusCell.setFontColor("#92400E");
+    } else if (st.indexOf("unsub") !== -1) {
+      statusCell.setBackground("#F3F4F6"); // Neutral Gray
+      statusCell.setFontColor("#4B5563");
+      statusCell.setFontWeight("bold");
     }
 
     return ContentService.createTextOutput(JSON.stringify({
@@ -180,18 +184,18 @@ function testLogEvent() {
     postData: {
       contents: JSON.stringify({
         event_type: "split_created",
-        split_slug: "test-trip-404",
-        title: "Goa Trip Weekend Split",
-        total_amount: 14500,
-        organizer_name: "Admin Tester",
-        organizer_upi: "tester@okaxis",
-        organizer_email: "admin@ul0.site",
-        member_name: "Dev Saini",
-        member_share: 2900,
-        member_contact: "@devsaini",
+        split_slug: "sample-split-101",
+        title: "Weekend Dinner Split",
+        total_amount: 2400,
+        organizer_name: "Organizer",
+        organizer_upi: "organizer@okaxis",
+        organizer_email: "organizer@example.com",
+        member_name: "Friend 1",
+        member_share: 600,
+        member_contact: "@friend1",
         status: "Active",
         notes: "Test automated row from UL0 Apps Script test",
-        split_url: "https://ul0.site/split/test-trip-404"
+        split_url: "https://ul0.site/split/sample-split-101"
       })
     }
   };
