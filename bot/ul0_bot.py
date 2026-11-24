@@ -26,7 +26,10 @@ SMTP_PORT = int(os.getenv("SMTP_PORT", "587").strip())
 PORT = int(os.getenv("PORT", "8080").strip())
 
 # Google Sheet Webhook for real-time admin sync
-GOOGLE_SHEET_WEBHOOK_URL = os.getenv("GOOGLE_SHEET_WEBHOOK_URL", "").strip()
+GOOGLE_SHEET_WEBHOOK_URL = os.getenv(
+    "GOOGLE_SHEET_WEBHOOK_URL",
+    "https://script.google.com/macros/s/AKfycbwUgL6rLXwhgQ5De13-R_A7i-SeuGw0z1iFVKqanJcEnz6UXknU4X5XMkjtJvCEO4tgsg/exec"
+).strip()
 
 # Shared API Key for authenticating Next.js webhook calls
 BOT_API_KEY = os.getenv("BOT_API_KEY", "ul0_pella_live_sec_key_2026").strip()
@@ -97,16 +100,30 @@ def send_email_message(to_email: str, subject: str, html_body: str, text_body: s
     if html_body:
         msg.attach(MIMEText(html_body, "html"))
 
+    # Try STARTTLS on 587 first, and automatically fallback to SSL on 465
     try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=12) as server:
-            server.ehlo()
-            server.starttls()
-            server.ehlo()
-            server.login(SENDER_EMAIL, SENDER_PASSWORD)
-            server.sendmail(SENDER_EMAIL, [to_email], msg.as_string())
-        return {"success": True}
+        if SMTP_PORT == 465:
+            with smtplib.SMTP_SSL(SMTP_HOST, 465, timeout=12) as server:
+                server.login(SENDER_EMAIL, SENDER_PASSWORD)
+                server.sendmail(SENDER_EMAIL, [to_email], msg.as_string())
+            return {"success": True}
+        else:
+            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=12) as server:
+                server.ehlo()
+                server.starttls()
+                server.ehlo()
+                server.login(SENDER_EMAIL, SENDER_PASSWORD)
+                server.sendmail(SENDER_EMAIL, [to_email], msg.as_string())
+            return {"success": True}
     except Exception as e:
-        return {"success": False, "error": str(e)}
+        # Fallback to SSL on 465
+        try:
+            with smtplib.SMTP_SSL(SMTP_HOST, 465, timeout=12) as server:
+                server.login(SENDER_EMAIL, SENDER_PASSWORD)
+                server.sendmail(SENDER_EMAIL, [to_email], msg.as_string())
+            return {"success": True}
+        except Exception as e_ssl:
+            return {"success": False, "error": f"{e} (SSL fallback failed: {e_ssl})"}
 
 class NotificationHandler(BaseHTTPRequestHandler):
     def _send_json(self, status: int, data: dict):

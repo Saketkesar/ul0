@@ -103,7 +103,7 @@ function SplitWizardContent() {
         if (!onboarded || !savedUpi) {
           setShowOnboarding(true)
         }
-      } catch {}
+      } catch { }
     }
   }, [isLoaded, isSignedIn])
 
@@ -213,7 +213,7 @@ function SplitWizardContent() {
       if (savedRecent) {
         setRecentSplits(JSON.parse(savedRecent))
       }
-    } catch {}
+    } catch { }
   }, [user])
 
   // Save collector profile to localStorage
@@ -225,7 +225,7 @@ function SplitWizardContent() {
       setCollectorUpi(upi.trim().toLowerCase())
       setHasSavedCollector(true)
       setIsEditingCollector(false)
-    } catch {}
+    } catch { }
   }
 
   // Clear collector profile from localStorage
@@ -237,7 +237,7 @@ function SplitWizardContent() {
       setHasSavedCollector(false)
       setIsEditingCollector(true)
       toast.info("Organizer details cleared from this device.")
-    } catch {}
+    } catch { }
   }
 
   // Handle Image Upload for Split Banner
@@ -582,7 +582,7 @@ function SplitWizardContent() {
         setShowOnboarding(true)
         return
       }
-    } catch {}
+    } catch { }
 
     const cleanTitle = title.trim() || `${category} Split`
     const cleanCollectorName = collectorName.trim() || user?.fullName || user?.firstName || "Organizer"
@@ -611,13 +611,13 @@ function SplitWizardContent() {
       const membersPayload = [
         ...(includeCollector
           ? [
-              {
-                id: collectorId,
-                name: cleanCollectorName,
-                isCollector: true,
-                upiId: cleanCollectorUpi,
-              },
-            ]
+            {
+              id: collectorId,
+              name: cleanCollectorName,
+              isCollector: true,
+              upiId: cleanCollectorUpi,
+            },
+          ]
           : []),
         ...friends.map((f) => ({
           id: f.id,
@@ -631,6 +631,7 @@ function SplitWizardContent() {
       const expensesPayload = [
         {
           id: `exp-${Date.now()}`,
+          title: cleanTitle,
           description: cleanTitle,
           amount: Math.round(calculatedTotal * 100) / 100,
           paidBy: collectorId,
@@ -641,12 +642,12 @@ function SplitWizardContent() {
           items:
             billType === "itemized"
               ? items.map((it) => ({
-                  id: it.id,
-                  name: it.name,
-                  price: it.price,
-                  qty: it.qty,
-                  sharedBy: it.sharedBy,
-                }))
+                id: it.id,
+                name: it.name,
+                price: it.price,
+                qty: it.qty,
+                sharedBy: it.sharedBy,
+              }))
               : undefined,
           taxPercent: billType === "itemized" ? parseFloat(taxPercent) || 0 : undefined,
           serviceChargePercent:
@@ -655,6 +656,8 @@ function SplitWizardContent() {
       ]
 
       const settlementsPayload = friends.map((f) => ({
+        from: f.id,
+        to: collectorId,
         fromMemberId: f.id,
         toMemberId: collectorId,
         amount: Math.round((friendShares[f.id] || 0) * 100) / 100,
@@ -720,7 +723,7 @@ function SplitWizardContent() {
         ]
         setRecentSplits(updatedRecent)
         localStorage.setItem("ul0_recent_splits", JSON.stringify(updatedRecent))
-      } catch {}
+      } catch { }
 
       // Generate QR
       const settleUrl = `${window.location.origin}/split/${data.slug}`
@@ -755,7 +758,7 @@ function SplitWizardContent() {
             })),
           ],
         }),
-      }).catch(() => {})
+      }).catch(() => { })
 
       toast.success("Split created! Share link with friends.")
     } catch (err: any) {
@@ -816,9 +819,43 @@ function SplitWizardContent() {
     return (
       <div className="max-w-[500px] mx-auto px-4 py-16 text-center">
         <div className="p-8 sm:p-10 rounded-[28px] border border-[#D3E2DD] bg-[#F4FAF8] shadow-sm">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white border border-[#D3E2DD] flex items-center justify-center shadow-xs">
+          <div className="mx-auto mb-6 flex items-center justify-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/ul0split-logo-dark.png" alt="UL0 Split" className="h-10 w-auto object-contain" />
+            <img src="/ul0split-logo.png" alt="UL0 Split" className="h-12 w-auto object-contain" />
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0B1A17] mb-3">
+            Sign in to use UL0.split
+          </h2>
+          <p className="text-[14px] text-[#5E726C] leading-relaxed mb-8 max-w-sm mx-auto">
+            You must be logged in to create bill splits, track who paid in real-time, and receive direct bank-to-bank UPI transfers.
+          </p>
+          <Button
+            type="button"
+            onClick={() => openSignIn()}
+            className="w-full h-12 rounded-full bg-[#1B685C] hover:bg-[#155248] text-white font-bold text-[15px] shadow-sm transition-transform active:scale-[0.98] cursor-pointer"
+          >
+            Sign in / Sign up to Continue →
+          </Button>
+          <div className="mt-6">
+            <Link
+              href="/split"
+              className="text-[13px] font-medium text-[#5E726C] hover:text-[#0B1A17] transition-colors"
+            >
+              ← Back to landing page
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (isLoaded && !isSignedIn) {
+    return (
+      <div className="max-w-[500px] mx-auto px-4 py-16 text-center">
+        <div className="p-8 sm:p-10 rounded-[28px] border border-[#D3E2DD] bg-[#F4FAF8] shadow-sm">
+          <div className="mx-auto mb-6 flex items-center justify-center">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/ul0split-logo.png" alt="UL0 Split" className="h-12 w-auto object-contain" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#0B1A17] mb-3">
             Sign in to use UL0.split
@@ -859,7 +896,7 @@ function SplitWizardContent() {
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/ul0split-logo-dark.png" alt="UL0 Split" className="h-7 w-auto object-contain" />
+                <img src="/ul0split-logo.png" alt="UL0 Split" className="h-9 sm:h-10 w-auto object-contain" />
               </div>
               <span className="inline-block text-[11px] font-mono text-[#5E726C] pl-1">
                 Direct UPI · Zero signup
@@ -870,11 +907,10 @@ function SplitWizardContent() {
             <nav className="space-y-1 text-[13px] font-medium">
               <button
                 onClick={() => setStep(0)}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-full transition-colors cursor-pointer text-left ${
-                  step === 0
-                    ? "bg-[#DDF5EE] text-[#0B1A17] font-bold"
-                    : "text-[#5E726C] hover:bg-[#EBF7F3] hover:text-[#0B1A17]"
-                }`}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-full transition-colors cursor-pointer text-left ${step === 0
+                  ? "bg-[#DDF5EE] text-[#0B1A17] font-bold"
+                  : "text-[#5E726C] hover:bg-[#EBF7F3] hover:text-[#0B1A17]"
+                  }`}
               >
                 <Receipt className="w-4 h-4 text-[#1B685C]" strokeWidth={2} />
                 <span>Splits Dashboard</span>
@@ -1214,16 +1250,14 @@ function SplitWizardContent() {
                     ].map((s) => (
                       <div key={s.num} className="flex items-center gap-1.5">
                         <div
-                          className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold font-['JetBrains_Mono'] ${
-                            s.num <= step ? "bg-[#1B685C] text-white" : "bg-[#D3E2DD] text-[#5E726C]"
-                          }`}
+                          className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-bold font-['JetBrains_Mono'] ${s.num <= step ? "bg-[#1B685C] text-white" : "bg-[#D3E2DD] text-[#5E726C]"
+                            }`}
                         >
                           {s.num}
                         </div>
                         <span
-                          className={`text-[12px] hidden sm:inline ${
-                            s.num === step ? "font-bold text-[#0B1A17]" : "text-[#5E726C]"
-                          }`}
+                          className={`text-[12px] hidden sm:inline ${s.num === step ? "font-bold text-[#0B1A17]" : "text-[#5E726C]"
+                            }`}
                         >
                           {s.label}
                         </span>
@@ -1279,11 +1313,10 @@ function SplitWizardContent() {
                             key={amt}
                             type="button"
                             onClick={() => setTotalAmountStr(String(amt))}
-                            className={`px-4 py-1.5 rounded-full border text-[13px] font-mono font-medium cursor-pointer transition-colors ${
-                              parseFloat(totalAmountStr) === amt
-                                ? "border-[#1B685C] bg-[#1B685C] text-white font-bold"
-                                : "border-[#D3E2DD] bg-[#F4FAF8] text-[#0B1A17] hover:bg-[#DDF5EE]"
-                            }`}
+                            className={`px-4 py-1.5 rounded-full border text-[13px] font-mono font-medium cursor-pointer transition-colors ${parseFloat(totalAmountStr) === amt
+                              ? "border-[#1B685C] bg-[#1B685C] text-white font-bold"
+                              : "border-[#D3E2DD] bg-[#F4FAF8] text-[#0B1A17] hover:bg-[#DDF5EE]"
+                              }`}
                           >
                             ₹{amt.toLocaleString("en-IN")}
                           </button>
@@ -1315,11 +1348,10 @@ function SplitWizardContent() {
                                   setTitle(cat.title)
                                 }
                               }}
-                              className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium cursor-pointer transition-colors ${
-                                isActive
-                                  ? "bg-[#1B685C] text-white font-bold border border-[#1B685C]"
-                                  : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17] hover:bg-[#DDF5EE]"
-                              }`}
+                              className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium cursor-pointer transition-colors ${isActive
+                                ? "bg-[#1B685C] text-white font-bold border border-[#1B685C]"
+                                : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17] hover:bg-[#DDF5EE]"
+                                }`}
                             >
                               {cat.label}
                             </button>
@@ -1334,18 +1366,16 @@ function SplitWizardContent() {
                         <button
                           type="button"
                           onClick={() => setBillType("full")}
-                          className={`flex-1 py-2 rounded-full transition-all cursor-pointer ${
-                            billType === "full" ? "bg-[#1B685C] text-white font-bold shadow-xs" : "text-[#5E726C]"
-                          }`}
+                          className={`flex-1 py-2 rounded-full transition-all cursor-pointer ${billType === "full" ? "bg-[#1B685C] text-white font-bold shadow-xs" : "text-[#5E726C]"
+                            }`}
                         >
                           Entire Bill
                         </button>
                         <button
                           type="button"
                           onClick={() => setBillType("itemized")}
-                          className={`flex-1 py-2 rounded-full transition-all cursor-pointer ${
-                            billType === "itemized" ? "bg-[#1B685C] text-white font-bold shadow-xs" : "text-[#5E726C]"
-                          }`}
+                          className={`flex-1 py-2 rounded-full transition-all cursor-pointer ${billType === "itemized" ? "bg-[#1B685C] text-white font-bold shadow-xs" : "text-[#5E726C]"
+                            }`}
                         >
                           Item-wise (Groceries / Items)
                         </button>
@@ -1654,9 +1684,8 @@ function SplitWizardContent() {
                           key={mode}
                           type="button"
                           onClick={() => setSplitMode(mode)}
-                          className={`flex-1 py-1.5 rounded-full capitalize transition-all cursor-pointer ${
-                            splitMode === mode ? "bg-[#1B685C] text-white font-bold shadow-xs" : "text-[#5E726C]"
-                          }`}
+                          className={`flex-1 py-1.5 rounded-full capitalize transition-all cursor-pointer ${splitMode === mode ? "bg-[#1B685C] text-white font-bold shadow-xs" : "text-[#5E726C]"
+                            }`}
                         >
                           {mode === "percent" ? "%" : mode}
                         </button>
@@ -1694,11 +1723,10 @@ function SplitWizardContent() {
                                       key={m.id}
                                       type="button"
                                       onClick={() => toggleItemMember(it.id, m.id)}
-                                      className={`px-3 py-1 rounded-full text-[11px] font-medium transition-colors cursor-pointer ${
-                                        isSelected
-                                          ? "bg-[#1B685C] text-white font-bold"
-                                          : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17]"
-                                      }`}
+                                      className={`px-3 py-1 rounded-full text-[11px] font-medium transition-colors cursor-pointer ${isSelected
+                                        ? "bg-[#1B685C] text-white font-bold"
+                                        : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17]"
+                                        }`}
                                     >
                                       {m.name.split(" ")[0]}
                                     </button>
@@ -1891,11 +1919,10 @@ function SplitWizardContent() {
                             key={opt.days}
                             type="button"
                             onClick={() => setAutoRemindDays(autoRemindDays === opt.days ? null : opt.days)}
-                            className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium cursor-pointer transition-colors ${
-                              autoRemindDays === opt.days
-                                ? "bg-[#1B685C] text-white font-bold border border-[#1B685C]"
-                                : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17]"
-                            }`}
+                            className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium cursor-pointer transition-colors ${autoRemindDays === opt.days
+                              ? "bg-[#1B685C] text-white font-bold border border-[#1B685C]"
+                              : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17]"
+                              }`}
                           >
                             {opt.label}
                           </button>
@@ -1922,11 +1949,10 @@ function SplitWizardContent() {
                             key={opt.days}
                             type="button"
                             onClick={() => setExpiryDays(opt.days)}
-                            className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium cursor-pointer transition-colors ${
-                              expiryDays === opt.days
-                                ? "bg-[#1B685C] text-white font-bold border border-[#1B685C]"
-                                : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17]"
-                            }`}
+                            className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium cursor-pointer transition-colors ${expiryDays === opt.days
+                              ? "bg-[#1B685C] text-white font-bold border border-[#1B685C]"
+                              : "bg-[#F4FAF8] border border-[#D3E2DD] text-[#5E726C] hover:text-[#0B1A17]"
+                              }`}
                           >
                             {opt.label}
                           </button>
@@ -2189,8 +2215,8 @@ function SplitWizardContent() {
                 {isSendingManualReminder
                   ? "Dispatching..."
                   : hasSentReminderToday
-                  ? "✓ Reminder sent (available in 24 hrs)"
-                  : "Send 1-Click Reminder Now"}
+                    ? "✓ Reminder sent (available in 24 hrs)"
+                    : "Send 1-Click Reminder Now"}
               </Button>
             </div>
 

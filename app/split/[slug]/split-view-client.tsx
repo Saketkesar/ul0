@@ -264,7 +264,7 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
               className="flex items-center gap-1.5 hover:opacity-80 transition-opacity"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/ul0split-logo-dark.png" alt="UL0 Split" className="h-6 w-auto object-contain" />
+              <img src="/ul0split-logo.png" alt="UL0 Split" className="h-8 sm:h-9 w-auto object-contain" />
             </a>
             <span className="text-[#D5E0DB]">/</span>
             <span className="text-xs font-medium text-[#5A6B66] truncate max-w-[140px] sm:max-w-[200px]">
@@ -619,8 +619,9 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
             <span className="flex items-center gap-1.5 text-[#0B1A17] font-bold">
               by
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/ul0.png" alt="ul0.site" className="h-4 w-auto object-contain inline-block" />
-              <span>ul0.site</span>
+              <a href="https://ul0.site" target="_blank" rel="noopener noreferrer" className="inline-flex items-center hover:opacity-85 transition-opacity">
+                <img src="/ul0.png" alt="UL0" className="h-4 w-auto object-contain inline-block" />
+              </a>
             </span>
           </div>
           <div className="text-[11px] font-mono">

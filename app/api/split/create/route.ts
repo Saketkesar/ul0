@@ -110,11 +110,13 @@ function validateExpense(
 
   const e = expense as Record<string, unknown>
 
-  if (typeof e.id !== "string" || typeof e.title !== "string" || typeof e.amount !== "number" || typeof e.paidBy !== "string") {
+  const rawTitle = typeof e.title === "string" ? e.title : typeof e.description === "string" ? e.description : ""
+
+  if (typeof e.id !== "string" || !rawTitle || typeof e.amount !== "number" || typeof e.paidBy !== "string") {
     return { valid: false, error: "Expense missing required fields" }
   }
 
-  const sanitizedTitle = sanitizeString(e.title, MAX_EXPENSE_TITLE_LENGTH)
+  const sanitizedTitle = sanitizeString(rawTitle, MAX_EXPENSE_TITLE_LENGTH)
 
   if (!sanitizedTitle) {
     return { valid: false, error: "Expense title is required" }
@@ -273,19 +275,21 @@ export async function POST(request: NextRequest) {
       for (const settlement of settlements) {
         if (settlement && typeof settlement === "object") {
           const s = settlement as Record<string, unknown>
+          const fromId = typeof s.from === "string" ? s.from : typeof s.fromMemberId === "string" ? s.fromMemberId : ""
+          const toId = typeof s.to === "string" ? s.to : typeof s.toMemberId === "string" ? s.toMemberId : ""
           if (
-            typeof s.from === "string" &&
-            typeof s.to === "string" &&
+            fromId &&
+            toId &&
             typeof s.amount === "number" &&
-            validMemberIds.has(s.from) &&
-            validMemberIds.has(s.to) &&
+            validMemberIds.has(fromId) &&
+            validMemberIds.has(toId) &&
             s.amount > 0 &&
             s.amount <= MAX_AMOUNT &&
             Number.isFinite(s.amount)
           ) {
             sanitizedSettlements.push({
-              from: s.from,
-              to: s.to,
+              from: fromId,
+              to: toId,
               amount: Math.round(s.amount * 100) / 100,
               status: "unpaid",
             })

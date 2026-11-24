@@ -2,8 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { renderEmail } from "@/lib/split/email-templates"
 import { logEventToSheet } from "@/lib/split/sheet-logger"
+import { sendEmailDirect } from "@/lib/split/email-sender"
 
-const PELLA_BOT_URL = process.env.PELLA_BOT_URL || process.env.REMINDER_BOT_URL || ""
+const PELLA_BOT_URL = process.env.PELLA_BOT_URL || process.env.REMINDER_BOT_URL || "http://fi17.bot-hosting.cloud:25733"
 const BOT_API_KEY = process.env.BOT_API_KEY || "ul0_pella_live_sec_key_2026"
 const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || ""
 
@@ -47,26 +48,13 @@ export async function POST(request: NextRequest) {
         cta_url: manageUrl || publicUrl,
       })
 
-      if (PELLA_BOT_URL) {
-        try {
-          await fetch(`${PELLA_BOT_URL.replace(/\/$/, "")}/notify/email`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": `Bearer ${BOT_API_KEY}`,
-              "X-Bot-Key": BOT_API_KEY,
-            },
-            body: JSON.stringify({
-              to: collectorEmail,
-              subject: creatorSubject || `Split Created: ${title || "Bill Split"} (₹${totalAmount})`,
-              html: creatorHtml,
-              text: `Split created for ${title} (₹${totalAmount}). Settle link: ${publicUrl}`,
-            }),
-          })
-        } catch (e) {
-          console.warn("Creator email notification error:", e)
-        }
-      }
+      // Send directly via SMTP
+      await sendEmailDirect({
+        to: collectorEmail,
+        subject: creatorSubject || `Split Created: ${title || "Bill Split"} (₹${totalAmount})`,
+        html: creatorHtml,
+        text: `Split created for ${title} (₹${totalAmount}). Settle link: ${publicUrl}`,
+      })
     }
 
     // Google Sheets real-time log for split creation
@@ -105,7 +93,9 @@ export async function POST(request: NextRequest) {
               },
               body: JSON.stringify({
                 chat_id: member.telegram,
+                target: member.telegram,
                 text: tgText,
+                message: tgText,
               }),
             })
           } catch (e) {
@@ -142,26 +132,13 @@ export async function POST(request: NextRequest) {
           split_url: publicUrl,
         })
 
-        if (PELLA_BOT_URL) {
-          try {
-            await fetch(`${PELLA_BOT_URL.replace(/\/$/, "")}/notify/email`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${BOT_API_KEY}`,
-                "X-Bot-Key": BOT_API_KEY,
-              },
-              body: JSON.stringify({
-                to: member.email,
-                subject: memberSubject || `Split Bill: Your share is ₹${memberAmount} for ${title}`,
-                html: memberHtml,
-                text: `You owe ₹${memberAmount} for ${title}. Pay here: ${publicUrl}`,
-              }),
-            })
-          } catch (e) {
-            console.warn("Member email error:", e)
-          }
-        }
+        // Direct SMTP delivery
+        await sendEmailDirect({
+          to: member.email,
+          subject: memberSubject || `Split Bill: Your share is ₹${memberAmount} for ${title}`,
+          html: memberHtml,
+          text: `You owe ₹${memberAmount} for ${title}. Pay here: ${publicUrl}`,
+        })
       }
     }
 

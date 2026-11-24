@@ -18,7 +18,7 @@ export default function SplitDashboardPage() {
             className="flex items-center"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/ul0split-logo-dark.png" alt="UL0 Split" className="h-8 w-auto object-contain" />
+            <img src="/ul0split-logo.png" alt="UL0 Split" className="h-9 sm:h-10 w-auto object-contain" />
           </Link>
 
           <div className="flex items-center gap-4">
@@ -54,8 +54,9 @@ export default function SplitDashboardPage() {
             <span className="flex items-center gap-1.5 text-[#0B1A17] font-bold">
               by
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/ul0.png" alt="ul0.site" className="h-5 w-auto object-contain inline-block" />
-              <span>ul0.site</span>
+              <a href="https://ul0.site" target="_blank" rel="noopener noreferrer" className="inline-flex items-center hover:opacity-85 transition-opacity">
+                <img src="/ul0.png" alt="UL0" className="h-5 w-auto object-contain inline-block" />
+              </a>
             </span>
             <span>·</span>
             <span className="font-['JetBrains_Mono',monospace] text-[12px]">Direct bank-to-bank UPI</span>

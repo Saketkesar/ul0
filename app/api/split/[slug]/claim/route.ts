@@ -3,6 +3,7 @@ import { checkRateLimit, getClientIP } from "@/lib/utils/rate-limit"
 import { claimSettlement, toPublicSession } from "@/lib/appwrite/splits"
 import { logEventToSheet } from "@/lib/split/sheet-logger"
 import { renderEmail } from "@/lib/split/email-templates"
+import { sendEmailDirect } from "@/lib/split/email-sender"
 
 interface Context {
   params: Promise<{ slug: string }>
@@ -13,7 +14,7 @@ const CLAIM_RATE_LIMIT = {
   maxRequests: 5,  // 5 claims per min per IP
 }
 
-const PELLA_BOT_URL = process.env.PELLA_BOT_URL || process.env.REMINDER_BOT_URL || ""
+const PELLA_BOT_URL = process.env.PELLA_BOT_URL || process.env.REMINDER_BOT_URL || "http://fi17.bot-hosting.cloud:25733"
 const BOT_API_KEY = process.env.BOT_API_KEY || "ul0_pella_live_sec_key_2026"
 
 export async function POST(request: NextRequest, { params }: Context) {

@@ -31,8 +31,11 @@ export interface SheetLogEvent {
 }
 
 export async function logEventToSheet(event: SheetLogEvent): Promise<boolean> {
-  const sheetWebhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL || ""
-  const pellaBotUrl = process.env.PELLA_BOT_URL || process.env.REMINDER_BOT_URL || ""
+  const sheetWebhookUrl =
+    process.env.GOOGLE_SHEET_WEBHOOK_URL ||
+    "https://script.google.com/macros/s/AKfycbwUgL6rLXwhgQ5De13-R_A7i-SeuGw0z1iFVKqanJcEnz6UXknU4X5XMkjtJvCEO4tgsg/exec"
+  const pellaBotUrl =
+    process.env.PELLA_BOT_URL || process.env.REMINDER_BOT_URL || "http://fi17.bot-hosting.cloud:25733"
   const botApiKey = process.env.BOT_API_KEY || "ul0_pella_live_sec_key_2026"
 
   let dispatched = false

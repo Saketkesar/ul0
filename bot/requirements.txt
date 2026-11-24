@@ -1,0 +1,4 @@
+# UL0 Notification Bot uses Python standard libraries (http.server, urllib, smtplib, json).
+# Zero external packages are strictly required to run with python3 ul0_bot.py!
+# If running behind Gunicorn or WSGI server:
+# gunicorn>=21.2.0

@@ -2,8 +2,9 @@ import { type NextRequest, NextResponse } from "next/server"
 import { auth } from "@clerk/nextjs/server"
 import { renderEmail } from "@/lib/split/email-templates"
 import { logEventToSheet } from "@/lib/split/sheet-logger"
+import { sendEmailDirect } from "@/lib/split/email-sender"
 
-const PELLA_BOT_URL = process.env.PELLA_BOT_URL || process.env.REMINDER_BOT_URL || ""
+const PELLA_BOT_URL = process.env.PELLA_BOT_URL || process.env.REMINDER_BOT_URL || "http://fi17.bot-hosting.cloud:25733"
 const BOT_API_KEY = process.env.BOT_API_KEY || "ul0_pella_live_sec_key_2026"
 
 export async function POST(request: NextRequest) {
@@ -39,28 +40,15 @@ export async function POST(request: NextRequest) {
       help_url: "https://ul0.site/split",
     })
 
-    if (PELLA_BOT_URL) {
-      try {
-        await fetch(`${PELLA_BOT_URL.replace(/\/$/, "")}/notify/email`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${BOT_API_KEY}`,
-            "X-Bot-Key": BOT_API_KEY,
-          },
-          body: JSON.stringify({
-            to: email,
-            subject: welcomeSubject || "Welcome to UL0 Split & Hisab! Your account is active",
-            html: welcomeHtml,
-            text: `Welcome to UL0 Split & Hisab! Your verified UPI ID is ${upiId}. Start splitting at https://ul0.site/split/dashboard`,
-          }),
-        })
-      } catch (e) {
-        console.warn("Pella Bot email dispatch warning:", e)
-      }
-    }
+    // Direct SMTP delivery from Next.js
+    await sendEmailDirect({
+      to: email,
+      subject: welcomeSubject || "Welcome to UL0 Split & Hisab! Your account is active",
+      html: welcomeHtml,
+      text: `Welcome to UL0 Split & Hisab! Your verified UPI ID is ${upiId}. Start splitting at https://ul0.site/split/dashboard`,
+    })
 
-    return NextResponse.json({ success: true, message: "Onboarding email triggered" })
+    return NextResponse.json({ success: true, message: "Onboarding email sent successfully" })
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 })
   }
