@@ -60,7 +60,9 @@ interface ItemEntry {
   id: string
   name: string
   price: number
+  unitPrice?: number
   qty?: number
+  date?: string
   sharedBy: string[]
 }
 
@@ -143,6 +145,7 @@ function SplitWizardContent() {
   const [newItemName, setNewItemName] = useState<string>("")
   const [newItemPrice, setNewItemPrice] = useState<string>("")
   const [newItemQty, setNewItemQty] = useState<string>("1")
+  const [newItemDate, setNewItemDate] = useState<string>(() => new Date().toISOString().split("T")[0])
   const [taxPercent, setTaxPercent] = useState<string>("5")
   const [serviceChargePercent, setServiceChargePercent] = useState<string>("0")
 
@@ -357,20 +360,23 @@ function SplitWizardContent() {
       ...(includeCollector ? [collectorId] : []),
       ...friends.map((f) => f.id),
     ]
-    const itemTotal = parsedPrice * parsedQty
+    const itemTotal = Math.round(parsedPrice * parsedQty * 100) / 100
     setItems((prev) => [
       ...prev,
       {
         id: `item-${Date.now()}`,
         name: trimmed,
         price: itemTotal,
+        unitPrice: parsedPrice,
         qty: parsedQty,
+        date: newItemDate || new Date().toISOString().split("T")[0],
         sharedBy: allMemberIds,
       },
     ])
     setNewItemName("")
     setNewItemPrice("")
     setNewItemQty("1")
+    setNewItemDate(new Date().toISOString().split("T")[0])
   }
 
   const handleRemoveItem = (id: string) => {
@@ -628,6 +634,19 @@ function SplitWizardContent() {
         })),
       ]
 
+      const itemsPayload =
+        billType === "itemized"
+          ? items.map((it) => ({
+            id: it.id,
+            name: it.name,
+            price: it.price,
+            unitPrice: it.unitPrice || (it.qty ? it.price / it.qty : it.price),
+            qty: it.qty || 1,
+            date: it.date || new Date().toISOString().split("T")[0],
+            sharedBy: it.sharedBy,
+          }))
+          : undefined
+
       const expensesPayload = [
         {
           id: `exp-${Date.now()}`,
@@ -639,16 +658,7 @@ function SplitWizardContent() {
           date: new Date().toISOString(),
           category,
           note: note.trim() || undefined,
-          items:
-            billType === "itemized"
-              ? items.map((it) => ({
-                id: it.id,
-                name: it.name,
-                price: it.price,
-                qty: it.qty,
-                sharedBy: it.sharedBy,
-              }))
-              : undefined,
+          items: itemsPayload,
           taxPercent: billType === "itemized" ? parseFloat(taxPercent) || 0 : undefined,
           serviceChargePercent:
             billType === "itemized" ? parseFloat(serviceChargePercent) || 0 : undefined,
@@ -692,6 +702,7 @@ function SplitWizardContent() {
           collectorUpi: cleanCollectorUpi,
           members: membersPayload,
           expenses: expensesPayload,
+          items: itemsPayload,
           settlements: settlementsPayload,
           totalAmount: Math.round(calculatedTotal * 100) / 100,
           expiryDays,
@@ -1432,22 +1443,30 @@ function SplitWizardContent() {
                             </div>
                           )}
 
-                          <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                          <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
                             {items.map((it) => (
                               <div
                                 key={it.id}
-                                className="flex items-center justify-between p-2.5 rounded-[12px] bg-white text-[13px] border border-[#D3E2DD]"
+                                className="flex items-center justify-between p-3 rounded-[12px] bg-white text-[13px] border border-[#D3E2DD]"
                               >
-                                <div>
-                                  <span className="font-bold text-[#0B1A17] block">{it.name}</span>
-                                  <span className="text-[11px] font-mono text-[#5E726C]">
-                                    ₹{it.price} {it.qty && it.qty > 1 ? `(Qty: ${it.qty})` : ""}
+                                <div className="space-y-0.5">
+                                  <div className="flex items-center gap-2">
+                                    <span className="font-bold text-[#0B1A17]">{it.name}</span>
+                                    {it.date && (
+                                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EBF7F3] text-[#1B685C] font-medium border border-[#D3E2DD]">
+                                        📅 {it.date}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <span className="text-[11px] font-mono text-[#5E726C] block">
+                                    {it.qty && it.qty > 1 ? `${it.qty} × ₹${it.unitPrice || Math.round(it.price / it.qty)} = ` : ""}₹{it.price}
                                   </span>
                                 </div>
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveItem(it.id)}
                                   className="text-[#5E726C] hover:text-[#D6402B] p-1 cursor-pointer"
+                                  title="Delete item"
                                 >
                                   <Trash2 className="w-3.5 h-3.5" strokeWidth={2} />
                                 </button>
@@ -1455,28 +1474,66 @@ function SplitWizardContent() {
                             ))}
                           </div>
 
-                          {/* Add Item Row */}
-                          <div className="flex gap-2 pt-1">
-                            <Input
-                              placeholder="Item name (e.g. Milk, Pizza)"
-                              value={newItemName}
-                              onChange={(e) => setNewItemName(e.target.value)}
-                              className="h-9 text-[13px] rounded-[10px] border-[#D3E2DD] bg-white"
-                            />
-                            <Input
-                              placeholder="Price (₹)"
-                              type="number"
-                              value={newItemPrice}
-                              onChange={(e) => setNewItemPrice(e.target.value)}
-                              className="h-9 text-[13px] w-24 font-mono rounded-[10px] border-[#D3E2DD] bg-white"
-                            />
-                            <Button
-                              type="button"
-                              onClick={handleAddItem}
-                              className="h-9 bg-[#1B685C] hover:bg-[#145248] text-white text-[12px] px-4 rounded-full font-bold cursor-pointer"
-                            >
-                              Add
-                            </Button>
+                          {/* Add Item Form with Qty and Date */}
+                          <div className="p-3 rounded-[14px] bg-[#F4FAF8] border border-[#D3E2DD] space-y-2.5">
+                            <div className="text-[11px] font-bold uppercase tracking-wider text-[#1B685C]">
+                              Add Item
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-12 gap-2">
+                              <div className="sm:col-span-5">
+                                <label className="text-[10px] font-semibold text-[#5E726C] block mb-1">Item Name</label>
+                                <Input
+                                  placeholder="e.g. Patties, Schezwan sauce"
+                                  value={newItemName}
+                                  onChange={(e) => setNewItemName(e.target.value)}
+                                  className="h-9 text-[13px] rounded-[10px] border-[#D3E2DD] bg-white"
+                                />
+                              </div>
+                              <div className="sm:col-span-2">
+                                <label className="text-[10px] font-semibold text-[#5E726C] block mb-1">Qty</label>
+                                <Input
+                                  placeholder="Qty"
+                                  type="number"
+                                  min={1}
+                                  value={newItemQty}
+                                  onChange={(e) => setNewItemQty(e.target.value)}
+                                  className="h-9 text-[13px] font-mono rounded-[10px] border-[#D3E2DD] bg-white"
+                                />
+                              </div>
+                              <div className="sm:col-span-2">
+                                <label className="text-[10px] font-semibold text-[#5E726C] block mb-1">Price/Unit (₹)</label>
+                                <Input
+                                  placeholder="₹ Price"
+                                  type="number"
+                                  value={newItemPrice}
+                                  onChange={(e) => setNewItemPrice(e.target.value)}
+                                  className="h-9 text-[13px] font-mono rounded-[10px] border-[#D3E2DD] bg-white"
+                                />
+                              </div>
+                              <div className="sm:col-span-3">
+                                <label className="text-[10px] font-semibold text-[#5E726C] block mb-1">Date Bought</label>
+                                <Input
+                                  type="date"
+                                  value={newItemDate}
+                                  onChange={(e) => setNewItemDate(e.target.value)}
+                                  className="h-9 text-[11px] font-mono rounded-[10px] border-[#D3E2DD] bg-white px-2"
+                                />
+                              </div>
+                            </div>
+                            <div className="flex justify-between items-center pt-1">
+                              <span className="text-[11px] font-mono text-[#5E726C]">
+                                {newItemPrice && parseFloat(newItemPrice) > 0
+                                  ? `Subtotal: ₹${((parseFloat(newItemPrice) || 0) * (parseInt(newItemQty, 10) || 1)).toFixed(0)}`
+                                  : ""}
+                              </span>
+                              <Button
+                                type="button"
+                                onClick={handleAddItem}
+                                className="h-8 bg-[#1B685C] hover:bg-[#145248] text-white text-[12px] px-4 rounded-full font-bold cursor-pointer"
+                              >
+                                + Add Item
+                              </Button>
+                            </div>
                           </div>
                         </div>
                       )}
@@ -1711,7 +1768,13 @@ function SplitWizardContent() {
                           {items.map((it) => (
                             <div key={it.id} className="p-3.5 rounded-[12px] bg-white border border-[#D3E2DD] space-y-2 shadow-xs">
                               <div className="flex items-center justify-between text-[13px]">
-                                <span className="font-bold text-[#0B1A17]">{it.name}</span>
+                                <div>
+                                  <span className="font-bold text-[#0B1A17]">{it.name}</span>
+                                  <div className="text-[11px] font-mono text-[#5E726C]">
+                                    {it.qty && it.qty > 1 ? `${it.qty} × ₹${it.unitPrice || Math.round(it.price / it.qty)} ` : ""}
+                                    {it.date ? `• 📅 ${it.date}` : ""}
+                                  </div>
+                                </div>
                                 <span className="font-mono font-bold text-[#1B685C]">₹{it.price}</span>
                               </div>
 

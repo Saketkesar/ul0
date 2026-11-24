@@ -73,10 +73,10 @@ export function renderSplitActionPage(
     `<img src="/ul0split-logo-dark.png" alt="ul0.split" style="width:36px;height:36px;object-fit:contain;border-radius:50%;">`
   )
 
-  // 2. Replace footer with user requested "by ul0.site" branding
+  // 2. Replace footer with user requested "by [logo]" branding (no trailing text)
   html = html.replace(
     /<div class="foot">Made with 🫶 by <a href="https:\/\/ul0\.site">UL0<\/a> · ul0\.split &amp; Hisab<\/div>/g,
-    `<div class="foot">Made with 🫶 by <a href="https://ul0.site" style="color:#2F6159;font-weight:600;">UL0</a> · ul0.split &amp; Hisab · by <img src="/ul0.png" style="height:14px;width:auto;display:inline-block;vertical-align:middle;margin:0 4px;" alt="ul0.site" /> <a href="https://ul0.site" style="color:#2F6159;font-weight:600;">ul0.site</a></div>`
+    `<div class="foot">Made with 🫶 by <a href="https://ul0.site" style="color:#2F6159;font-weight:600;">UL0</a> · ul0.split &amp; Hisab · by <a href="https://ul0.site" target="_blank" rel="noopener noreferrer" style="display:inline-block;vertical-align:middle;margin:0 4px;"><img src="/ul0.png" style="height:14px;width:auto;display:inline-block;vertical-align:middle;" alt="UL0" /></a></div>`
   )
 
   // 3. Replace navigation links between pages

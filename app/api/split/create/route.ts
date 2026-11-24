@@ -208,7 +208,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid request body" }, { status: 400 })
     }
 
-    const { title, members, expenses, settlements, totalAmount } = body
+    const { title, members, expenses, settlements, totalAmount, items } = body as Record<string, unknown>
 
     // ---- VALIDATE TITLE ----
     const sanitizedTitle = sanitizeString(title as string, MAX_TITLE_LENGTH)
@@ -298,6 +298,50 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // ---- VALIDATE / SANITIZE ITEMS ----
+    const sanitizedItems: Array<{
+      id: string
+      name: string
+      price: number
+      qty?: number
+      unitPrice?: number
+      date?: string
+      sharedBy: string[]
+    }> = []
+
+    const itemsToProcess = Array.isArray(items) && items.length > 0
+      ? items
+      : (Array.isArray((sanitizedExpenses[0] as any)?.items) ? (sanitizedExpenses[0] as any).items : [])
+
+    if (Array.isArray(itemsToProcess)) {
+      for (const it of itemsToProcess) {
+        if (it && typeof it === "object") {
+          const itemObj = it as Record<string, unknown>
+          const rawName = typeof itemObj.name === "string" ? itemObj.name : typeof itemObj.title === "string" ? itemObj.title : ""
+          const cleanName = sanitizeString(rawName, 100)
+          if (!cleanName) continue
+
+          const rawPrice = typeof itemObj.price === "number" ? itemObj.price : typeof itemObj.amount === "number" ? itemObj.amount : parseFloat(String(itemObj.price || itemObj.amount)) || 0
+          const rawQty = typeof itemObj.qty === "number" ? itemObj.qty : typeof itemObj.quantity === "number" ? itemObj.quantity : parseInt(String(itemObj.qty || itemObj.quantity), 10) || 1
+          const rawUnitPrice = typeof itemObj.unitPrice === "number" ? itemObj.unitPrice : (rawQty > 0 ? Math.round((rawPrice / rawQty) * 100) / 100 : rawPrice)
+          const rawDate = typeof itemObj.date === "string" ? sanitizeString(itemObj.date, 20) : new Date().toISOString().split("T")[0]
+          const rawShared = Array.isArray(itemObj.sharedBy)
+            ? itemObj.sharedBy.filter((id) => typeof id === "string" && validMemberIds.has(id))
+            : Array.from(validMemberIds)
+
+          sanitizedItems.push({
+            id: typeof itemObj.id === "string" && itemObj.id ? sanitizeString(itemObj.id, 50) : `item-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+            name: cleanName,
+            price: Math.round(rawPrice * 100) / 100,
+            qty: rawQty,
+            unitPrice: Math.round(rawUnitPrice * 100) / 100,
+            date: rawDate,
+            sharedBy: rawShared.length > 0 ? rawShared : Array.from(validMemberIds),
+          })
+        }
+      }
+    }
+
     // ---- EXPIRY ----
     const expiryDays = typeof body.expiryDays === "number" && ALLOWED_EXPIRY_DAYS.includes(body.expiryDays)
       ? body.expiryDays
@@ -350,6 +394,7 @@ export async function POST(request: NextRequest) {
           currency: currencyCode,
           pay_by: payBy,
           collector_token_hash: collectorTokenHash,
+          items: sanitizedItems,
           banner_url: typeof body.bannerUrl === "string" ? body.bannerUrl : typeof body.banner_url === "string" ? body.banner_url : undefined,
           icon_url: typeof body.iconUrl === "string" ? body.iconUrl : typeof body.icon_url === "string" ? body.icon_url : undefined,
           group_id: typeof body.groupId === "string" ? body.groupId : typeof body.group_id === "string" ? body.group_id : undefined,

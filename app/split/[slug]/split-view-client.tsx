@@ -28,6 +28,17 @@ interface Expense {
   date?: string
   splitType: "equal" | "custom"
   splits: { memberId: string; amount: number }[]
+  items?: SplitItem[]
+}
+
+interface SplitItem {
+  id?: string
+  name: string
+  price: number
+  unitPrice?: number
+  qty?: number
+  date?: string
+  sharedBy?: string[]
 }
 
 interface Settlement {
@@ -59,6 +70,7 @@ interface SplitSession {
   members: Member[]
   expenses: Expense[]
   settlements?: Settlement[]
+  items?: SplitItem[]
 }
 
 interface SplitViewClientProps {
@@ -119,6 +131,15 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
     totalSettlementAmount > 0
       ? Math.round((settledAmount / totalSettlementAmount) * 100)
       : 100
+
+  // Items lookup
+  const splitItems: SplitItem[] = useMemo(() => {
+    if (Array.isArray(session.items) && session.items.length > 0) return session.items
+    if (Array.isArray(session.expenses?.[0]?.items) && session.expenses[0].items.length > 0) {
+      return session.expenses[0].items
+    }
+    return []
+  }, [session.items, session.expenses])
 
   // Member lookup
   const getMember = useCallback(
@@ -478,6 +499,63 @@ export function SplitViewClient({ session: initialSession, slug }: SplitViewClie
                 )
               })}
             </div>
+
+            {/* Item Breakdown (Item-wise Split) */}
+            {splitItems.length > 0 && (
+              <div className="space-y-3 pt-4 border-t border-dashed border-[#E4ECE8]">
+                <div className="flex items-center justify-between text-xs font-bold text-[#0B1A17]">
+                  <span className="flex items-center gap-1.5 uppercase tracking-wider text-[11px] text-[#5A6B66]">
+                    <UL0Icon name="splitbill" size={13} className="text-[#0B7A66]" />
+                    Item Breakdown ({splitItems.length})
+                  </span>
+                  <span className="font-mono text-[#0B7A66]">
+                    {formatAmount(splitItems.reduce((acc, it) => acc + (it.price || 0), 0))}
+                  </span>
+                </div>
+
+                <div className="space-y-2">
+                  {splitItems.map((item, idx) => {
+                    const sharedMemberNames = Array.isArray(item.sharedBy)
+                      ? item.sharedBy
+                          .map((mId) => getMember(mId)?.name)
+                          .filter(Boolean)
+                      : []
+
+                    return (
+                      <div
+                        key={item.id || idx}
+                        className="p-3 rounded-xl bg-[#F7FAF8] border border-[#E4ECE8] flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-bold text-[#0B1A17] text-[13px]">{item.name}</span>
+                            {item.date && (
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white border border-[#D5E0DB] text-[#5A6B66]">
+                                📅 {item.date}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-[11px] text-[#5A6B66] flex-wrap">
+                            {item.qty && item.qty > 1 && (
+                              <span className="font-mono">
+                                {item.qty} pcs @ ₹{item.unitPrice || Math.round((item.price || 0) / item.qty)}
+                              </span>
+                            )}
+                            {sharedMemberNames.length > 0 && (
+                              <span>• Shared by {sharedMemberNames.join(", ")}</span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="font-mono font-bold text-sm text-[#0B1A17] self-end sm:self-center">
+                          {formatAmount(item.price)}
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Trust and Safety note */}
             <div className="pt-3 border-t border-dashed border-[#E4ECE8] text-center text-[11px] text-[#5A6B66] flex items-center justify-center gap-1.5">

@@ -48,6 +48,7 @@ export interface SplitSessionDoc {
   last_activity_at: string | null
   charges: string | null
   items_json: string | null
+  items?: string | null
   status: string
   group_id: string | null
   banner_url?: string | null
@@ -166,8 +167,8 @@ function inflate(doc: SplitSessionDoc): SplitSession {
     pay_by: doc.pay_by || null,
     collector_token_hash: doc.collector_token_hash || null,
     last_activity_at: doc.last_activity_at || null,
-    charges: safeJsonParse(doc.charges, {}) as Record<string, unknown>,
-    items: safeJsonParse(doc.items_json, []) as unknown[],
+    charges: safeJsonParse((doc as any).charges, {}) as Record<string, unknown>,
+    items: safeJsonParse((doc as any).items || doc.items_json, []) as unknown[],
     status: doc.status || "active",
     group_id: doc.group_id || null,
     banner_url: doc.banner_url || null,

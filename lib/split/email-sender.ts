@@ -5,9 +5,9 @@ const SENDER_PASSWORD = (process.env.SENDER_PASSWORD || "").trim()
 const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com"
 const SMTP_PORT = Number(process.env.SMTP_PORT || 587)
 
-let transporter: nodemailer.Transporter | null = null
+let transporter: any = null
 
-function getTransporter(): nodemailer.Transporter {
+function getTransporter(): any {
   if (!transporter) {
     transporter = nodemailer.createTransport({
       host: SMTP_HOST,

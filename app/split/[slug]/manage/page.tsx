@@ -112,6 +112,16 @@ export default function SplitManagePage() {
     (s) => s.status === "unpaid" && !s.paid && !s.verified
   ).length
 
+  // Items lookup
+  const splitItems = useMemo(() => {
+    if (!session) return []
+    if (Array.isArray(session.items) && session.items.length > 0) return session.items
+    if (Array.isArray(session.expenses?.[0]?.items) && session.expenses[0].items.length > 0) {
+      return session.expenses[0].items
+    }
+    return []
+  }, [session])
+
   // Friend name helper
   const getMemberName = (id: string): string => {
     const m = session?.members?.find((item: any) => item.id === id)
@@ -530,6 +540,58 @@ export default function SplitManagePage() {
                         >
                           Undo
                         </button>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Item Breakdown (Item-wise Split & Dates) */}
+            {splitItems.length > 0 && (
+              <div className="space-y-3">
+                <div className="flex items-center justify-between px-1">
+                  <h2 className="text-xs font-bold text-[#1B685C] uppercase tracking-wider flex items-center gap-1.5">
+                    <UL0Icon name="splitbill" size={14} className="text-[#1B685C]" />
+                    Item Breakdown ({splitItems.length})
+                  </h2>
+                  <span className="font-mono text-xs font-bold text-[#1B685C]">
+                    Total: ₹{splitItems.reduce((acc: number, it: any) => acc + (it.price || 0), 0).toFixed(2)}
+                  </span>
+                </div>
+
+                <div className="rounded-2xl border border-[#E4ECE8] bg-white divide-y divide-[#E4ECE8] overflow-hidden shadow-xs">
+                  {splitItems.map((item: any, idx: number) => {
+                    const sharedMemberNames = Array.isArray(item.sharedBy)
+                      ? item.sharedBy.map((mId: string) => getMemberName(mId)).filter(Boolean)
+                      : []
+
+                    return (
+                      <div key={item.id || idx} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs bg-white">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="font-bold text-sm text-[#0B1A17]">{item.name}</span>
+                            {item.date && (
+                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EBF7F3] border border-[#D3E2DD] text-[#1B685C] font-semibold">
+                                📅 Bought on: {item.date}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 text-[11px] text-[#5A6B66] flex-wrap">
+                            {item.qty && item.qty > 1 && (
+                              <span className="font-mono font-medium">
+                                {item.qty} pcs @ ₹{item.unitPrice || Math.round((item.price || 0) / item.qty)}
+                              </span>
+                            )}
+                            {sharedMemberNames.length > 0 && (
+                              <span>• Shared with: {sharedMemberNames.join(", ")}</span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="font-mono font-bold text-sm text-[#0B1A17] self-end sm:self-center">
+                          ₹{(item.price || 0).toFixed(2)}
+                        </div>
                       </div>
                     )
                   })}
