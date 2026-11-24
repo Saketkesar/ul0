@@ -169,7 +169,8 @@ export function DashboardShell({
       group: "Main",
       items: [
         { name: "Overview", href: "/dashboard", icon: "dashboard" },
-        { name: "Links", href: "/dashboard/links", icon: "link" },
+        { name: "Manage Links", href: "/dashboard/links", icon: "link" },
+        { name: "Split Bills", href: "/split/dashboard", icon: "splitbill" },
         { name: "QR Codes", href: "/dashboard/qr-studio", icon: "qr" },
         { name: "Domains", href: "/dashboard/domains", icon: "domain" },
         { name: "Campaigns", href: "/dashboard/campaigns", icon: "campaign" },

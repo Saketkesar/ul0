@@ -1454,7 +1454,7 @@ function SplitWizardContent() {
                                     <span className="font-bold text-[#0B1A17]">{it.name}</span>
                                     {it.date && (
                                       <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#EBF7F3] text-[#1B685C] font-medium border border-[#D3E2DD]">
-                                        📅 {it.date}
+                                        {it.date}
                                       </span>
                                     )}
                                   </div>
@@ -1772,7 +1772,7 @@ function SplitWizardContent() {
                                   <span className="font-bold text-[#0B1A17]">{it.name}</span>
                                   <div className="text-[11px] font-mono text-[#5E726C]">
                                     {it.qty && it.qty > 1 ? `${it.qty} × ₹${it.unitPrice || Math.round(it.price / it.qty)} ` : ""}
-                                    {it.date ? `• 📅 ${it.date}` : ""}
+                                    {it.date ? `• ${it.date}` : ""}
                                   </div>
                                 </div>
                                 <span className="font-mono font-bold text-[#1B685C]">₹{it.price}</span>

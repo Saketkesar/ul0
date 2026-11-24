@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server"
 import { renderEmail } from "@/lib/split/email-templates"
 import { logEventToSheet } from "@/lib/split/sheet-logger"
 import { sendEmailDirect } from "@/lib/split/email-sender"
+import { checkRateLimit, getClientIP } from "@/lib/utils/rate-limit"
 
 const PELLA_BOT_URL = process.env.PELLA_BOT_URL || process.env.REMINDER_BOT_URL || "http://fi17.bot-hosting.cloud:25733"
 const BOT_API_KEY = process.env.BOT_API_KEY || "ul0_pella_live_sec_key_2026"
@@ -10,8 +11,11 @@ const BOT_API_KEY = process.env.BOT_API_KEY || "ul0_pella_live_sec_key_2026"
 export async function POST(request: NextRequest) {
   try {
     const { userId } = await auth()
-    if (!userId) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    const clientIP = getClientIP(request)
+    const rateLimitKey = userId ? `notify:onboarding:user:${userId}` : `notify:onboarding:ip:${clientIP}`
+    const rateLimit = await checkRateLimit(rateLimitKey, { windowMs: 60000, maxRequests: 5 })
+    if (!rateLimit.allowed) {
+      return NextResponse.json({ error: "Too many requests. Please wait." }, { status: 429 })
     }
 
     const body = await request.json()

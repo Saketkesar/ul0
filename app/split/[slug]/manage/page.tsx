@@ -128,6 +128,103 @@ export default function SplitManagePage() {
     return m?.name || "Friend"
   }
 
+  // Date grouped items with sharing calculations
+  const dateGroupedItems = useMemo(() => {
+    if (splitItems.length === 0 || !session?.members) return []
+
+    const collectorId = settlements[0]?.to || session.members[0]?.id
+    const totalMembers = session.members.length
+
+    const groupsMap = new Map<string, { rawDate: string; displayDate: string; items: any[]; dateTotal: number }>()
+
+    for (const item of splitItems) {
+      const rawDate = item.date || "undated"
+      let displayDate = "Undated"
+      if (item.date) {
+        try {
+          const parsed = new Date(item.date)
+          if (!isNaN(parsed.getTime())) {
+            displayDate = parsed.toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })
+          } else {
+            displayDate = item.date
+          }
+        } catch {
+          displayDate = item.date
+        }
+      }
+
+      const sharedIds = Array.isArray(item.sharedBy) && item.sharedBy.length > 0
+        ? item.sharedBy
+        : session.members.map((m: any) => m.id)
+      const count = sharedIds.length
+      const price = item.price || 0
+      const perPerson = count > 0 ? Math.round((price / count) * 100) / 100 : price
+
+      let shareType: "both" | "all" | "single" | "custom" = "custom"
+      let shareBadgeText = ""
+      let shareBadgeColor = ""
+      let payerBreakdown = ""
+
+      if (count === 1) {
+        shareType = "single"
+        const singleMember = session.members.find((m: any) => m.id === sharedIds[0])
+        const singleName = singleMember?.name || "Friend"
+        shareBadgeText = "Single share"
+        shareBadgeColor = "bg-[#FEF7EC] text-[#B57C00] border-[#F2B544]/30"
+        if (singleMember?.id === collectorId) {
+          payerBreakdown = `Paid by organizer (${singleName})`
+        } else {
+          payerBreakdown = `${singleName} pays all · owes full ₹${price.toFixed(2)}`
+        }
+      } else if (count === 2 && totalMembers === 2) {
+        shareType = "both"
+        shareBadgeText = "Both share"
+        shareBadgeColor = "bg-[#DDF5EE] text-[#0B7A66] border-[#3DDBB8]/40"
+        const friend = session.members.find((m: any) => m.id !== collectorId)
+        payerBreakdown = `${friend?.name || "Friend"} owes ₹${perPerson.toFixed(2)} (₹${perPerson.toFixed(2)} each)`
+      } else if (count === totalMembers) {
+        shareType = "all"
+        shareBadgeText = `All share (${count})`
+        shareBadgeColor = "bg-[#EAF1EE] text-[#1B685C] border-[#D5E0DB]"
+        payerBreakdown = `Each member owes ₹${perPerson.toFixed(2)}`
+      } else {
+        shareType = "custom"
+        shareBadgeText = `Shared by ${count} of ${totalMembers}`
+        shareBadgeColor = "bg-[#EAF1EE] text-[#5A6B66] border-[#D5E0DB]"
+        const friendNames = sharedIds.filter((id: string) => id !== collectorId).map((id: string) => getMemberName(id)).filter(Boolean)
+        payerBreakdown = friendNames.length > 0
+          ? `${friendNames.join(", ")} each owe ₹${perPerson.toFixed(2)}`
+          : `Organizer paid full ₹${price.toFixed(2)}`
+      }
+
+      if (!groupsMap.has(rawDate)) {
+        groupsMap.set(rawDate, {
+          rawDate,
+          displayDate,
+          items: [],
+          dateTotal: 0,
+        })
+      }
+
+      const group = groupsMap.get(rawDate)!
+      group.items.push({
+        item,
+        shareType,
+        shareBadgeText,
+        shareBadgeColor,
+        perPerson,
+        payerBreakdown,
+      })
+      group.dateTotal += price
+    }
+
+    return Array.from(groupsMap.values())
+  }, [splitItems, session, settlements])
+
   // Confirm or reject settlement
   const handleConfirm = async (index: number, confirmed: boolean) => {
     try {
@@ -547,54 +644,67 @@ export default function SplitManagePage() {
               </div>
             )}
 
-            {/* Item Breakdown (Item-wise Split & Dates) */}
-            {splitItems.length > 0 && (
-              <div className="space-y-3">
+            {/* Item Breakdown (Date-wise & Share Breakdown) */}
+            {dateGroupedItems.length > 0 && (
+              <div className="space-y-4">
                 <div className="flex items-center justify-between px-1">
                   <h2 className="text-xs font-bold text-[#1B685C] uppercase tracking-wider flex items-center gap-1.5">
                     <UL0Icon name="splitbill" size={14} className="text-[#1B685C]" />
-                    Item Breakdown ({splitItems.length})
+                    Date-wise Item Breakdown ({splitItems.length} items)
                   </h2>
                   <span className="font-mono text-xs font-bold text-[#1B685C]">
                     Total: ₹{splitItems.reduce((acc: number, it: any) => acc + (it.price || 0), 0).toFixed(2)}
                   </span>
                 </div>
 
-                <div className="rounded-2xl border border-[#E4ECE8] bg-white divide-y divide-[#E4ECE8] overflow-hidden shadow-xs">
-                  {splitItems.map((item: any, idx: number) => {
-                    const sharedMemberNames = Array.isArray(item.sharedBy)
-                      ? item.sharedBy.map((mId: string) => getMemberName(mId)).filter(Boolean)
-                      : []
-
-                    return (
-                      <div key={item.id || idx} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs bg-white">
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <span className="font-bold text-sm text-[#0B1A17]">{item.name}</span>
-                            {item.date && (
-                              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#EBF7F3] border border-[#D3E2DD] text-[#1B685C] font-semibold">
-                                📅 Bought on: {item.date}
-                              </span>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-2 text-[11px] text-[#5A6B66] flex-wrap">
-                            {item.qty && item.qty > 1 && (
-                              <span className="font-mono font-medium">
-                                {item.qty} pcs @ ₹{item.unitPrice || Math.round((item.price || 0) / item.qty)}
-                              </span>
-                            )}
-                            {sharedMemberNames.length > 0 && (
-                              <span>• Shared with: {sharedMemberNames.join(", ")}</span>
-                            )}
-                          </div>
+                <div className="space-y-4">
+                  {dateGroupedItems.map((group, gIdx) => (
+                    <div key={group.rawDate || gIdx} className="space-y-2">
+                      <div className="flex items-center justify-between text-[11px] font-semibold text-[#5A6B66] px-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#0B7A66]"></span>
+                          <span className="font-bold text-[#0B1A17]">{group.displayDate}</span>
+                          <span>• {group.items.length} {group.items.length === 1 ? "item" : "items"}</span>
                         </div>
-
-                        <div className="font-mono font-bold text-sm text-[#0B1A17] self-end sm:self-center">
-                          ₹{(item.price || 0).toFixed(2)}
-                        </div>
+                        <span className="font-mono text-[#0B7A66] font-bold">
+                          Subtotal: ₹{group.dateTotal.toFixed(2)}
+                        </span>
                       </div>
-                    )
-                  })}
+
+                      <div className="rounded-2xl border border-[#E4ECE8] bg-white divide-y divide-[#E4ECE8] overflow-hidden shadow-xs">
+                        {group.items.map(({ item, shareBadgeText, shareBadgeColor, perPerson, payerBreakdown }: any, idx: number) => (
+                          <div key={item.id || idx} className="p-4 space-y-2 text-xs bg-white">
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="space-y-0.5">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <span className="font-bold text-sm text-[#0B1A17]">{item.name}</span>
+                                  <span className={`text-[10px] px-2 py-0.5 rounded-full border font-semibold ${shareBadgeColor}`}>
+                                    {shareBadgeText}
+                                  </span>
+                                </div>
+                                {item.qty && item.qty > 1 && (
+                                  <span className="text-[11px] font-mono text-[#5A6B66] block">
+                                    {item.qty} pcs @ ₹{item.unitPrice || Math.round((item.price || 0) / item.qty)}
+                                  </span>
+                                )}
+                              </div>
+                              <div className="font-mono font-bold text-sm text-[#0B1A17] shrink-0">
+                                ₹{(item.price || 0).toFixed(2)}
+                              </div>
+                            </div>
+
+                            {/* Who has to pay & share breakdown */}
+                            <div className="pt-2 border-t border-[#E4ECE8]/60 flex flex-wrap items-center justify-between gap-1.5 text-[11px]">
+                              <span className="text-[#5A6B66]">{payerBreakdown}</span>
+                              <span className="font-mono font-semibold text-[#0B7A66]">
+                                ₹{perPerson.toFixed(2)} / person
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
