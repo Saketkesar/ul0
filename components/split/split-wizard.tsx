@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useId, useMemo, useRef, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { useUser } from "@clerk/nextjs"
+import { useUser, useClerk } from "@clerk/nextjs"
 import QRCode from "qrcode"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
@@ -30,6 +30,8 @@ import {
   ExternalLink,
   ChevronRight,
   Sparkles,
+  Send,
+  Mail,
 } from "lucide-react"
 import {
   CATEGORY_PRESETS,
@@ -40,6 +42,8 @@ import {
 } from "./split-constants"
 import { scanReceiptWithTesseract } from "@/lib/split/receipt-ocr"
 import { GunGame } from "./gun-game"
+import { SplitOnboardingModal } from "./split-onboarding-modal"
+import { SplitCoverUploadModal } from "./split-cover-upload-modal"
 
 interface Friend {
   id: string
@@ -47,6 +51,8 @@ interface Friend {
   customAmount?: number
   percent?: number
   shares?: number
+  email?: string
+  telegram?: string
 }
 
 interface ItemEntry {
@@ -78,9 +84,14 @@ export function SplitWizard() {
 function SplitWizardContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const { user } = useUser()
+  const { openSignIn } = useClerk()
+  const { isSignedIn, user } = useUser()
   const baseId = useId()
   const collectorId = `collector-${baseId}`
+
+  // Onboarding & Cover Modal state
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(false)
+  const [showCoverModal, setShowCoverModal] = useState<boolean>(false)
 
   // Step state: 0 = Dashboard, 1 = "How much?", 2 = "Who's in?", 3 = "Split it", 4 = "Looks right?"
   const [step, setStep] = useState<number>(0)
@@ -101,7 +112,14 @@ function SplitWizardContent() {
   // Friends - initialized empty, no hardcoded personal friends
   const [friends, setFriends] = useState<Friend[]>([])
   const [friendInput, setFriendInput] = useState<string>("")
+  const [friendEmail, setFriendEmail] = useState<string>("")
+  const [friendTelegram, setFriendTelegram] = useState<string>("")
+  const [showFriendContactInputs, setShowFriendContactInputs] = useState<boolean>(false)
   const [includeCollector, setIncludeCollector] = useState<boolean>(true)
+
+  // 24-hour reminder state
+  const [isSendingManualReminder, setIsSendingManualReminder] = useState<boolean>(false)
+  const [hasSentReminderToday, setHasSentReminderToday] = useState<boolean>(false)
 
   // Split mode
   const [splitMode, setSplitMode] = useState<SplitMode>("equal")
@@ -292,10 +310,14 @@ function SplitWizardContent() {
       name,
       shares: 1,
       percent: 0,
+      email: rawNames.length === 1 && friendEmail.trim() ? friendEmail.trim() : undefined,
+      telegram: rawNames.length === 1 && friendTelegram.trim() ? friendTelegram.trim() : undefined,
     }))
 
     setFriends((prev) => [...prev, ...newFriends])
     setFriendInput("")
+    setFriendEmail("")
+    setFriendTelegram("")
   }
 
   const handleRemoveFriend = (id: string) => {
@@ -534,13 +556,27 @@ function SplitWizardContent() {
 
   // Create Split Session API Call
   const handleCreateSplit = async () => {
+    if (!isSignedIn) {
+      toast.info("Please sign in to create and manage your splits.")
+      openSignIn()
+      return
+    }
+
+    try {
+      const onboarded = localStorage.getItem("ul0_split_onboarding_v1")
+      if (!onboarded || !collectorUpi) {
+        setShowOnboarding(true)
+        return
+      }
+    } catch {}
+
     const cleanTitle = title.trim() || `${category} Split`
-    const cleanCollectorName = collectorName.trim() || "Organizer"
+    const cleanCollectorName = collectorName.trim() || user?.fullName || user?.firstName || "Organizer"
     const cleanCollectorUpi = collectorUpi.trim().toLowerCase()
 
     if (!cleanCollectorUpi) {
       toast.error("Please enter your UPI ID so friends can pay you directly")
-      setIsEditingCollector(true)
+      setShowOnboarding(true)
       return
     }
 
@@ -572,6 +608,8 @@ function SplitWizardContent() {
         ...friends.map((f) => ({
           id: f.id,
           name: f.name.trim(),
+          email: f.email,
+          telegram: f.telegram,
           isCollector: false,
         })),
       ]
@@ -679,11 +717,77 @@ function SplitWizardContent() {
       })
       setQrCodeData(qr)
 
+      // Trigger split-created notification email to creator & members in background
+      fetch("/api/notify/split-created", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: data.slug,
+          title: cleanTitle,
+          totalAmount: Math.round(calculatedTotal * 100) / 100,
+          collectorName: cleanCollectorName,
+          collectorEmail: user?.primaryEmailAddress?.emailAddress,
+          collectorUpi: cleanCollectorUpi,
+          manageUrl: `${window.location.origin}/split/${data.slug}/manage?token=${data.collectorToken}`,
+          settleUrl,
+          members: [
+            ...(includeCollector ? [{ name: cleanCollectorName, amount: collectorShare, isCollector: true }] : []),
+            ...friends.map((f) => ({
+              name: f.name.trim(),
+              amount: friendShares[f.id] || 0,
+              email: f.email,
+              telegram: f.telegram,
+              isCollector: false,
+            })),
+          ],
+        }),
+      }).catch(() => {})
+
       toast.success("Split created! Share link with friends.")
     } catch (err: any) {
       toast.error(err.message || "Failed to create split")
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  // 1-Click Telegram & Email Manual Reminder with 24-hr cooldown
+  const handleSendManualReminder = async (friendId?: string) => {
+    if (!createdSlug) return
+    setIsSendingManualReminder(true)
+
+    try {
+      const targetFriend = friendId ? friends.find((f) => f.id === friendId) : friends[0]
+      const memberId = targetFriend?.id || "first-member"
+
+      const res = await fetch("/api/notify/split-reminder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug: createdSlug,
+          memberId: memberId,
+          memberName: targetFriend?.name || "Friend",
+          collectorName: collectorName || "Organizer",
+          amount: targetFriend ? (friendShares[targetFriend.id] || 0) : calculatedTotal,
+          title: title || `${category} bill`,
+          email: targetFriend?.email,
+          telegram: targetFriend?.telegram,
+          settleUrl,
+          isManual: true,
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to send reminder")
+      }
+
+      setHasSentReminderToday(true)
+      toast.success("Reminder dispatched via Telegram & Email!")
+    } catch (err: any) {
+      toast.error(err.message || "Could not send reminder.")
+    } finally {
+      setIsSendingManualReminder(false)
     }
   }
 
@@ -876,7 +980,19 @@ function SplitWizardContent() {
                       <QrCode className="w-5 h-5 text-[#1B685C]" strokeWidth={2} />
                     </button>
                     <Button
-                      onClick={() => setStep(1)}
+                      onClick={() => {
+                        if (!isSignedIn) {
+                          toast.info("Please sign in to create a split.")
+                          openSignIn()
+                          return
+                        }
+                        const savedOnboard = typeof window !== "undefined" ? localStorage.getItem("ul0_split_onboarding_v1") : null
+                        if (!savedOnboard && !collectorUpi) {
+                          setShowOnboarding(true)
+                          return
+                        }
+                        setStep(1)
+                      }}
                       className="bg-[#1B685C] hover:bg-[#145248] text-white text-[13px] h-10 px-5 rounded-full font-bold flex items-center gap-1.5 cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-sm"
                     >
                       <Plus className="w-4 h-4" strokeWidth={2.5} />
@@ -901,7 +1017,19 @@ function SplitWizardContent() {
 
                     <div className="pt-2">
                       <Button
-                        onClick={() => setStep(1)}
+                        onClick={() => {
+                          if (!isSignedIn) {
+                            toast.info("Please sign in to create a split.")
+                            openSignIn()
+                            return
+                          }
+                          const savedOnboard = typeof window !== "undefined" ? localStorage.getItem("ul0_split_onboarding_v1") : null
+                          if (!savedOnboard && !collectorUpi) {
+                            setShowOnboarding(true)
+                            return
+                          }
+                          setStep(1)
+                        }}
                         className="bg-[#1B685C] hover:bg-[#145248] text-white text-[13px] h-11 px-7 rounded-full font-bold cursor-pointer transition-transform hover:scale-105 active:scale-95 shadow-md"
                       >
                         Create your first split →
@@ -1091,6 +1219,13 @@ function SplitWizardContent() {
                           className="w-full text-4xl sm:text-5xl font-bold font-mono text-[#0B1A17] bg-transparent focus:outline-none tracking-tight"
                           autoFocus
                         />
+                      </div>
+
+                      {/* Doodle Arrow Guide */}
+                      <div className="flex items-center gap-2 text-[12px] font-mono text-[#1B685C] font-bold mt-2">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/arrows/svg/teal/curly-up-a.svg" alt="" className="w-5 h-5 -rotate-90 inline-block" />
+                        <span>Type total bill or scan receipt photo</span>
                       </div>
 
                       {/* Quick Amount Pills */}
@@ -1339,7 +1474,17 @@ function SplitWizardContent() {
 
                     {/* Friends Input */}
                     <div className="space-y-2.5">
-                      <Label className="text-[13px] font-bold text-[#0B1A17]">Add friends</Label>
+                      <div className="flex items-center justify-between">
+                        <Label className="text-[13px] font-bold text-[#0B1A17]">Add friends</Label>
+                        <button
+                          type="button"
+                          onClick={() => setShowFriendContactInputs(!showFriendContactInputs)}
+                          className="text-[12px] text-[#1B685C] font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                        >
+                          <span>{showFriendContactInputs ? "− Hide Telegram & Email" : "+ Add friend's Telegram/Email"}</span>
+                        </button>
+                      </div>
+
                       <div className="flex gap-2">
                         <Input
                           value={friendInput}
@@ -1362,6 +1507,36 @@ function SplitWizardContent() {
                         </Button>
                       </div>
 
+                      {showFriendContactInputs && (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 rounded-[12px] bg-[#F4FAF8] border border-[#D3E2DD] animate-in fade-in duration-150">
+                          <div>
+                            <Label className="text-[11px] font-bold text-[#0B1A17]">Telegram (Chat ID or @handle)</Label>
+                            <Input
+                              value={friendTelegram}
+                              onChange={(e) => setFriendTelegram(e.target.value)}
+                              placeholder="@username"
+                              className="h-8 text-[12px] font-mono rounded-[8px] border-[#D3E2DD] bg-white mt-1"
+                            />
+                          </div>
+                          <div>
+                            <Label className="text-[11px] font-bold text-[#0B1A17]">Email (for instant notification)</Label>
+                            <Input
+                              value={friendEmail}
+                              onChange={(e) => setFriendEmail(e.target.value)}
+                              placeholder="friend@example.com"
+                              className="h-8 text-[12px] font-mono rounded-[8px] border-[#D3E2DD] bg-white mt-1"
+                            />
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Doodle Arrow Guide */}
+                      <div className="flex items-center gap-2 text-[12px] font-mono text-[#1B685C] font-bold">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/arrows/svg/teal/curved-down-right-a.svg" alt="" className="w-5 h-5 inline-block" />
+                        <span>Add group members — zero app downloads needed to pay</span>
+                      </div>
+
                       {/* Friend chips */}
                       <div className="min-h-[50px] pt-1">
                         {friends.length > 0 ? (
@@ -1372,6 +1547,16 @@ function SplitWizardContent() {
                                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#DDF5EE] border border-[#D3E2DD] text-[13px] font-medium text-[#0B1A17]"
                               >
                                 <span>{f.name}</span>
+                                {f.telegram && (
+                                  <span className="text-[10px] bg-[#1B685C] text-white px-1.5 py-0.2 rounded-full font-mono">
+                                    TG
+                                  </span>
+                                )}
+                                {f.email && (
+                                  <span className="text-[10px] bg-[#0B1A17] text-white px-1.5 py-0.2 rounded-full font-mono">
+                                    @
+                                  </span>
+                                )}
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveFriend(f.id)}
@@ -1432,6 +1617,13 @@ function SplitWizardContent() {
                           {mode === "percent" ? "%" : mode}
                         </button>
                       ))}
+                    </div>
+
+                    {/* Doodle Arrow Guide */}
+                    <div className="flex items-center gap-2 text-[12px] font-mono text-[#1B685C] font-bold">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src="/arrows/svg/teal/dashed-right.svg" alt="" className="w-5 h-5 inline-block" />
+                      <span>Evenly split or custom weights — auto-rounded to 0 extra paise</span>
                     </div>
 
                     {/* Itemized Member Assignment Chips */}
@@ -1639,14 +1831,11 @@ function SplitWizardContent() {
                       />
                     </div>
 
-                    {/* Auto-remind if unpaid PRO */}
+                    {/* Auto-remind if unpaid */}
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Bell className="w-3.5 h-3.5 text-[#1B685C]" strokeWidth={2} />
                         <span className="text-[13px] font-bold text-[#0B1A17]">Auto-remind if unpaid</span>
-                        <span className="px-2 py-0.5 rounded-full bg-[#1B685C] font-mono text-[9px] font-bold text-[#3DDBB8] tracking-wider">
-                          PRO
-                        </span>
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {[
@@ -1705,23 +1894,18 @@ function SplitWizardContent() {
                     <div className="p-4 rounded-[16px] border border-[#D3E2DD] bg-[#F4FAF8] space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-[13px] font-bold text-[#0B1A17]">Cover Image (optional)</span>
-                        <span className="text-[11px] font-mono text-[#1B685C] font-bold">Free upload</span>
+                        <span className="text-[11px] font-mono text-[#1B685C] font-bold">Free via FreeImage.host</span>
                       </div>
-                      <label className="flex items-center justify-center gap-2 p-3 rounded-[12px] border border-dashed border-[#D3E2DD] bg-white hover:bg-[#DDF5EE] cursor-pointer text-[12px] font-bold text-[#0B1A17] transition-colors">
+                      <button
+                        type="button"
+                        onClick={() => setShowCoverModal(true)}
+                        className="w-full flex items-center justify-center gap-2 p-3 rounded-[12px] border border-dashed border-[#D3E2DD] bg-white hover:bg-[#DDF5EE] cursor-pointer text-[12px] font-bold text-[#0B1A17] transition-colors"
+                      >
                         <Upload className="w-3.5 h-3.5 text-[#1B685C]" strokeWidth={2} />
                         <span>
-                          {isUploadingBanner ? "Uploading image..." : bannerUrl ? "Change Image" : "Upload cover backdrop"}
+                          {bannerUrl ? "Change Cover Image" : "Upload cover backdrop (FreeImage.host)"}
                         </span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) => {
-                            const f = e.target.files?.[0]
-                            if (f) handleBannerUpload(f)
-                          }}
-                        />
-                      </label>
+                      </button>
                       {bannerUrl && (
                         <p className="text-[11px] text-[#1B685C] font-bold">
                           ✓ Cover attached and will show at the top of the settle page.
@@ -1738,6 +1922,13 @@ function SplitWizardContent() {
                       >
                         {isSubmitting ? "Generating split link..." : "Create split link →"}
                       </Button>
+
+                      {/* Doodle Arrow Guide */}
+                      <div className="flex items-center justify-center gap-2 text-[12px] font-mono text-[#1B685C] font-bold mt-2.5">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/arrows/svg/teal/curly-up-a.svg" alt="" className="w-5 h-5 inline-block" />
+                        <span>Direct bank-to-bank UPI · Zero fees</span>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -1931,6 +2122,34 @@ function SplitWizardContent() {
               <span>Share on WhatsApp</span>
             </a>
 
+            {/* 1-Click Telegram & Email Manual Reminder (Strict 24h limit) */}
+            <div className="p-3 bg-[#F4FAF8] rounded-[16px] border border-[#D3E2DD] space-y-1.5">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-[#0B1A17] flex items-center gap-1.5">
+                  <Send className="w-3.5 h-3.5 text-[#1B685C]" strokeWidth={2} />
+                  <span>Telegram &amp; Email Reminder</span>
+                </span>
+                <span className="text-[10px] font-mono text-[#5E726C] bg-white px-2 py-0.5 rounded border border-[#D3E2DD]">
+                  1 send / 24 hrs
+                </span>
+              </div>
+              <p className="text-[11px] text-[#5E726C] leading-snug">
+                Dispatches instant reminder to all friends via Pella bot.
+              </p>
+              <Button
+                type="button"
+                onClick={() => handleSendManualReminder()}
+                disabled={isSendingManualReminder || hasSentReminderToday}
+                className="w-full h-9 rounded-full bg-[#1B685C] hover:bg-[#145248] text-white text-xs font-bold transition-all disabled:opacity-50 cursor-pointer mt-1"
+              >
+                {isSendingManualReminder
+                  ? "Dispatching..."
+                  : hasSentReminderToday
+                  ? "✓ Reminder sent (available in 24 hrs)"
+                  : "Send 1-Click Reminder Now"}
+              </Button>
+            </div>
+
             {/* Action Buttons */}
             <div className="grid grid-cols-2 gap-2.5 pt-1">
               <Button
@@ -1950,6 +2169,26 @@ function SplitWizardContent() {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Split Onboarding Modal */}
+      <SplitOnboardingModal
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
+        onSave={(profile) => {
+          setCollectorName(profile.name)
+          setCollectorUpi(profile.upiId)
+          setHasSavedCollector(true)
+          if (step === 0) setStep(1)
+        }}
+      />
+
+      {/* FreeImage.host Cover Upload Modal */}
+      <SplitCoverUploadModal
+        isOpen={showCoverModal}
+        onClose={() => setShowCoverModal(false)}
+        onUploaded={(url) => setBannerUrl(url)}
+        currentUrl={bannerUrl}
+      />
     </div>
   )
 }

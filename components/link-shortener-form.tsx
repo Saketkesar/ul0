@@ -29,6 +29,25 @@ export function LinkShortenerForm() {
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<CreatedLinkResult | null>(null)
   const [copied, setCopied] = useState(false)
+  const [faviconError, setFaviconError] = useState(false)
+
+  // Extract domain for instant favicon detection
+  const detectedDomain = React.useMemo(() => {
+    try {
+      const trimmed = longUrl.trim()
+      if (!trimmed || trimmed.length < 3) return null
+      const withProto = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+      const u = new URL(withProto)
+      if (u.hostname && u.hostname.includes(".")) {
+        return u.hostname
+      }
+    } catch {}
+    return null
+  }, [longUrl])
+
+  useEffect(() => {
+    setFaviconError(false)
+  }, [detectedDomain])
 
   useEffect(() => {
     const handler = (e: any) => {
@@ -200,17 +219,27 @@ export function LinkShortenerForm() {
 
           {/* Form Content */}
           <form onSubmit={handleSubmit} className="pt-5 space-y-4">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-                {activeTab === "link" ? "Shorten a URL" : "Generate a QR Code"}
-              </h2>
-              <label className="block text-xs sm:text-sm font-medium text-muted-foreground mt-1.5">
-                {activeTab === "link" ? "Enter your URL destination" : "Enter destination URL or content"}
-              </label>
-            </div>
+            {/* Shortener Bar from media_1795507655990_4beaca73.png:
+                Sleek rounded-full pill with mint border, instant favicon on left, input, Paste button, divider, and Electric Mint Shorten button */}
+            <div className="relative flex items-center w-full rounded-full border-2 border-[#3DDBB8] bg-white dark:bg-[#0B1A17] p-1.5 sm:p-2 shadow-md transition-all ring-4 ring-[#3DDBB8]/15 focus-within:ring-[#3DDBB8]/30">
+              {/* Left icon / instant Favicon */}
+              <div className="pl-2 sm:pl-3 pr-1 shrink-0 flex items-center justify-center">
+                {detectedDomain && !faviconError ? (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={`https://www.google.com/s2/favicons?domain=${detectedDomain}&sz=64`}
+                    alt={detectedDomain}
+                    onError={() => setFaviconError(true)}
+                    className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-contain shadow-2xs animate-in zoom-in-75 duration-150"
+                  />
+                ) : (
+                  <div className="text-[#1B685C] dark:text-[#3DDBB8]">
+                    <UL0Icon name={activeTab === "qr" ? "qr" : "link"} size={20} />
+                  </div>
+                )}
+              </div>
 
-            {/* URL Destination Input Box */}
-            <div className="relative flex items-center w-full rounded-2xl border border-border bg-background focus-within:border-primary focus-within:ring-3 focus-within:ring-primary/10 transition-all overflow-hidden shadow-2xs">
+              {/* URL Input */}
               <input
                 type="text"
                 inputMode="url"
@@ -219,72 +248,90 @@ export function LinkShortenerForm() {
                   setLongUrl(e.target.value)
                   setError(null)
                 }}
-                placeholder="https://example.com/my-long-url"
-                className="w-full bg-transparent px-4 py-3.5 text-sm sm:text-base text-foreground placeholder:text-muted-foreground/50 focus:outline-none"
+                placeholder="https://example.com/your-very-long-link"
+                className="w-full bg-transparent px-2.5 py-2 text-sm sm:text-base text-foreground placeholder:text-muted-foreground/60 focus:outline-none font-medium"
                 required
                 autoFocus
               />
 
-              {!longUrl && (
-                <button
-                  type="button"
-                  onClick={handlePaste}
-                  className="hidden sm:inline-flex items-center text-xs font-medium text-muted-foreground hover:text-foreground px-3 py-1.5 rounded-full bg-muted/80 transition-colors mr-3 cursor-pointer shrink-0"
-                >
-                  Paste
-                </button>
-              )}
+              {/* Paste Button */}
+              <button
+                type="button"
+                onClick={handlePaste}
+                className="text-xs sm:text-sm font-semibold text-muted-foreground hover:text-foreground px-2 sm:px-3 py-1 transition-colors cursor-pointer shrink-0 select-none"
+              >
+                Paste
+              </button>
+
+              {/* Divider */}
+              <div className="h-5 w-px bg-border shrink-0 mx-1 select-none" />
+
+              {/* Shorten Button in Electric Mint */}
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="inline-flex items-center justify-center gap-1.5 px-6 sm:px-8 py-2.5 sm:py-3 rounded-full bg-[#3DDBB8] hover:bg-[#32CBA8] text-[#0B1A17] font-bold text-sm sm:text-base transition-all shrink-0 cursor-pointer shadow-sm active:scale-95 disabled:opacity-60"
+              >
+                {isLoading ? (
+                  <span className="animate-spin w-4 h-4 border-2 border-[#0B1A17] border-t-transparent rounded-full" />
+                ) : (
+                  <>
+                    <span>{activeTab === "qr" ? "Generate" : "Shorten"}</span>
+                    <span className="font-bold">→</span>
+                  </>
+                )}
+              </button>
             </div>
 
-            {/* Customize Alias - Increased Size as Requested */}
-            <div className="pt-1">
+            {/* Sub-options Under the Bar: @ Custom alias & QR Code toggle (matching media_1795507655990_4beaca73.png) */}
+            <div className="flex items-center justify-center gap-6 pt-1 text-xs sm:text-sm font-medium text-muted-foreground">
               <button
                 type="button"
                 onClick={() => setShowOptions(!showOptions)}
-                className="inline-flex items-center gap-2 text-sm font-semibold text-foreground/80 hover:text-primary transition-colors cursor-pointer py-1 select-none"
+                className={`inline-flex items-center gap-1.5 hover:text-foreground transition-colors cursor-pointer ${
+                  showOptions ? "text-[#1B685C] dark:text-[#3DDBB8] font-bold" : ""
+                }`}
               >
-                <UL0Icon name="settings" size={16} />
-                <span>Customize alias</span>
-                <UL0Icon name={showOptions ? "arrowup" : "arrowdown"} size={13} />
+                <span className="font-mono text-base leading-none">@</span>
+                <span>Custom alias</span>
               </button>
 
-              {showOptions && (
-                <div className="mt-3 p-3.5 rounded-2xl border border-border bg-muted/30 text-left space-y-2 animate-in fade-in-50 duration-150">
-                  <label className="text-xs font-semibold text-foreground">Custom back-half alias</label>
-                  <div className="flex items-center rounded-xl border border-border bg-background overflow-hidden shadow-2xs">
-                    <span className="px-3.5 py-2 text-xs font-mono font-semibold text-muted-foreground border-r border-border bg-muted/40 select-none">
-                      ul0.site/r/
-                    </span>
-                    <input
-                      type="text"
-                      value={customSlug}
-                      onChange={(e) =>
-                        setCustomSlug(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ""))
-                      }
-                      placeholder="my-custom-name"
-                      maxLength={40}
-                      className="flex-1 bg-transparent px-3 py-2 text-xs sm:text-sm font-mono text-foreground focus:outline-none"
-                    />
-                  </div>
-                </div>
-              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveTab(activeTab === "qr" ? "link" : "qr")
+                  setError(null)
+                }}
+                className={`inline-flex items-center gap-1.5 hover:text-foreground transition-colors cursor-pointer ${
+                  activeTab === "qr" ? "text-[#1B685C] dark:text-[#3DDBB8] font-bold" : ""
+                }`}
+              >
+                <UL0Icon name="qr" size={15} />
+                <span>QR code</span>
+              </button>
             </div>
 
-            {/* Submit Action Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full rounded-2xl py-3.5 bg-[#1B685C] text-white hover:bg-[#16554B] active:scale-[0.99] font-bold text-sm sm:text-base transition-all shadow-md cursor-pointer disabled:opacity-70 mt-2 flex items-center justify-center gap-2"
-            >
-              {isLoading ? (
-                <>
-                  <UL0Icon name="loading" size={18} className="animate-spin text-white" />
-                  <span>{activeTab === "link" ? "Shortening..." : "Generating QR..."}</span>
-                </>
-              ) : (
-                <span>{activeTab === "link" ? "Shorten URL" : "Generate QR Code"}</span>
-              )}
-            </button>
+            {/* Expanded Custom Alias Panel */}
+            {showOptions && (
+              <div className="mt-2 p-3.5 rounded-2xl border border-border bg-muted/30 text-left space-y-2 animate-in fade-in-50 duration-150">
+                <label className="text-xs font-semibold text-foreground">Custom back-half alias</label>
+                <div className="flex items-center rounded-xl border border-border bg-background overflow-hidden shadow-2xs">
+                  <span className="px-3.5 py-2 text-xs font-mono font-semibold text-muted-foreground border-r border-border bg-muted/40 select-none">
+                    ul0.site/r/
+                  </span>
+                  <input
+                    type="text"
+                    value={customSlug}
+                    onChange={(e) =>
+                      setCustomSlug(e.target.value.replace(/[^a-zA-Z0-9-_]/g, ""))
+                    }
+                    placeholder="my-custom-name"
+                    maxLength={40}
+                    className="flex-1 bg-transparent px-3 py-2 text-xs sm:text-sm font-mono text-foreground focus:outline-none"
+                  />
+                </div>
+              </div>
+            )}
           </form>
 
           {/* Eco Loading Animation on Creation */}

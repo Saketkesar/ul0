@@ -177,6 +177,16 @@ export function GenerationAdModal({
     }
   }, [isOpen, effectiveMinMs])
 
+  // Auto trigger action once done (instant download / reveal without requiring button click!)
+  useEffect(() => {
+    if (isDone) {
+      const timer = setTimeout(() => {
+        handleAction()
+      }, 350)
+      return () => clearTimeout(timer)
+    }
+  }, [isDone])
+
   // Keyboard shortcut: Press Enter to trigger action when ready
   useEffect(() => {
     if (!isOpen || !isDone) return
@@ -301,27 +311,36 @@ export function GenerationAdModal({
             </div>
           </div>
 
-          {/* Mobile Screen Fallback (< 768px): Responsive Stacked Layout */}
-          <div className="md:hidden w-full flex flex-col items-center gap-4 bg-white p-2">
-            <div className="relative w-full max-w-[400px] aspect-[900/500] bg-white rounded-[16px] overflow-hidden border border-[#E4E2DA]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/ul0-ad-arrows-with-logo.webp"
-                alt="UL0 Generating"
-                className="w-full h-full object-contain"
+          {/* Mobile Screen (< 768px): Exact 540x960 Canvas Matching User Placement Guide media_1795507019737_c2734770.png */}
+          <div className="md:hidden relative w-full max-w-[340px] aspect-[540/960] bg-white rounded-[20px] overflow-hidden select-none border border-[#E4E2DA]/80 shadow-xs my-2">
+            {/* The Animated Mobile WebP Image (UL0 Center Logo + Top & Bottom Doodle Arrows) */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/ul0-ad-arrows-mobile-with-logo.webp"
+              alt="UL0 Generating"
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none z-10"
+            />
+
+            {/* Top Ad Slot (Where arrow "ads! don't click" points UP) - left: 8.8%, top: 2.5%, w: 82.4%, h: 26.8% */}
+            <div className="absolute left-[8.8%] top-[2.5%] z-20 w-[82.4%] h-[26.8%] rounded-[16px] border border-[#C8CDC8] bg-[#F6F6F6] overflow-hidden shadow-2xs flex items-center justify-center">
+              <SandboxedAdFrame
+                id="mobile-top-slot"
+                slotKey={AD_SLOTS.topLeft.key}
+                width={160}
+                height={300}
+                className="border-none bg-transparent"
               />
             </div>
 
-            <div className="w-full flex flex-col items-center gap-2">
-              <span className="text-[10px] text-[#5E726C] uppercase font-mono tracking-widest">Sponsored Partner</span>
-              <div className="w-full max-w-[468px] overflow-hidden flex justify-center">
-                <SandboxedAdFrame
-                  id="mobile-banner-1"
-                  slotKey={AD_SLOTS.banner.key}
-                  width={AD_SLOTS.banner.width}
-                  height={AD_SLOTS.banner.height}
-                />
-              </div>
+            {/* Bottom Ad Slot (Where arrow "ad too, skip" points DOWN) - left: 8.8%, bottom: 2.5%, w: 82.4%, h: 35% */}
+            <div className="absolute left-[8.8%] bottom-[2.5%] z-20 w-[82.4%] h-[35%] rounded-[16px] border border-[#C8CDC8] bg-[#F6F6F6] overflow-hidden shadow-2xs flex items-center justify-center">
+              <SandboxedAdFrame
+                id="mobile-bottom-slot"
+                slotKey={AD_SLOTS.bottomLeft.key}
+                width={160}
+                height={300}
+                className="border-none bg-transparent"
+              />
             </div>
           </div>
 

@@ -250,6 +250,44 @@ export default function SplitManagePage() {
     toast.success("Reminder message copied!")
   }
 
+  const [isSendingBotReminder, setIsSendingBotReminder] = useState(false)
+
+  const sendBotReminder = async () => {
+    if (!remindFriend || !session) return
+    setIsSendingBotReminder(true)
+
+    try {
+      const friendMember = session?.members?.find((m: any) => m.id === remindFriend.from)
+      const res = await fetch("/api/notify/split-reminder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          slug,
+          memberId: remindFriend.from,
+          memberName: getMemberName(remindFriend.from),
+          collectorName: session?.collector_name || "Organizer",
+          amount: remindFriend.amount,
+          title: session?.title,
+          email: friendMember?.email,
+          telegram: friendMember?.telegram,
+          settleUrl: `${window.location.origin}/split/${slug}`,
+          isManual: true,
+        }),
+      })
+
+      const data = await res.json()
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to dispatch reminder.")
+      }
+      toast.success("Reminder dispatched via Telegram & Email!")
+      setRemindFriend(null)
+    } catch (err: any) {
+      toast.error(err.message || "Failed to send reminder.")
+    } finally {
+      setIsSendingBotReminder(false)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#F7FAF8] text-[#0B1A17] flex flex-col font-sans selection:bg-[#3DDBB8] selection:text-[#04231C]">
       {/* Top Header */}
@@ -609,23 +647,34 @@ export default function SplitManagePage() {
             </div>
 
             {/* Action buttons */}
-            <div className="flex gap-2 pt-1">
-              <Button
-                type="button"
-                onClick={sendWhatsAppReminder}
-                className="flex-1 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold h-11 rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
-              >
-                <UL0Icon name="whatsapp" size={16} />
-                <span>Open WhatsApp</span>
-              </Button>
+            <div className="space-y-2 pt-1">
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  onClick={sendWhatsAppReminder}
+                  className="flex-1 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold h-11 rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                >
+                  <UL0Icon name="whatsapp" size={16} />
+                  <span>Open WhatsApp</span>
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={copyReminderMessage}
+                  className="h-11 px-4 border-[#D5E0DB] text-xs rounded-xl cursor-pointer"
+                >
+                  <UL0Icon name="copy" size={14} />
+                </Button>
+              </div>
 
               <Button
                 type="button"
-                variant="outline"
-                onClick={copyReminderMessage}
-                className="h-11 px-4 border-[#D5E0DB] text-xs rounded-xl cursor-pointer"
+                onClick={sendBotReminder}
+                disabled={isSendingBotReminder}
+                className="w-full bg-[#1B685C] hover:bg-[#145248] text-white font-bold h-11 rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
               >
-                <UL0Icon name="copy" size={14} />
+                <span>{isSendingBotReminder ? "Dispatching..." : "Send via Telegram & Email Bot (1 per 24 hrs)"}</span>
               </Button>
             </div>
           </div>

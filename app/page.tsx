@@ -117,14 +117,6 @@ export default function HomePage() {
           <AnimatedIconBackground />
 
           <div className="container mx-auto px-4 sm:px-6 max-w-4xl text-center space-y-6 sm:space-y-8 relative z-10">
-            {/* Top Pill Badge */}
-            <div className="flex items-center justify-center">
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-card/95 backdrop-blur-xs border border-border shadow-xs text-xs sm:text-sm font-medium text-foreground select-none">
-                <span className="h-2.5 w-2.5 rounded-full bg-primary inline-block animate-pulse shrink-0" />
-                <span>Simple, private link shortener &amp; QR studio</span>
-              </div>
-            </div>
-
             {/* Main Title: Clean, Large, Tactile */}
             <h1 className="text-4xl sm:text-6xl lg:text-[76px] font-extrabold tracking-tight text-foreground leading-[1.05]">
               The fast, private<br />URL shortener.

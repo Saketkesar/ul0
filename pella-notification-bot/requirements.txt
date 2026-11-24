@@ -1,0 +1,2 @@
+# UL0 Pella Bot requires Python 3.8+
+# Built entirely with standard library (http.server, smtplib, urllib) for zero-dependency reliability on Pella.app

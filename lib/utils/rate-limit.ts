@@ -28,6 +28,7 @@ export interface RateLimitConfig {
 
 export interface RateLimitResult {
   success: boolean
+  allowed: boolean
   remaining: number
   resetIn: number // seconds until reset
 }
@@ -113,6 +114,7 @@ async function checkRateLimitRedis(
     if (current > config.maxRequests) {
       return {
         success: false,
+        allowed: false,
         remaining: 0,
         resetIn,
       }
@@ -120,6 +122,7 @@ async function checkRateLimitRedis(
     
     return {
       success: true,
+      allowed: true,
       remaining: Math.max(0, config.maxRequests - current),
       resetIn,
     }
@@ -149,6 +152,7 @@ function checkRateLimitMemory(
     })
     return {
       success: true,
+      allowed: true,
       remaining: config.maxRequests - 1,
       resetIn: Math.ceil(config.windowMs / 1000),
     }
@@ -158,6 +162,7 @@ function checkRateLimitMemory(
     const resetIn = Math.ceil((entry.resetTime - now) / 1000)
     return {
       success: false,
+      allowed: false,
       remaining: 0,
       resetIn,
     }
@@ -168,6 +173,7 @@ function checkRateLimitMemory(
   
   return {
     success: true,
+    allowed: true,
     remaining: config.maxRequests - entry.count,
     resetIn: Math.ceil((entry.resetTime - now) / 1000),
   }
