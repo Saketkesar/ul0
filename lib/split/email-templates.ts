@@ -8,6 +8,7 @@ export type EmailTemplateName =
   | "invited"
   | "nudge"
   | "settled"
+  | "thank-you-paid"
   | "weekly-recap"
   | "group-created"
   | "group-settled"
@@ -19,6 +20,7 @@ const TEMPLATE_FILE_MAP: Record<string, string> = {
   invited: "04-invited.html",
   nudge: "05-nudge.html",
   settled: "06-settled.html",
+  "thank-you-paid": "08-thank-you-paid.html",
   "weekly-recap": "07-weekly-recap.html",
   "group-created": "02-split-created.html",
   "group-settled": "06-settled.html",

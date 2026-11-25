@@ -7,6 +7,9 @@ import {
   verifyCollectorToken,
   toPublicSession,
 } from "@/lib/appwrite/splits"
+import { renderEmail } from "@/lib/split/email-templates"
+import { sendEmailDirect } from "@/lib/split/email-sender"
+import { sendTelegramMessage } from "@/lib/split/telegram-sender"
 
 interface Context {
   params: Promise<{ slug: string }>
@@ -130,6 +133,58 @@ export async function PATCH(request: NextRequest, { params }: Context) {
     }
 
     const updatedSession = await updateSplitSettlements(sanitizedSlug, updatedSettlements)
+
+    // Notify friend with a Thank You for Paying receipt whenever creator newly verifies a settlement via PATCH
+    if (typeof body.settlementIndex === "number" && body.notifyFriend !== false && updatedSession) {
+      const idx = body.settlementIndex
+      const prevSettlement = currentSettlements[idx]
+      const nextSettlement = updatedSettlements[idx]
+      const newlyConfirmed =
+        nextSettlement &&
+        (nextSettlement.status === "confirmed" || nextSettlement.verified) &&
+        !(prevSettlement && (prevSettlement.status === "confirmed" || prevSettlement.verified))
+
+      if (newlyConfirmed) {
+        const members = (updatedSession.members || []) as any[]
+        const friendMember = members.find(
+          (m) => m.id === nextSettlement.from || m.name === nextSettlement.from
+        )
+        const organizerMember =
+          members.find((m) => m.isCollector || String(m.id || "").startsWith("collector-")) ||
+          members[0]
+        const memberName = friendMember?.name || nextSettlement.from || "Friend"
+        const organizerName = organizerMember?.name || nextSettlement.to || "Organizer"
+        const memberAmount = Number(nextSettlement.amount || 0)
+        const splitUrl = `https://ul0.site/split/${sanitizedSlug}`
+
+        if (friendMember?.email) {
+          const { html, subject } = renderEmail("thank-you-paid", {
+            friend_name: memberName,
+            organizer_name: organizerName,
+            split_name: updatedSession.title,
+            amount: `₹${memberAmount.toFixed(2)}`,
+            total: `₹${memberAmount.toFixed(2)}`,
+            people_count: `${updatedSettlements.length}`,
+            duration: "Settled",
+            cta_url: "https://ul0.site/split",
+            split_url: splitUrl,
+          })
+          await sendEmailDirect({
+            to: friendMember.email,
+            subject: subject || `Thank you for paying, ${memberName}! ✅ ₹${memberAmount.toFixed(2)} confirmed for ${updatedSession.title}`,
+            html,
+            text: `Thank you for paying, ${memberName}! ${organizerName} confirmed receiving your ₹${memberAmount.toFixed(2)} payment for "${updatedSession.title}". Receipt: ${splitUrl}`,
+          }).catch(() => {})
+        }
+
+        if (friendMember?.telegram) {
+          await sendTelegramMessage(
+            String(friendMember.telegram),
+            `🙏 <b>Thank you for paying, ${memberName}!</b>\n\n${organizerName} confirmed receiving <b>₹${memberAmount.toFixed(2)}</b> for <b>${updatedSession.title}</b>. You're all settled ✅\n\nReceipt: ${splitUrl}`
+          ).catch(() => {})
+        }
+      }
+    }
 
     return NextResponse.json({
       success: true,

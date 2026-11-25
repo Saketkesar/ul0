@@ -351,7 +351,7 @@ export default function SplitManagePage() {
     if (!remindFriend || !session) return ""
     const settleUrl = `${typeof window !== "undefined" ? window.location.origin : "https://ul0.site"}/split/${slug}`
     if (notifyMode === "settled") {
-      return `Payment Confirmed! Hey ${getMemberName(remindFriend.from)}, received your ₹${remindFriend.amount.toFixed(2)} for "${session.title}". Marked as settled on UL0 Split: ${settleUrl}`
+      return `Thank you for paying, ${getMemberName(remindFriend.from)}! Received your ₹${remindFriend.amount.toFixed(2)} for "${session.title}". Payment confirmed & settled ✅ ${settleUrl}`
     }
     return buildReminderMessage({
       friendName: getMemberName(remindFriend.from),

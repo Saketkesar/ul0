@@ -3,7 +3,7 @@ import assert from "node:assert/strict"
 import { renderEmail } from "../lib/split/email-templates.ts"
 import { renderSplitActionPage } from "../lib/split/page-renderer.ts"
 
-test("renderEmail generates valid HTML for all 7 templates", () => {
+test("renderEmail generates valid HTML for all 8 templates", () => {
   const templates = [
     "welcome",
     "split-created",
@@ -11,12 +11,14 @@ test("renderEmail generates valid HTML for all 7 templates", () => {
     "invited",
     "nudge",
     "settled",
+    "thank-you-paid",
     "weekly-recap",
   ]
 
   for (const t of templates) {
     const { html, subject } = renderEmail(t, {
       friend_name: "Alex",
+      organizer_name: "Sam",
       name: "Alex",
       amount: "₹600",
       share_amount: "₹600",
@@ -33,7 +35,25 @@ test("renderEmail generates valid HTML for all 7 templates", () => {
     assert.ok(html.length > 500, `Template ${t} should produce substantial HTML`)
     assert.ok(subject.length > 0, `Template ${t} should produce a subject`)
     assert.ok(!html.includes("{{friend_name}}"), `Template ${t} should replace friend_name`)
+    assert.ok(!html.includes("{{organizer_name}}"), `Template ${t} should replace organizer_name`)
   }
+})
+
+test("thank-you-paid template renders warm payment confirmation copy", () => {
+  const { html, subject } = renderEmail("thank-you-paid", {
+    friend_name: "Dev Saini",
+    organizer_name: "Saket Kesar",
+    amount: "₹115.00",
+    split_name: "Dev Saini Ka maaal",
+    split_url: "https://ul0.site/split/r5hWHH",
+    cta_url: "https://ul0.site/split",
+  })
+
+  assert.ok(subject.includes("Thank you for paying, Dev Saini"))
+  assert.ok(html.includes("Thank you for paying, Dev Saini!"))
+  assert.ok(html.includes("Saket Kesar"))
+  assert.ok(html.includes("₹115.00"))
+  assert.ok(html.includes("https://ul0.site/split/r5hWHH"))
 })
 
 test("marked-paid template contains both confirm_url and not_received_url", () => {

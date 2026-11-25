@@ -128,27 +128,33 @@ export async function POST(request: NextRequest, { params }: Context) {
       const durationStr = diffHours < 24 ? `${diffHours} hr${diffHours > 1 ? "s" : ""}` : `${Math.round(diffHours / 24)} days`
 
       if (friendEmail) {
-        const { html, subject } = renderEmail("settled", {
+        const { html, subject } = renderEmail("thank-you-paid", {
+          friend_name: memberName,
+          organizer_name: organizerName,
           split_name: updatedSession.title,
+          amount: `₹${memberAmount.toFixed(2)}`,
           total: `₹${memberAmount.toFixed(2)}`,
           people_count: `${allSettlements.length}`,
           duration: durationStr,
-          cta_url: "https://ul0.site/split/dashboard",
+          cta_url: "https://ul0.site/split",
           split_url: splitUrl,
         })
         const res = await sendEmailDirect({
           to: friendEmail,
-          subject: `Payment Confirmed ✅ ₹${memberAmount} for ${updatedSession.title}`,
+          subject: subject || `Thank you for paying, ${memberName}! ✅ ₹${memberAmount} confirmed for ${updatedSession.title}`,
           html,
-          text: `Hi ${memberName}, ${organizerName} confirmed receiving your ₹${memberAmount} payment for "${updatedSession.title}". Receipt: ${splitUrl}`,
+          text: `Thank you for paying, ${memberName}! ${organizerName} confirmed receiving your ₹${memberAmount.toFixed(2)} payment for "${updatedSession.title}". Your receipt: ${splitUrl}`,
         })
         friendEmailSent = res.success
+        if (!res.success) {
+          console.error(`[Confirm] Friend email failed for ${friendEmail}:`, res.error)
+        }
       }
 
       if (friendTelegram) {
         const tgRes = await sendTelegramMessage(
           String(friendTelegram),
-          `✅ <b>Payment Confirmed!</b>\n\nHi <b>${memberName}</b>, ${organizerName} confirmed receiving <b>₹${memberAmount}</b> for <b>${updatedSession.title}</b>.\n\nView receipt: ${splitUrl}`
+          `🙏 <b>Thank you for paying, ${memberName}!</b>\n\n${organizerName} confirmed receiving <b>₹${memberAmount.toFixed(2)}</b> for <b>${updatedSession.title}</b>. You're all settled ✅\n\nView receipt: ${splitUrl}`
         )
         telegramSent = tgRes.success
       }
