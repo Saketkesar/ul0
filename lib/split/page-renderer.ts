@@ -107,7 +107,12 @@ export function renderSplitActionPage(
     html = html.split(key).join(val)
   }
 
-  // 5. Inject client fetch handler for action buttons
+  // 5. Inject client fetch handler for action buttons safely via JSON.stringify
+  const jsSlug = JSON.stringify(slug)
+  const jsToken = JSON.stringify(token)
+  const jsMemberIdx = JSON.stringify(memberIndex)
+  const jsEmail = JSON.stringify(email)
+
   let actionScript = ""
   if (pageType === "confirm-payment") {
     actionScript = `
@@ -116,16 +121,16 @@ export function renderSplitActionPage(
         const btn = document.querySelector('button[data-to="done"]');
         if (btn) {
           btn.addEventListener('click', function() {
-            fetch('/api/split/${slug}/confirm', {
+            fetch('/api/split/' + encodeURIComponent(${jsSlug}) + '/confirm', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'x-collector-token': '${token}'
+                'x-collector-token': ${jsToken}
               },
               body: JSON.stringify({
-                settlementIndex: ${memberIndex},
+                settlementIndex: ${jsMemberIdx},
                 confirmed: true,
-                token: '${token}'
+                token: ${jsToken}
               })
             }).catch(function(e) { console.error('Confirm error:', e); });
           });
@@ -145,16 +150,16 @@ export function renderSplitActionPage(
             const note = noteEl ? noteEl.value : '';
             const reason = [picked, note].filter(Boolean).join(' - ') || 'Payment not in bank';
 
-            fetch('/api/split/${slug}/confirm', {
+            fetch('/api/split/' + encodeURIComponent(${jsSlug}) + '/confirm', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                'x-collector-token': '${token}'
+                'x-collector-token': ${jsToken}
               },
               body: JSON.stringify({
-                settlementIndex: ${memberIndex},
+                settlementIndex: ${jsMemberIdx},
                 confirmed: false,
-                token: '${token}',
+                token: ${jsToken},
                 reason: reason
               })
             }).catch(function(e) { console.error('Dispute error:', e); });
@@ -173,13 +178,13 @@ export function renderSplitActionPage(
             const utrEl = document.querySelector('input.t');
             const utrLast4 = utrEl ? utrEl.value.trim().slice(-4) : '';
 
-            fetch('/api/split/${slug}/claim', {
+            fetch('/api/split/' + encodeURIComponent(${jsSlug}) + '/claim', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
               },
               body: JSON.stringify({
-                settlementIndex: ${memberIndex},
+                settlementIndex: ${jsMemberIdx},
                 utrLast4: utrLast4
               })
             }).catch(function(e) { console.error('Claim error:', e); });
@@ -199,7 +204,7 @@ export function renderSplitActionPage(
             fetch('/api/split/unsubscribe', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ email: '${email}', mode: picked })
+              body: JSON.stringify({ email: ${jsEmail}, mode: picked })
             }).catch(function(e) { console.error('Unsubscribe error:', e); });
           });
         }

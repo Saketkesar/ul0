@@ -5,6 +5,9 @@ import { listLinksByOwner, getUserLinksStats } from "@/lib/appwrite/links"
 import { getDomainsByOwner } from "@/lib/appwrite/domains"
 import { getActivePlan } from "@/lib/plan.server"
 import { OverviewClient } from "@/components/dashboard/overview-client"
+import { renderEmail } from "@/lib/split/email-templates"
+import { sendEmailDirect } from "@/lib/split/email-sender"
+import { logEventToSheet } from "@/lib/split/sheet-logger"
 
 export default async function DashboardPage() {
   const authObj = await auth()
@@ -33,6 +36,34 @@ export default async function DashboardPage() {
   const account = accountDoc
     ? accountDoc
     : await upsertAccount(userId, email, plan.slug)
+
+  // Send welcome email automatically on brand new user's first account creation
+  const isRecentlyCreatedUser =
+    !accountDoc &&
+    Boolean(email) &&
+    Boolean(user?.createdAt) &&
+    Date.now() - Number(user?.createdAt) < 24 * 60 * 60 * 1000
+
+  if (isRecentlyCreatedUser && email) {
+    const { html, subject } = renderEmail("welcome", {
+      name: user?.firstName || user?.fullName || "Friend",
+      cta_url: "https://ul0.site/split/dashboard",
+      help_url: "https://ul0.site/split",
+    })
+    sendEmailDirect({
+      to: email,
+      subject: subject || "Welcome to UL0! Your account is ready",
+      html,
+      text: `Welcome to UL0! Start shortening links and splitting bills at https://ul0.site/dashboard`,
+    }).catch((err) => console.warn("[Dashboard] First-login welcome email error:", err))
+    logEventToSheet({
+      event_type: "onboarding_completed",
+      organizer_name: user?.fullName || user?.firstName || "New User",
+      organizer_email: email,
+      status: "Active (Dashboard Signup)",
+      split_url: "https://ul0.site/dashboard",
+    }).catch(() => {})
+  }
 
   const verifiedDomains = domains
     .filter((d) => d.status === "verified")

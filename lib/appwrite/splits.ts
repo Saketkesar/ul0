@@ -204,14 +204,17 @@ export function maskUpiId(upiId: string): string {
   return `${local.slice(0, 2)}****@${provider}`
 }
 
-/** Mask member data for public responses (hide full UPI IDs) */
+/** Mask member data for public responses (hide full UPI IDs, emails, Telegram handles) */
 export function maskMembersForPublic(members: any[]): any[] {
   return members.map((m) => ({
     ...m,
     upiId: m.upiId ? maskUpiId(m.upiId) : "",
     paymentId: m.paymentId ? maskUpiId(m.paymentId) : "",
-    // Keep the full ID only for the collector (first member), and even then mask it
+    email: m.email ? maskUpiId(m.email) : undefined,
+    telegram: undefined,
     _hasPaymentId: Boolean(m.paymentId || m.upiId),
+    _hasEmail: Boolean(m.email),
+    _hasTelegram: Boolean(m.telegram),
   }))
 }
 
@@ -418,4 +421,39 @@ export async function getSplitSessionsByOwner(
     [userId, limit]
   )
   return res.rows.map((r: any) => inflate(mapRow<SplitSessionDoc>(r)))
+}
+
+/** Update email and/or telegram contact on a specific member inside a split session */
+export async function updateSplitMemberContact(
+  slug: string,
+  memberId: string,
+  contact: { email?: string | null; telegram?: string | null }
+): Promise<SplitSession | null> {
+  const session = await getSplitSessionBySlug(slug)
+  if (!session) return null
+
+  let found = false
+  const updatedMembers = (session.members as any[]).map((m) => {
+    if (m.id === memberId || (m.name && m.name.toLowerCase() === memberId.toLowerCase())) {
+      found = true
+      return {
+        ...m,
+        ...(contact.email !== undefined ? { email: contact.email || undefined } : {}),
+        ...(contact.telegram !== undefined ? { telegram: contact.telegram || undefined } : {}),
+      }
+    }
+    return m
+  })
+
+  if (!found) return null
+
+  const res = await query(
+    `UPDATE split_sessions
+     SET members_json = $1, last_activity_at = NOW()
+     WHERE slug = $2
+     RETURNING *`,
+    [JSON.stringify(updatedMembers), slug]
+  )
+  if (res.rows.length === 0) return null
+  return inflate(mapRow<SplitSessionDoc>(res.rows[0]))
 }

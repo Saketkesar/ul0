@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { auth } from "@clerk/nextjs/server"
+import { auth, currentUser } from "@clerk/nextjs/server"
 import { generateSlug } from "@/lib/utils/slug"
 import { checkRateLimit, getClientIP, getRequestFingerprint, isSuspiciousRequest } from "@/lib/utils/rate-limit"
 import {
@@ -51,11 +51,25 @@ function isValidUpiId(upiId: string): boolean {
   return upiRegex.test(upiId) && upiId.length <= MAX_UPI_ID_LENGTH
 }
 
+function isValidEmail(email: string): boolean {
+  if (!email || email.trim() === "") return true
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) && email.trim().length <= 120
+}
+
 function validateMember(
   member: unknown
 ): {
   valid: boolean
-  sanitized?: { id: string; name: string; upiId: string; paymentMethod?: string; paymentId?: string }
+  sanitized?: {
+    id: string
+    name: string
+    upiId: string
+    paymentMethod?: string
+    paymentId?: string
+    email?: string
+    telegram?: string
+    isCollector?: boolean
+  }
   error?: string
 } {
   if (!member || typeof member !== "object") {
@@ -72,9 +86,16 @@ function validateMember(
   const sanitizedUpiId = typeof m.upiId === "string" ? sanitizeString(m.upiId, MAX_UPI_ID_LENGTH) : ""
   const sanitizedPaymentMethod = typeof m.paymentMethod === "string" ? sanitizeString(m.paymentMethod, 20) : undefined
   const sanitizedPaymentId = typeof m.paymentId === "string" ? sanitizeString(m.paymentId, MAX_UPI_ID_LENGTH) : undefined
+  const sanitizedEmail = typeof m.email === "string" ? m.email.trim().toLowerCase().slice(0, 120) : undefined
+  const sanitizedTelegram = typeof m.telegram === "string" ? sanitizeString(m.telegram, 64) : undefined
+  const isCollector = typeof m.isCollector === "boolean" ? m.isCollector : undefined
 
   if (!sanitizedName) {
     return { valid: false, error: "Member name is required" }
+  }
+
+  if (sanitizedEmail && !isValidEmail(sanitizedEmail)) {
+    return { valid: false, error: `Invalid email address for ${sanitizedName}` }
   }
 
   if (sanitizedPaymentMethod === "upi") {
@@ -96,6 +117,9 @@ function validateMember(
       upiId: sanitizedUpiId,
       paymentMethod: sanitizedPaymentMethod,
       paymentId: sanitizedPaymentId,
+      email: sanitizedEmail || undefined,
+      telegram: sanitizedTelegram || undefined,
+      isCollector,
     },
   }
 }
@@ -228,18 +252,25 @@ export async function POST(request: NextRequest) {
     const sanitizedMembers: Array<Record<string, unknown>> = []
     const validMemberIds = new Set<string>()
 
+    const clerkUser = await currentUser().catch(() => null)
+    const collectorFallbackEmail = clerkUser?.primaryEmailAddress?.emailAddress || clerkUser?.emailAddresses?.[0]?.emailAddress || undefined
+
     for (let i = 0; i < members.length; i++) {
       const validation = validateMember(members[i])
       if (!validation.valid) {
         return NextResponse.json({ errors: [{ path: `members[${i}]`, message: validation.error || "Invalid member" }] }, { status: 400 })
       }
       const sm = validation.sanitized!
+      const resolvedCollector = sm.isCollector ?? (i === 0 || sm.id.startsWith("collector-"))
       sanitizedMembers.push({
         id: sm.id,
         name: sm.name,
         upiId: sm.upiId || "",
         paymentMethod: sm.paymentMethod || null,
         paymentId: sm.paymentId || "",
+        isCollector: resolvedCollector,
+        ...(sm.email ? { email: sm.email } : (resolvedCollector && collectorFallbackEmail ? { email: collectorFallbackEmail } : {})),
+        ...(sm.telegram ? { telegram: sm.telegram } : {}),
       })
       validMemberIds.add(sm.id)
     }

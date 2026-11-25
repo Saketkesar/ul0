@@ -30,11 +30,14 @@ export default function SplitManagePage() {
   const [isAuthorized, setIsAuthorized] = useState<boolean>(false)
   const [authError, setAuthError] = useState<string | null>(null)
 
-  // Reminder Modal
+  // Reminder / Settled Notify Modal
   const [remindFriend, setRemindFriend] = useState<any | null>(null)
   const [remindIdx, setRemindIdx] = useState<number | null>(null)
+  const [notifyMode, setNotifyMode] = useState<"remind" | "settled">("remind")
   const [remindTone, setRemindTone] = useState<ReminderTone>("polite")
   const [remindLang, setRemindLang] = useState<ReminderLang>("en")
+  const [contactEmail, setContactEmail] = useState<string>("")
+  const [contactTelegram, setContactTelegram] = useState<string>("")
 
   // Extend & Delete
   const [isExtending, setIsExtending] = useState(false)
@@ -243,7 +246,20 @@ export default function SplitManagePage() {
       if (data.session?.settlements) {
         setSettlements(data.session.settlements)
       }
-      toast.success(confirmed ? "Payment confirmed!" : "Payment marked as not received.")
+      if (confirmed) {
+        const channels = [
+          data.notifications?.friendEmailSent ? "Friend email" : "",
+          data.notifications?.organizerEmailSent ? "Organizer email" : "",
+          data.notifications?.telegramSent ? "Telegram" : "",
+        ].filter(Boolean)
+        toast.success(
+          channels.length > 0
+            ? `Payment confirmed & notified via ${channels.join(", ")}!`
+            : "Payment confirmed & marked settled!"
+        )
+      } else {
+        toast.success("Payment marked as not received.")
+      }
     } catch (err: any) {
       toast.error(err.message || "Could not update payment.")
     }
@@ -330,10 +346,13 @@ export default function SplitManagePage() {
     toast.success("CSV export downloaded!")
   }
 
-  // Reminder message preview
+  // Reminder / Settled message preview
   const previewMessage = useMemo(() => {
     if (!remindFriend || !session) return ""
     const settleUrl = `${typeof window !== "undefined" ? window.location.origin : "https://ul0.site"}/split/${slug}`
+    if (notifyMode === "settled") {
+      return `Payment Confirmed! Hey ${getMemberName(remindFriend.from)}, received your ₹${remindFriend.amount.toFixed(2)} for "${session.title}". Marked as settled on UL0 Split: ${settleUrl}`
+    }
     return buildReminderMessage({
       friendName: getMemberName(remindFriend.from),
       title: session.title,
@@ -343,7 +362,16 @@ export default function SplitManagePage() {
       tone: remindTone,
       lang: remindLang,
     })
-  }, [remindFriend, session, slug, remindTone, remindLang])
+  }, [remindFriend, session, slug, remindTone, remindLang, notifyMode])
+
+  const openNotifyModal = (settlement: any, idx: number, mode: "remind" | "settled") => {
+    const member = session?.members?.find((m: any) => m.id === settlement.from || m.name === settlement.from)
+    setContactEmail(member?.email || "")
+    setContactTelegram(member?.telegram || "")
+    setNotifyMode(mode)
+    setRemindFriend(settlement)
+    setRemindIdx(idx)
+  }
 
   const sendWhatsAppReminder = () => {
     if (!previewMessage) return
@@ -354,42 +382,84 @@ export default function SplitManagePage() {
   const copyReminderMessage = async () => {
     if (!previewMessage) return
     await navigator.clipboard.writeText(previewMessage)
-    toast.success("Reminder message copied!")
+    toast.success("Message copied!")
   }
 
   const [isSendingBotReminder, setIsSendingBotReminder] = useState(false)
 
   const sendBotReminder = async () => {
     if (!remindFriend || !session) return
+    const cleanEmail = contactEmail.trim()
+    const cleanTelegram = contactTelegram.trim()
+    if (!cleanEmail && !cleanTelegram) {
+      toast.error("Please enter an email address or Telegram handle first.")
+      return
+    }
+
     setIsSendingBotReminder(true)
 
     try {
-      const friendMember = session?.members?.find((m: any) => m.id === remindFriend.from)
+      const headers: Record<string, string> = { "Content-Type": "application/json" }
+      if (collectorToken) headers["x-collector-token"] = collectorToken
+
+      // Save contact on member first (+ send settled receipt right away if in settled mode)
+      const saveRes = await fetch(`/api/split/${slug}/member-contact`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          memberId: remindFriend.from,
+          email: cleanEmail || undefined,
+          telegram: cleanTelegram || undefined,
+          token: collectorToken,
+          sendType: notifyMode === "settled" ? "settled" : undefined,
+        }),
+      })
+      const saveData = await saveRes.json().catch(() => ({}))
+      if (!saveRes.ok) {
+        throw new Error(saveData.error || "Failed to save contact")
+      }
+      if (saveData.session) {
+        setSession(saveData.session)
+      }
+
+      if (notifyMode === "settled") {
+        if (!saveData.emailSent && !saveData.telegramSent) {
+          throw new Error(saveData.emailError || "Could not deliver settled notification.")
+        }
+        toast.success(
+          `Settled receipt sent via ${[saveData.emailSent ? "Email" : "", saveData.telegramSent ? "Telegram" : ""].filter(Boolean).join(" & ")}!`
+        )
+        setRemindFriend(null)
+        return
+      }
+
+      const organizer = session?.members?.find((m: any) => m.isCollector || String(m.id || "").startsWith("collector-")) || session?.members?.[0]
       const res = await fetch("/api/notify/split-reminder", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body: JSON.stringify({
           slug,
           memberId: remindFriend.from,
           memberName: getMemberName(remindFriend.from),
-          collectorName: session?.collector_name || "Organizer",
+          collectorName: organizer?.name || session?.collector_name || "Organizer",
           amount: remindFriend.amount,
           title: session?.title,
-          email: friendMember?.email,
-          telegram: friendMember?.telegram,
+          email: cleanEmail || undefined,
+          telegram: cleanTelegram || undefined,
           settleUrl: `${window.location.origin}/split/${slug}`,
+          token: collectorToken,
           isManual: true,
         }),
       })
 
-      const data = await res.json()
+      const data = await res.json().catch(() => ({}))
       if (!res.ok) {
         throw new Error(data.error || "Failed to dispatch reminder.")
       }
-      toast.success("Reminder dispatched via Telegram & Email!")
+      toast.success(data.message || "Reminder sent!")
       setRemindFriend(null)
     } catch (err: any) {
-      toast.error(err.message || "Failed to send reminder.")
+      toast.error(err.message || "Failed to send notification.")
     } finally {
       setIsSendingBotReminder(false)
     }
@@ -574,7 +644,7 @@ export default function SplitManagePage() {
                   const name = getMemberName(s.from)
 
                   return (
-                    <div key={idx} className="p-4 flex items-center justify-between gap-3 text-xs">
+                    <div key={idx} className="p-4 flex flex-wrap items-center justify-between gap-3 text-xs">
                       <div>
                         <div className="font-bold text-sm text-[#0B1A17]">{name}</div>
                         <div className="font-mono text-xs font-bold text-[#0B7A66]">
@@ -582,18 +652,26 @@ export default function SplitManagePage() {
                         </div>
                       </div>
 
-                      <Button
-                        type="button"
-                        size="sm"
-                        onClick={() => {
-                          setRemindFriend(s)
-                          setRemindIdx(idx)
-                        }}
-                        className="bg-[#EAF1EE] hover:bg-[#DDF5EE] text-[#0B7A66] font-semibold text-xs h-8 px-3 rounded-lg cursor-pointer"
-                      >
-                        <UL0Icon name="whatsapp" size={14} className="mr-1" />
-                        <span>Remind</span>
-                      </Button>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => handleConfirm(idx, true)}
+                          className="bg-[#0B7A66] hover:bg-[#086353] text-white font-semibold text-xs h-8 px-3 rounded-lg cursor-pointer"
+                        >
+                          <UL0Icon name="check" size={13} className="mr-1" />
+                          <span>Mark Received</span>
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={() => openNotifyModal(s, idx, "remind")}
+                          className="bg-[#EAF1EE] hover:bg-[#DDF5EE] text-[#0B7A66] font-semibold text-xs h-8 px-3 rounded-lg cursor-pointer"
+                        >
+                          <UL0Icon name="whatsapp" size={14} className="mr-1" />
+                          <span>Remind</span>
+                        </Button>
+                      </div>
                     </div>
                   )
                 })}
@@ -623,20 +701,29 @@ export default function SplitManagePage() {
                     const name = getMemberName(s.from)
 
                     return (
-                      <div key={idx} className="p-3.5 flex items-center justify-between gap-3 text-xs text-[#5A6B66]">
+                      <div key={idx} className="p-3.5 flex flex-wrap items-center justify-between gap-3 text-xs text-[#5A6B66]">
                         <div className="flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-[#0B7A66]"></span>
                           <span className="font-semibold text-[#0B1A17]">{name}</span>
                           <span>(₹{s.amount.toFixed(2)})</span>
                         </div>
 
-                        <button
-                          type="button"
-                          onClick={() => handleConfirm(idx, false)}
-                          className="text-[11px] text-[#5A6B66] hover:text-[#B3261E] hover:underline cursor-pointer"
-                        >
-                          Undo
-                        </button>
+                        <div className="flex items-center gap-3">
+                          <button
+                            type="button"
+                            onClick={() => openNotifyModal(s, idx, "settled")}
+                            className="text-[11px] font-semibold text-[#0B7A66] hover:underline cursor-pointer"
+                          >
+                            Send Email / Msg
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleConfirm(idx, false)}
+                            className="text-[11px] text-[#5A6B66] hover:text-[#B3261E] hover:underline cursor-pointer"
+                          >
+                            Undo
+                          </button>
+                        </div>
                       </div>
                     )
                   })}
@@ -755,58 +842,90 @@ export default function SplitManagePage() {
         )}
       </main>
 
-      {/* Remind Modal with Tone Picker & Live Preview */}
+      {/* Remind / Settled Notification Modal */}
       <Dialog open={Boolean(remindFriend)} onOpenChange={(open) => !open && setRemindFriend(null)}>
         <DialogContent className="bg-white border-[#E4ECE8] text-[#0B1A17] max-w-md p-6 rounded-2xl shadow-xl">
           <DialogHeader className="pb-2">
             <DialogTitle className="text-lg font-bold text-[#0B1A17]">
-              Remind {remindFriend ? getMemberName(remindFriend.from) : "Friend"}
+              {notifyMode === "settled"
+                ? `Send Settled Confirmation to ${remindFriend ? getMemberName(remindFriend.from) : "Friend"}`
+                : `Remind ${remindFriend ? getMemberName(remindFriend.from) : "Friend"}`}
             </DialogTitle>
             <DialogDescription className="text-xs text-[#5A6B66]">
-              Pick a tone and language. See live message preview before sending.
+              {notifyMode === "settled"
+                ? "Confirm via WhatsApp, Email receipt, or Telegram."
+                : "Pick a tone and language, or enter Email / Telegram to notify directly."}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 pt-1">
-            {/* Tone Selector */}
-            <div>
-              <div className="text-[11px] font-semibold text-[#5A6B66] mb-1.5">Reminder Tone</div>
-              <div className="grid grid-cols-3 p-1 rounded-xl bg-[#EAF1EE] text-xs font-medium text-center">
-                {(["polite", "firm", "funny"] as ReminderTone[]).map((tone) => (
-                  <button
-                    key={tone}
-                    type="button"
-                    onClick={() => setRemindTone(tone)}
-                    className={`py-1.5 rounded-lg capitalize transition-all cursor-pointer ${
-                      remindTone === tone
-                        ? "bg-white text-[#0B1A17] font-bold shadow-sm"
-                        : "text-[#5A6B66] hover:text-[#0B1A17]"
-                    }`}
-                  >
-                    {tone}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {notifyMode === "remind" && (
+              <>
+                {/* Tone Selector */}
+                <div>
+                  <div className="text-[11px] font-semibold text-[#5A6B66] mb-1.5">Reminder Tone</div>
+                  <div className="grid grid-cols-3 p-1 rounded-xl bg-[#EAF1EE] text-xs font-medium text-center">
+                    {(["polite", "firm", "funny"] as ReminderTone[]).map((tone) => (
+                      <button
+                        key={tone}
+                        type="button"
+                        onClick={() => setRemindTone(tone)}
+                        className={`py-1.5 rounded-lg capitalize transition-all cursor-pointer ${
+                          remindTone === tone
+                            ? "bg-white text-[#0B1A17] font-bold shadow-sm"
+                            : "text-[#5A6B66] hover:text-[#0B1A17]"
+                        }`}
+                      >
+                        {tone}
+                      </button>
+                    ))}
+                  </div>
+                </div>
 
-            {/* Language Selector */}
-            <div>
-              <div className="text-[11px] font-semibold text-[#5A6B66] mb-1.5">Language</div>
-              <div className="grid grid-cols-3 p-1 rounded-xl bg-[#EAF1EE] text-xs font-medium text-center">
-                {(["en", "hi", "hinglish"] as ReminderLang[]).map((l) => (
-                  <button
-                    key={l}
-                    type="button"
-                    onClick={() => setRemindLang(l)}
-                    className={`py-1.5 rounded-lg uppercase transition-all cursor-pointer ${
-                      remindLang === l
-                        ? "bg-white text-[#0B1A17] font-bold shadow-sm"
-                        : "text-[#5A6B66] hover:text-[#0B1A17]"
-                    }`}
-                  >
-                    {l === "en" ? "English" : l === "hi" ? "Hindi" : "Hinglish"}
-                  </button>
-                ))}
+                {/* Language Selector */}
+                <div>
+                  <div className="text-[11px] font-semibold text-[#5A6B66] mb-1.5">Language</div>
+                  <div className="grid grid-cols-3 p-1 rounded-xl bg-[#EAF1EE] text-xs font-medium text-center">
+                    {(["en", "hi", "hinglish"] as ReminderLang[]).map((l) => (
+                      <button
+                        key={l}
+                        type="button"
+                        onClick={() => setRemindLang(l)}
+                        className={`py-1.5 rounded-lg uppercase transition-all cursor-pointer ${
+                          remindLang === l
+                            ? "bg-white text-[#0B1A17] font-bold shadow-sm"
+                            : "text-[#5A6B66] hover:text-[#0B1A17]"
+                        }`}
+                      >
+                        {l === "en" ? "English" : l === "hi" ? "Hindi" : "Hinglish"}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+
+            {/* Friend Email & Telegram inputs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 p-3 rounded-xl bg-[#F7FAF8] border border-[#E4ECE8]">
+              <div>
+                <label className="text-[11px] font-semibold text-[#5A6B66] block mb-1">Friend Email</label>
+                <input
+                  type="email"
+                  value={contactEmail}
+                  onChange={(e) => setContactEmail(e.target.value)}
+                  placeholder="friend@gmail.com"
+                  className="w-full h-9 px-2.5 rounded-lg border border-[#D5E0DB] bg-white text-xs font-mono text-[#0B1A17] focus:outline-none focus:border-[#1B685C]"
+                />
+              </div>
+              <div>
+                <label className="text-[11px] font-semibold text-[#5A6B66] block mb-1">Telegram ID / @handle</label>
+                <input
+                  type="text"
+                  value={contactTelegram}
+                  onChange={(e) => setContactTelegram(e.target.value)}
+                  placeholder="Chat ID or @user"
+                  className="w-full h-9 px-2.5 rounded-lg border border-[#D5E0DB] bg-white text-xs font-mono text-[#0B1A17] focus:outline-none focus:border-[#1B685C]"
+                />
               </div>
             </div>
 
@@ -846,7 +965,13 @@ export default function SplitManagePage() {
                 disabled={isSendingBotReminder}
                 className="w-full bg-[#1B685C] hover:bg-[#145248] text-white font-bold h-11 rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm disabled:opacity-50"
               >
-                <span>{isSendingBotReminder ? "Dispatching..." : "Send via Telegram & Email Bot (1 per 24 hrs)"}</span>
+                <span>
+                  {isSendingBotReminder
+                    ? "Sending..."
+                    : notifyMode === "settled"
+                      ? "Save Contact & Send Settled Email / Telegram"
+                      : "Save Contact & Send Reminder (Email / Telegram)"}
+                </span>
               </Button>
             </div>
           </div>

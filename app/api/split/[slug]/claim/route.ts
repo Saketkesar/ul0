@@ -1,9 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { checkRateLimit, getClientIP } from "@/lib/utils/rate-limit"
 import { claimSettlement, toPublicSession } from "@/lib/appwrite/splits"
+import { getAccountByClerkId } from "@/lib/appwrite/accounts"
 import { logEventToSheet } from "@/lib/split/sheet-logger"
 import { renderEmail } from "@/lib/split/email-templates"
 import { sendEmailDirect } from "@/lib/split/email-sender"
+import { sendTelegramMessage } from "@/lib/split/telegram-sender"
 
 interface Context {
   params: Promise<{ slug: string }>
@@ -13,9 +15,6 @@ const CLAIM_RATE_LIMIT = {
   windowMs: 60000, // 1 minute
   maxRequests: 5,  // 5 claims per min per IP
 }
-
-const PELLA_BOT_URL = process.env.PELLA_BOT_URL || process.env.REMINDER_BOT_URL || "http://fi17.bot-hosting.cloud:25733"
-const BOT_API_KEY = process.env.BOT_API_KEY || "ul0_pella_live_sec_key_2026"
 
 export async function POST(request: NextRequest, { params }: Context) {
   try {
@@ -39,7 +38,7 @@ export async function POST(request: NextRequest, { params }: Context) {
     }
 
     let parsedAmount: number | undefined = undefined
-    if (typeof paidAmount === "number" && Number.isFinite(paidAmount) && parsedAmount !== undefined) {
+    if (typeof paidAmount === "number" && Number.isFinite(paidAmount) && paidAmount > 0) {
       parsedAmount = Math.round(paidAmount * 100) / 100
     }
 
@@ -57,13 +56,29 @@ export async function POST(request: NextRequest, { params }: Context) {
       return NextResponse.json({ error: "Split session or settlement not found" }, { status: 404 })
     }
 
+    const members = (updatedSession.members || []) as any[]
     const settlements = updatedSession.settlements || []
     const targetSettlement = settlements[settlementIndex]
-    const friendName = targetSettlement?.from || "A friend"
+    const friendMember = members.find(
+      (m) => m.id === targetSettlement?.from || m.name === targetSettlement?.from
+    )
+    const organizer =
+      members.find((m) => m.isCollector || m.is_organizer || m.role === "organizer" || String(m.id || "").startsWith("collector-")) ||
+      members[0]
+
+    const friendName = friendMember?.name || targetSettlement?.from || "A friend"
+    const organizerName = organizer?.name || targetSettlement?.to || "Organizer"
     const amountStr = `₹${targetSettlement?.amount || 0}`
     const paidCount = settlements.filter((s: any) => s.status === "confirmed" || s.status === "claimed").length
     const totalCount = settlements.length
     const paidPercent = totalCount > 0 ? Math.round((paidCount / totalCount) * 100) : 0
+
+    // Resolve organizer email: member record -> accounts DB -> Clerk fallback if needed
+    let organizerEmail: string = organizer?.email || ""
+    if (!organizerEmail && updatedSession.owner_user_id) {
+      const acc = await getAccountByClerkId(updatedSession.owner_user_id).catch(() => null)
+      if (acc?.email) organizerEmail = acc.email
+    }
 
     // Google Sheets real-time log
     logEventToSheet({
@@ -71,7 +86,8 @@ export async function POST(request: NextRequest, { params }: Context) {
       split_slug: sanitizedSlug,
       title: updatedSession.title,
       total_amount: updatedSession.total_amount,
-      organizer_name: targetSettlement?.to || "Organizer",
+      organizer_name: organizerName,
+      organizer_email: organizerEmail,
       member_name: friendName,
       member_share: targetSettlement?.amount,
       status: "Claimed",
@@ -79,15 +95,12 @@ export async function POST(request: NextRequest, { params }: Context) {
       split_url: `https://ul0.site/split/${sanitizedSlug}`,
     }).catch((e) => console.warn("Claim sheet logging error:", e))
 
-    // Send email to organizer if organizer email is known
-    const members = (updatedSession.members || []) as any[]
-    const organizer = members.find((m: any) => m.isCollector || m.is_organizer || m.role === "organizer")
-    const organizerEmail = organizer?.email
-
-    if (organizerEmail && PELLA_BOT_URL) {
+    // Notify organizer directly via SMTP Email + Telegram
+    let emailSent = false
+    if (organizerEmail) {
       try {
-        const confirmUrl = `https://ul0.site/split/${sanitizedSlug}/confirm-payment?member=${settlementIndex}`
-        const notReceivedUrl = `https://ul0.site/split/${sanitizedSlug}/not-received?member=${settlementIndex}`
+        const confirmUrl = `https://ul0.site/split/${sanitizedSlug}/manage`
+        const notReceivedUrl = `https://ul0.site/split/${sanitizedSlug}/manage`
         const splitUrl = `https://ul0.site/split/${sanitizedSlug}`
 
         const { html, subject } = renderEmail("marked-paid", {
@@ -102,30 +115,31 @@ export async function POST(request: NextRequest, { params }: Context) {
           split_url: splitUrl,
         })
 
-        fetch(`${PELLA_BOT_URL.replace(/\/$/, "")}/notify/email`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${BOT_API_KEY}`,
-            "X-Bot-Key": BOT_API_KEY,
-          },
-          body: JSON.stringify({
-            to: organizerEmail,
-            subject,
-            html,
-            text: `${friendName} marked their share of ${updatedSession.title} as paid (${amountStr}). Confirm: ${confirmUrl} or Not received: ${notReceivedUrl}`,
-          }),
-        }).catch((e) => console.warn("Payment claim email error:", e))
+        const mailRes = await sendEmailDirect({
+          to: organizerEmail,
+          subject: subject || `${friendName} marked ${amountStr} as paid for ${updatedSession.title}`,
+          html,
+          text: `${friendName} marked their share of ${updatedSession.title} (${amountStr}) as paid. Review and confirm at ${confirmUrl}`,
+        })
+        emailSent = mailRes.success
       } catch (e) {
-        console.warn("Claim email rendering error:", e)
+        console.warn("Claim direct email error:", e)
       }
+    }
+
+    if (organizer?.telegram) {
+      await sendTelegramMessage(
+        String(organizer.telegram),
+        `💸 <b>${friendName} marked ${amountStr} as paid!</b>\n\nSplit: <b>${updatedSession.title}</b>${sanitizedUtr ? `\nUTR Ref: <code>${sanitizedUtr}</code>` : ""}\n\n✅ Confirm in Manage Split: https://ul0.site/split/${sanitizedSlug}/manage`
+      ).catch(() => {})
     }
 
     return NextResponse.json({
       success: true,
+      emailSent,
       session: toPublicSession(updatedSession),
     })
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || "Failed to record payment" }, { status: 500 })
+    return NextResponse.json({ error: err?.message || "Failed to record payment" }, { status: 500 })
   }
 }

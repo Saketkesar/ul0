@@ -1,28 +1,50 @@
 import nodemailer from "nodemailer"
 
-const SENDER_EMAIL = process.env.SENDER_EMAIL || ""
-const SENDER_PASSWORD = (process.env.SENDER_PASSWORD || "").trim()
-const SMTP_HOST = process.env.SMTP_HOST || "smtp.gmail.com"
-const SMTP_PORT = Number(process.env.SMTP_PORT || 587)
+function getSmtpConfig() {
+  const senderEmail = (process.env.SENDER_EMAIL || "").trim()
+  const senderPassword = (process.env.SENDER_PASSWORD || "").trim()
+  const smtpHost = (process.env.SMTP_HOST || "smtp.gmail.com").trim()
+  const smtpPort = Number((process.env.SMTP_PORT || "587").trim()) || 587
+  return { senderEmail, senderPassword, smtpHost, smtpPort }
+}
 
-let transporter: any = null
-
-function getTransporter(): any {
-  if (!transporter) {
-    transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      secure: SMTP_PORT === 465,
+function createSmtpTransport() {
+  const { senderEmail, senderPassword, smtpHost, smtpPort } = getSmtpConfig()
+  if (!senderEmail || !senderPassword) {
+    return null
+  }
+  return {
+    senderEmail,
+    transporter: nodemailer.createTransport({
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465,
+      pool: false,
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
       auth: {
-        user: SENDER_EMAIL,
-        pass: SENDER_PASSWORD,
+        user: senderEmail,
+        pass: senderPassword,
       },
       tls: {
         rejectUnauthorized: false,
       },
-    })
+    }),
   }
-  return transporter
+}
+
+function isTransientNetworkError(err: any): boolean {
+  const code = String(err?.code || "").toUpperCase()
+  const msg = String(err?.message || "").toLowerCase()
+  return (
+    code === "ECONNRESET" ||
+    code === "ETIMEDOUT" ||
+    code === "ECONNECTION" ||
+    code === "ESOCKET" ||
+    msg.includes("socket close") ||
+    msg.includes("timeout")
+  )
 }
 
 export async function sendEmailDirect({
@@ -36,24 +58,53 @@ export async function sendEmailDirect({
   html: string
   text?: string
 }): Promise<{ success: boolean; error?: string; messageId?: string }> {
-  if (!to || !to.includes("@")) {
+  const recipient = (to || "").trim()
+  if (!recipient || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)) {
     return { success: false, error: "Invalid recipient email" }
   }
 
-  try {
-    const client = getTransporter()
-    const info = await client.sendMail({
-      from: `"UL0 Split & Hisab" <${SENDER_EMAIL}>`,
-      to,
-      subject,
-      html,
-      text: text || html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
-    })
-
-    console.log(`[EmailSender] Email delivered to ${to} (${info.messageId})`)
-    return { success: true, messageId: info.messageId }
-  } catch (err: any) {
-    console.error(`[EmailSender] Direct send failed to ${to}:`, err)
-    return { success: false, error: err?.message || String(err) }
+  const setup = createSmtpTransport()
+  if (!setup) {
+    console.error("[EmailSender] Missing SENDER_EMAIL or SENDER_PASSWORD environment variables")
+    return { success: false, error: "Email sender credentials are not configured on server" }
   }
+
+  const mailOptions = {
+    from: `"UL0 Split & Hisab" <${setup.senderEmail}>`,
+    replyTo: setup.senderEmail,
+    to: recipient,
+    subject,
+    html,
+    text: text || html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+  }
+
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    const clientSetup = attempt === 1 ? setup : createSmtpTransport()!
+    try {
+      const info = await clientSetup.transporter.sendMail(mailOptions)
+      try {
+        clientSetup.transporter.close()
+      } catch {}
+
+      if (Array.isArray(info.rejected) && info.rejected.length > 0 && (!info.accepted || info.accepted.length === 0)) {
+        const rejMsg = `Recipient rejected by SMTP server: ${info.rejected.join(", ")}`
+        console.error(`[EmailSender] ${rejMsg}`)
+        return { success: false, error: rejMsg }
+      }
+
+      console.log(`[EmailSender] Email delivered to ${recipient} (${info.messageId})`)
+      return { success: true, messageId: info.messageId }
+    } catch (err: any) {
+      try {
+        clientSetup.transporter.close()
+      } catch {}
+      console.error(`[EmailSender] Attempt ${attempt} failed for ${recipient}:`, err?.message || err)
+      if (attempt === 1 && isTransientNetworkError(err)) {
+        continue
+      }
+      return { success: false, error: err?.message || String(err) }
+    }
+  }
+
+  return { success: false, error: "Email sending failed after retry" }
 }

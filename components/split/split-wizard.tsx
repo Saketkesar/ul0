@@ -130,7 +130,7 @@ function SplitWizardContent() {
   const [friendInput, setFriendInput] = useState<string>("")
   const [friendEmail, setFriendEmail] = useState<string>("")
   const [friendTelegram, setFriendTelegram] = useState<string>("")
-  const [showFriendContactInputs, setShowFriendContactInputs] = useState<boolean>(false)
+  const [showFriendContactInputs, setShowFriendContactInputs] = useState<boolean>(true)
   const [includeCollector, setIncludeCollector] = useState<boolean>(true)
 
   // 24-hour reminder state
@@ -614,6 +614,8 @@ function SplitWizardContent() {
     try {
       saveCollectorDetails(cleanCollectorName, cleanCollectorUpi)
 
+      const collectorEmail = user?.primaryEmailAddress?.emailAddress || user?.emailAddresses?.[0]?.emailAddress || undefined
+
       const membersPayload = [
         ...(includeCollector
           ? [
@@ -622,6 +624,7 @@ function SplitWizardContent() {
               name: cleanCollectorName,
               isCollector: true,
               upiId: cleanCollectorUpi,
+              ...(collectorEmail ? { email: collectorEmail } : {}),
             },
           ]
           : []),
@@ -745,7 +748,7 @@ function SplitWizardContent() {
       })
       setQrCodeData(qr)
 
-      // Trigger split-created notification email to creator & members in background
+      // Trigger split-created notification email to creator & members
       fetch("/api/notify/split-created", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -754,7 +757,7 @@ function SplitWizardContent() {
           title: cleanTitle,
           totalAmount: Math.round(calculatedTotal * 100) / 100,
           collectorName: cleanCollectorName,
-          collectorEmail: user?.primaryEmailAddress?.emailAddress,
+          collectorEmail: user?.primaryEmailAddress?.emailAddress || user?.emailAddresses?.[0]?.emailAddress,
           collectorUpi: cleanCollectorUpi,
           manageUrl: `${window.location.origin}/split/${data.slug}/manage?token=${data.collectorToken}`,
           settleUrl,
@@ -769,7 +772,16 @@ function SplitWizardContent() {
             })),
           ],
         }),
-      }).catch(() => { })
+      })
+        .then(async (nRes) => {
+          const nData = await nRes.json().catch(() => ({}))
+          if (nRes.ok && (nData.creatorEmailSent || nData.memberEmailsSent > 0 || nData.telegramsSent > 0)) {
+            toast.success("Email/Telegram notifications dispatched!")
+          } else if (!nRes.ok || (nData.emailErrors && nData.emailErrors.length > 0)) {
+            console.warn("Split created email notice:", nData)
+          }
+        })
+        .catch(() => { })
 
       toast.success("Split created! Share link with friends.")
     } catch (err: any) {
@@ -785,33 +797,53 @@ function SplitWizardContent() {
     setIsSendingManualReminder(true)
 
     try {
-      const targetFriend = friendId ? friends.find((f) => f.id === friendId) : friends[0]
-      const memberId = targetFriend?.id || "first-member"
+      const targets = friendId
+        ? friends.filter((f) => f.id === friendId)
+        : friends.filter((f) => Boolean(f.email || f.telegram))
 
-      const res = await fetch("/api/notify/split-reminder", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          slug: createdSlug,
-          memberId: memberId,
-          memberName: targetFriend?.name || "Friend",
-          collectorName: collectorName || "Organizer",
-          amount: targetFriend ? (friendShares[targetFriend.id] || 0) : calculatedTotal,
-          title: title || `${category} bill`,
-          email: targetFriend?.email,
-          telegram: targetFriend?.telegram,
-          settleUrl,
-          isManual: true,
-        }),
-      })
+      if (targets.length === 0) {
+        toast.error("No friends have an email or Telegram saved. Add a contact on Manage Split or share via WhatsApp.")
+        return
+      }
 
-      const data = await res.json()
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to send reminder")
+      let deliveredCount = 0
+      let lastError = ""
+      for (const targetFriend of targets) {
+        const res = await fetch("/api/notify/split-reminder", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(collectorToken ? { "x-collector-token": collectorToken } : {}),
+          },
+          body: JSON.stringify({
+            slug: createdSlug,
+            memberId: targetFriend.id,
+            memberName: targetFriend.name,
+            collectorName: collectorName || "Organizer",
+            amount: friendShares[targetFriend.id] || 0,
+            title: title || `${category} bill`,
+            email: targetFriend.email,
+            telegram: targetFriend.telegram,
+            settleUrl,
+            token: collectorToken,
+            isManual: true,
+          }),
+        })
+
+        const data = await res.json().catch(() => ({}))
+        if (res.ok && (data.emailSent || data.telegramSent)) {
+          deliveredCount++
+        } else {
+          lastError = data.error || "Failed to send reminder"
+        }
+      }
+
+      if (deliveredCount === 0) {
+        throw new Error(lastError || "No reminders could be delivered")
       }
 
       setHasSentReminderToday(true)
-      toast.success("Reminder dispatched via Telegram & Email!")
+      toast.success(`Sent reminder to ${deliveredCount} friend${deliveredCount > 1 ? "s" : ""}!`)
     } catch (err: any) {
       toast.error(err.message || "Could not send reminder.")
     } finally {

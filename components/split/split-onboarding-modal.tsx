@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react"
 import { useUser } from "@clerk/nextjs"
 import { Check, Shield, X, AlertCircle } from "lucide-react"
+import { toast } from "sonner"
 
 export interface SplitUserProfile {
   name: string
@@ -62,6 +63,7 @@ export function SplitOnboardingModal({ isOpen, onClose, onSave }: SplitOnboardin
   const [upiId, setUpiId] = useState("")
   const [defaultGst, setDefaultGst] = useState("0")
   const [telegram, setTelegram] = useState("")
+  const [emailInput, setEmailInput] = useState("")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -71,6 +73,8 @@ export function SplitOnboardingModal({ isOpen, onClose, onSave }: SplitOnboardin
       if (user.fullName || user.firstName) {
         setName(user.fullName || user.firstName || "")
       }
+      const clerkMail = user.primaryEmailAddress?.emailAddress || user.emailAddresses?.[0]?.emailAddress || ""
+      if (clerkMail) setEmailInput(clerkMail)
     }
     // Check if previously saved
     try {
@@ -81,6 +85,7 @@ export function SplitOnboardingModal({ isOpen, onClose, onSave }: SplitOnboardin
         if (parsed.upiId) setUpiId(parsed.upiId)
         if (parsed.defaultGst !== undefined) setDefaultGst(String(parsed.defaultGst))
         if (parsed.telegram) setTelegram(parsed.telegram)
+        if (parsed.email) setEmailInput(parsed.email)
       } else {
         const savedName = localStorage.getItem("ul0_split_collector_name")
         const savedUpi = localStorage.getItem("ul0_split_collector_upi")
@@ -92,7 +97,7 @@ export function SplitOnboardingModal({ isOpen, onClose, onSave }: SplitOnboardin
 
   if (!isOpen) return null
 
-  const userEmail = user?.primaryEmailAddress?.emailAddress || ""
+  const userEmail = emailInput.trim() || user?.primaryEmailAddress?.emailAddress || user?.emailAddresses?.[0]?.emailAddress || ""
   const bankInfo = detectUpiBank(upiId)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -128,12 +133,21 @@ export function SplitOnboardingModal({ isOpen, onClose, onSave }: SplitOnboardin
       if (profile.telegram) localStorage.setItem("ul0_split_collector_telegram", profile.telegram)
       if (profile.email) localStorage.setItem("ul0_split_collector_email", profile.email)
 
-      // Trigger welcome / confirmation email in background
-      fetch("/api/notify/onboarding", {
+      // Dispatch welcome / confirmation email
+      const notifyRes = await fetch("/api/notify/onboarding", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(profile),
-      }).catch(() => {})
+      }).catch(() => null)
+
+      if (notifyRes) {
+        const notifyData = await notifyRes.json().catch(() => ({}))
+        if (notifyRes.ok && notifyData.emailSent) {
+          toast.success(`Welcome email sent to ${profile.email}!`)
+        } else if (profile.email && !notifyRes.ok) {
+          toast.warning(notifyData.error || "Profile saved, but welcome email could not be sent.")
+        }
+      }
 
       onSave(profile)
       onClose()
@@ -261,17 +275,18 @@ export function SplitOnboardingModal({ isOpen, onClose, onSave }: SplitOnboardin
             </div>
           </div>
 
-          {/* 5. Email ID (Fetched from Clerk) */}
+          {/* 5. Email ID (Prefilled from Clerk, editable for alerts) */}
           <div>
             <label className="block text-xs font-bold text-[#0B1A17] uppercase tracking-wider mb-1.5">
-              Account Email
+              Notification Email
             </label>
-            <div className="flex items-center justify-between h-12 px-4 rounded-xl border border-[#D3E2DD] bg-[#EAF2EE] text-sm text-[#0B1A17] font-mono">
-              <span className="truncate">{userEmail || "Signed in with Clerk"}</span>
-              <span className="text-[10px] uppercase font-bold text-[#1B685C] bg-white px-2 py-0.5 rounded border border-[#1B685C]/20 shrink-0 ml-2">
-                Verified
-              </span>
-            </div>
+            <input
+              type="email"
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              placeholder="you@example.com"
+              className="w-full h-12 px-4 rounded-xl border border-[#D3E2DD] bg-[#F4FAF8] font-mono text-sm text-[#0B1A17] focus:outline-none focus:border-[#1B685C] focus:bg-white transition-all"
+            />
           </div>
 
           {/* Security Banner */}

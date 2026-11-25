@@ -3,6 +3,8 @@ const nextConfig = {
   serverExternalPackages: ['playwright', 'playwright-core', '@sparticuz/chromium'],
   outputFileTracingIncludes: {
     '/api/convert': ['./node_modules/@sparticuz/chromium/bin/**'],
+    '/api/**': ['./lib/split/templates/**', './lib/split/pages/**', './public/email/templates/**'],
+    '/split/**': ['./lib/split/pages/**'],
   },
   typescript: {
     ignoreBuildErrors: true,
