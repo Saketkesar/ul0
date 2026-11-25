@@ -90,7 +90,7 @@ const USE_CASES = [
   {
     title: "Events & Conferences",
     slug: "events",
-    icon: <UL0Icon name="calendar" className="h-6 w-6 text-emerald-400" />,
+    icon: <UL0Icon name="calendar" className="h-6 w-6 text-emerald-700" />,
     description: "Print trackable badge QR codes, distribute session schedule links, and monitor booth attendee engagement in real time.",
     badge: "Live Experiences",
     highlights: ["Badge QR check-ins", "Booth collateral tracking", "Real-time attendee analytics"],
@@ -98,8 +98,32 @@ const USE_CASES = [
 ]
 
 export default function UseCasesIndexPage() {
+  const useCasesSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        name: "Short Link & QR Use Cases for Every Business",
+        url: "https://ul0.site/use-cases",
+        description:
+          "Industry workflows for small businesses, agencies, real estate, restaurants, creators, e-commerce, startups, and events.",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: "https://ul0.site" },
+          { "@type": "ListItem", position: 2, name: "Use Cases", item: "https://ul0.site/use-cases" },
+        ],
+      },
+    ],
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(useCasesSchema) }}
+      />
       <Header />
 
       <main className="flex-1 py-12 sm:py-16">

@@ -205,7 +205,7 @@ export function MetaTagClient() {
                 <UL0Icon name="search" size={14} />
                 <span className="truncate">{url}</span>
               </div>
-              <h5 className="text-sm sm:text-base font-semibold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer line-clamp-1">
+              <h5 className="text-sm sm:text-base font-semibold text-emerald-600 hover:underline cursor-pointer line-clamp-1">
                 {title || "Page Title"}
               </h5>
               <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">

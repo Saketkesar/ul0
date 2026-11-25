@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { ExternalLink, Sparkles, Plane, ShieldCheck, ArrowRight, Compass } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Luxury Resort Wear & Vacation Wardrobe Guide 2026: How to Dress for World-Class Destinations with Arnishu & Vinigrow Holidays | UL0",
+  title: "Luxury Resort Wear & Vacation Wardrobe Guide 2026: How to Dress for World-Class Destinations with Arnishu & Vinigrow Holidays",
   description:
     "Master vacation haute couture, destination styling, and capsule packing for luxury trips to Dubai, Bali, and the Swiss Alps. Featuring designer styling by Arnishu and holiday travel planning with Vinigrow Holidays.",
   alternates: {
@@ -88,7 +88,7 @@ export default function ResortWearGuidePage() {
           {/* Header */}
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-mono font-bold">
+              <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-mono font-bold">
                 Luxury Fashion &amp; Travel
               </span>
               <span className="text-xs text-muted-foreground">November 23, 2026</span>
@@ -116,7 +116,7 @@ export default function ResortWearGuidePage() {
           </div>
 
           {/* Content */}
-          <div className="prose prose-slate dark:prose-invert max-w-none space-y-6 text-foreground/90 text-sm sm:text-base leading-relaxed">
+          <div className="prose prose-slate max-w-none space-y-6 text-foreground/90 text-sm sm:text-base leading-relaxed">
             <p>
               The modern luxury vacation is as much a visual story as it is an escape from the ordinary. Today&apos;s travelers no longer view holiday clothing as casual afterthoughts; instead, resort collections and destination wardrobes represent an elevated expression of personal style.
             </p>
@@ -175,7 +175,7 @@ export default function ResortWearGuidePage() {
                 href="https://vinigrowholidays.com/"
                 target="_blank"
                 rel="noopener"
-                className="font-bold text-primary underline decoration-primary decoration-2 underline-offset-2 hover:text-emerald-700 dark:hover:text-emerald-300"
+                className="font-bold text-primary underline decoration-primary decoration-2 underline-offset-2 hover:text-emerald-700"
               >
                 Vinigrow Holidays (https://vinigrowholidays.com/)
               </a>

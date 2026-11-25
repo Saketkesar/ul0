@@ -334,7 +334,7 @@ function renderLinkPreviewPage(link: LinkDoc, destinationUrl: string) {
           <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
             <div className="p-3 rounded-2xl border border-border bg-card space-y-0.5">
               <span className="text-muted-foreground text-[11px]">Safety Status</span>
-              <p className="font-semibold text-emerald-600 dark:text-emerald-400">Screened Clean</p>
+              <p className="font-semibold text-emerald-600">Screened Clean</p>
             </div>
             <div className="p-3 rounded-2xl border border-border bg-card space-y-0.5">
               <span className="text-muted-foreground text-[11px]">Redirect Type</span>

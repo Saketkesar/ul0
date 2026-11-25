@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Free WhatsApp Link Generator with Pre-filled Message & QR Code | UL0",
+  title: "Free WhatsApp Link Generator with Pre-filled Message & QR Code",
   description:
     "Generate instant wa.me click-to-chat links with custom pre-filled messages, trackable short URLs, and high-res vector QR codes. Free, instant, no signup required.",
   keywords: [
@@ -42,6 +42,35 @@ export const metadata: Metadata = {
   },
 }
 
+const whatsappSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      name: "UL0 WhatsApp Link & QR Code Generator",
+      url: "https://ul0.site/whatsapp",
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "All",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://ul0.site" },
+        { "@type": "ListItem", position: 2, name: "WhatsApp Link Generator", item: "https://ul0.site/whatsapp" },
+      ],
+    },
+  ],
+}
+
 export default function WhatsAppLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(whatsappSchema) }}
+      />
+      {children}
+    </>
+  )
 }

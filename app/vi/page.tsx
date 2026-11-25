@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Rút gọn Link Miễn Phí - Công cụ Rút gọn URL | ul0",
+  title: "Rút gọn Link Miễn Phí - Công cụ Rút gọn URL",
   description: "ul0 - Công cụ rút gọn link miễn phí nhanh nhất Việt Nam. Rút gọn bất kỳ URL nào ngay lập tức. Không cần đăng ký, không giới hạn, 100% miễn phí.",
   alternates: {
     canonical: "https://ul0.site/vi",

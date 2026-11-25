@@ -6,7 +6,7 @@ import { UrlExpanderClient } from "./url-expander-client"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "URL Expander — Unshorten & Check Short Links Online | UL0",
+  title: "URL Expander — Unshorten & Check Short Links Online",
   description: "Free online URL expander. Reveal the true destination of any shortened link (Bitly, TinyURL, t.co, etc.) and check safety before clicking.",
   alternates: {
     canonical: "https://ul0.site/tools/url-expander",

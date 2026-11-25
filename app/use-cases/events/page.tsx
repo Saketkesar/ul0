@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Conference & Event QR Code Tracking | UL0",
+  title: "Conference & Event QR Code Tracking",
   description: "Provide frictionless digital schedules, badge check-ins, and sponsor collateral tracking for conferences, trade shows, and live events with UL0.",
   alternates: {
     canonical: "https://ul0.site/use-cases/events",

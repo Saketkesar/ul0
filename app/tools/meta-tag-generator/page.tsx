@@ -6,7 +6,7 @@ import { MetaTagClient } from "./meta-tag-client"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Meta Tag Generator — Generate SEO & Social Meta Tags Online | UL0",
+  title: "Meta Tag Generator — Generate SEO & Social Meta Tags Online",
   description:
     "Free online Meta Tag Generator. Create SEO-optimized HTML meta tags, OpenGraph cards, and Twitter tags with instant live SERP preview and copyable code.",
   alternates: {

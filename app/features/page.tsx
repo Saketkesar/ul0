@@ -102,8 +102,40 @@ export default function FeaturesPage() {
     { feature: "Free Web Utilities (Redirect/OG)", ul0: "Yes, Included", bitly: "No", tinyurl: "No" },
   ]
 
+  const featuresSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        name: "UL0 Link Management Features: Analytics, QR & API",
+        url: "https://ul0.site/features",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: "https://ul0.site" },
+          { "@type": "ListItem", position: 2, name: "Features", item: "https://ul0.site/features" },
+        ],
+      },
+      {
+        "@type": "ItemList",
+        name: "UL0 Platform Capabilities",
+        itemListElement: coreFeatures.map((feat, idx) => ({
+          "@type": "ListItem",
+          position: idx + 1,
+          name: feat.title,
+          description: feat.description,
+        })),
+      },
+    ],
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(featuresSchema) }}
+      />
       <Header />
 
       <main className="flex-1 py-12 sm:py-16">

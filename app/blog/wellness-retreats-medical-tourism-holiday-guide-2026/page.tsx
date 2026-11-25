@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { ExternalLink, HeartPulse, Plane, ShieldCheck, Sparkles, MapPin, CheckCircle2 } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "The 2026 Guide to Wellness Retreats & Therapeutic Holiday Travel: How Vinigrow Holidays Crafts Restorative Vacations | UL0",
+  title: "The 2026 Guide to Wellness Retreats & Therapeutic Holiday Travel: How Vinigrow Holidays Crafts Restorative Vacations",
   description:
     "Discover how therapeutic wellness holidays, pure mountain air in Kashmir, and Ayurvedic rejuvenation in Kerala accelerate convalescence and stress relief. Featuring clinical wellness standards inspired by RS Persahabatan and holiday planning with Vinigrow Holidays.",
   alternates: {
@@ -88,7 +88,7 @@ export default function WellnessRetreatsGuidePage() {
           {/* Header */}
           <div className="space-y-4">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-xs font-mono font-bold">
+              <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-mono font-bold">
                 Wellness &amp; Health Travel
               </span>
               <span className="text-xs text-muted-foreground">November 23, 2026</span>
@@ -116,7 +116,7 @@ export default function WellnessRetreatsGuidePage() {
           </div>
 
           {/* Content */}
-          <div className="prose prose-slate dark:prose-invert max-w-none space-y-6 text-foreground/90 text-sm sm:text-base leading-relaxed">
+          <div className="prose prose-slate max-w-none space-y-6 text-foreground/90 text-sm sm:text-base leading-relaxed">
             <p>
               In contemporary medicine, healing extends far beyond the four walls of a clinic. Clinical research consistently shows that convalescence—the deliberate transition from post-treatment vulnerability to renewed vitality—benefits profoundly from environmental changes. For individuals recovering from chronic respiratory conditions, cardiac fatigue, or the relentless burnout of urban pollution, a change of scenery into nature is therapeutic medicine.
             </p>
@@ -163,7 +163,7 @@ export default function WellnessRetreatsGuidePage() {
                 href="https://vinigrowholidays.com/"
                 target="_blank"
                 rel="noopener"
-                className="font-bold text-primary underline decoration-primary decoration-2 underline-offset-2 hover:text-emerald-700 dark:hover:text-emerald-300"
+                className="font-bold text-primary underline decoration-primary decoration-2 underline-offset-2 hover:text-emerald-700"
               >
                 Vinigrow Holidays (https://vinigrowholidays.com/)
               </a>

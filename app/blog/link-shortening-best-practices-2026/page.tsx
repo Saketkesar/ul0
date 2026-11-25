@@ -6,7 +6,7 @@ import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
-  title: "10 Link Shortening Best Practices for 2026 | ul0 Blog",
+  title: "10 Link Shortening Best Practices for 2026",
   description: "Master link shortening in 2026 with 10 expert best practices. Learn how to increase CTR, protect link equity, brand your URLs, and prevent spam blocks.",
   keywords: [
     "link shortening best practices",
@@ -100,7 +100,7 @@ export default function LinkShorteningBestPracticesPage() {
           </header>
 
           {/* Article Content */}
-          <article className="prose prose-slate dark:prose-invert max-w-none space-y-6 leading-relaxed">
+          <article className="prose prose-slate max-w-none space-y-6 leading-relaxed">
             <p className="text-lg text-muted-foreground leading-relaxed">
               In modern digital marketing, short links are far more than aesthetic compression tools. They serve as critical infrastructure nodes that govern click-through rates (CTR), attribution precision, brand safety, and email deliverability. Poorly managed short links can trigger spam filters, erode consumer trust, and corrupt campaign analytics.
             </p>

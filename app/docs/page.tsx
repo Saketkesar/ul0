@@ -197,32 +197,32 @@ print(data["shortUrl"])`
                 </thead>
                 <tbody className="divide-y divide-border font-mono text-[11px]">
                   <tr>
-                    <td className="px-3.5 py-2.5 font-bold text-emerald-600 dark:text-emerald-400">POST</td>
+                    <td className="px-3.5 py-2.5 font-bold text-emerald-600">POST</td>
                     <td className="px-3.5 py-2.5">/api/shorten</td>
                     <td className="px-3.5 py-2.5 font-sans text-muted-foreground">Create short link or dynamic QR code</td>
                   </tr>
                   <tr>
-                    <td className="px-3.5 py-2.5 font-bold text-blue-600 dark:text-blue-400">GET</td>
+                    <td className="px-3.5 py-2.5 font-bold text-blue-600">GET</td>
                     <td className="px-3.5 py-2.5">/api/keys</td>
                     <td className="px-3.5 py-2.5 font-sans text-muted-foreground">List active credentials and usage</td>
                   </tr>
                   <tr>
-                    <td className="px-3.5 py-2.5 font-bold text-emerald-600 dark:text-emerald-400">POST</td>
+                    <td className="px-3.5 py-2.5 font-bold text-emerald-600">POST</td>
                     <td className="px-3.5 py-2.5">/api/keys</td>
                     <td className="px-3.5 py-2.5 font-sans text-muted-foreground">Generate a new secret API key</td>
                   </tr>
                   <tr>
-                    <td className="px-3.5 py-2.5 font-bold text-rose-600 dark:text-rose-400">DELETE</td>
+                    <td className="px-3.5 py-2.5 font-bold text-rose-600">DELETE</td>
                     <td className="px-3.5 py-2.5">/api/keys?id=:keyId</td>
                     <td className="px-3.5 py-2.5 font-sans text-muted-foreground">Revoke a specific API key</td>
                   </tr>
                   <tr>
-                    <td className="px-3.5 py-2.5 font-bold text-blue-600 dark:text-blue-400">GET</td>
+                    <td className="px-3.5 py-2.5 font-bold text-blue-600">GET</td>
                     <td className="px-3.5 py-2.5">/api/dashboard/links/:id/analytics</td>
                     <td className="px-3.5 py-2.5 font-sans text-muted-foreground">Query aggregated click metrics</td>
                   </tr>
                   <tr>
-                    <td className="px-3.5 py-2.5 font-bold text-rose-600 dark:text-rose-400">DELETE</td>
+                    <td className="px-3.5 py-2.5 font-bold text-rose-600">DELETE</td>
                     <td className="px-3.5 py-2.5">/api/links/:id</td>
                     <td className="px-3.5 py-2.5 font-sans text-muted-foreground">Permanently delete a short link</td>
                   </tr>

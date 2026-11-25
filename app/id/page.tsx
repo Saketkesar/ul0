@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Pemendek URL Gratis - Perpendek Link | ul0",
+  title: "Pemendek URL Gratis - Perpendek Link",
   description: "ul0 - Pemendek URL tercepat dan gratis di Indonesia. Perpendek link apapun secara instan. Tanpa daftar, tanpa batas, 100% gratis.",
   alternates: {
     canonical: "https://ul0.site/id",

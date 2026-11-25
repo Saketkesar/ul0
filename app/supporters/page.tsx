@@ -73,7 +73,7 @@ export default function SupportersPage() {
                         <p className="font-semibold text-foreground">{s.name}</p>
                         <p className="text-xs text-muted-foreground">{s.date}</p>
                       </div>
-                      <span className="ml-auto text-sm font-bold text-rose-600 dark:text-rose-400">
+                      <span className="ml-auto text-sm font-bold text-rose-600">
                         {s.amount}
                       </span>
                     </div>

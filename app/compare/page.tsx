@@ -12,13 +12,58 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://ul0.site/compare",
   },
+  openGraph: {
+    title: "Compare URL Shorteners — UL0 vs Bitly, Dub, TinyURL & Short.io | UL0",
+    description:
+      "Side-by-side comparison of free link shorteners, custom domain pricing, analytics privacy, and redirect protocols.",
+    url: "https://ul0.site/compare",
+    siteName: "UL0",
+    type: "website",
+    images: [
+      {
+        url: "https://ul0.site/social-card.png",
+        width: 1376,
+        height: 768,
+        alt: "Compare UL0 vs Bitly, Dub, TinyURL & Rebrandly",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Compare URL Shorteners — UL0 vs Bitly, Dub, TinyURL | UL0",
+    description:
+      "Compare custom domain limits, cookie-free analytics, and pricing across top URL shorteners.",
+    images: ["https://ul0.site/social-card.png"],
+  },
 }
 
 export default function CompareHubPage() {
   const competitorList = Object.values(COMPETITORS)
+  const compareSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        name: "URL Shortener Comparisons",
+        url: "https://ul0.site/compare",
+        description: "Side-by-side comparisons between UL0 and legacy URL shorteners.",
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: "https://ul0.site" },
+          { "@type": "ListItem", position: 2, name: "Compare", item: "https://ul0.site/compare" },
+        ],
+      },
+    ],
+  }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground antialiased selection:bg-neutral-200 dark:selection:bg-neutral-800">
+    <div className="flex min-h-screen flex-col bg-background text-foreground antialiased selection:bg-neutral-200">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(compareSchema) }}
+      />
       <Header />
 
       <main className="flex-1">

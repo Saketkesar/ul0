@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "무료 URL 단축기 - 회원가입 없는 링크 줄이기 & QR코드 | ul0",
+  title: "무료 URL 단축기 - 회원가입 없는 링크 줄이기 & QR코드",
   description:
     "ul0는 가입 없이 즉시 사용하는 가장 빠른 무료 URL 단축기입니다. 맞춤형 커스텀 도메인 지원, 고화질 벡터 QR 코드 생성, 안전한 링크 보안을 모두 무료로 제공합니다.",
   alternates: {

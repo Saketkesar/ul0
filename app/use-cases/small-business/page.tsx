@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Link Tracking & Branded Links for Small Businesses | UL0",
+  title: "Link Tracking & Branded Links for Small Businesses",
   description: "Learn how small businesses use UL0 to create branded short links, print high-resolution flyer QR codes, and measure physical-to-digital marketing attribution.",
   alternates: {
     canonical: "https://ul0.site/use-cases/small-business",

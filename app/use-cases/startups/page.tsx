@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Link Infrastructure & Pitch Deck Tracking for Startups | UL0",
+  title: "Link Infrastructure & Pitch Deck Tracking for Startups",
   description: "Track investor pitch deck clicks, measure Product Hunt launch traffic, and integrate developer REST APIs for programmatic short links with UL0.",
   alternates: {
     canonical: "https://ul0.site/use-cases/startups",

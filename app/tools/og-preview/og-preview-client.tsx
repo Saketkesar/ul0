@@ -283,7 +283,7 @@ export function OgPreviewClient() {
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-foreground">og:title</span>
                   {data.raw.ogTitle ? (
-                    <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                    <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
                       <UL0Icon name="check" size={14} /> Present ({titleLen} chars)
                     </span>
                   ) : (
@@ -305,7 +305,7 @@ export function OgPreviewClient() {
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-foreground">og:description</span>
                   {data.raw.ogDescription ? (
-                    <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                    <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
                       <UL0Icon name="check" size={14} /> Present ({descLen} chars)
                     </span>
                   ) : (
@@ -327,7 +327,7 @@ export function OgPreviewClient() {
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-foreground">og:image</span>
                   {data.image ? (
-                    <span className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
+                    <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
                       <UL0Icon name="check" size={14} /> Detected
                     </span>
                   ) : (

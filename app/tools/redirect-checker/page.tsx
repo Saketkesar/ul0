@@ -6,7 +6,7 @@ import { RedirectCheckerClient } from "./redirect-checker-client"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "HTTP Redirect Checker & 301 Redirect Chain Tracer | UL0",
+  title: "HTTP Redirect Checker & 301 Redirect Chain Tracer",
   description: "Free online HTTP redirect checker. Trace 301, 302, and 307 redirect chains, inspect status codes and response headers, and diagnose redirect loops.",
   alternates: {
     canonical: "https://ul0.site/tools/redirect-checker",

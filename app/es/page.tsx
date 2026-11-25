@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Acortador de URL Gratis - Acortar Enlaces y Códigos QR | ul0",
+  title: "Acortador de URL Gratis - Acortar Enlaces y Códigos QR",
   description: "El acortador de URL y generador de códigos QR más rápido y gratuito. Acorta cualquier enlace al instante sin registro ni límites. Enlaces de marca con dominio personalizado.",
   alternates: {
     canonical: "https://ul0.site/es",

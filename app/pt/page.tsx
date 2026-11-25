@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Encurtador de URL Grátis - Encurtar Link | ul0",
+  title: "Encurtador de URL Grátis - Encurtar Link",
   description: "ul0 - O encurtador de URL mais rápido e gratuito do Brasil. Encurte qualquer link instantaneamente. Sem cadastro, sem limite, 100% grátis.",
   alternates: {
     canonical: "https://ul0.site/pt",

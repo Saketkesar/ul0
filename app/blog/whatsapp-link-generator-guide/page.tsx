@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "How to Create a WhatsApp Link with Message (Free 2026 Generator) | UL0",
+  title: "How to Create a WhatsApp Link with Message (Free 2026 Generator)",
   description: "Learn how to generate free WhatsApp direct chat links with custom pre-filled messages. No app required. Convert website visitors into WhatsApp conversations.",
   keywords: [
     "whatsapp link generator",
@@ -145,7 +145,7 @@ export default function WhatsAppLinkGeneratorGuidePage() {
 
           <header className="space-y-4 border-b border-border pb-8">
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-3 py-1 rounded-full flex items-center gap-1.5">
+              <span className="text-xs font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full flex items-center gap-1.5">
                 <UL0Icon name="whatsapp" className="h-3.5 w-3.5" /> WhatsApp Marketing Tutorial
               </span>
             </div>
@@ -164,7 +164,7 @@ export default function WhatsAppLinkGeneratorGuidePage() {
             </div>
           </header>
 
-          <div className="prose prose-neutral dark:prose-invert max-w-none text-foreground text-sm sm:text-base leading-relaxed space-y-6">
+          <div className="prose prose-neutral max-w-none text-foreground text-sm sm:text-base leading-relaxed space-y-6">
             <p className="text-lg leading-relaxed text-foreground font-medium">
               Over 2.7 billion people use WhatsApp daily. If your customer has to manually type your phone number, save you to their phone address book, and search for you in their contact list, you lose over <strong>60% of potential leads</strong> before they ever say hello.
             </p>
@@ -196,10 +196,10 @@ export default function WhatsAppLinkGeneratorGuidePage() {
                   Use the full international telephone number format. Omit any zeroes, brackets, dashes, or plus signs.
                 </p>
                 <div className="grid gap-2 sm:grid-cols-2 text-xs font-mono pt-2">
-                  <div className="p-2 rounded bg-emerald-500/10 text-emerald-700 dark:text-emerald-400">
+                  <div className="p-2 rounded bg-emerald-500/10 text-emerald-700">
                     ✓ Correct: 15551234567 (US)
                   </div>
-                  <div className="p-2 rounded bg-rose-500/10 text-rose-700 dark:text-rose-400">
+                  <div className="p-2 rounded bg-rose-500/10 text-rose-700">
                     ✗ Incorrect: +1 (555) 123-4567
                   </div>
                 </div>
@@ -231,7 +231,7 @@ export default function WhatsAppLinkGeneratorGuidePage() {
 
             {/* Direct Tool Callout */}
             <div className="my-10 p-6 sm:p-8 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 text-center space-y-4 not-prose">
-              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full">
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-500/10 px-3 py-1 rounded-full">
                 <UL0Icon name="bolt" className="h-3.5 w-3.5" /> Free Web Tool
               </span>
               <h3 className="text-xl sm:text-2xl font-bold text-foreground">

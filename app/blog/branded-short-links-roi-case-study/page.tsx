@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Why Branded Short Links Increase CTR by 39%: Case Study (2026) | ul0",
+  title: "Why Branded Short Links Increase CTR by 39%: Case Study (2026)",
   description:
     "Discover real-world conversion benchmarks and case study data showing why branded custom domain short links outperform generic shortened URLs.",
   alternates: {
@@ -47,7 +47,7 @@ export default function BrandedLinksRoiCaseStudyPage() {
             </p>
           </header>
 
-          <div className="prose prose-neutral dark:prose-invert max-w-none space-y-6">
+          <div className="prose prose-neutral max-w-none space-y-6">
             <h2 className="text-2xl font-bold">1. Consumer Trust and the Spam Filter Barrier</h2>
             <p>
               In 2026, internet users are more hyper-vigilant about cybersecurity than ever. Phishing attacks, malware downloads, and crypto scams frequently disguise destinations using shared shortener domains.

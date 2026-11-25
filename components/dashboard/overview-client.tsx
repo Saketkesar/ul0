@@ -258,7 +258,7 @@ export function OverviewClient({
             <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-mono">
               {totalClicksSum.toLocaleString()}
             </span>
-            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600">
               <UL0Icon name="chartline" size={12} />
               +14.2%
             </span>
@@ -278,7 +278,7 @@ export function OverviewClient({
             <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-mono">
               {Math.round(totalClicksSum * 0.78).toLocaleString()}
             </span>
-            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+            <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600">
               <UL0Icon name="chartline" size={12} />
               +8.5%
             </span>
@@ -333,7 +333,7 @@ export function OverviewClient({
                 <span className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-mono">
                   {Math.round(totalClicksSum * 0.15).toLocaleString()}
                 </span>
-                <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                <span className="inline-flex items-center gap-0.5 text-xs font-bold text-emerald-600">
                   <UL0Icon name="chartline" size={12} />
                   +19.0%
                 </span>

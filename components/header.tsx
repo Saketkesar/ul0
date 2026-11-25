@@ -25,31 +25,6 @@ export function Header() {
   const pathname = usePathname()
   const { isSignedIn } = useAuth()
   const [mobileOpen, setMobileOpen] = useState(false)
-  const [isDark, setIsDark] = useState(false)
-
-  // Initialize theme state
-  useEffect(() => {
-    try {
-      const isDarkMode = document.documentElement.classList.contains("dark")
-      setIsDark(isDarkMode)
-    } catch {}
-  }, [])
-
-  const toggleTheme = () => {
-    const nextDark = !isDark
-    setIsDark(nextDark)
-    try {
-      if (nextDark) {
-        document.documentElement.classList.add("dark")
-        localStorage.setItem("theme", "dark")
-        document.cookie = "theme=dark; path=/; max-age=31536000; SameSite=Lax"
-      } else {
-        document.documentElement.classList.remove("dark")
-        localStorage.setItem("theme", "light")
-        document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax"
-      }
-    } catch {}
-  }
 
   // Close mobile sheet on path change
   useEffect(() => {
@@ -190,17 +165,6 @@ export function Header() {
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-          {/* Theme toggle */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            className="h-9 w-9 p-0 flex items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors cursor-pointer"
-            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            aria-label="Toggle theme"
-          >
-            <UL0Icon name="palette" size={18} />
-          </button>
-
           {/* Auth State */}
           {isSignedIn ? (
             <div className="flex items-center gap-2">

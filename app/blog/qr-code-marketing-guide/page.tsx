@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "QR Code Marketing Guide 2026 - Best Practices for Business | ul0",
+  title: "QR Code Marketing Guide 2026 - Best Practices for Business",
   description: "Learn how to use QR codes for marketing in 2026. Discover best practices for retail, restaurants, and campaigns. Bridge print to digital with ul0.",
   keywords: [
     "qr code marketing",
@@ -87,7 +87,7 @@ export default function QrCodeMarketingGuidePage() {
             </p>
           </header>
 
-          <div className="prose prose-gray dark:prose-invert max-w-none space-y-6">
+          <div className="prose prose-gray max-w-none space-y-6">
             <p className="text-lg">
               QR codes have transitioned from a tech novelty into a fundamental bridge between the offline and online worlds. 
               In 2026, brands are leveraging QR codes across product packaging, storefronts, print ads, and menus to instantly connect 

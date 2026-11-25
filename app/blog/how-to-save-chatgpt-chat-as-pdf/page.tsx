@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "How to Save a ChatGPT Chat as PDF (3 Easy Methods) | UL0",
+  title: "How to Save a ChatGPT Chat as PDF (3 Easy Methods)",
   description:
     "Learn 3 simple ways to save and export ChatGPT chats as clean, printable A4 PDFs. Includes link conversion, browser printing, and formatting tips.",
   alternates: {
@@ -118,7 +118,7 @@ export default function HowToSaveChatGPTChatAsPdfPage() {
                 <li>Uncheck <em>Headers and footers</em> to prevent URLs and date stamps from cluttering margins.</li>
                 <li>Click <strong>Save</strong>.</li>
               </ul>
-              <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 text-xs text-amber-800 dark:text-amber-300">
+              <div className="p-4 rounded-xl border border-amber-500/20 bg-amber-500/5 text-xs text-amber-800">
                 <strong>Limitation:</strong> Long code blocks may overflow horizontally off the page or be split awkwardly across page breaks.
               </div>
             </section>

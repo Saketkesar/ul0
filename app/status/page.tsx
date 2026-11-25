@@ -63,7 +63,7 @@ export default function StatusPage() {
       <main className="flex-1">
         <section className="py-12 sm:py-16 border-b bg-muted/20">
           <div className="container mx-auto px-4 max-w-3xl text-center">
-            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-700 dark:text-emerald-400 mb-6 shadow-2xs">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1.5 text-xs font-semibold text-emerald-700 mb-6 shadow-2xs">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -94,7 +94,7 @@ export default function StatusPage() {
                       <p className="text-xs text-muted-foreground mt-0.5">{service.description}</p>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 shrink-0">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 shrink-0">
                     <UL0Icon name="check" size={14} />
                     <span>{service.status}</span>
                   </div>

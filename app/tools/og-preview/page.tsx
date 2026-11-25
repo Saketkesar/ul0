@@ -6,7 +6,7 @@ import { OgPreviewClient } from "./og-preview-client"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "OpenGraph & Social Card Previewer — Test Meta Tags Online | UL0",
+  title: "OpenGraph & Social Card Previewer — Test Meta Tags Online",
   description:
     "Free OpenGraph debugger and social media card previewer. Test how your links display across X (Twitter), Facebook, LinkedIn, and Discord before sharing.",
   alternates: {

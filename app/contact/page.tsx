@@ -4,8 +4,34 @@ import { UL0Icon } from "@/components/ul0-icon"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Contact Us | ul0 - Free URL Shortener",
-  description: "Get in touch with ul0 team. Contact us for support, feedback, or business inquiries.",
+  title: "Contact Us — Support & Business Inquiries",
+  description:
+    "Get in touch with the UL0 team for custom domain setup help, abuse reports, or business inquiries.",
+  alternates: {
+    canonical: "https://ul0.site/contact",
+  },
+  openGraph: {
+    title: "Contact Us — Support & Business Inquiries | UL0",
+    description:
+      "Contact the UL0 team for custom domain support, enterprise inquiries, or account assistance.",
+    url: "https://ul0.site/contact",
+    siteName: "UL0",
+    type: "website",
+    images: [
+      {
+        url: "https://ul0.site/social-card.png",
+        width: 1376,
+        height: 768,
+        alt: "Contact UL0 Support",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Us — Support & Business Inquiries | UL0",
+    description: "Contact the UL0 team for support, feedback, or business inquiries.",
+    images: ["https://ul0.site/social-card.png"],
+  },
 }
 
 export default function ContactPage() {

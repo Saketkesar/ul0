@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "How to Track Link Clicks for Free in 2026 - Analytics Guide | ul0",
+  title: "How to Track Link Clicks for Free in 2026 - Analytics Guide",
   description: "Learn how to track URL clicks for free without paying for expensive tools. Track CTR, referrer sources, geographic locations, and devices.",
   keywords: [
     "track link clicks free",
@@ -84,7 +84,7 @@ export default function TrackLinkClicksFreePage() {
             </p>
           </header>
 
-          <div className="prose prose-gray dark:prose-invert max-w-none space-y-6 text-muted-foreground leading-relaxed">
+          <div className="prose prose-gray max-w-none space-y-6 text-muted-foreground leading-relaxed">
             <p className="text-lg text-foreground">
               In digital marketing, if you can&apos;t measure your link clicks, you can&apos;t optimize your campaign return on investment (ROI). Knowing how many people click your shared links—and where those clicks originate—is crucial for social media managers, affiliate marketers, and small business owners.
             </p>

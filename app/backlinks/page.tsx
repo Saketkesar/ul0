@@ -73,7 +73,7 @@ export default async function BacklinksPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#F7F6F3]/60 dark:bg-[#121212] selection:bg-neutral-200 selection:text-neutral-900">
+    <div className="flex min-h-screen flex-col bg-[#F7F6F3]/60 selection:bg-neutral-200 selection:text-neutral-900">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

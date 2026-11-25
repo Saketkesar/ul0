@@ -6,7 +6,7 @@ import { PdfSplitterClient } from "./pdf-splitter-client"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "PDF Splitter — Extract, Rename & Download Pages Separately Online | UL0",
+  title: "PDF Splitter — Extract, Rename & Download Pages Separately Online",
   description:
     "Free online PDF splitter. Upload any multi-page PDF (30+ pages), display all pages line-by-line with instant previews, rename files, and download single pages or selected batches as separate PDFs.",
   alternates: {

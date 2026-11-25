@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Custom Domain DNS & CNAME Setup Guide for Short Links | UL0",
+  title: "Custom Domain DNS & CNAME Setup Guide for Short Links",
   description:
     "Complete step-by-step technical guide to configuring CNAME DNS records, Let's Encrypt SSL certificates, and Cloudflare/GoDaddy/Route53 settings for branded short links.",
   alternates: {
@@ -125,7 +125,7 @@ export default function CustomDomainDnsSetupGuidePage() {
             </div>
           </header>
 
-          <article className="prose prose-slate dark:prose-invert max-w-none space-y-8 leading-relaxed">
+          <article className="prose prose-slate max-w-none space-y-8 leading-relaxed">
             {/* Quick Context Callout */}
             <div className="not-prose rounded-2xl border border-primary/20 bg-primary/5 p-6 space-y-3">
               <div className="flex items-center gap-2 text-sm font-bold text-primary">
@@ -179,7 +179,7 @@ export default function CustomDomainDnsSetupGuidePage() {
                 </div>
                 <div className="grid grid-cols-3 gap-2 py-1 items-center border-t">
                   <span className="font-semibold text-primary">Target / Value</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">cname.ul0.site</span>
+                  <span className="font-bold text-emerald-600">cname.ul0.site</span>
                   <span className="text-muted-foreground">Authoritative UL0 edge endpoint</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 py-1 items-center border-t">
@@ -211,11 +211,11 @@ export default function CustomDomainDnsSetupGuidePage() {
                   <li>Set <strong>Name:</strong> <code className="bg-muted px-1.5 py-0.5 rounded font-mono font-bold">go</code> (or your chosen subdomain).</li>
                   <li>Set <strong>Target:</strong> <code className="bg-muted px-1.5 py-0.5 rounded font-mono font-bold">cname.ul0.site</code>.</li>
                   <li>
-                    <strong className="text-rose-600 dark:text-rose-400">CRITICAL STEP — Proxy Status:</strong> Set the toggle to <strong>DNS Only (Gray Cloud)</strong>.
+                    <strong className="text-rose-600">CRITICAL STEP — Proxy Status:</strong> Set the toggle to <strong>DNS Only (Gray Cloud)</strong>.
                   </li>
                   <li>Click <strong>Save</strong>.</li>
                 </ol>
-                <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-xs text-amber-900 dark:text-amber-200 space-y-1">
+                <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-4 text-xs text-amber-900 space-y-1">
                   <strong>Why Gray Cloud (DNS Only) Matters:</strong>
                   <p>
                     If you leave the Cloudflare Orange Cloud (Proxied) enabled during initial domain verification, Cloudflare intercepts the automated Let&apos;s Encrypt HTTP-01 challenge handshake. Setting it to Gray Cloud allows our edge proxy to provision your SSL certificate directly. Once your certificate is active, you can re-enable the Orange Cloud if desired.
@@ -351,7 +351,7 @@ export default function CustomDomainDnsSetupGuidePage() {
                   <code>curl -I https://go.yourbrand.com/test</code>
                 </div>
                 <p className="text-[11px] text-muted-foreground">
-                  Expected response: An immediate <code className="text-emerald-600 dark:text-emerald-400 font-bold">HTTP/2 301</code> or <code className="text-emerald-600 dark:text-emerald-400 font-bold">HTTP/2 200</code> header confirming your edge routing is active.
+                  Expected response: An immediate <code className="text-emerald-600 font-bold">HTTP/2 301</code> or <code className="text-emerald-600 font-bold">HTTP/2 200</code> header confirming your edge routing is active.
                 </p>
               </div>
             </section>

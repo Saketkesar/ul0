@@ -355,7 +355,7 @@ export function ApiKeysClient({ initialKeys, planSlug }: ApiKeysClientProps) {
 
           {createdSecret ? (
             <div className="space-y-4 py-2">
-              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 flex items-start gap-2 text-xs text-amber-700 dark:text-amber-400">
+              <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 flex items-start gap-2 text-xs text-amber-700">
                 <UL0Icon name="warning" className="h-4 w-4 shrink-0 mt-0.5" />
                 <span>
                   Save this key in a password manager or secure environment variable. It cannot be recovered once this dialog is closed.

@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "The Science of the Pomodoro Technique: Boost Deep Work & Focus in 2026 | ul0",
+  title: "The Science of the Pomodoro Technique: Boost Deep Work & Focus in 2026",
   description: "Learn how the 25-minute Pomodoro time management technique fights cognitive fatigue, prevents burnout, and increases daily productivity.",
   keywords: [
     "pomodoro technique guide",
@@ -83,7 +83,7 @@ export default function PomodoroProductivityGuidePage() {
             </p>
           </header>
 
-          <div className="prose prose-gray dark:prose-invert max-w-none space-y-6 text-muted-foreground leading-relaxed">
+          <div className="prose prose-gray max-w-none space-y-6 text-muted-foreground leading-relaxed">
             <p className="text-lg text-foreground">
               In an era dominated by continuous notifications and context switching, maintaining sustained focus is a rare competitive advantage. Developed by Francesco Cirillo in the late 1980s, the Pomodoro Technique remains one of the most scientifically validated methods for conquering procrastination.
             </p>

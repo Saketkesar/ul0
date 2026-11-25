@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Security & Safety Architecture — How ul0 Protects Users | ul0",
+  title: "Security & Safety Architecture — How ul0 Protects Users",
   description:
     "Learn about ul0's security infrastructure, including TLS/HTTPS encryption, SSRF protection, anti-phishing heuristics, and privacy-first data handling.",
   alternates: {
@@ -22,7 +22,7 @@ export default function SecurityPage() {
         <div className="container mx-auto px-4 max-w-4xl space-y-12">
           {/* Header */}
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 mb-4 border border-emerald-500/20">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-600 mb-4 border border-emerald-500/20">
               <UL0Icon name="shield" className="h-4 w-4" />
               Infrastructure &amp; Safety Standards
             </div>

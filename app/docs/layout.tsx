@@ -24,6 +24,34 @@ export const metadata: Metadata = {
     images: ["https://ul0.site/social-card.png"],
   },
 }
+const docsSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "TechArticle",
+      headline: "UL0 URL Shortener REST API Documentation",
+      url: "https://ul0.site/docs",
+      description:
+        "Complete REST API reference for shortening links, managing custom domains, and querying click analytics.",
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://ul0.site" },
+        { "@type": "ListItem", position: 2, name: "API Docs", item: "https://ul0.site/docs" },
+      ],
+    },
+  ],
+}
+
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(docsSchema) }}
+      />
+      {children}
+    </>
+  )
 }

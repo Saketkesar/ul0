@@ -125,7 +125,7 @@ export function PricingSection() {
               key={p.name}
               className={`rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-6 transition-all ${
                 isPro
-                  ? "bg-[#0B1A17] dark:bg-[#0E211E] text-white shadow-xl border border-[#3DDBB8]/30 relative scale-[1.02]"
+                  ? "bg-[#0B1A17] text-white shadow-xl border border-[#3DDBB8]/30 relative scale-[1.02]"
                   : "bg-card border border-border text-foreground shadow-2xs"
               }`}
             >

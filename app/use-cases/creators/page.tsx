@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Link Tracking & Branded Bio Links for Creators | UL0",
+  title: "Link Tracking & Branded Bio Links for Creators",
   description: "Create memorable short links for YouTube descriptions, Instagram bios, podcast audio ads, and brand sponsor verification with UL0.",
   alternates: {
     canonical: "https://ul0.site/use-cases/creators",

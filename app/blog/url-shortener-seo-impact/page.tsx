@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Do Short URLs Affect SEO? The Truth About URL Shorteners | ul0",
+  title: "Do Short URLs Affect SEO? The Truth About URL Shorteners",
   description: "Does using a URL shortener hurt your Google rankings? Learn the SEO impact of 301 redirects, link equity, and search ranking factors in 2026.",
   keywords: [
     "url shortener seo",
@@ -85,7 +85,7 @@ export default function UrlShortenerSeoImpactPage() {
             </p>
           </header>
 
-          <div className="prose prose-gray dark:prose-invert max-w-none space-y-6">
+          <div className="prose prose-gray max-w-none space-y-6">
             <p className="text-lg">
               A common question among digital marketers, website owners, and bloggers is whether using a URL shortener 
               negatively impacts Search Engine Optimization (SEO). Will Google penalize your links? Does redirecting traffic 

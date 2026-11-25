@@ -161,8 +161,8 @@ export function FloatingActionDock() {
           <div className="flex items-center justify-between gap-2 pb-4 border-b border-border/60">
             {/* Logo */}
             <div className="flex items-center gap-1 select-none shrink-0">
-              <span className="font-extrabold text-lg tracking-tight text-[#1B685C] dark:text-[#3DDBB8]">
-                ul0<span className="text-[#3DDBB8] dark:text-[#87D474]">.site</span>
+              <span className="font-extrabold text-lg tracking-tight text-[#1B685C]">
+                ul0<span className="text-[#3DDBB8]">.site</span>
               </span>
             </div>
 
@@ -176,7 +176,7 @@ export function FloatingActionDock() {
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === "link"
-                    ? "bg-[#E6F8F4] dark:bg-[#1B685C]/30 text-[#1B685C] dark:text-[#3DDBB8] shadow-2xs"
+                    ? "bg-[#E6F8F4] text-[#1B685C] shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -192,7 +192,7 @@ export function FloatingActionDock() {
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                   activeTab === "qr"
-                    ? "bg-[#E6F8F4] dark:bg-[#1B685C]/30 text-[#1B685C] dark:text-[#3DDBB8] shadow-2xs"
+                    ? "bg-[#E6F8F4] text-[#1B685C] shadow-2xs"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -205,7 +205,7 @@ export function FloatingActionDock() {
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="h-7 w-7 rounded-full flex items-center justify-center text-red-500/80 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors cursor-pointer shrink-0"
+              className="h-7 w-7 rounded-full flex items-center justify-center text-red-500/80 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer shrink-0"
               title="Close"
               aria-label="Close"
             >
@@ -385,11 +385,11 @@ export function FloatingActionDock() {
               </div>
 
               {/* Environmental Impact Note */}
-              <div className="pt-2 border-t border-emerald-500/20 bg-emerald-500/10 dark:bg-emerald-950/20 rounded-lg p-2.5 flex items-start gap-2">
-                <div className="text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5">
+              <div className="pt-2 border-t border-emerald-500/20 bg-emerald-500/10 rounded-lg p-2.5 flex items-start gap-2">
+                <div className="text-emerald-600 shrink-0 mt-0.5">
                   <UL0Icon name="sparkles" size={14} />
                 </div>
-                <p className="text-[10px] text-emerald-800/90 dark:text-emerald-300/90 leading-tight">
+                <p className="text-[10px] text-emerald-800/90 leading-tight">
                   <strong>100% Paperless:</strong> Thank you for saving trees and cutting print carbon with UL0.
                 </p>
               </div>
@@ -400,15 +400,15 @@ export function FloatingActionDock() {
 
       {/* 2. RIGHT-SIDE FLOATING ACTION DOCK (PINNED TO BOTTOM-RIGHT) */}
       <div
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2.5 p-2 pl-4 rounded-full bg-[#1B685C] text-white shadow-xl hover:shadow-2xl transition-all duration-200 select-none animate-in fade-in slide-in-from-bottom-4 border-2 border-white/20"
+        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-2 sm:gap-2.5 p-1.5 sm:p-2 pl-3.5 sm:pl-4 rounded-full bg-[#1B685C] text-white shadow-xl hover:shadow-2xl transition-all duration-200 select-none animate-in fade-in slide-in-from-bottom-4 border-2 border-white/20"
         role="region"
         aria-label="Quick Actions Dock"
       >
-        <span className="text-xs sm:text-sm font-bold tracking-tight pr-1">Start now:</span>
+        <span className="text-xs sm:text-sm font-bold tracking-tight pr-0.5 sm:pr-1">Start now:</span>
         <button
           type="button"
           onClick={() => handleOpenTab("link")}
-          className={`h-9 w-9 rounded-full flex items-center justify-center transition-transform hover:scale-110 active:scale-95 shadow-xs cursor-pointer ${
+          className={`h-10 w-10 sm:h-9 sm:w-9 rounded-full flex items-center justify-center transition-transform hover:scale-110 active:scale-95 shadow-xs cursor-pointer ${
             isOpen && activeTab === "link"
               ? "bg-[#3DDBB8] text-[#061814] ring-2 ring-white"
               : "bg-white text-[#1B685C] hover:bg-neutral-100"
@@ -421,7 +421,7 @@ export function FloatingActionDock() {
         <button
           type="button"
           onClick={() => handleOpenTab("qr")}
-          className={`h-9 w-9 rounded-full flex items-center justify-center transition-transform hover:scale-110 active:scale-95 shadow-xs cursor-pointer ${
+          className={`h-10 w-10 sm:h-9 sm:w-9 rounded-full flex items-center justify-center transition-transform hover:scale-110 active:scale-95 shadow-xs cursor-pointer ${
             isOpen && activeTab === "qr"
               ? "bg-[#3DDBB8] text-[#061814] ring-2 ring-white"
               : "bg-white text-[#1B685C] hover:bg-neutral-100"

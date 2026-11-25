@@ -6,7 +6,7 @@ import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
-  title: "The Ultimate TikTok Bio Link Guide 2026: Boost CTR & Sales | ul0",
+  title: "The Ultimate TikTok Bio Link Guide 2026: Boost CTR & Sales",
   description:
     "Master TikTok bio links in 2026. How to add links without 10k followers, compare Linktree vs custom domains, avoid shadowbans, and boost conversions.",
   alternates: {
@@ -48,7 +48,7 @@ export default function TikTokBioLinkGuidePage() {
             </p>
           </header>
 
-          <div className="prose prose-neutral dark:prose-invert max-w-none space-y-6">
+          <div className="prose prose-neutral max-w-none space-y-6">
             <h2 className="text-2xl font-bold">1. The TikTok Bio Link Dilemma in 2026</h2>
             <p>
               TikTok only gives you one single clickable URL in your profile bio. For years, creators defaulted to Linktree, Beacons, or similar generic aggregators. However, in 2026, social platforms aggressively deprioritize generic shared domains because spam networks abuse them.

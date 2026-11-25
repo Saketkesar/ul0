@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "How to Add Multiple Links in Instagram Bio - Bio Link Guide 2026 | ul0",
+  title: "How to Add Multiple Links in Instagram Bio - Bio Link Guide 2026",
   description: "Learn how to add multiple links to your Instagram bio using clean shortened links and custom redirect aliases to maximize your CTR in 2026.",
   keywords: [
     "instagram bio links",
@@ -86,7 +86,7 @@ export default function ShortLinksInstagramBioPage() {
             </p>
           </header>
 
-          <div className="prose prose-gray dark:prose-invert max-w-none space-y-6">
+          <div className="prose prose-gray max-w-none space-y-6">
             <p className="text-lg">
               Instagram is one of the most powerful platforms for driving brand awareness, but it famously restricts users to 
               a limited number of active links in their profile bio. In 2026, maximizing your <strong>"link in bio"</strong> 

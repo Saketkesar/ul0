@@ -119,9 +119,9 @@ export function ThreatRadarClient({
   }
 
   return (
-    <div className="space-y-6 font-sans text-neutral-900 dark:text-neutral-100">
+    <div className="space-y-6 font-sans text-neutral-900">
       {/* Notion Header */}
-      <div className="space-y-3 border-b border-neutral-200 dark:border-neutral-800 pb-5">
+      <div className="space-y-3 border-b border-neutral-200 pb-5">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <UL0Icon name="shield" animated={true} size={28} className="text-primary shrink-0" />
@@ -130,7 +130,7 @@ export function ThreatRadarClient({
               alt="ul0"
               width={70}
               height={24}
-              className="h-5 w-auto object-contain dark:invert"
+              className="h-5 w-auto object-contain"
             />
           </div>
 
@@ -164,7 +164,7 @@ export function ThreatRadarClient({
           <h1 className="text-xl sm:text-2xl font-bold tracking-tight">
             Blocked Phishing Links &amp; Scam Directory
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+          <p className="text-xs sm:text-sm text-neutral-500 mt-1">
             Registry of malicious links intercepted and neutralized by ul0. Zero traffic, zero redirects, and zero backlink equity passed to scammers.
           </p>
         </div>
@@ -173,10 +173,10 @@ export function ThreatRadarClient({
         <div className="flex items-start gap-2.5 p-4 rounded-2xl bg-surface-2 border border-border text-xs text-muted-foreground">
           <UL0Icon name="info" size={16} className="mt-0.5 shrink-0" />
           <div className="space-y-0.5">
-            <p className="font-semibold text-neutral-900 dark:text-neutral-100">
+            <p className="font-semibold text-neutral-900">
               Zero Backlink Protection
             </p>
-            <p className="text-neutral-500 dark:text-neutral-400 leading-relaxed">
+            <p className="text-neutral-500 leading-relaxed">
               Target URLs are defanged text without clickable hyperlinks. Search bots do not pass PageRank or Domain Rating (DR) to attackers.
             </p>
           </div>
@@ -188,14 +188,14 @@ export function ThreatRadarClient({
         <div className="space-y-5">
           {/* Permanently Blocked Root Domains */}
           <div className="space-y-1.5">
-            <p className="text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 uppercase tracking-wider">
+            <p className="text-[11px] font-semibold text-neutral-500 uppercase tracking-wider">
               Permanently Banned Root Domains ({blacklistedDomains.length})
             </p>
             <div className="flex flex-wrap gap-1.5">
               {blacklistedDomains.map((domain) => (
                 <div
                   key={domain}
-                  className="px-2 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-xs font-mono text-neutral-800 dark:text-neutral-200 flex items-center gap-1.5"
+                  className="px-2 py-0.5 rounded bg-neutral-100 border border-neutral-200 text-xs font-mono text-neutral-800 flex items-center gap-1.5"
                 >
                   <span>*.{domain.replace(".", "[.]")}</span>
                   <span className="text-[10px] text-neutral-500 uppercase">banned</span>
@@ -276,15 +276,15 @@ export function ThreatRadarClient({
                         </td>
 
                         {/* Spoofed Brand */}
-                        <td className="py-2.5 px-3 text-neutral-800 dark:text-neutral-200">
-                          <span className="px-1.5 py-0.5 rounded bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-[11px]">
+                        <td className="py-2.5 px-3 text-neutral-800">
+                          <span className="px-1.5 py-0.5 rounded bg-neutral-100 border border-neutral-200 text-[11px]">
                             {threat.spoofedBrand}
                           </span>
                         </td>
 
                         {/* Status: pure neutral gray badge */}
                         <td className="py-2.5 px-3">
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300 border border-neutral-200 dark:border-neutral-700">
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-neutral-100 text-neutral-700 border border-neutral-200">
                             BLOCKED
                           </span>
                         </td>
@@ -307,39 +307,39 @@ export function ThreatRadarClient({
       {activeTab === "submit" && (
         <div className="space-y-4 max-w-xl">
           {/* Notion Callout Box */}
-          <div className="p-3.5 rounded-md bg-neutral-50 dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 space-y-1">
-            <h2 className="text-xs font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
+          <div className="p-3.5 rounded-md bg-neutral-50 border border-neutral-200 space-y-1">
+            <h2 className="text-xs font-semibold text-neutral-900 flex items-center gap-1.5">
               <Sparkles className="h-3.5 w-3.5 text-primary shrink-0" />
               <span>Submit a Phishing Link</span>
             </h2>
-            <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
+            <p className="text-xs text-neutral-500 leading-relaxed">
               Found a scam or fake login page? Submit it with proof to protect others. Reports are sent directly to our private review team via Basin and will not be displayed on the public list until verified and blocked.
             </p>
           </div>
 
           {submitStatus === "success" && (
-            <div className="p-3.5 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs space-y-1">
-              <p className="font-semibold text-neutral-900 dark:text-neutral-100 flex items-center gap-1.5">
+            <div className="p-3.5 rounded-md bg-neutral-100 border border-neutral-300 text-xs space-y-1">
+              <p className="font-semibold text-neutral-900 flex items-center gap-1.5">
                 <Check className="h-3.5 w-3.5" />
                 Report Submitted! Verification Pending
               </p>
-              <p className="text-neutral-500 dark:text-neutral-400">
+              <p className="text-neutral-500">
                 Thank you for keeping the web safe. Our security review team will inspect the proof and disable the scam.
               </p>
             </div>
           )}
 
           {submitStatus === "error" && (
-            <div className="p-3.5 rounded-md bg-neutral-100 dark:bg-neutral-800 border border-neutral-300 dark:border-neutral-700 text-xs text-neutral-800 dark:text-neutral-200">
+            <div className="p-3.5 rounded-md bg-neutral-100 border border-neutral-300 text-xs text-neutral-800">
               <p className="font-semibold">Submission failed</p>
-              <p className="text-neutral-500 dark:text-neutral-400">{errorMessage}</p>
+              <p className="text-neutral-500">{errorMessage}</p>
             </div>
           )}
 
           <form onSubmit={handleFormSubmit} className="space-y-3.5 text-xs">
             {/* Phishing Link */}
             <div className="space-y-1">
-              <label className="font-medium text-neutral-800 dark:text-neutral-200 block">
+              <label className="font-medium text-neutral-800 block">
                 Phishing / Scam Link <span className="text-neutral-400">*</span>
               </label>
               <input
@@ -348,7 +348,7 @@ export function ThreatRadarClient({
                 value={phishingUrl}
                 onChange={(e) => setPhishingUrl(e.target.value)}
                 placeholder="https://scam-domain.com/login or short link"
-                className="w-full px-3 py-1.5 bg-transparent border border-neutral-200 dark:border-neutral-700 rounded-md focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 font-mono text-xs"
+                className="w-full px-3 py-1.5 bg-transparent border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-400 font-mono text-xs"
               />
               <p className="text-[11px] text-neutral-400">
                 The fake login, scam website, or suspicious short link.
@@ -357,7 +357,7 @@ export function ThreatRadarClient({
 
             {/* Target Brand */}
             <div className="space-y-1">
-              <label className="font-medium text-neutral-800 dark:text-neutral-200 block">
+              <label className="font-medium text-neutral-800 block">
                 Brand Being Spoofed
               </label>
               <input
@@ -365,13 +365,13 @@ export function ThreatRadarClient({
                 value={targetBrand}
                 onChange={(e) => setTargetBrand(e.target.value)}
                 placeholder="e.g. Telegram, Libero Mail, PayPal, Bank"
-                className="w-full px-3 py-1.5 bg-transparent border border-neutral-200 dark:border-neutral-700 rounded-md focus:outline-none focus:border-neutral-400 dark:focus:border-neutral-500 text-xs"
+                className="w-full px-3 py-1.5 bg-transparent border border-neutral-200 rounded-md focus:outline-none focus:border-neutral-400 text-xs"
               />
             </div>
 
             {/* Proof Screenshot Upload */}
             <div className="space-y-1">
-              <label className="font-medium text-neutral-800 dark:text-neutral-200 block">
+              <label className="font-medium text-neutral-800 block">
                 Proof Screenshot / Image
               </label>
               <div className="flex items-center gap-2.5">
@@ -409,7 +409,7 @@ export function ThreatRadarClient({
 
             {/* Reporter Contact */}
             <div className="space-y-1">
-              <label className="font-medium text-neutral-800 dark:text-neutral-200 block">
+              <label className="font-medium text-neutral-800 block">
                 Your Contact (Optional)
               </label>
               <input
@@ -426,7 +426,7 @@ export function ThreatRadarClient({
 
             {/* Notes */}
             <div className="space-y-1">
-              <label className="font-medium text-neutral-800 dark:text-neutral-200 block">
+              <label className="font-medium text-neutral-800 block">
                 Additional Notes
               </label>
               <textarea
@@ -460,7 +460,7 @@ export function ThreatRadarClient({
       )}
 
       {/* Notion Footer */}
-      <div className="pt-4 border-t border-neutral-200 dark:border-neutral-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-neutral-400">
+      <div className="pt-4 border-t border-neutral-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs text-neutral-400">
         <div className="flex items-center gap-2">
           <span>ul0 Trust &amp; Safety</span>
           <span>•</span>

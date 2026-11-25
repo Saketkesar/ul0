@@ -12,7 +12,7 @@ interface PageProps {
 }
 
 export const metadata: Metadata = {
-  title: "Form Studio — Zero-DB Form Builder | UL0",
+  title: "Form Studio — Zero-DB Form Builder",
   description: "Configure questions, generate Google Apps Script, and connect directly to your Google Sheet.",
 }
 

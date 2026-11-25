@@ -8,7 +8,7 @@ import { BLOCKED_DOMAINS } from "@/lib/utils/slug"
 export const revalidate = 60 // Refresh every 60 seconds
 
 export const metadata: Metadata = {
-  title: "Threat Intelligence Radar — Blocked Phishing & Scam Registry | ul0",
+  title: "Threat Intelligence Radar — Blocked Phishing & Scam Registry",
   description:
     "Real-time transparency registry of intercepted phishing links and permanently banned scam domains on ul0. Zero traffic, zero redirects, and zero backlink equity passed to attackers.",
   alternates: {

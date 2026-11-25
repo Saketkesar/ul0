@@ -136,20 +136,20 @@ export function GatePageClient({
   const progressPercent = Math.min(100, Math.round((currentStep / totalSteps) * 100))
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col selection:bg-emerald-500/20 selection:text-emerald-400">
+    <div className="min-h-screen overflow-x-hidden bg-background text-foreground flex flex-col selection:bg-emerald-500/20 selection:text-emerald-900">
       {/* Top Floating Progress Bar & Navigation */}
       <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md">
         {/* Step Progress Line */}
         <div className="w-full bg-muted/40 h-1">
           <div
-            className="bg-emerald-500 h-1 transition-all duration-700 ease-out"
+            className="bg-[#1B685C] h-1 transition-all duration-700 ease-out"
             style={{ width: `${progressPercent}%` }}
           />
         </div>
 
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-3">
+        <div className="container mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2 sm:gap-3">
           {/* Brand & Step Info */}
-          <div className="flex items-center gap-3 shrink-0">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0 min-w-0">
             <Link href="/" className="flex items-center gap-2 group shrink-0" target="_blank" rel="noopener noreferrer">
               <Image
                 src="/ul0.png"
@@ -161,10 +161,10 @@ export function GatePageClient({
               />
             </Link>
 
-            <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400">
+            <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-semibold text-emerald-800">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-600"></span>
               </span>
               <span>
                 Step {stepNumber}/{totalSteps}
@@ -184,16 +184,16 @@ export function GatePageClient({
             {linkType === "auto_skip" ? (
               // AUTO-SKIP HEADER BADGE
               !isUnlocked ? (
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-500 text-xs font-semibold shadow-sm">
+                <div className="inline-flex items-center gap-2 px-3 sm:px-3.5 py-1.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-800 text-xs font-semibold shadow-2xs">
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-600"></span>
                   </span>
                   <span className="font-mono text-sm font-bold">{secondsLeft}s</span>
                   <span className="hidden sm:inline">Auto-Skip</span>
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 text-xs font-bold shadow-sm animate-pulse">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-800 text-xs font-bold shadow-2xs animate-pulse">
                   <UL0Icon name="loading" className="h-4 w-4 animate-spin" />
                   <span>Skipping...</span>
                 </div>
@@ -203,18 +203,18 @@ export function GatePageClient({
               !isUnlocked ? (
                 <button
                   onClick={scrollToContinue}
-                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-muted/80 hover:bg-muted text-xs font-medium text-muted-foreground hover:text-foreground transition-colors border border-border/60"
+                  className="inline-flex items-center gap-2 min-h-[40px] sm:min-h-[34px] px-3 py-1.5 rounded-xl bg-muted/80 hover:bg-muted text-xs font-medium text-foreground transition-colors border border-border/80 cursor-pointer"
                   title="Scroll down to unlock"
                 >
-                  <UL0Icon name="clock" className="h-3.5 w-3.5 text-amber-500 animate-spin" style={{ animationDuration: "3s" }} />
-                  <span className="font-mono font-bold text-amber-500">{secondsLeft}s</span>
+                  <UL0Icon name="clock" className="h-3.5 w-3.5 text-amber-700 animate-spin" style={{ animationDuration: "3s" }} />
+                  <span className="font-mono font-bold text-amber-800">{secondsLeft}s</span>
                   <UL0Icon name="arrowdown" className="h-3.5 w-3.5" />
                 </button>
               ) : (
                 <button
                   onClick={handleAdvance}
                   disabled={isSubmitting}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition-all shadow-md shadow-emerald-500/25 cursor-pointer hover:scale-105"
+                  className="inline-flex items-center gap-1.5 min-h-[40px] sm:min-h-[34px] px-4 py-1.5 rounded-xl bg-[#3DDBB8] hover:bg-[#32CBA8] text-[#0B1A17] text-xs font-bold transition-all shadow-sm cursor-pointer hover:scale-[1.02]"
                   title="Click to continue"
                 >
                   {isSubmitting ? (
@@ -234,12 +234,12 @@ export function GatePageClient({
       {/* Main Content Area */}
       <main className="flex-1 pb-16">
         {/* Top Ad Unit */}
-        <section className="w-full bg-muted/20 border-b border-border/50 py-3 px-4">
+        <section className="w-full bg-muted/20 border-b border-border/50 py-2.5 px-3 sm:px-4">
           <div className="container mx-auto max-w-4xl text-center">
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono block mb-1.5">
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono block mb-1">
               Advertisement
             </span>
-            <div className="overflow-hidden flex justify-center items-center min-h-[90px]">
+            <div className="overflow-hidden flex justify-center items-center">
               <AdBanner type="large" slot={1} />
             </div>
           </div>
@@ -254,24 +254,24 @@ export function GatePageClient({
 
             <div className="relative z-10 flex flex-col sm:flex-row items-center justify-between gap-4">
               {/* Left Info: Status / Timer / Step */}
-              <div className="flex items-center gap-3.5 text-left w-full sm:w-auto">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+              <div className="flex items-center gap-3.5 text-left w-full sm:w-auto min-w-0">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700">
                   {isUnlocked ? (
-                    <UL0Icon name="check" className="h-6 w-6 text-emerald-400" />
+                    <UL0Icon name="check" className="h-6 w-6 text-emerald-700" />
                   ) : linkType === "auto_skip" ? (
-                    <UL0Icon name="bolt" className="h-6 w-6 text-amber-400 animate-pulse" />
+                    <UL0Icon name="bolt" className="h-6 w-6 text-amber-700 animate-pulse" />
                   ) : (
-                    <UL0Icon name="clock" className="h-6 w-6 text-amber-400 animate-spin" style={{ animationDuration: "3s" }} />
+                    <UL0Icon name="clock" className="h-6 w-6 text-amber-700 animate-spin" style={{ animationDuration: "3s" }} />
                   )}
                 </div>
 
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                       Step {stepNumber} of {totalSteps}
                     </span>
                     {!isUnlocked && (
-                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-mono font-bold bg-amber-50 text-amber-800 border border-amber-300">
                         {secondsLeft}s
                       </span>
                     )}
@@ -304,7 +304,7 @@ export function GatePageClient({
                     <Button
                       onClick={handleAdvance}
                       disabled={isSubmitting}
-                      className="w-full sm:w-auto h-11 px-6 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm shadow-md shadow-emerald-500/25 cursor-pointer hover:scale-[1.02] transition-all"
+                      className="w-full sm:w-auto h-11 px-6 bg-[#3DDBB8] hover:bg-[#32CBA8] text-[#0B1A17] font-bold text-sm shadow-sm cursor-pointer hover:scale-[1.02] transition-all"
                     >
                       <UL0Icon name="loading" className="h-4 w-4 animate-spin mr-2" />
                       <span>Skipping...</span>
@@ -313,7 +313,7 @@ export function GatePageClient({
                     <Button
                       onClick={scrollToArticle}
                       variant="outline"
-                      className="w-full sm:w-auto h-11 px-4 border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 text-amber-500 text-xs font-semibold gap-2"
+                      className="w-full sm:w-auto h-11 px-4 border-amber-300 bg-amber-50 hover:bg-amber-100 text-amber-800 text-xs font-semibold gap-2"
                     >
                       <UL0Icon name="arrowdown" className="h-4 w-4 animate-bounce" />
                       <span>Scroll down to read</span>
@@ -323,7 +323,7 @@ export function GatePageClient({
                   <Button
                     onClick={handleAdvance}
                     disabled={isSubmitting}
-                    className="w-full sm:w-auto h-11 px-6 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm shadow-md shadow-emerald-500/25 cursor-pointer hover:scale-[1.02] transition-all gap-2"
+                    className="w-full sm:w-auto h-11 px-6 bg-[#3DDBB8] hover:bg-[#32CBA8] text-[#0B1A17] font-bold text-sm shadow-sm cursor-pointer hover:scale-[1.02] transition-all gap-2"
                   >
                     {isSubmitting ? (
                       <>
@@ -370,12 +370,12 @@ export function GatePageClient({
         </div>
 
         {/* Middle Ad Unit */}
-        <section className="container mx-auto max-w-4xl px-4 my-8">
-          <div className="rounded-xl border border-border/60 bg-muted/10 p-4 text-center">
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono block mb-2">
+        <section className="container mx-auto max-w-4xl px-3 sm:px-4 my-6 sm:my-8">
+          <div className="rounded-xl border border-border/60 bg-muted/10 p-3 sm:p-4 text-center">
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono block mb-1.5">
               Sponsored Recommendation
             </span>
-            <div className="overflow-hidden flex justify-center items-center min-h-[60px]">
+            <div className="overflow-hidden flex justify-center items-center">
               <AdBanner type="small" slot={2} />
             </div>
           </div>
@@ -399,11 +399,11 @@ export function GatePageClient({
               </div>
 
               {/* Step Icon */}
-              <div className="mb-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-3 text-emerald-400">
+              <div className="mb-4 rounded-2xl bg-emerald-50 border border-emerald-200 p-3 text-emerald-700">
                 {isUnlocked ? (
-                  <UL0Icon name="sparkles" className="h-6 w-6 text-emerald-400 animate-pulse" />
+                  <UL0Icon name="sparkles" className="h-6 w-6 text-emerald-700 animate-pulse" />
                 ) : (
-                  <UL0Icon name="clock" className="h-6 w-6 text-amber-400 animate-pulse" />
+                  <UL0Icon name="clock" className="h-6 w-6 text-amber-700 animate-pulse" />
                 )}
               </div>
 
@@ -433,7 +433,7 @@ export function GatePageClient({
 
               {/* Error display if any */}
               {errorMessage && (
-                <div className="mt-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-xs flex items-center gap-2 max-w-md w-full">
+                <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2 max-w-md w-full">
                   <UL0Icon name="warning" className="h-4 w-4 shrink-0" />
                   <span>{errorMessage}</span>
                 </div>
@@ -444,11 +444,11 @@ export function GatePageClient({
                 <div className="mt-6 w-full max-w-md">
                   <div className="flex justify-between items-center text-xs font-mono text-muted-foreground mb-1.5">
                     <span>{linkType === "auto_skip" ? "Auto-skipping" : "Verifying session"}</span>
-                    <span className="text-amber-400 font-bold">{secondsLeft}s remaining</span>
+                    <span className="text-amber-800 font-bold">{secondsLeft}s remaining</span>
                   </div>
                   <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
                     <div
-                      className="bg-amber-500 h-2 transition-all duration-1000 ease-linear rounded-full"
+                      className="bg-amber-600 h-2 transition-all duration-1000 ease-linear rounded-full"
                       style={{
                         width: `${Math.round(((gateTimerSeconds - secondsLeft) / gateTimerSeconds) * 100)}%`,
                       }}
@@ -463,9 +463,9 @@ export function GatePageClient({
                   onClick={handleAdvance}
                   disabled={!isUnlocked || isSubmitting}
                   size="lg"
-                  className={`w-full h-12 text-sm font-bold transition-all shadow-md ${
+                  className={`w-full h-12 text-sm font-bold transition-all shadow-sm ${
                     isUnlocked
-                      ? "bg-emerald-500 hover:bg-emerald-400 text-black shadow-emerald-500/25 cursor-pointer hover:scale-[1.01]"
+                      ? "bg-[#3DDBB8] hover:bg-[#32CBA8] text-[#0B1A17] cursor-pointer hover:scale-[1.01]"
                       : "bg-muted text-muted-foreground cursor-not-allowed opacity-80"
                   }`}
                 >
@@ -507,12 +507,12 @@ export function GatePageClient({
         </section>
 
         {/* Bottom Ad Unit */}
-        <section className="container mx-auto max-w-4xl px-4 mt-8">
+        <section className="container mx-auto max-w-4xl px-3 sm:px-4 mt-8">
           <div className="text-center">
-            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono block mb-2">
+            <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-mono block mb-1.5">
               Advertisement
             </span>
-            <div className="overflow-hidden flex justify-center items-center min-h-[90px]">
+            <div className="overflow-hidden flex justify-center items-center">
               <AdBanner type="large" slot={3} />
             </div>
           </div>

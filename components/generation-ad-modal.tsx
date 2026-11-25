@@ -101,7 +101,7 @@ function SandboxedAdFrame({
     <div
       ref={containerRef}
       className={`rounded-[14px] bg-[#F6F6F6] border border-[#C8CDC8] overflow-hidden shadow-2xs flex items-center justify-center ${className}`}
-      style={{ width: `${width}px` }}
+      style={{ width: `${width}px`, maxWidth: "100%", maxHeight: "100%" }}
     />
   )
 }
@@ -255,9 +255,9 @@ export function GenerationAdModal({
             - Animated WebP in the center with arrows pointing outwards to the 4 corners
             - 4 Corner Ad Frames placed exactly where the arrows point (matching media_1795419095655_42207e60.png)
         ====================================================================== */}
-        <div className="w-full flex flex-col items-center justify-center my-auto overflow-x-auto py-2">
-          {/* Desktop & Tablet: Exact 900x500 Canvas Matching User Placement Guide */}
-          <div className="hidden md:block relative w-[900px] h-[500px] shrink-0 bg-white rounded-[20px] overflow-hidden select-none border border-[#E4E2DA]/80 shadow-xs">
+        <div className="w-full flex flex-col items-center justify-center my-auto overflow-x-hidden py-2">
+          {/* Desktop (lg+ >= 1024px): Exact 900x500 Canvas Matching User Placement Guide */}
+          <div className="hidden lg:block relative w-[900px] h-[500px] shrink-0 bg-white rounded-[20px] overflow-hidden select-none border border-[#E4E2DA]/80 shadow-xs">
             {/* 1. The Animated WebP Image (Shows UL0 Center Logo + 4 Animated Arrows + Doodle Texts) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -311,8 +311,8 @@ export function GenerationAdModal({
             </div>
           </div>
 
-          {/* Mobile Screen (< 768px): Exact 540x960 Canvas Matching User Placement Guide media_1795507019737_c2734770.png */}
-          <div className="md:hidden relative w-full max-w-[340px] aspect-[540/960] bg-white rounded-[20px] overflow-hidden select-none border border-[#E4E2DA]/80 shadow-xs my-2">
+          {/* Mobile & Tablet (< 1024px): Exact 540x960 Canvas Matching User Placement Guide */}
+          <div className="lg:hidden relative w-full max-w-[340px] aspect-[540/960] bg-white rounded-[20px] overflow-hidden select-none border border-[#E4E2DA]/80 shadow-xs my-2">
             {/* The Animated Mobile WebP Image (UL0 Center Logo + Top & Bottom Doodle Arrows) */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

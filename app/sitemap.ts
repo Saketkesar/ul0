@@ -111,9 +111,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { slug: "wifi-qr-code-business-guide", published: "2026-07-20" },
     { slug: "pomodoro-technique-productivity-guide", published: "2026-07-20" },
     { slug: "affiliate-link-shortener-usa", published: "2026-08-25" },
+    { slug: "luxury-resort-wear-vacation-travel-styling-guide", published: "2026-11-15" },
+    { slug: "wellness-retreats-medical-tourism-holiday-guide-2026", published: "2026-11-18" },
   ]
 
-  // Informational / trust / legal pages
+  // Informational / trust / legal pages (only indexable routes)
   const infoPages = [
     { path: "/blog", date: coreUpdated },
     { path: "/faq", date: coreUpdated },
@@ -121,7 +123,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { path: "/contact", date: legalUpdated },
     { path: "/security", date: coreUpdated },
     { path: "/threats", date: coreUpdated },
-    { path: "/backlinks", date: toolsUpdated },
     { path: "/report-abuse", date: legalUpdated },
     { path: "/refund", date: legalUpdated },
     { path: "/privacy", date: legalUpdated },

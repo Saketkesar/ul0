@@ -167,7 +167,7 @@ export function CreateLinkButton({ verifiedDomains }: CreateLinkButtonProps) {
               <div className="mx-auto w-full max-w-[220px] rounded-lg overflow-hidden border border-border/60 bg-background/80 p-2 mb-3">
                 <img src="/ulo_4k.webp" alt="Link Created" className="w-full h-auto object-contain" />
               </div>
-              <h3 className="font-semibold text-emerald-600 dark:text-emerald-400">Link Created Successfully!</h3>
+              <h3 className="font-semibold text-emerald-600">Link Created Successfully!</h3>
               <p className="mt-1 text-xs text-muted-foreground">
                 Your branded short link is active on the edge network:
               </p>

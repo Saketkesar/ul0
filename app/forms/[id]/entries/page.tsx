@@ -11,7 +11,7 @@ interface PageProps {
 }
 
 export const metadata: Metadata = {
-  title: "Spreadsheet Entries — Forms | UL0",
+  title: "Spreadsheet Entries — Forms",
   description: "View, inspect, search, and manage entries directly from your connected Google Sheet.",
 }
 

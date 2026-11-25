@@ -6,11 +6,34 @@ import { UL0Icon } from "@/components/ul0-icon"
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "Pricing & Plans",
+  title: "Pricing & Plans — Free Forever & $2/mo Custom Domains",
   description:
-    "Simple, transparent pricing for short links, vector QR codes, custom domains, and analytics. Free forever tier included.",
+    "Simple, transparent pricing for short links, vector QR codes, custom domains, and analytics. Includes 1 free custom domain forever; Pro starts at $2/mo billed annually.",
   alternates: {
     canonical: "https://ul0.site/pricing",
+  },
+  openGraph: {
+    title: "Pricing & Plans — Free Forever & Custom Domains | UL0",
+    description:
+      "Start free with 1 custom domain forever. Upgrade to Pro ($3/mo) or Business ($9/mo) for multi-domain teams and API access.",
+    url: "https://ul0.site/pricing",
+    siteName: "UL0",
+    type: "website",
+    images: [
+      {
+        url: "https://ul0.site/social-card.png",
+        width: 1376,
+        height: 768,
+        alt: "UL0 Pricing & Plans",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Pricing & Plans — Free Forever & Custom Domains | UL0",
+    description:
+      "Start free with 1 custom domain included. Upgrade only when your team scales.",
+    images: ["https://ul0.site/social-card.png"],
   },
 }
 
@@ -34,8 +57,36 @@ const BILLING_FAQS = [
 ]
 
 export default function PricingPage() {
+  const pricingSchema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: "https://ul0.site" },
+          { "@type": "ListItem", position: 2, name: "Pricing", item: "https://ul0.site/pricing" },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: BILLING_FAQS.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.a,
+          },
+        })),
+      },
+    ],
+  }
+
   return (
     <div className="flex min-h-screen flex-col bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(pricingSchema) }}
+      />
       <Header />
 
       <main className="flex-1 py-14 sm:py-20">

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect } from "react"
+import React from "react"
 import Link from "next/link"
 import { BrandLogo } from "@/components/brand-logo"
 import { UL0Icon } from "@/components/ul0-icon"
@@ -24,30 +24,6 @@ const LANGUAGES = [
 ]
 
 export function Footer() {
-  const [isDark, setIsDark] = useState(false)
-
-  useEffect(() => {
-    try {
-      setIsDark(document.documentElement.classList.contains("dark"))
-    } catch {}
-  }, [])
-
-  const toggleTheme = () => {
-    const nextDark = !isDark
-    setIsDark(nextDark)
-    try {
-      if (nextDark) {
-        document.documentElement.classList.add("dark")
-        localStorage.setItem("theme", "dark")
-        document.cookie = "theme=dark; path=/; max-age=31536000; SameSite=Lax"
-      } else {
-        document.documentElement.classList.remove("dark")
-        localStorage.setItem("theme", "light")
-        document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax"
-      }
-    } catch {}
-  }
-
   return (
     <footer className="border-t border-border bg-card/50 text-foreground py-14" role="contentinfo">
       <div className="container mx-auto px-4 max-w-7xl space-y-12">
@@ -304,17 +280,6 @@ export function Footer() {
                 ))}
               </DropdownMenuContent>
             </DropdownMenu>
-
-            {/* Theme Toggle Button */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="inline-flex items-center justify-center h-7 w-7 rounded-lg border border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-              title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-              aria-label="Toggle theme"
-            >
-              <UL0Icon name="palette" size={14} />
-            </button>
           </div>
         </div>
       </div>

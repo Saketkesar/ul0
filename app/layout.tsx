@@ -24,7 +24,20 @@ export const metadata: Metadata = {
     template: "%s | UL0",
   },
   description:
-    "Shorten links instantly. Add a free custom domain, create dynamic vector QR codes, and track clicks without tracking cookies.",
+    "Shorten links free in 1 click—no signup required. Connect a free custom domain, create dynamic vector QR codes, and track clicks in real time without tracking cookies.",
+  keywords: [
+    "url shortener",
+    "free url shortener",
+    "custom domain url shortener",
+    "branded short links",
+    "bitly alternative",
+    "qr code generator",
+    "dynamic qr code",
+    "utm link builder",
+    "whatsapp link generator",
+    "link management platform",
+    "ul0",
+  ],
   authors: [{ name: "UL0", url: "https://ul0.site" }],
   creator: "UL0",
   publisher: "UL0",
@@ -93,10 +106,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#F6F8F7" },
-    { media: "(prefers-color-scheme: dark)", color: "#0B1116" },
-  ],
+  themeColor: "#F4FAF8",
 }
 
 export default function RootLayout({
@@ -112,7 +122,9 @@ export default function RootLayout({
         "@id": "https://ul0.site/#website",
         url: "https://ul0.site",
         name: "UL0",
-        description: "URL shortener, custom domains, vector QR codes, and click analytics.",
+        alternateName: ["ul0.site", "UL0 URL Shortener"],
+        description:
+          "Free URL shortener, branded custom domain links, dynamic vector QR codes, and privacy-first analytics.",
         publisher: { "@id": "https://ul0.site/#organization" },
         inLanguage: "en-US",
       },
@@ -120,7 +132,9 @@ export default function RootLayout({
         "@type": "Organization",
         "@id": "https://ul0.site/#organization",
         name: "UL0",
+        legalName: "ul0.site",
         url: "https://ul0.site",
+        foundingDate: "2024",
         logo: {
           "@type": "ImageObject",
           "@id": "https://ul0.site/#logo",
@@ -146,21 +160,56 @@ export default function RootLayout({
         "@type": "SoftwareApplication",
         "@id": "https://ul0.site/#app",
         name: "UL0",
-        applicationCategory: "BusinessApplication",
+        applicationCategory: "UtilitiesApplication",
+        applicationSubCategory: "URL Shortener & Branded Link Management",
         operatingSystem: "All (Web)",
-        offers: {
-          "@type": "Offer",
-          price: "0",
-          priceCurrency: "USD",
-        },
-        description: "Link management platform with branded custom domains, dynamic vector QR codes, and privacy-first analytics.",
+        screenshot: "https://ul0.site/social-card.png",
+        featureList: [
+          "Free URL shortener with no signup required",
+          "Free custom branded domains with automated SSL",
+          "Dynamic PNG and vector SVG QR code generator",
+          "Privacy-first real-time click analytics without cookies",
+          "UTM campaign builder and WhatsApp link generator",
+          "Group expense splitter, PDF tools, and REST API",
+        ],
+        offers: [
+          {
+            "@type": "Offer",
+            name: "Free",
+            price: "0",
+            priceCurrency: "USD",
+            url: "https://ul0.site/pricing",
+          },
+          {
+            "@type": "Offer",
+            name: "Pro",
+            price: "3",
+            priceCurrency: "USD",
+            url: "https://ul0.site/pricing",
+          },
+          {
+            "@type": "Offer",
+            name: "Business",
+            price: "9",
+            priceCurrency: "USD",
+            url: "https://ul0.site/pricing",
+          },
+        ],
+        description:
+          "Free link management platform with branded custom domains, dynamic vector QR codes, and privacy-first real-time analytics.",
         url: "https://ul0.site",
+        publisher: { "@id": "https://ul0.site/#organization" },
       },
     ],
   }
 
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      style={{ colorScheme: "light" }}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="dns-prefetch" href="https://ul0.site" />
         <link rel="llms.txt" href="/llms.txt" />
@@ -173,22 +222,16 @@ export default function RootLayout({
         />
         <meta name="google-site-verification" content="Apib7-x98H0j5cPqHWwSMm6dNU4GmODRoqxLiDzdx9I" />
 
-        {/* Immediate theme restoration supporting system preference & saved user toggle */}
+        {/* Force crisp light theme across all browsers and remove any legacy dark theme state */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  var stored = localStorage.getItem('theme');
-                  var cookieMatch = document.cookie.match(/(?:^|; )theme=([^;]*)/);
-                  var cookieTheme = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null;
-                  var theme = stored || cookieTheme;
-                  var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  if (theme === 'dark' || (!theme && prefersDark)) {
-                    document.documentElement.classList.add('dark');
-                  } else {
-                    document.documentElement.classList.remove('dark');
-                  }
+                  document.documentElement.classList.remove('dark');
+                  document.documentElement.style.colorScheme = 'light';
+                  localStorage.removeItem('theme');
+                  document.cookie = 'theme=light; path=/; max-age=31536000; SameSite=Lax';
                 } catch (e) {}
               })();
             `,

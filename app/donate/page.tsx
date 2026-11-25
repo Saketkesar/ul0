@@ -71,7 +71,7 @@ export default async function DonatePage({
               <div className="mx-auto mb-8 flex max-w-md items-center gap-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-4 text-left shadow-2xs">
                 <UL0Icon name="check" size={20} className="shrink-0 text-emerald-600" />
                 <div>
-                  <p className="font-bold text-emerald-700 dark:text-emerald-300">
+                  <p className="font-bold text-emerald-700">
                     Thank you for your donation!
                   </p>
                   <p className="text-xs text-muted-foreground mt-0.5">
@@ -173,7 +173,7 @@ export default async function DonatePage({
                       <UL0Icon name={m.icon} animated={true} size={26} />
                     </div>
                     <h3 className="mb-1 text-base font-bold text-foreground">{m.title}</h3>
-                    <p className="mb-2 text-xs font-semibold text-rose-600 dark:text-rose-400">
+                    <p className="mb-2 text-xs font-semibold text-rose-600">
                       Target: {m.target}
                     </p>
                     <p className="text-xs text-muted-foreground leading-relaxed">{m.description}</p>
@@ -224,7 +224,7 @@ export default async function DonatePage({
             <div className="pt-2">
               <a
                 href="/api/donate"
-                className="inline-flex items-center gap-2 rounded-full border border-rose-500/30 bg-rose-500/10 px-7 py-3 text-xs sm:text-sm font-bold text-rose-600 dark:text-rose-400 transition-all hover:bg-rose-500/20 shadow-2xs"
+                className="inline-flex items-center gap-2 rounded-full border border-rose-500/30 bg-rose-500/10 px-7 py-3 text-xs sm:text-sm font-bold text-rose-600 transition-all hover:bg-rose-500/20 shadow-2xs"
               >
                 <UL0Icon name="heart" size={16} />
                 <span>Become a supporter</span>

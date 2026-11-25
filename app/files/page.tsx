@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { FilesWorkspace } from "./files-workspace"
 
 export const metadata: Metadata = {
-  title: "Free Files & PDF Suite — Resize Images, Split, Merge & Convert | UL0",
+  title: "Free Files & PDF Suite — Resize Images, Split, Merge & Convert",
   description:
     "Free, private client-side document and file suite. Resize & convert images, compress file size, split PDF pages, merge documents, rotate PDFs, convert text to PDF, and scan with your camera. Install as an app on your phone, 100% private.",
   keywords: [

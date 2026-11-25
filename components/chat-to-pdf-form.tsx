@@ -223,9 +223,9 @@ export function ChatToPdfForm({
         )}
 
         {status === "done" && resultDocType && (
-          <div className="mt-4 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between text-xs text-emerald-800 dark:text-emerald-300">
+          <div className="mt-4 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-between text-xs text-emerald-800">
             <div className="flex items-center gap-2 font-medium">
-              <UL0Icon name="check" size={16} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <UL0Icon name="check" size={16} className="text-emerald-600 shrink-0" />
               <span>{formatDocTypeLabel(resultDocType)}</span>
             </div>
             <span className="text-[11px] opacity-80">Downloaded to your device</span>
@@ -233,9 +233,9 @@ export function ChatToPdfForm({
         )}
 
         {status === "error" && errorMessage && (
-          <div className="mt-4 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-xs text-rose-800 dark:text-rose-300 space-y-1.5">
+          <div className="mt-4 p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-xs text-rose-800 space-y-1.5">
             <div className="flex items-start gap-2">
-              <UL0Icon name="alert" size={16} className="text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
+              <UL0Icon name="alert" size={16} className="text-rose-600 shrink-0 mt-0.5" />
               <div className="leading-relaxed">{errorMessage}</div>
             </div>
             {!showFallback && (
@@ -254,7 +254,7 @@ export function ChatToPdfForm({
 
         {/* Privacy Note */}
         <div className="mt-6 pt-4 border-t border-border/60 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
-          <UL0Icon name="shield" size={13} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+          <UL0Icon name="shield" size={13} className="text-emerald-600 shrink-0" />
           <span>We don&apos;t store your chats. Processed in-memory and immediately discarded.</span>
         </div>
       </div>

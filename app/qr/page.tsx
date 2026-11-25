@@ -270,7 +270,7 @@ export default function QrPage() {
 
               {/* Contrast Warning */}
               {isLowContrast && (
-                <div className="p-3.5 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-amber-800 dark:text-amber-300 text-xs flex items-center gap-2.5">
+                <div className="p-3.5 rounded-2xl border border-amber-500/30 bg-amber-500/10 text-amber-800 text-xs flex items-center gap-2.5">
                   <UL0Icon name="warning" size={16} />
                   <span>
                     Contrast ratio is {contrastRatio.toFixed(1)}:1 (minimum 3:1 recommended). Low contrast can prevent phone cameras from scanning.

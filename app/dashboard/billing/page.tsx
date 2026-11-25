@@ -54,7 +54,7 @@ export default async function BillingPage() {
               <span
                 className={`px-2.5 py-0.5 rounded-full text-xs font-semibold border ${
                   plan.slug === "business_user"
-                    ? "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 border-slate-700"
+                    ? "bg-slate-900 text-white border-slate-700"
                     : plan.slug === "pro_user"
                     ? "bg-primary/10 text-primary border-primary/20"
                     : "bg-muted text-muted-foreground border-border"

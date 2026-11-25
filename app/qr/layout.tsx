@@ -23,6 +23,35 @@ export const metadata: Metadata = {
     images: ["https://ul0.site/social-card.png"],
   },
 }
+const qrSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      name: "UL0 Free QR Code Generator",
+      url: "https://ul0.site/qr",
+      applicationCategory: "UtilitiesApplication",
+      operatingSystem: "All",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: "https://ul0.site" },
+        { "@type": "ListItem", position: 2, name: "QR Generator", item: "https://ul0.site/qr" },
+      ],
+    },
+  ],
+}
+
 export default function QrLayout({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(qrSchema) }}
+      />
+      {children}
+    </>
+  )
 }

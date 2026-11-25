@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Real Estate QR Codes & Listing Link Tracking | UL0",
+  title: "Real Estate QR Codes & Listing Link Tracking",
   description: "Generate trackable QR codes for yard signs, open house brochures, and MLS virtual tours. Change listing destinations without reprinting collateral.",
   alternates: {
     canonical: "https://ul0.site/use-cases/real-estate",

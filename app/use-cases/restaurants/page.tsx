@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Restaurant Menu QR Codes & Hospitality Link Tracking | UL0",
+  title: "Restaurant Menu QR Codes & Hospitality Link Tracking",
   description: "Create contactless digital menu QR codes for restaurants, cafes, and bars. Update menu PDF links without reprinting table tents or coasters.",
   alternates: {
     canonical: "https://ul0.site/use-cases/restaurants",

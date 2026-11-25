@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "無料URL短縮ツール - 登録不要の短縮リンク＆QRコード作成 | ul0",
+  title: "無料URL短縮ツール - 登録不要の短縮リンク＆QRコード作成",
   description:
     "ul0は登録不要で使える最速の無料URL短縮ツールです。独自ドメイン対応、安全なリンク管理、ベクターQRコード生成をすべて完全無料で利用可能。",
   alternates: {

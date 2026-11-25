@@ -5,23 +5,42 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LinkShortenerForm } from "@/components/link-shortener-form"
 import { FloatingActionDock } from "@/components/floating-action-dock"
-import { AnimatedIconBackground } from "@/components/animated-icon-background"
 import { UL0Icon } from "@/components/ul0-icon"
+import { hreflangAlternates } from "@/lib/i18n"
 
 export const metadata: Metadata = {
-  title: "UL0 — Free URL Shortener, Branded Links & Dynamic QR Codes",
+  title: {
+    absolute: "UL0 — Free URL Shortener, Branded Links & QR Codes",
+  },
   description:
-    "Fast, free URL shortener with custom domains, dynamic vector QR codes, and real-time click analytics. Zero tracking cookies. No signup required.",
+    "Shorten links free in 1 click — no signup required. Connect a free custom domain, create dynamic SVG/PNG QR codes, and track clicks in real time without cookies.",
   alternates: {
     canonical: "https://ul0.site",
+    languages: hreflangAlternates,
   },
   openGraph: {
-    title: "UL0 — Free URL Shortener, Branded Links & Dynamic QR Codes",
+    title: "UL0 — Free URL Shortener, Branded Links & QR Codes",
     description:
-      "Fast, free URL shortener with custom domains, dynamic vector QR codes, and real-time click analytics. Zero tracking cookies. No signup required.",
+      "Shorten links free in 1 click — no signup required. Connect a free custom domain, generate dynamic SVG/PNG QR codes, and track clicks in real time.",
     url: "https://ul0.site",
     siteName: "UL0",
     type: "website",
+    locale: "en_US",
+    images: [
+      {
+        url: "https://ul0.site/social-card.png",
+        width: 1376,
+        height: 768,
+        alt: "UL0 — Free URL Shortener, Branded Links & Dynamic QR Codes",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "UL0 — Free URL Shortener, Branded Links & QR Codes",
+    description:
+      "Shorten links free in 1 click. Free custom domain support, dynamic SVG/PNG QR codes, and real-time analytics.",
+    images: ["https://ul0.site/social-card.png"],
   },
 }
 
@@ -84,25 +103,78 @@ const TINY_TOOLS = [
 ]
 
 export default function HomePage() {
-  const faqSchema = {
+  const homeSchema = {
     "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: FAQS.map((faq) => ({
-      "@type": "Question",
-      name: faq.q,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.a,
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": "https://ul0.site/#webpage",
+        url: "https://ul0.site",
+        name: "UL0 — Free URL Shortener, Branded Links & QR Codes",
+        isPartOf: { "@id": "https://ul0.site/#website" },
+        about: { "@id": "https://ul0.site/#app" },
+        primaryImageOfPage: {
+          "@type": "ImageObject",
+          url: "https://ul0.site/social-card.png",
+        },
       },
-    })),
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "https://ul0.site",
+          },
+        ],
+      },
+      {
+        "@type": "HowTo",
+        name: "How to shorten a URL or create a QR code free on UL0",
+        description:
+          "Create a branded short link or dynamic SVG/PNG QR code in under 5 seconds without creating an account.",
+        step: [
+          {
+            "@type": "HowToStep",
+            position: 1,
+            name: "Paste your long URL",
+            text: "Paste any long website, product, social media, or campaign link into the UL0 bar.",
+          },
+          {
+            "@type": "HowToStep",
+            position: 2,
+            name: "Customize alias or switch to QR mode",
+            text: "Optionally enter a custom back-half alias or select QR code to generate a high-resolution vector matrix.",
+          },
+          {
+            "@type": "HowToStep",
+            position: 3,
+            name: "Share and track clicks live",
+            text: "Copy your short link or download SVG/PNG QR code and view real-time analytics with zero tracking cookies.",
+          },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: FAQS.map((faq) => ({
+          "@type": "Question",
+          name: faq.q,
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: faq.a,
+          },
+        })),
+      },
+    ],
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-[#3DDBB8]/30">
-      {/* FAQ Schema for Google Rich Results */}
+    <div className="flex min-h-screen flex-col bg-background text-foreground selection:bg-[#3DDBB8]/30 overflow-x-hidden">
+      {/* Structured Schema for Rich Results */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchema) }}
       />
 
       <Header />
@@ -111,11 +183,8 @@ export default function HomePage() {
         {/* 1. Hero Section - Inspired by Heytaby & Bharpai with Animated SVG Icons in Background */}
         <section
           id="shortener"
-          className="relative pt-20 pb-28 sm:pt-28 sm:pb-36 border-b border-border overflow-hidden"
+          className="relative pt-16 pb-20 sm:pt-24 sm:pb-28 border-b border-border overflow-hidden"
         >
-          {/* Animated SVG Icons Drifting in Background */}
-          <AnimatedIconBackground />
-
           <div className="container mx-auto px-4 sm:px-6 max-w-4xl text-center space-y-6 sm:space-y-8 relative z-10">
             {/* Main Title: Clean, Large, Tactile */}
             <h1 className="text-4xl sm:text-6xl lg:text-[76px] font-extrabold tracking-tight text-foreground leading-[1.05]">
@@ -193,8 +262,8 @@ export default function HomePage() {
         {/* 3. "Free tiny tools" Section in Soft Mint Container */}
         <section className="py-20 sm:py-28 border-b border-border">
           <div className="container mx-auto px-4 sm:px-6 max-w-5xl">
-            <div className="rounded-3xl border border-border/80 bg-surface-2 dark:bg-surface-2/40 p-6 sm:p-10 space-y-6">
-              <div className="flex items-center justify-between border-b border-black/5 dark:border-white/5 pb-4">
+            <div className="rounded-3xl border border-border/80 bg-surface-2 p-6 sm:p-10 space-y-6">
+              <div className="flex items-center justify-between border-b border-black/5 pb-4">
                 <div className="flex items-center gap-2.5">
                   <UL0Icon name="tools" size={24} />
                   <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
@@ -267,7 +336,7 @@ export default function HomePage() {
               </div>
 
               {/* Pro Plan Card (Dark Inverted Card with popular badge matching mockup) */}
-              <div className="rounded-3xl bg-[#0B1A17] dark:bg-[#0E211E] text-white p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-xl relative border border-[#3DDBB8]/20">
+              <div className="rounded-3xl bg-[#0B1A17] text-white p-6 sm:p-8 flex flex-col justify-between space-y-6 shadow-xl relative border border-[#3DDBB8]/20">
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -403,6 +472,35 @@ export default function HomePage() {
                   </p>
                 </details>
               ))}
+            </div>
+
+            {/* Popular Comparisons, Tools & Setup Guides (Internal SEO Hub) */}
+            <div className="pt-6">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground text-center mb-3">
+                Popular Solutions &amp; Guides
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                {[
+                  { label: "Bitly Alternative", href: "/compare/bitly" },
+                  { label: "TinyURL Alternative", href: "/compare/tinyurl" },
+                  { label: "Free Custom Domain", href: "/custom-domain-landing" },
+                  { label: "Dynamic QR Generator", href: "/qr" },
+                  { label: "UTM Campaign Builder", href: "/utm" },
+                  { label: "WhatsApp Link Maker", href: "/whatsapp" },
+                  { label: "Industry Use Cases", href: "/use-cases" },
+                  { label: "Best URL Shorteners 2026", href: "/blog/best-url-shorteners-2026" },
+                  { label: "Custom Domain DNS Guide", href: "/blog/custom-domain-short-links-guide" },
+                  { label: "Developer REST API", href: "/docs" },
+                ].map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="inline-flex items-center rounded-full border border-border bg-card px-3.5 py-2 text-xs font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </section>

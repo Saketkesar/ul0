@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Cheapest Custom Domain Link Shortener (2026 Comparison) | UL0",
+  title: "Cheapest Custom Domain Link Shortener (2026 Comparison)",
   description:
     "Compare the cheapest custom domain link shorteners in 2026. Discover free and budget-friendly branded short link tools including UL0, Dub.co, Bitly, and Rebrandly.",
   alternates: {
@@ -255,7 +255,7 @@ export default function CheapestCustomDomainPage() {
             </div>
           </header>
 
-          <div className="prose prose-slate dark:prose-invert max-w-none space-y-6 leading-relaxed">
+          <div className="prose prose-slate max-w-none space-y-6 leading-relaxed">
             <p className="text-lg text-muted-foreground">
               Using a <strong>custom branded domain</strong> (such as <code className="bg-muted px-1.5 py-0.5 rounded font-mono text-sm text-foreground">go.yourbrand.com/deal</code>) rather than a generic shortener increases audience click confidence, prevents email spam triggers, and complies with mobile carrier 10DLC SMS guidelines. However, legacy players like Bitly paywall custom domain delegation behind steep $35/month tiers.
             </p>
@@ -289,13 +289,13 @@ export default function CheapestCustomDomainPage() {
                 <tbody className="divide-y divide-border">
                   <tr className="bg-primary/5">
                     <td className="p-3.5 font-bold text-primary">UL0</td>
-                    <td className="p-3.5 text-emerald-600 dark:text-emerald-400 font-bold">Yes (1 Free Domain)</td>
+                    <td className="p-3.5 text-emerald-600 font-bold">Yes (1 Free Domain)</td>
                     <td className="p-3.5 font-bold text-foreground">$0 / mo (Pro $2/mo)</td>
                     <td className="p-3.5 text-muted-foreground">Indie creators, small businesses, marketing agencies</td>
                   </tr>
                   <tr>
                     <td className="p-3.5 font-semibold text-foreground">Dub.co</td>
-                    <td className="p-3.5 text-emerald-600 dark:text-emerald-400 font-semibold">Yes (3 Domains, limits apply)</td>
+                    <td className="p-3.5 text-emerald-600 font-semibold">Yes (3 Domains, limits apply)</td>
                     <td className="p-3.5 text-foreground">$0 / mo (Pro $24/mo)</td>
                     <td className="p-3.5 text-muted-foreground">Developer teams needing advanced API routing</td>
                   </tr>
@@ -342,7 +342,7 @@ export default function CheapestCustomDomainPage() {
 
                   <div className="grid sm:grid-cols-2 gap-4 mb-4 text-xs">
                     <div>
-                      <h4 className="font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+                      <h4 className="font-semibold text-emerald-600 uppercase tracking-wider mb-2">
                         Strengths &amp; Features
                       </h4>
                       <ul className="space-y-1.5 text-muted-foreground">

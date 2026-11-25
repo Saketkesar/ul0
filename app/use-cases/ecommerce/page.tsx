@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "E-Commerce Packaging QR Codes & SMS Link Tracking | UL0",
+  title: "E-Commerce Packaging QR Codes & SMS Link Tracking",
   description: "Boost repeat customer purchases with unboxing packaging QR codes, warranty registration links, and character-saving SMS marketing short URLs.",
   alternates: {
     canonical: "https://ul0.site/use-cases/ecommerce",

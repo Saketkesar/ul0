@@ -202,7 +202,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
   const appIconName = appConfig?.icon || "domain"
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
+    <div className="flex min-h-screen flex-col bg-background overflow-x-hidden">
       {/* 1. Top Banner Ad (728x90) */}
       {!isBrandedDomain && <AdBanner slot={1} type="large" />}
 
@@ -215,26 +215,26 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
       </div>
 
       {/* Header */}
-      <header className="border-b border-border bg-card px-4 py-3">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <UL0Icon name="domain" className="h-4 w-4" />
-            <span className="hidden sm:inline">Redirecting to: </span>
-            <span className="max-w-[150px] truncate font-medium text-foreground sm:max-w-xs">
+      <header className="border-b border-border bg-card px-3 sm:px-4 py-3">
+        <div className="container mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground min-w-0 flex-1">
+            <UL0Icon name="domain" className="h-4 w-4 shrink-0" />
+            <span className="hidden sm:inline shrink-0">Redirecting to: </span>
+            <span className="truncate font-medium text-foreground">
               {domain || "external site"}
             </span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             {countdown > 0 ? (
               <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold tabular-nums text-primary">{countdown}s</span>
+                <span className="text-xl sm:text-2xl font-bold tabular-nums text-primary">{countdown}s</span>
                 <div className="hidden sm:flex items-center gap-1.5 text-xs text-muted-foreground font-medium bg-muted/60 px-2.5 py-1 rounded-md border border-border">
                   <UL0Icon name="clock" className="h-3.5 w-3.5 animate-spin text-primary" />
                   <span>Please wait {countdown}s</span>
                 </div>
               </div>
             ) : (
-              <Button size="sm" onClick={redirect} className="gap-1.5 font-semibold text-xs shadow-xs rounded-full">
+              <Button size="sm" onClick={redirect} className="gap-1.5 min-h-[40px] sm:min-h-[36px] px-4 font-semibold text-xs shadow-xs rounded-full">
                 <UL0Icon name="arrowright" className="h-3.5 w-3.5" />
                 <span>Continue</span>
               </Button>
@@ -244,17 +244,17 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
       </header>
 
       {/* Main Content with Left, Center & Right Ad Slots */}
-      <main className="flex-1 container mx-auto p-4 flex flex-col lg:flex-row items-center lg:items-start justify-between gap-6 overflow-auto">
+      <main className="flex-1 container mx-auto px-3 sm:px-4 py-4 sm:py-6 flex flex-col lg:flex-row items-center lg:items-start justify-between gap-5 sm:gap-6 overflow-x-hidden">
 
-        {/* 2. Left Side Tower Ad (160x600 on PC, centered stack on mobile) */}
+        {/* 2. Left Side Tower Ad (160x600 on Desktop, hidden on mobile so primary CTA sits above the fold) */}
         {!isBrandedDomain && (
-          <div className="w-full lg:w-[170px] flex justify-center flex-shrink-0">
+          <div className="hidden lg:flex lg:order-1 lg:w-[170px] justify-center shrink-0">
             <AdBanner slot={2} type="skyscraper" />
           </div>
         )}
 
         {/* Center Main Redirect Card */}
-        <div className="flex-1 w-full max-w-xl flex flex-col items-center gap-4 text-center my-auto">
+        <div className="order-1 lg:order-2 flex-1 w-full max-w-xl flex flex-col items-center gap-4 text-center my-auto min-w-0">
           {/* Animated WebP Brand Logo (/ulo_4k.webp) */}
           <div className="flex justify-center p-2 rounded-2xl bg-card/60 border border-border/60 shadow-xs max-w-sm w-full">
             <img
@@ -272,11 +272,11 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
                 <span>Open in {appConfig?.name}</span>
               </div>
               <div className="flex flex-wrap justify-center gap-2">
-                <Button onClick={handleOpenInApp} size="sm" className="gap-2 rounded-full">
+                <Button onClick={handleOpenInApp} size="sm" className="gap-2 rounded-full min-h-[40px] px-4">
                   <UL0Icon name="mobile" className="h-4 w-4" />
                   Open App
                 </Button>
-                <Button variant="outline" size="sm" onClick={redirect} className="gap-2 bg-transparent rounded-full">
+                <Button variant="outline" size="sm" onClick={redirect} className="gap-2 bg-transparent rounded-full min-h-[40px] px-4">
                   <UL0Icon name="domain" className="h-4 w-4" />
                   Browser
                 </Button>
@@ -285,7 +285,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
           )}
 
           {/* Trust Badge */}
-          <div className="flex items-center gap-2 rounded-full bg-emerald-500/10 px-3.5 py-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+          <div className="flex items-center gap-2 rounded-full bg-emerald-500/10 px-3.5 py-1.5 text-xs font-medium text-emerald-600 border border-emerald-500/20">
             <UL0Icon name="shield" className="h-3.5 w-3.5" />
             <span>Link verified safe</span>
           </div>
@@ -303,7 +303,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
                 <UL0Icon name="sparkles" className="h-3.5 w-3.5" />
                 <span>Created with UL0</span>
               </div>
-              <span className="text-[11px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
+              <span className="text-[11px] font-medium text-emerald-600 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">
                 100% Free • No Signup
               </span>
             </div>
@@ -315,7 +315,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
                 href="https://ul0.site"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:opacity-90 px-3.5 py-1.5 rounded-full transition-all"
+                className="inline-flex items-center justify-center gap-1.5 min-h-[40px] sm:min-h-[34px] text-xs font-semibold bg-primary text-primary-foreground hover:opacity-90 px-4 py-1.5 rounded-full transition-all"
               >
                 <span>Create Free Link</span>
                 <UL0Icon name="arrowright" className="h-3.5 w-3.5" />
@@ -324,7 +324,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
                 href="https://ul0.site/split"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted px-3.5 py-1.5 rounded-full transition-colors border border-border/50"
+                className="inline-flex items-center justify-center min-h-[40px] sm:min-h-[34px] text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted px-4 py-1.5 rounded-full transition-colors border border-border/50"
               >
                 <span>Split a Bill</span>
               </a>
@@ -332,7 +332,7 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
                 href="https://ul0.site/whatsapp"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted px-3 py-1.5 rounded-lg transition-colors border border-border/50"
+                className="inline-flex items-center justify-center min-h-[40px] sm:min-h-[34px] text-xs font-medium text-muted-foreground hover:text-foreground bg-muted/60 hover:bg-muted px-4 py-1.5 rounded-full transition-colors border border-border/50"
               >
                 <span>WhatsApp Link</span>
               </a>
@@ -352,9 +352,9 @@ export function RedirectLanding({ longUrl, domain, customHost, brandLogoUrl }: P
           )}
         </div>
 
-        {/* 3. Right Side Tower Ad (160x300 on PC, centered stack on mobile) */}
+        {/* 3. Right Side Tower Ad (160x300 on Desktop, hidden on mobile to prevent stack bloat) */}
         {!isBrandedDomain && (
-          <div className="w-full lg:w-[170px] flex justify-center flex-shrink-0">
+          <div className="hidden lg:flex lg:order-3 lg:w-[170px] justify-center shrink-0">
             <AdBanner slot={3} type="medium_skyscraper" />
           </div>
         )}

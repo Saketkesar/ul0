@@ -10,7 +10,7 @@ import { getPublishedSanityPosts } from "@/lib/sanity/client"
 export const revalidate = 60 // Revalidate blog directory every 60 seconds for scheduled posts
 
 export const metadata: Metadata = {
-  title: "Link Management, QR Code & UTM Guides | UL0 Blog",
+  title: "Link Management, QR Code & UTM Guides",
   description: "Guides, technical tutorials, and competitor breakdowns on branded short links, custom domain DNS CNAME configuration, dynamic QR codes, and link analytics.",
   alternates: {
     canonical: "https://ul0.site/blog",

@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Gratis URL Verkorter - Link Inkorten | ul0",
+  title: "Gratis URL Verkorter - Link Inkorten",
   description:
     "ul0 is de snelste gratis URL-verkorter. Kort elke link direct in. Geen registratie, geen limieten, 100% gratis.",
   alternates: {

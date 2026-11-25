@@ -771,7 +771,7 @@ export function FilesWorkspace() {
             <div className="inline-flex items-center gap-1.5 text-xs font-mono text-muted-foreground uppercase tracking-wider">
               <span>Client-Side Workspace</span>
               <span>•</span>
-              <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+              <span className="text-emerald-600 font-semibold flex items-center gap-1">
                 <UL0Icon name="shield" className="h-3.5 w-3.5" /> 100% Private
               </span>
             </div>
@@ -1476,7 +1476,7 @@ export function FilesWorkspace() {
                   <div className="space-y-3 pt-2 border-t border-border/80">
                     <div className="flex items-center justify-between text-xs">
                       <span className="text-muted-foreground">New File Size:</span>
-                      <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                      <span className="font-mono font-bold text-emerald-600">
                         {(processedSizeBytes / 1024).toFixed(1)} KB
                       </span>
                     </div>
@@ -1821,7 +1821,7 @@ export function FilesWorkspace() {
 
       {/* Notion Callout Box: Privacy & Offline Guarantee */}
       <div className="rounded-lg border border-border bg-muted/30 p-4 flex items-start gap-3 text-xs text-muted-foreground">
-        <UL0Icon name="shield" className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0 mt-0.5" />
+        <UL0Icon name="shield" className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
         <div className="space-y-1 leading-relaxed">
           <div className="font-semibold text-foreground">Why UL0 Files is 100% Private</div>
           <div>

@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "URL Shortener with Custom Domain: Free Setup & Comparison 2026 | UL0",
+  title: "URL Shortener with Custom Domain: Free Setup & Comparison 2026",
   description: "Looking for a URL shortener with custom domain? Compare the best free and low-cost custom domain link shorteners in 2026. Free SSL, 307 redirects, and no monthly fees.",
   keywords: [
     "url shortener with custom domain",
@@ -218,7 +218,7 @@ export default function CustomDomainShortLinksGuidePage() {
             </div>
           </header>
 
-          <div className="prose prose-neutral dark:prose-invert max-w-none text-foreground text-sm sm:text-base leading-relaxed space-y-6">
+          <div className="prose prose-neutral max-w-none text-foreground text-sm sm:text-base leading-relaxed space-y-6">
             <p className="text-lg leading-relaxed text-foreground font-medium">
               Every marketing email, social bio link, and SMS campaign you publish reflects your brand equity. When customers see a generic short link like <code className="text-xs bg-muted px-1.5 py-0.5 rounded">bit.ly/3x8Qp9</code>, they hesitate. When they see <code className="text-xs bg-muted px-1.5 py-0.5 rounded">go.yourbrand.com/summer-sale</code>, trust surges, click-through rates rise by up to 39%, and spam filters remain clear.
             </p>

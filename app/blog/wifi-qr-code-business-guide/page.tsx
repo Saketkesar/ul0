@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "WiFi QR Codes for Businesses: Complete Setup & Security Guide 2026 | ul0",
+  title: "WiFi QR Codes for Businesses: Complete Setup & Security Guide 2026",
   description: "Learn how cafes, restaurants, hotels, and offices use WiFi QR codes to streamline guest access, protect private networks, and improve customer experience.",
   keywords: [
     "wifi qr code for business",
@@ -84,7 +84,7 @@ export default function WifiQrBusinessGuidePage() {
             </p>
           </header>
 
-          <div className="prose prose-gray dark:prose-invert max-w-none space-y-6 text-muted-foreground leading-relaxed">
+          <div className="prose prose-gray max-w-none space-y-6 text-muted-foreground leading-relaxed">
             <p className="text-lg text-foreground">
               In hospitality and retail, providing fast, frictionless guest Wi-Fi is no longer an optional perk—it is a core customer expectation. However, forcing customers to manually type long, complex passwords written on distant chalkboards creates frustration and wastes staff time.
             </p>

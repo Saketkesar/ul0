@@ -6,7 +6,7 @@ import { ChatToPdfForm } from "@/components/chat-to-pdf-form"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Claude Chat to PDF — Convert Claude Links to PDF | UL0",
+  title: "Claude Chat to PDF — Convert Claude Links to PDF",
   description:
     "Convert public Claude share links into clean, minimal A4 PDFs. Document styling, code blocks, page numbers. Free, private, no signup.",
   alternates: {
@@ -219,7 +219,7 @@ export default function ClaudeChatToPdfPage() {
           {/* Privacy & Guide Links */}
           <div className="p-6 rounded-2xl border border-border bg-muted/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
             <div className="flex items-center gap-2.5">
-              <UL0Icon name="shield" size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <UL0Icon name="shield" size={18} className="text-emerald-600 shrink-0" />
               <span><strong>Privacy Guarantee:</strong> We don&apos;t store your chats, log URLs, or retain PDFs.</span>
             </div>
             <div className="flex items-center gap-3">

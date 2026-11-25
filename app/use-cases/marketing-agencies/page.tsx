@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Link Management & UTM Tracking for Marketing Agencies | UL0",
+  title: "Link Management & UTM Tracking for Marketing Agencies",
   description: "Standardize client campaign tracking, connect multiple custom domains, enforce UTM parameter taxonomy, and eliminate inflated Bitly enterprise costs with UL0.",
   alternates: {
     canonical: "https://ul0.site/use-cases/marketing-agencies",

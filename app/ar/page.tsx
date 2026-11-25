@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "اختصار الروابط مجانا - تقصير الرابط | ul0",
+  title: "اختصار الروابط مجانا - تقصير الرابط",
   description:
     "ul0 هو أسرع أداة مجانية لاختصار الروابط. اختصر أي رابط فورا. بدون تسجيل، بدون حدود، مجاني 100%.",
   alternates: {

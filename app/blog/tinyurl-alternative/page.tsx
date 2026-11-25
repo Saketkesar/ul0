@@ -6,7 +6,7 @@ import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
-  title: "Best TinyURL Alternatives in 2026 (No Signup, Free QR & Domains) | UL0",
+  title: "Best TinyURL Alternatives in 2026 (No Signup, Free QR & Domains)",
   description:
     "Looking for a modern TinyURL alternative? Compare the best free link shorteners in 2026 with no signup, dynamic vector QR codes, and custom domains.",
   alternates: {
@@ -192,7 +192,7 @@ export default function TinyURLAlternativePage() {
             </div>
           </header>
 
-          <div className="prose prose-slate dark:prose-invert max-w-none space-y-6 leading-relaxed">
+          <div className="prose prose-slate max-w-none space-y-6 leading-relaxed">
             <p className="text-lg text-muted-foreground">
               <strong>TinyURL</strong> launched in 2002 as one of the very first URL shortening services on the internet. While it remains functional for quick one-off links, its core experience has barely changed in over twenty years. Critical features like click analytics, dynamic vector QR codes, and custom branded domains are either absent or locked behind a $12.99/month Pro subscription.
             </p>
@@ -233,7 +233,7 @@ export default function TinyURLAlternativePage() {
 
                   <div className="grid sm:grid-cols-2 gap-4 mb-4 text-xs">
                     <div>
-                      <h4 className="font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+                      <h4 className="font-semibold text-emerald-600 uppercase tracking-wider mb-2">
                         Strengths
                       </h4>
                       <ul className="space-y-1.5 text-muted-foreground">

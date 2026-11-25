@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "How to Split Expenses with Friends - Best Apps & Methods 2026 | ul0",
+  title: "How to Split Expenses with Friends - Best Apps & Methods 2026",
   description: "The ultimate guide to splitting bills and expenses with friends in 2026. Compare Splitwise alternatives and learn the best free methods.",
   keywords: [
     "split expenses friends",
@@ -86,7 +86,7 @@ export default function SplitExpensesFriendsAppPage() {
             </p>
           </header>
 
-          <div className="prose prose-gray dark:prose-invert max-w-none space-y-6">
+          <div className="prose prose-gray max-w-none space-y-6">
             <p className="text-lg">
               Whether you are going on a road trip, living with roommates, or splitting a dinner tab, managing shared costs with friends 
               can quickly become a headache. In 2026, many popular splitting apps have locked essential features behind subscriptions 

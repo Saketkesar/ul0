@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "ย่อลิงก์ฟรี - เครื่องมือย่อ URL | ul0",
+  title: "ย่อลิงก์ฟรี - เครื่องมือย่อ URL",
   description: "ul0 - เครื่องมือย่อลิงก์ฟรีที่เร็วที่สุดในประเทศไทย ย่อลิงก์ใดก็ได้ทันที ไม่ต้องสมัครสมาชิก ไม่จำกัด ฟรี 100%",
   alternates: {
     canonical: "https://ul0.site/th",

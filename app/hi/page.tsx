@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "मुफ्त URL शॉर्टनर - बिना साइनअप लिंक छोटा करें और QR कोड बनाएं | ul0",
+  title: "मुफ्त URL शॉर्टनर - बिना साइनअप लिंक छोटा करें और QR कोड बनाएं",
   description: "ul0 - भारत का सबसे तेज़ और मुफ्त URL शॉर्टनर। बिना साइनअप के किसी भी लिंक को तुरंत छोटा करें और हाई-रेज़ोल्यूशन QR कोड बनाएं। कस्टम डोमेन सपोर्ट उपलब्ध।",
   alternates: {
     canonical: "https://ul0.site/hi",

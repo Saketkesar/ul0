@@ -18,36 +18,36 @@ interface FloatingIconItem {
 
 const FLOATING_ICONS: FloatingIconItem[] = [
   // Top region
-  { name: "link", top: "8%", left: "3%", size: 48, delay: "0s", duration: "6.5s", opacity: "opacity-45 dark:opacity-30", glowColor: "rgba(61, 219, 184, 0.25)" },
-  { name: "qr", top: "10%", right: "4%", size: 52, delay: "1.2s", duration: "7.2s", opacity: "opacity-50 dark:opacity-30", glowColor: "rgba(27, 104, 92, 0.25)" },
-  { name: "sparkles", top: "14%", left: "18%", size: 36, delay: "0.5s", duration: "5.8s", opacity: "opacity-40 dark:opacity-25" },
-  { name: "bolt", top: "15%", right: "19%", size: 38, delay: "2.1s", duration: "6.2s", opacity: "opacity-40 dark:opacity-25" },
+  { name: "link", top: "8%", left: "3%", size: 48, delay: "0s", duration: "6.5s", opacity: "opacity-45", glowColor: "rgba(61, 219, 184, 0.25)" },
+  { name: "qr", top: "10%", right: "4%", size: 52, delay: "1.2s", duration: "7.2s", opacity: "opacity-50", glowColor: "rgba(27, 104, 92, 0.25)" },
+  { name: "sparkles", top: "14%", left: "18%", size: 36, delay: "0.5s", duration: "5.8s", opacity: "opacity-40" },
+  { name: "bolt", top: "15%", right: "19%", size: 38, delay: "2.1s", duration: "6.2s", opacity: "opacity-40" },
 
   // Upper middle
-  { name: "domain", top: "28%", left: "5%", size: 46, delay: "1.7s", duration: "7.8s", opacity: "opacity-45 dark:opacity-25", glowColor: "rgba(135, 212, 116, 0.25)" },
-  { name: "scissors", top: "32%", right: "6%", size: 44, delay: "0.8s", duration: "6.8s", opacity: "opacity-45 dark:opacity-30" },
-  { name: "cloud", top: "26%", left: "22%", size: 38, delay: "3.2s", duration: "8.5s", opacity: "opacity-35 dark:opacity-20" },
-  { name: "bulb", top: "30%", right: "23%", size: 40, delay: "2.4s", duration: "7.4s", opacity: "opacity-40 dark:opacity-25" },
+  { name: "domain", top: "28%", left: "5%", size: 46, delay: "1.7s", duration: "7.8s", opacity: "opacity-45", glowColor: "rgba(135, 212, 116, 0.25)" },
+  { name: "scissors", top: "32%", right: "6%", size: 44, delay: "0.8s", duration: "6.8s", opacity: "opacity-45" },
+  { name: "cloud", top: "26%", left: "22%", size: 38, delay: "3.2s", duration: "8.5s", opacity: "opacity-35" },
+  { name: "bulb", top: "30%", right: "23%", size: 40, delay: "2.4s", duration: "7.4s", opacity: "opacity-40" },
 
   // Center sides
-  { name: "target", top: "48%", left: "2%", size: 46, delay: "2.5s", duration: "8.2s", opacity: "opacity-40 dark:opacity-25" },
-  { name: "heart", top: "50%", right: "3%", size: 42, delay: "1.4s", duration: "7.1s", opacity: "opacity-45 dark:opacity-30" },
-  { name: "cart", top: "52%", left: "12%", size: 38, delay: "3.5s", duration: "6.4s", opacity: "opacity-35 dark:opacity-20" },
-  { name: "wifi", top: "54%", right: "14%", size: 40, delay: "0.9s", duration: "7.6s", opacity: "opacity-40 dark:opacity-25" },
+  { name: "target", top: "48%", left: "2%", size: 46, delay: "2.5s", duration: "8.2s", opacity: "opacity-40" },
+  { name: "heart", top: "50%", right: "3%", size: 42, delay: "1.4s", duration: "7.1s", opacity: "opacity-45" },
+  { name: "cart", top: "52%", left: "12%", size: 38, delay: "3.5s", duration: "6.4s", opacity: "opacity-35" },
+  { name: "wifi", top: "54%", right: "14%", size: 40, delay: "0.9s", duration: "7.6s", opacity: "opacity-40" },
 
   // Lower middle
-  { name: "chartline", top: "66%", left: "6%", size: 44, delay: "1.9s", duration: "7.0s", opacity: "opacity-40 dark:opacity-25" },
-  { name: "splitbill", top: "68%", right: "7%", size: 46, delay: "2.8s", duration: "8.0s", opacity: "opacity-45 dark:opacity-30" },
-  { name: "mobile", top: "72%", left: "20%", size: 36, delay: "0.4s", duration: "6.9s", opacity: "opacity-35 dark:opacity-20" },
-  { name: "tools", top: "70%", right: "21%", size: 42, delay: "3.1s", duration: "7.5s", opacity: "opacity-40 dark:opacity-25" },
+  { name: "chartline", top: "66%", left: "6%", size: 44, delay: "1.9s", duration: "7.0s", opacity: "opacity-40" },
+  { name: "splitbill", top: "68%", right: "7%", size: 46, delay: "2.8s", duration: "8.0s", opacity: "opacity-45" },
+  { name: "mobile", top: "72%", left: "20%", size: 36, delay: "0.4s", duration: "6.9s", opacity: "opacity-35" },
+  { name: "tools", top: "70%", right: "21%", size: 42, delay: "3.1s", duration: "7.5s", opacity: "opacity-40" },
 
   // Bottom region
-  { name: "rocket", top: "84%", left: "4%", size: 48, delay: "2.2s", duration: "6.6s", opacity: "opacity-45 dark:opacity-30" },
-  { name: "crown", top: "86%", right: "5%", size: 44, delay: "1.1s", duration: "7.3s", opacity: "opacity-45 dark:opacity-25" },
-  { name: "diamond", top: "88%", left: "15%", size: 36, delay: "3.7s", duration: "8.2s", opacity: "opacity-35 dark:opacity-20" },
-  { name: "gift", top: "89%", right: "17%", size: 38, delay: "0.7s", duration: "6.5s", opacity: "opacity-40 dark:opacity-25" },
-  { name: "calendar", top: "92%", left: "28%", size: 34, delay: "2.9s", duration: "7.7s", opacity: "opacity-30 dark:opacity-20" },
-  { name: "palette", top: "93%", right: "30%", size: 36, delay: "1.6s", duration: "7.1s", opacity: "opacity-35 dark:opacity-20" },
+  { name: "rocket", top: "84%", left: "4%", size: 48, delay: "2.2s", duration: "6.6s", opacity: "opacity-45" },
+  { name: "crown", top: "86%", right: "5%", size: 44, delay: "1.1s", duration: "7.3s", opacity: "opacity-45" },
+  { name: "diamond", top: "88%", left: "15%", size: 36, delay: "3.7s", duration: "8.2s", opacity: "opacity-35" },
+  { name: "gift", top: "89%", right: "17%", size: 38, delay: "0.7s", duration: "6.5s", opacity: "opacity-40" },
+  { name: "calendar", top: "92%", left: "28%", size: 34, delay: "2.9s", duration: "7.7s", opacity: "opacity-30" },
+  { name: "palette", top: "93%", right: "30%", size: 36, delay: "1.6s", duration: "7.1s", opacity: "opacity-35" },
 ]
 
 export function AnimatedIconBackground() {

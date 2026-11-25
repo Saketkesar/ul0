@@ -6,7 +6,7 @@ import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
-  title: "QR Code Security & Privacy Guide 2026: Preventing Quishing Scams | ul0 Blog",
+  title: "QR Code Security & Privacy Guide 2026: Preventing Quishing Scams",
   description: "Learn how to secure QR codes against quishing scams, malicious redirects, and data tracking in 2026. Complete enterprise security and compliance guide.",
   keywords: [
     "qr code security",
@@ -97,7 +97,7 @@ export default function QrCodeSecurityGuidePage() {
             </div>
           </header>
 
-          <article className="prose prose-slate dark:prose-invert max-w-none space-y-6 leading-relaxed">
+          <article className="prose prose-slate max-w-none space-y-6 leading-relaxed">
             <p className="text-lg text-muted-foreground leading-relaxed">
               As QR code adoption expands across dining, retail, payment processing, and event ticketing, cybersecurity threats targeting visual codes have surged. "Quishing" (QR Code Phishing) has emerged as a major attack vector, deceiving mobile users into navigating to spoofed credential-harvesting pages.
             </p>

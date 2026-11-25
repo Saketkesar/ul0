@@ -134,7 +134,7 @@ export function UrlExpanderClient() {
           <div
             className={`p-5 rounded-3xl border flex items-center justify-between gap-4 ${
               result.isSafe
-                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700 dark:text-emerald-400"
+                ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-700"
                 : "bg-destructive/10 border-destructive/30 text-destructive"
             }`}
           >
@@ -183,7 +183,7 @@ export function UrlExpanderClient() {
                     <UL0Icon name="domain" size={14} />
                     <span>{result.domain}</span>
                     {result.isHttps && (
-                      <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                      <span className="inline-flex items-center gap-1 text-emerald-600 font-medium">
                         <UL0Icon name="lock" size={12} /> HTTPS
                       </span>
                     )}
@@ -226,7 +226,7 @@ export function UrlExpanderClient() {
               </div>
               <div className="flex items-center justify-between text-foreground">
                 <span className="font-semibold uppercase tracking-wider text-[10px] text-primary">Final Destination</span>
-                <span className="font-mono font-medium truncate max-w-[280px] sm:max-w-md text-emerald-600 dark:text-emerald-400">
+                <span className="font-mono font-medium truncate max-w-[280px] sm:max-w-md text-emerald-600">
                   {result.finalUrl}
                 </span>
               </div>

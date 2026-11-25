@@ -27,7 +27,7 @@ export default function PrivacyPage() {
             </p>
           </div>
 
-          <div className="prose prose-sm dark:prose-invert max-w-none space-y-6 text-xs sm:text-sm leading-relaxed text-muted-foreground">
+          <div className="prose prose-sm max-w-none space-y-6 text-xs sm:text-sm leading-relaxed text-muted-foreground">
             <section className="space-y-2">
               <h2 className="text-base font-semibold text-foreground">1. Core Privacy Commitments</h2>
               <p>

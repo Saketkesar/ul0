@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "UTM Campaign Tracking Guide 2026: Attribute Every Conversion | ul0",
+  title: "UTM Campaign Tracking Guide 2026: Attribute Every Conversion",
   description:
     "Master UTM parameter tagging and campaign tracking in 2026. Learn best practices for Google Analytics 4, avoid fractured reporting, and shorten tagged links cleanly.",
   alternates: {
@@ -47,7 +47,7 @@ export default function UtmTrackingGuidePage() {
             </p>
           </header>
 
-          <div className="prose prose-neutral dark:prose-invert max-w-none space-y-6">
+          <div className="prose prose-neutral max-w-none space-y-6">
             <h2 className="text-2xl font-bold">1. Why Standardized UTM Naming Matters</h2>
             <p>
               Google Analytics 4 is strictly case-sensitive. If one team member tags <code>utm_source=Facebook</code>, another uses <code>facebook</code>, and an agency writes <code>fb</code>, your analytics dashboards fragment into three disconnected rows.

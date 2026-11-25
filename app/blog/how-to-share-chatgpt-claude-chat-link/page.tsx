@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "How to Share a ChatGPT or Claude Chat Link | UL0",
+  title: "How to Share a ChatGPT or Claude Chat Link",
   description:
     "Simple guide on creating public share links in ChatGPT and Claude. Learn how link sharing works, what recipients see, and how to export as PDF.",
   alternates: {

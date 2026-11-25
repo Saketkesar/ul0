@@ -185,7 +185,7 @@ export default async function DynamicSanityBlogPostPage({ params }: Props) {
           )}
 
           {/* Article Body */}
-          <div className="prose prose-neutral dark:prose-invert max-w-none text-foreground text-sm sm:text-base leading-relaxed space-y-6 whitespace-pre-line">
+          <div className="prose prose-neutral max-w-none text-foreground text-sm sm:text-base leading-relaxed space-y-6 whitespace-pre-line">
             {post.body}
           </div>
 

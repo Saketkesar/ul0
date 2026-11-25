@@ -7,7 +7,7 @@ import { UL0Icon } from "@/components/ul0-icon"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "How Travel Agencies & Tour Operators Double Bookings with Branded Links & Dynamic QR Codes (2026 Guide) | UL0",
+  title: "How Travel Agencies & Tour Operators Double Bookings with Branded Links & Dynamic QR Codes (2026 Guide)",
   description:
     "Discover how leading holiday planners and travel agencies like Vinigrow Holidays use branded short links and dynamic vector QR codes across travel itineraries, WhatsApp inquiries, and print holiday brochures to boost guest trust and double vacation bookings.",
   alternates: {
@@ -109,7 +109,7 @@ export default function TravelMarketingGuidePage() {
           </div>
 
           {/* Article Body */}
-          <div className="prose prose-neutral dark:prose-invert max-w-none text-foreground text-sm sm:text-base leading-relaxed space-y-6">
+          <div className="prose prose-neutral max-w-none text-foreground text-sm sm:text-base leading-relaxed space-y-6">
             <p>
               In the modern travel and tourism industry, consumer confidence and digital friction dictate whether an inquiry converts into a confirmed booking. Whether a traveler is booking a luxury houseboat honeymoon in Kerala, an adventure trek in Himachal, or an international family vacation, travelers conduct extensive online due diligence before completing transactions.
             </p>

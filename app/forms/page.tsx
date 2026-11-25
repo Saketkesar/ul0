@@ -10,9 +10,35 @@ import { Button } from "@/components/ui/button"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Forms to Google Sheets — Zero-DB Form Builder | UL0",
+  title: "Forms to Google Sheets — Zero-DB Form Builder",
   description:
     "Create public forms connected directly to your Google Sheet without storing responses in any database. 100% private, free, and instant.",
+  alternates: {
+    canonical: "https://ul0.site/forms",
+  },
+  openGraph: {
+    title: "Forms to Google Sheets — Zero-DB Form Builder | UL0",
+    description:
+      "Build public forms that write submissions straight to your Google Sheet with Zero-DB privacy.",
+    url: "https://ul0.site/forms",
+    siteName: "UL0",
+    type: "website",
+    images: [
+      {
+        url: "https://ul0.site/social-card.png",
+        width: 1376,
+        height: 768,
+        alt: "UL0 Forms to Google Sheets",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Forms to Google Sheets — Zero-DB Form Builder | UL0",
+    description:
+      "Save public form responses straight to Google Sheets without third-party database storage.",
+    images: ["https://ul0.site/social-card.png"],
+  },
 }
 
 export default async function FormsPage() {

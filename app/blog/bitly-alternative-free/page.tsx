@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 
 export const metadata: Metadata = {
-  title: "Best Free Bitly Alternatives in 2026 (No Limits, No Signup) | UL0",
+  title: "Best Free Bitly Alternatives in 2026 (No Limits, No Signup)",
   description:
     "Tired of Bitly's 5 link/month limit? Compare the best free Bitly alternatives in 2026 with unlimited links, custom domains, and dynamic QR codes.",
   alternates: {
@@ -236,13 +236,13 @@ export default function BitlyAlternativePage() {
             </div>
           </header>
 
-          <div className="prose prose-slate dark:prose-invert max-w-none space-y-6 leading-relaxed">
+          <div className="prose prose-slate max-w-none space-y-6 leading-relaxed">
             <p className="text-lg text-muted-foreground">
               For years, <strong>Bitly</strong> was the default link shortening tool on the web. But in recent years, Bitly has severely reduced its free tier — restricting free accounts to just <strong>5 short links per month</strong>, paywalling custom domains at $35/month, and locking basic analytics behind aggressive paywalls.
             </p>
 
             <div className="not-prose rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5 my-6 space-y-2">
-              <div className="flex items-center gap-2 text-sm font-bold text-amber-900 dark:text-amber-200">
+              <div className="flex items-center gap-2 text-sm font-bold text-amber-900">
                 <UL0Icon name="warning" className="h-4 w-4 text-amber-600 shrink-0" />
                 <span>The State of Bitly&apos;s Free Plan in 2026</span>
               </div>
@@ -294,7 +294,7 @@ export default function BitlyAlternativePage() {
 
                   <div className="grid sm:grid-cols-2 gap-4 mb-4 text-xs">
                     <div>
-                      <h4 className="font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+                      <h4 className="font-semibold text-emerald-600 uppercase tracking-wider mb-2">
                         Key Advantages
                       </h4>
                       <ul className="space-y-1.5 text-muted-foreground">

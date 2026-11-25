@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { UL0Icon, UL0IconName } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Free PDF Tools Online — Image to PDF, Merge PDFs & Document Scanner | ul0",
+  title: "Free PDF Tools Online — Image to PDF, Merge PDFs & Document Scanner",
   description:
     "Convert images to PDF, merge multiple PDFs, and scan documents with your camera — all free, no signup, no upload. 100% client-side processing for maximum privacy. Works on desktop and mobile.",
   keywords: [

@@ -6,7 +6,7 @@ import { ChatToPdfForm } from "@/components/chat-to-pdf-form"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Share Link to PDF — Convert AI Chat Links to PDF | UL0",
+  title: "Share Link to PDF — Convert AI Chat Links to PDF",
   description:
     "Turn public Claude and ChatGPT share links into clean, printable PDFs. Intelligent notes, code, and chat formatting with zero storage.",
   alternates: {
@@ -219,7 +219,7 @@ export default function ShareLinkToPdfPage() {
           {/* Privacy Note & Blog Guides */}
           <div className="p-6 rounded-2xl border border-border bg-muted/30 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
             <div className="flex items-center gap-2.5">
-              <UL0Icon name="shield" size={18} className="text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <UL0Icon name="shield" size={18} className="text-emerald-600 shrink-0" />
               <span><strong>Privacy Guarantee:</strong> We don&apos;t store your chats. No logging, no tracking.</span>
             </div>
             <div className="flex items-center gap-3">

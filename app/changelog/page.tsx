@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Changelog — Product Updates & Release Notes | UL0",
+  title: "Changelog — Product Updates & Release Notes",
   description:
     "See what's new in UL0: platform updates, new tools, performance optimizations, custom domain features, and API improvements.",
   alternates: {

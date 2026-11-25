@@ -56,48 +56,16 @@ export function DashboardShell({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [commandOpen, setCommandOpen] = useState(false)
   const [shortcutsOpen, setShortcutsOpen] = useState(false)
-  const [isDark, setIsDark] = useState(false)
 
-  // Initialize theme from localStorage, cookies, or system preference
+  // Ensure crisp light theme across dashboard routes
   useEffect(() => {
     try {
-      const stored = localStorage.getItem("theme")
-      const cookieMatch = document.cookie.match(/(?:^|; )theme=([^;]*)/)
-      const cookieTheme = cookieMatch ? decodeURIComponent(cookieMatch[1]) : null
-      const theme = stored || cookieTheme
-      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
-      const isDarkMode = theme === "dark" || (!theme && prefersDark) || document.documentElement.classList.contains("dark")
-      setIsDark(isDarkMode)
-      if (isDarkMode) {
-        document.documentElement.classList.add("dark")
-      } else {
-        document.documentElement.classList.remove("dark")
-      }
-    } catch {
-      setIsDark(document.documentElement.classList.contains("dark"))
-    }
-
-    // Theme initialized
+      document.documentElement.classList.remove("dark")
+      document.documentElement.style.colorScheme = "light"
+      localStorage.removeItem("theme")
+      document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax"
+    } catch {}
   }, [])
-
-  const toggleTheme = () => {
-    const nextDark = !isDark
-    setIsDark(nextDark)
-    try {
-      if (nextDark) {
-        document.documentElement.classList.add("dark")
-        localStorage.setItem("theme", "dark")
-        document.cookie = "theme=dark; path=/; max-age=31536000; SameSite=Lax"
-      } else {
-        document.documentElement.classList.remove("dark")
-        localStorage.setItem("theme", "light")
-        document.cookie = "theme=light; path=/; max-age=31536000; SameSite=Lax"
-      }
-      window.dispatchEvent(new CustomEvent("theme-change", { detail: { theme: nextDark ? "dark" : "light" } }))
-    } catch (e) {
-      console.error("Theme toggle error:", e)
-    }
-  }
 
   // Keyboard shortcuts handling
   useEffect(() => {
@@ -304,7 +272,7 @@ export function DashboardShell({
               alt="UL0 Logo"
               width={64}
               height={22}
-              className="h-6 w-auto object-contain dark:brightness-110"
+              className="h-6 w-auto object-contain"
               priority
             />
           </Link>
@@ -340,16 +308,6 @@ export function DashboardShell({
           <div id="dashboard-create-link-wrapper">
             <CreateLinkButton verifiedDomains={verifiedDomains} />
           </div>
-
-          {/* Theme switcher */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label="Toggle light and dark mode"
-            className="h-9 w-9 rounded-full border border-border bg-surface-2 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-surface-3 transition-colors shadow-2xs cursor-pointer"
-          >
-            <UL0Icon name="palette" size={16} />
-          </button>
 
           {/* Keyboard shortcuts trigger */}
           <button
@@ -441,7 +399,7 @@ export function DashboardShell({
               {plan.slug === "pro_user" && isHighUsage && (
                 <Link
                   href="/dashboard/billing"
-                  className="w-full mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-white transition-all"
+                  className="w-full mt-2 inline-flex items-center justify-center gap-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 py-2 text-xs font-semibold text-amber-600 hover:bg-amber-500 hover:text-white transition-all"
                 >
                   <UL0Icon name="warning" size={14} />
                   <span>Upgrade to Business</span>
@@ -463,7 +421,7 @@ export function DashboardShell({
                       alt="UL0 Logo"
                       width={64}
                       height={22}
-                      className="h-6 w-auto object-contain dark:brightness-110"
+                      className="h-6 w-auto object-contain"
                     />
                   </Link>
                   <button
@@ -572,17 +530,6 @@ export function DashboardShell({
             </CommandItem>
           </CommandGroup>
           <CommandGroup heading="Quick Actions">
-            <CommandItem
-              onSelect={() => {
-                setCommandOpen(false)
-                toggleTheme()
-              }}
-            >
-              <div className="mr-2">
-                <UL0Icon name="palette" size={14} />
-              </div>
-              <span>Toggle Light / Dark Theme</span>
-            </CommandItem>
             <CommandItem
               onSelect={() => {
                 setCommandOpen(false)

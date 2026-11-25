@@ -30,7 +30,7 @@ import {
 } from "lucide-react"
 
 export const metadata: Metadata = {
-  title: "Custom Branded Domains & Official Link Gateway | UL0",
+  title: "Custom Branded Domains & Official Link Gateway",
   description:
     "Official gateway and edge routing portal for verified custom domains. Fast, secure redirects, automated SSL certificates, and curated partner guides powered by UL0.",
   alternates: {

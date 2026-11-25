@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Should I Buy This? - Price to Work Hours Calculator | ul0 [2026]",
+  title: "Should I Buy This? — Price to Work Hours Calculator (2026)",
   description: "Best impulse buy calculator 2026. Convert any price into hours of work. Make smarter spending decisions by understanding how long you need to work to afford purchases. Free!",
   keywords: [
     // Primary Keywords

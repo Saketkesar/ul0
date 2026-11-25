@@ -23,8 +23,8 @@ export function PublicFormView({ form }: PublicFormViewProps) {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [uploadingField, setUploadingField] = useState<string | null>(null)
 
-  // Local theme toggle (auto/light/dark)
-  const [isDark, setIsDark] = useState<boolean>(false)
+  // Light mode enforced across all public form views
+  const isDark = false
 
   // Report modal state
   const [showReport, setShowReport] = useState(false)
@@ -33,17 +33,6 @@ export function PublicFormView({ form }: PublicFormViewProps) {
 
   // First invalid field ref map
   const fieldRefs = useRef<Record<string, HTMLElement | null>>({})
-
-  useEffect(() => {
-    // Check initial system or theme preference
-    if (theme.mode === "dark") {
-      setIsDark(true)
-    } else if (theme.mode === "light") {
-      setIsDark(false)
-    } else if (typeof window !== "undefined") {
-      setIsDark(window.matchMedia("(prefers-color-scheme: dark)").matches)
-    }
-  }, [theme.mode])
 
   // Handle redirect on success if configured
   useEffect(() => {
@@ -255,7 +244,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
             </div>
           )}
 
-          <div className="pt-8 border-t border-black/10 dark:border-white/10 flex items-center justify-center gap-2 text-xs opacity-50">
+          <div className="pt-8 border-t border-black/10 flex items-center justify-center gap-2 text-xs opacity-50">
             <UL0Icon name="shield" className="w-4 h-4 text-emerald-500" />
             <span>Encrypted zero-database relay · Powered by ul0.site</span>
           </div>
@@ -271,7 +260,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
       }`}
     >
       {/* Sticky Progress Bar at the Very Top (Typeform / Tally style) */}
-      <div className="fixed top-0 left-0 right-0 z-40 h-1 bg-black/5 dark:bg-white/5">
+      <div className="fixed top-0 left-0 right-0 z-40 h-1 bg-black/5">
         <div
           className="h-full transition-all duration-300 ease-out"
           style={{
@@ -288,22 +277,13 @@ export function PublicFormView({ form }: PublicFormViewProps) {
           <span>·</span>
           <span>{progressPercent}%</span>
         </div>
-
-        <button
-          type="button"
-          onClick={() => setIsDark(!isDark)}
-          className="p-1.5 rounded-md hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
-          title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-        >
-          {isDark ? <UL0Icon name="bulb" className="w-4 h-4" /> : <UL0Icon name="palette" className="w-4 h-4" />}
-        </button>
       </header>
 
       {/* Main Form Document Canvas */}
       <main className="max-w-2xl mx-auto px-4 py-8 sm:py-12">
         {/* Optional Cover Banner */}
         {theme.cover_url && (
-          <div className="w-full h-36 sm:h-48 rounded-2xl overflow-hidden mb-8 border border-black/10 dark:border-white/10 shadow-xs">
+          <div className="w-full h-36 sm:h-48 rounded-2xl overflow-hidden mb-8 border border-black/10 shadow-xs">
             <img
               src={theme.cover_url}
               alt="Form Cover"
@@ -362,7 +342,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
             // 1. Heading block
             if (field.type === "heading") {
               return (
-                <div key={field.id} className="pt-6 pb-1 border-t border-black/5 dark:border-white/5">
+                <div key={field.id} className="pt-6 pb-1 border-t border-black/5">
                   <h2 className="text-lg sm:text-xl font-bold tracking-tight">
                     {field.label}
                   </h2>
@@ -378,7 +358,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
               return (
                 <div
                   key={field.id}
-                  className="p-4 rounded-xl border border-black/5 dark:border-white/5 bg-black/[0.02] dark:bg-white/[0.02] text-sm opacity-80 leading-relaxed whitespace-pre-wrap"
+                  className="p-4 rounded-xl border border-black/5 bg-black/[0.02] text-sm opacity-80 leading-relaxed whitespace-pre-wrap"
                 >
                   {field.label}
                 </div>
@@ -387,7 +367,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
 
             // 3. Divider block
             if (field.type === "divider") {
-              return <hr key={field.id} className="border-t border-black/10 dark:border-white/10 my-8" />
+              return <hr key={field.id} className="border-t border-black/10 my-8" />
             }
 
             const currentQNum = String(questionIndex).padStart(2, "0")
@@ -464,7 +444,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                       } ${
                         error
                           ? "border-rose-500 focus:ring-2 focus:ring-rose-500/20"
-                          : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 focus:border-transparent focus:ring-2"
+                          : "border-black/10 hover:border-black/20 focus:border-transparent focus:ring-2"
                       }`}
                       style={{
                         boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
@@ -490,7 +470,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                       } ${
                         error
                           ? "border-rose-500 focus:ring-2 focus:ring-rose-500/20"
-                          : "border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 focus:border-transparent focus:ring-2"
+                          : "border-black/10 hover:border-black/20 focus:border-transparent focus:ring-2"
                       }`}
                       style={{
                         boxShadow: "0 1px 2px rgba(0,0,0,0.03)",
@@ -616,7 +596,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                         onChange={(e) => setAnswer(field.key, e.target.value)}
                         className={`w-full h-12 px-4 text-base rounded-xl border outline-none appearance-none transition-all ${
                           isDark ? "bg-[#111816] text-[#ECF5F2]" : "bg-white text-[#111817]"
-                        } border-black/10 dark:border-white/10 hover:border-black/20 dark:hover:border-white/20 focus:ring-2`}
+                        } border-black/10 hover:border-black/20 focus:ring-2`}
                       >
                         <option value="">{field.placeholder || "Select an option..."}</option>
                         {(field.options || []).map((opt) => (
@@ -720,12 +700,12 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                         <div
                           className={`flex items-center gap-3.5 p-3.5 rounded-xl border ${
                             isDark ? "bg-[#111816]" : "bg-white"
-                          } border-black/10 dark:border-white/10`}
+                          } border-black/10`}
                         >
                           <img
                             src={answers[field.key]}
                             alt="Attachment"
-                            className="w-14 h-14 object-cover rounded-lg border border-black/10 dark:border-white/10"
+                            className="w-14 h-14 object-cover rounded-lg border border-black/10"
                             referrerPolicy="no-referrer"
                           />
                           <div className="flex-1 text-xs opacity-70 truncate font-mono">
@@ -757,7 +737,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                         <label
                           className={`flex flex-col items-center justify-center p-8 rounded-2xl border-2 border-dashed transition-all cursor-pointer ${
                             isDark ? "bg-[#111816]/50 hover:bg-[#111816]" : "bg-white/50 hover:bg-white"
-                          } border-black/10 dark:border-white/10 hover:border-black/30 dark:hover:border-white/30`}
+                          } border-black/10 hover:border-black/30`}
                         >
                           <input
                             type="file"
@@ -834,7 +814,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
 
             <span className="text-xs opacity-40 hidden sm:flex items-center gap-1 font-mono">
               <span>press</span>
-              <kbd className="px-1.5 py-0.5 rounded bg-black/5 dark:bg-white/10 text-[10px] border border-black/10 dark:border-white/10 font-bold">
+              <kbd className="px-1.5 py-0.5 rounded bg-black/5 text-[10px] border border-black/10 font-bold">
                 Cmd ⌘ + Enter
               </kbd>
             </span>
@@ -842,7 +822,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
         </form>
 
         {/* Footer */}
-        <footer className="mt-20 pt-8 border-t border-black/10 dark:border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs opacity-50 gap-3">
+        <footer className="mt-20 pt-8 border-t border-black/10 flex flex-col sm:flex-row items-center justify-between text-xs opacity-50 gap-3">
           <div className="flex items-center gap-1.5">
             <UL0Icon name="shield" className="w-4 h-4 text-emerald-500" />
             <span>Responses go directly to the owner's Google Sheet</span>
@@ -897,7 +877,7 @@ export function PublicFormView({ form }: PublicFormViewProps) {
                   <button
                     type="button"
                     onClick={() => setShowReport(false)}
-                    className="px-3.5 py-1.5 text-xs rounded-lg border border-black/10 dark:border-white/10 cursor-pointer"
+                    className="px-3.5 py-1.5 text-xs rounded-lg border border-black/10 cursor-pointer"
                   >
                     Cancel
                   </button>

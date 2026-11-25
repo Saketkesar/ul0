@@ -66,7 +66,7 @@ export default async function CompetitorComparePage({ params }: Props) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-foreground antialiased selection:bg-neutral-200 dark:selection:bg-neutral-800">
+    <div className="flex min-h-screen flex-col bg-background text-foreground antialiased selection:bg-neutral-200">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}

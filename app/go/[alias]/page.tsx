@@ -20,7 +20,7 @@ import { UL0Icon } from "@/components/ul0-icon"
 export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
-  title: "Sponsored Content Verification | ul0",
+  title: "Sponsored Content Verification",
   robots: {
     index: false,
     follow: false,

@@ -7,7 +7,7 @@ import { IconsGalleryClient } from "./icons-gallery-client"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Our Icons & Color Scheme (Proprietary & Copyright Protected) | UL0",
+  title: "Our Icons & Color Scheme (Proprietary & Copyright Protected)",
   description:
     "Explore UL0's proprietary custom icon library, design system tokens, and color palette. All assets are original works protected by international copyright law.",
   alternates: {

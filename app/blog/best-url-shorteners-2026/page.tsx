@@ -6,7 +6,7 @@ import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
-  title: "10 Best URL Shorteners in 2026 (Free & Paid Tested) | UL0",
+  title: "10 Best URL Shorteners in 2026 (Free & Paid Tested)",
   description:
     "Compare the 10 best URL shorteners in 2026. Detailed benchmark of UL0, Bitly, Dub.co, TinyURL, and Rebrandly covering free limits, custom domains, and pricing.",
   alternates: {
@@ -251,7 +251,7 @@ export default function BestUrlShortenersPage() {
             </div>
           </header>
 
-          <div className="prose prose-slate dark:prose-invert max-w-none space-y-6 leading-relaxed">
+          <div className="prose prose-slate max-w-none space-y-6 leading-relaxed">
             <p className="text-lg text-muted-foreground">
               The link shortening landscape has transformed dramatically. Legacy services like Bitly have tightened their free limits (capping free accounts at just 5 links per month and paywalling custom domains at $35/month). Meanwhile, modern platforms like UL0 and Dub.co have introduced free custom domain routing, instant vector QR codes, and edge redirection.
             </p>
@@ -294,7 +294,7 @@ export default function BestUrlShortenersPage() {
                       </td>
                       <td className="p-3.5 text-center text-xs">
                         {s.customDomain === true ? (
-                          <span className="text-emerald-600 dark:text-emerald-400 font-semibold">1 Free Domain</span>
+                          <span className="text-emerald-600 font-semibold">1 Free Domain</span>
                         ) : typeof s.customDomain === "string" ? (
                           <span className="text-muted-foreground">{s.customDomain}</span>
                         ) : (
@@ -348,7 +348,7 @@ export default function BestUrlShortenersPage() {
 
                   <div className="grid sm:grid-cols-2 gap-4 mb-4 text-xs">
                     <div>
-                      <h4 className="font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-2">
+                      <h4 className="font-semibold text-emerald-600 uppercase tracking-wider mb-2">
                         Pros &amp; Strengths
                       </h4>
                       <ul className="space-y-1.5 text-muted-foreground">

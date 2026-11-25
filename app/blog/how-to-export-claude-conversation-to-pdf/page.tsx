@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "How to Export a Claude Conversation to PDF | UL0",
+  title: "How to Export a Claude Conversation to PDF",
   description:
     "Step-by-step tutorial on exporting Claude AI chats to clean A4 PDFs. Formatted code blocks, document-style summaries, and zero data logging.",
   alternates: {
@@ -114,7 +114,7 @@ export default function HowToExportClaudeConversationToPdfPage() {
                 <li>Click <strong>Convert to PDF</strong>.</li>
                 <li>The server securely fetches the conversation, formats the headings and monospace code, and returns a high-resolution A4 document.</li>
               </ul>
-              <div className="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-xs text-emerald-800 dark:text-emerald-300">
+              <div className="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 text-xs text-emerald-800">
                 <strong>Document Styling:</strong> If your chat is a summary or analysis with few prompts, UL0 automatically removes redundant &quot;User/Claude&quot; speaker labels and styles it as a clean executive report.
               </div>
             </section>

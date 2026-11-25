@@ -4,7 +4,7 @@ import { Footer } from "@/components/footer"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "P2P File Sharing — Coming Back Soon | ul0",
+  title: "P2P File Sharing — Coming Back Soon",
   description: "ul0 P2P file sharing is temporarily unavailable for maintenance. Check back soon.",
   robots: { index: false, follow: false },
 }

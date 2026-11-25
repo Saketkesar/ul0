@@ -340,7 +340,7 @@ export function LinkDetailClient({
               <p className="text-2xl font-bold font-mono text-foreground">
                 {analyticsData?.totalClicks ?? link.clicks_count ?? 0}
               </p>
-              <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-0.5">
+              <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-0.5">
                 <UL0Icon name="chartline" size={12} />
                 {analyticsData?.clicksDelta ? `${analyticsData.clicksDelta}%` : "Tracked"}
               </span>

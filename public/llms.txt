@@ -32,16 +32,31 @@ Founded in 2024, ul0's mission is to make branded link management accessible to 
 ## Key Pages
 
 - Homepage: https://ul0.site
+- Features: https://ul0.site/features
 - Pricing: https://ul0.site/pricing
+- Compare Shorteners: https://ul0.site/compare
+- UL0 vs Bitly: https://ul0.site/compare/bitly
+- UL0 vs TinyURL: https://ul0.site/compare/tinyurl
+- Use Cases: https://ul0.site/use-cases
+- Tools Directory: https://ul0.site/tools
 - Forms to Google Sheets: https://ul0.site/forms
 - API Documentation: https://ul0.site/docs
 - Expense Splitter: https://ul0.site/split
 - PDF Page Splitter: https://ul0.site/tools/pdf-splitter
+- HTTP Redirect Checker: https://ul0.site/tools/redirect-checker
+- URL Expander: https://ul0.site/tools/url-expander
+- OpenGraph Previewer: https://ul0.site/tools/og-preview
+- Meta Tag Generator: https://ul0.site/tools/meta-tag-generator
 - QR Code Generator: https://ul0.site/qr
-- Backlinks & Badges Directory: https://ul0.site/backlinks
+- WhatsApp Link Generator: https://ul0.site/whatsapp
+- ChatGPT Chat to PDF: https://ul0.site/chatgpt-chat-to-pdf
+- Claude Chat to PDF: https://ul0.site/claude-chat-to-pdf
 - PDF Scanner: https://ul0.site/pdf
 - UTM Builder: https://ul0.site/utm
 - WiFi QR Generator: https://ul0.site/wifi
+- Security Architecture: https://ul0.site/security
+- Threat Intelligence Radar: https://ul0.site/threats
+- Service Status: https://ul0.site/status
 - Blog: https://ul0.site/blog
 - FAQ: https://ul0.site/faq
 - About: https://ul0.site/about

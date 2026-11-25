@@ -6,7 +6,7 @@ import { UL0Icon } from "@/components/ul0-icon"
 import { Badge } from "@/components/ui/badge"
 
 export const metadata: Metadata = {
-  title: "Affiliate Link Shortener Guide for US Creators (2026) | UL0",
+  title: "Affiliate Link Shortener Guide for US Creators (2026)",
   description:
     "Learn how to shorten and track affiliate links for Amazon Associates, TikTok Shop, and Instagram. Complete guide on FTC compliance, link cloaking rules, and high CTR.",
   alternates: {
@@ -110,7 +110,7 @@ export default function AffiliateLinkShortenerUsaPage() {
             </div>
           </header>
 
-          <article className="prose prose-slate dark:prose-invert max-w-none space-y-8 text-sm sm:text-base leading-relaxed">
+          <article className="prose prose-slate max-w-none space-y-8 text-sm sm:text-base leading-relaxed">
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-foreground">Why Long Affiliate URLs Hurt Conversions</h2>
               <p className="text-muted-foreground">
@@ -138,7 +138,7 @@ export default function AffiliateLinkShortenerUsaPage() {
                 Amazon Associates is the largest affiliate program in the United States, but it enforces strict rules regarding link shortening in its Associates Program Operating Agreement:
               </p>
               <div className="not-prose rounded-2xl border border-amber-500/20 bg-amber-500/10 p-5 space-y-2">
-                <div className="flex items-center gap-2 text-sm font-bold text-amber-900 dark:text-amber-200">
+                <div className="flex items-center gap-2 text-sm font-bold text-amber-900">
                   <UL0Icon name="warning" className="h-4 w-4 text-amber-600 shrink-0" />
                   <span>Amazon&apos;s Policy on Link Cloaking</span>
                 </div>

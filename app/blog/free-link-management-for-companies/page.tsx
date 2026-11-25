@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Free Link Management for Companies: The Ultimate 2026 Guide | ul0",
+  title: "Free Link Management for Companies: The Ultimate 2026 Guide",
   description: "Looking for free link management for companies? Discover the best tools and patterns to scale your business using branded custom domain short links completely free.",
   keywords: [
     "free link management for companies",
@@ -74,7 +74,7 @@ export default function FreeLinkManagementBlogPage() {
             </p>
           </header>
 
-          <div className="prose prose-gray dark:prose-invert max-w-none space-y-6 leading-relaxed">
+          <div className="prose prose-gray max-w-none space-y-6 leading-relaxed">
             <p className="text-lg text-muted-foreground leading-normal">
               In modern digital marketing, every link counts. Whether it is a product launch on social media, an email newsletter campaign, or a support doc shared over SMS, companies rely heavily on URL redirect links to guide their audiences. However, popular link managers like Bitly and Rebrandly have drastically limited their free tiers, charging hundreds of dollars annually just for basic configurations.
             </p>

@@ -7,7 +7,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Kostenloser URL-Kürzer - Links & QR-Codes ohne Anmeldung | ul0",
+  title: "Kostenloser URL-Kürzer - Links & QR-Codes ohne Anmeldung",
   description:
     "ul0 ist der schnellste kostenlose URL-Kürzer Deutschlands. Verkürze jeden Link sofort ohne Registrierung. Unterstützt eigene Branded Domains und dynamische QR-Codes.",
   alternates: {

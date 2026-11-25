@@ -5,7 +5,7 @@ import Link from "next/link"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "Free URL Shortener No Signup Required 2026 | ul0",
+  title: "Free URL Shortener No Signup Required 2026",
   description: "Shorten URLs for free without creating an account. No signup, no limits, no registration. Instant link shortening with QR codes.",
   keywords: [
     "free url shortener no signup",
@@ -141,7 +141,7 @@ export default function FreeURLShortenerNoSignupPage() {
             </p>
           </header>
 
-          <div className="prose prose-gray dark:prose-invert max-w-none">
+          <div className="prose prose-gray max-w-none">
             <p className="text-lg">
               Need to <strong>shorten a URL without signing up</strong>? Most URL shorteners now require 
               accounts, email verification, or limit free users. <strong>ul0</strong> is different - 

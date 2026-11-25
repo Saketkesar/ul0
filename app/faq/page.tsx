@@ -5,8 +5,8 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import Link from "next/link"
 
 export const metadata: Metadata = {
-  title: "FAQ - URL Shortener & Bill Splitter Questions | ul0 [2025]",
-  description: "Find answers about ul0 free URL shortener & bill splitter. How to shorten URLs, split expenses, create QR codes. Common questions answered. No signup required!",
+  title: "FAQ — URL Shortener, Custom Domains & Bill Splitter (2026)",
+  description: "Find answers about UL0's free URL shortener, custom domains, dynamic QR codes, and bill splitter. No signup required.",
   keywords: [
     // Primary FAQ Keywords
     "custom domain short link free",

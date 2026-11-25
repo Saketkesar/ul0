@@ -26,6 +26,7 @@ const AD_CONFIGS = {
  * Direct DOM injection allows Adsterra to verify domain approval and render ads.
  */
 export function AdBanner({ slot = 1, type = "large", scriptKey, width, height, scripts }: AdBannerProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const [scale, setScale] = useState(1)
 
@@ -40,9 +41,12 @@ export function AdBanner({ slot = 1, type = "large", scriptKey, width, height, s
   useEffect(() => {
     const updateScale = () => {
       if (typeof window === "undefined") return
-      const availableW = window.innerWidth - 32
-      if (availableW < baseW) {
-        setScale(Math.max(0.4, availableW / baseW))
+      const parentW = wrapperRef.current?.clientWidth
+        ? wrapperRef.current.clientWidth - 8
+        : window.innerWidth - 32
+      const availableW = Math.min(window.innerWidth - 24, parentW)
+      if (availableW > 0 && availableW < baseW) {
+        setScale(Math.max(0.28, availableW / baseW))
       } else {
         setScale(1)
       }
@@ -112,26 +116,35 @@ export function AdBanner({ slot = 1, type = "large", scriptKey, width, height, s
     }
   }, [finalKey, baseW, baseH, slot, customScript])
 
+  const containerW = Math.round(baseW * scale)
   const containerH = Math.round(baseH * scale)
 
   return (
     <div
-      className="w-full flex justify-center items-center py-2 px-1 overflow-hidden"
-      style={{ minHeight: `${Math.min(containerH, 60)}px` }}
+      ref={wrapperRef}
+      className="w-full flex justify-center items-center py-2 overflow-hidden"
     >
       <div
+        className="relative flex justify-center items-center overflow-hidden shrink-0"
         style={{
-          width: baseW,
-          height: baseH,
-          transform: scale < 1 ? `scale(${scale})` : "none",
-          transformOrigin: "center center",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexShrink: 0,
+          width: `${containerW}px`,
+          height: `${containerH}px`,
         }}
       >
-        <div ref={containerRef} style={{ width: baseW, height: baseH }} />
+        <div
+          style={{
+            width: baseW,
+            height: baseH,
+            transform: scale < 1 ? `scale(${scale})` : "none",
+            transformOrigin: "center center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexShrink: 0,
+          }}
+        >
+          <div ref={containerRef} style={{ width: baseW, height: baseH }} />
+        </div>
       </div>
     </div>
   )

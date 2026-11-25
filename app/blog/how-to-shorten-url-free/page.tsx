@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { UL0Icon } from "@/components/ul0-icon"
 
 export const metadata: Metadata = {
-  title: "How to Shorten a URL for Free in 2026 - Complete Guide | ul0",
+  title: "How to Shorten a URL for Free in 2026 - Complete Guide",
   description: "Learn how to shorten long URLs for free. Step-by-step guide covering the best methods, tools, and tips for shortening links for social media, marketing, and more.",
   keywords: [
     "how to shorten a url",
@@ -146,7 +146,7 @@ export default function HowToShortenUrlPage() {
           </header>
 
           {/* Content */}
-          <div className="prose prose-neutral dark:prose-invert max-w-none">
+          <div className="prose prose-neutral max-w-none">
             <p className="text-lg text-muted-foreground">
               Long URLs can be messy, hard to share, and look unprofessional. Whether you're sharing links on social media, 
               in emails, or on printed materials, <strong>shortening your URLs</strong> makes them cleaner and easier to manage. 
